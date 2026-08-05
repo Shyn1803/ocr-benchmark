@@ -1,0 +1,68 @@
+# Bộ tài liệu mẫu của ocr-bench — sinh bởi scripts/make_manifest.py
+# Đừng sửa tay: chạy lại script sau khi thêm/bớt file, rồi commit cả manifest.yaml
+# lẫn checksums.sha256 trong cùng một commit với dữ liệu.
+#
+# Kiểm lại:  py -3 scripts/make_manifest.py --verify
+
+tong_ket:
+  so_file: 1822
+  dung_luong_mb: 387.1
+  trang_doclaynet: 204
+  pdf_olmocr: 1403
+  assertion_olmocr: 7019
+
+nguon:
+  - ten: DocLayNet
+    chu_so_huu: IBM Deep Search
+    giay_phep: CDLA-Permissive-1.0
+    thuong_mai: cho phep
+    trang_chu: https://developer.ibm.com/exchanges/data/all/doclaynet/
+    lay_tu: DocLayNet_extra.zip (PDF mot trang) + DocLayNet_core.zip (COCO/test.json)
+    cach_lay: scripts/fetch_doclaynet.py — HTTP range doc rieng tung member trong ZIP
+    ghi_chu: >-
+      Toan bo DocLayNet la 38 GB. Chi lay mau phan tang, khong tai het.
+      Toa do COCO o he 1025x1025 — xem ground-truth/doclaynet/README.md.
+    phan_tang_theo_doc_category:
+      financial_reports: 34
+      government_tenders: 34
+      laws_and_regulations: 34
+      manuals: 34
+      patents: 34
+      scientific_articles: 34
+
+  - ten: olmOCR-bench
+    chu_so_huu: Allen Institute for AI (AI2)
+    giay_phep: ODC-BY-1.0
+    thuong_mai: cho phep, kem dieu kien ghi cong
+    trang_chu: https://huggingface.co/datasets/allenai/olmOCR-bench
+    cach_lay: scripts/fetch_olmocr.py
+    ghi_chu: >-
+      Nhan la assertion dang jsonl (unit test tren van ban trich xuat), khong phai
+      van ban tham chieu day du. La nguon chinh cho B5.
+    phan_tang_theo_split:
+      arxiv_math: 522
+      headers_footers: 266
+      long_tiny_text: 62
+      multi_column: 231
+      old_scans: 98
+      old_scans_math: 36
+      tables: 188
+    assertion_moi_file:
+      arxiv_math: 2927
+      headers_footers: 760
+      long_tiny_text: 442
+      multi_column: 884
+      old_scans: 526
+      old_scans_math: 458
+      table_tests: 1022
+
+khong_dua_vao_repo:
+  - ten: OmniDocBench
+    ly_do: >-
+      Research-only / phi thuong mai. Plan §11 da chot loai. Khong tai file ve repo,
+      khong trich so lieu vao tai lieu noi bo co gia tri thuong mai khi chua co ra soat
+      phap ly. Day la quyet dinh cua chu du an, khong phai cua agent.
+  - ten: Tai lieu that cua khach hang
+    ly_do: >-
+      Neu ve sau dua vao, phan do PHAI gitignore, chi commit manifest + checksum.
+      Dua file khach vao repo la rui ro ro ri.

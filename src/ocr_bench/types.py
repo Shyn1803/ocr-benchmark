@@ -311,42 +311,117 @@ class AnnotationGT:
     tables: tuple[OcrTable, ...] = ()
     page_sizes: tuple[tuple[float, float], ...] = ()
     human_ceiling: dict[str, float] = field(default_factory=dict)
-    """Trần người, lấy từ phần DocLayNet được annotate 2-3 lần.
+    """Trần người: mức đồng thuận giữa hai người cùng annotate một trang.
 
     Không có trần này, engine đạt 0.87 trong khi hai người annotate chỉ đồng ý với
     nhau 0.85 sẽ bị chấm "chưa đạt" dù nó đã chạm giới hạn của chính bài toán.
+
+    ⚠️ Kế hoạch giả định lấy trần này **miễn phí** từ phần DocLayNet được annotate
+    2-3 lần. Giả định đó **sai**: trong bản COCO công bố, `precedence` bằng 0 ở cả
+    80.863 ảnh của train/val/test và không `file_name` nào lặp — các lần annotate
+    trùng đã bị gộp trước khi phát hành. Còn hai đường: điền tay từ số đồng thuận
+    trong **bài báo** DocLayNet (theo lớp, không theo trang), hoặc tự annotate lại
+    một mẫu nhỏ. Để rỗng thì metric vẫn chạy, chỉ là không có trần để đối chiếu.
+    Xem TASK-074 review.md.
     """
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True, slots=True, kw_only=True)
 class Assertion:
     """Một khẳng định đúng/sai về tài liệu.
 
     `kind` là ClassVar chứ không phải field: nó thuộc về *loại* khẳng định, không
     phải dữ liệu của từng thể hiện, và để nó thành field sẽ chặn subclass thêm
     trường bắt buộc.
+
+    `kw_only=True` để lớp cha mang được field **có mặc định** mà lớp con vẫn khai
+    được field bắt buộc — không có nó thì dataclass báo "non-default argument
+    follows default argument" và ba trường chung dưới đây phải chép lại ở từng lớp con.
+
+    Ba trường chung ấy không phải trang trí. `max_diffs` là **ngưỡng của chính bộ
+    nhãn**: olmOCR-bench cho phép lệch tới ngần ấy ký tự khi so khớp mờ. Nạp nhãn mà
+    bỏ nó đi thì B5 sẽ chấm khắt khe hơn tác giả bộ nhãn định, và điểm thu được không
+    so sánh được với bảng đã công bố của họ — sai theo kiểu vẫn ra một con số đẹp.
     """
 
     kind: ClassVar[str] = "assertion"
 
+    assertion_id: str | None = None
+    page: int = 0
+    """0-based, theo quy tắc 2 của bench. Nguồn olmOCR-bench đánh **1-based** — quy
+    đổi nằm ở `corpus.load_olmocr()`."""
+    max_diffs: int = 0
+    checked: str | None = None
+    """Xuất xứ nhãn ở nguồn (`"verified"` = người kiểm lại). 2.801/3.385 khẳng định
+    `math` để trống — giữ lại để B5 lọc được "chỉ chấm phần đã kiểm" nếu cần."""
 
-@dataclass(frozen=True, slots=True)
+
+@dataclass(frozen=True, slots=True, kw_only=True)
 class TextPresence(Assertion):
     needle: str
+    case_sensitive: bool = False
+    first_n: int | None = None
+    last_n: int | None = None
+    """Giới hạn vùng tìm về N ký tự đầu/cuối của đầu ra. Chủ yếu dùng cho tầng
+    `headers_footers`: "chuỗi này **không** được nằm trong 200 ký tự đầu" là một
+    khẳng định khác hẳn "không được nằm ở đâu cả" — 104/823 khẳng định `absent`
+    có ràng buộc này, bỏ nó đi là đổi nghĩa nhãn chứ không phải làm gọn."""
     kind: ClassVar[str] = "text_presence"
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True, slots=True, kw_only=True)
 class TextAbsence(Assertion):
     needle: str
+    case_sensitive: bool = False
+    first_n: int | None = None
+    last_n: int | None = None
     kind: ClassVar[str] = "text_absence"
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True, slots=True, kw_only=True)
 class ReadingOrder(Assertion):
     before: str
     after: str
     kind: ClassVar[str] = "reading_order"
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class MathPresence(Assertion):
+    """Công thức LaTeX phải xuất hiện. Chiếm 3.385/7.019 khẳng định của olmOCR-bench.
+
+    So khớp LaTeX **không phải** so chuỗi: `\\frac{1}{2}` và `\\dfrac{1}{2}` hiển thị
+    như nhau. Cách so là việc của B5; ở đây chỉ giữ nguyên chuỗi gốc.
+    """
+
+    latex: str
+    kind: ClassVar[str] = "math_presence"
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class TableRelation(Assertion):
+    """Ô bảng `cell` phải có các ô lân cận / tiêu đề như mô tả.
+
+    Kiểm quan hệ chứ không kiểm HTML: một bảng đúng có thể được viết bằng nhiều
+    HTML khác nhau. Trường nào `None` là không ràng buộc.
+    """
+
+    cell: str
+    up: str | None = None
+    down: str | None = None
+    left: str | None = None
+    right: str | None = None
+    top_heading: str | None = None
+    left_heading: str | None = None
+    kind: ClassVar[str] = "table_relation"
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class Baseline(Assertion):
+    """Kiểm vệ sinh: đầu ra không rỗng, không rác. Chỉ 9 khẳng định, nhưng là loại
+    duy nhất bắt được engine trả về đúng một trang toàn ký tự thay thế."""
+
+    check_disallowed_characters: bool = False
+    kind: ClassVar[str] = "baseline"
 
 
 @dataclass(frozen=True, slots=True)

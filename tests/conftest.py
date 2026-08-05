@@ -1,4 +1,6 @@
-"""Khôi phục registry sau mỗi test.
+"""Fixture dùng chung: khôi phục registry, và bỏ qua test cần bộ mẫu thật.
+
+Khôi phục registry sau mỗi test.
 
 Registry là biến toàn cục ở cấp module. Test nào gọi `registry.clear()` hoặc đăng ký
 một metric giả sẽ để lại trạng thái đó cho những test chạy sau — và vì pytest chạy
@@ -8,9 +10,28 @@ mà sau này người ta gọi là "test bị flaky" rồi đi sửa nhầm ch�
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from ocr_bench import registry
+
+_CORPUS = Path(__file__).resolve().parents[1] / "ground-truth" / "doclaynet" / "layout_coco.json"
+
+
+def pytest_collection_modifyitems(config, items):
+    """`needs_corpus` → skip khi chưa tải bộ mẫu (390 MB, không nằm trong CI mặc định).
+
+    Skip chứ không fail: máy trắng vừa clone về phải `pytest` xanh được. Nhưng số
+    skip có in ra ở cuối phiên — người chạy thấy được là có phần chưa kiểm, khác hẳn
+    việc lặng lẽ không có test nào.
+    """
+    if _CORPUS.exists():
+        return
+    bo = pytest.mark.skip(reason="chưa có bộ mẫu — chạy scripts/fetch_doclaynet.py + fetch_olmocr.py")
+    for it in items:
+        if "needs_corpus" in it.keywords:
+            it.add_marker(bo)
 
 
 @pytest.fixture(autouse=True)

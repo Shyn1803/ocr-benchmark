@@ -11,3 +11,14 @@
 *.json  text eol=lf
 *.py    text eol=lf
 *.md    text eol=lf
+
+# Bộ mẫu + nhãn: giữ NGUYÊN BYTE, không đụng vào xuống dòng. Đặt sau các dòng trên
+# để đè lên `*.json text eol=lf`.
+#
+# `checksums.sha256` băm đúng byte trên đĩa lúc tải về. Để Git chuẩn hoá LF↔CRLF thì
+# file sau khi clone khác byte với lúc băm, `make_manifest.py --verify` báo sai
+# checksum hàng loạt, và AC-03 ("kiểm lại được bằng lệnh") thành vô nghĩa — tệ hơn cả
+# không có checksum, vì báo động giả dạy người ta bỏ qua nó.
+ground-truth/**  -text
+pdfs/**          -text
+checksums.sha256 -text
