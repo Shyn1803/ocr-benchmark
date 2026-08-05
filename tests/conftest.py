@@ -10,6 +10,7 @@ mà sau này người ta gọi là "test bị flaky" rồi đi sửa nhầm ch�
 
 from __future__ import annotations
 
+import importlib.util
 from pathlib import Path
 
 import pytest
@@ -26,12 +27,23 @@ def pytest_collection_modifyitems(config, items):
     skip có in ra ở cuối phiên — người chạy thấy được là có phần chưa kiểm, khác hẳn
     việc lặng lẽ không có test nào.
     """
-    if _CORPUS.exists():
-        return
-    bo = pytest.mark.skip(reason="chưa có bộ mẫu — chạy scripts/fetch_doclaynet.py + fetch_olmocr.py")
-    for it in items:
-        if "needs_corpus" in it.keywords:
-            it.add_marker(bo)
+    if not _CORPUS.exists():
+        bo = pytest.mark.skip(
+            reason="chưa có bộ mẫu — chạy scripts/fetch_doclaynet.py + fetch_olmocr.py"
+        )
+        for it in items:
+            if "needs_corpus" in it.keywords:
+                it.add_marker(bo)
+
+    if importlib.util.find_spec("marker") is None:
+        # Cùng lý lẽ với `needs_corpus`: skip chứ không fail, nhưng số skip có in ra
+        # nên người chạy thấy được là có phần chưa kiểm.
+        bo = pytest.mark.skip(
+            reason="chưa cài marker-pdf — xem plan TASK-075 (venv riêng, Python 3.12)"
+        )
+        for it in items:
+            if "needs_marker" in it.keywords:
+                it.add_marker(bo)
 
 
 @pytest.fixture(autouse=True)

@@ -7,7 +7,12 @@ name = "ocr-bench"
 version = "0.1.0"
 description = "Đo và xếp hạng công cụ OCR cho Sovereign"
 requires-python = ">=3.11"
-dependencies = []
+# Pillow là dependency THẬT, không phải extra: hợp đồng dữ liệu nói `OcrImage.data`
+# là **bytes PNG**, mà mọi engine đều xuất định dạng khác (Marker mặc định JPEG). Quy
+# đổi định dạng là việc của bench chứ không của adapter nào, nên nó không được nằm sau
+# một extra — thiếu nó thì `data` mang hai định dạng tuỳ engine và metric so ảnh nhận
+# hai kiểu dữ liệu. Pillow ~3 MB, không kéo theo torch.
+dependencies = ["Pillow>=10"]
 
 # Engine thật cài rời, không phải dependency mặc định: marker-pdf kéo theo torch +
 # model Surya vài GB, opendataloader cần Java 11+. Ai chạy adapter nào thì cài extra
@@ -30,6 +35,9 @@ markers = [
   # Vẫn chạy mặc định — nó là bằng chứng cho AC-02 của TASK-073, tắt đi thì mất.
   # Đánh dấu để lúc gỡ lỗi còn `-m 'not slow'` được.
   "slow: chạy lâu (vài giây), thường là test đo giờ ở quy mô thật.",
+  # Marker là extra, KHÔNG phải dependency (torch + Surya vài GB). Tự skip nếu
+  # chưa cài — máy trắng vẫn phải `pytest` xanh.
+  "needs_marker: cần marker-pdf đã cài (extra `marker`). Tự skip nếu chưa có.",
 ]
 
 [tool.coverage.run]

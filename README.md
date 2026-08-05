@@ -20,9 +20,9 @@ py -3 -m venv .venv
 (`.[marker]`, `.[opendataloader]`, `.[pdfinspector]`) vì marker kéo theo torch + model
 Surya vài GB và opendataloader cần Java 11+.
 
-## Ba cái bẫy mà repo này chủ động chặn
+## Bốn cái bẫy mà repo này chủ động chặn
 
-Cả ba đều thuộc loại **không bao giờ ném exception** — chúng chỉ làm bảng xếp hạng sai
+Cả bốn đều thuộc loại **không bao giờ ném exception** — chúng chỉ làm bảng xếp hạng sai
 một cách rất thuyết phục. Vì thế mỗi cái có test riêng, viết trước cả khi có engine thật.
 
 ### 1. Ba engine dùng ba hệ toạ độ khác nhau
@@ -58,6 +58,34 @@ Phân biệt hai chuyện dễ lẫn:
 
 Gộp lại là cách nhanh nhất để engine làm ít việc hơn lại trông giỏi hơn.
 
+### 4. Trường số trang của engine có thể sai — đừng tin, hãy đối chiếu
+
+Phát hiện ở A4 (TASK-075) khi chạy thật, **sau khi** 46 test dữ liệu giả đã xanh hết.
+
+`marker-pdf` 1.10.2 tính `FlatBlockOutput.page` bằng `int(block.id.split("/")[-1])` trên
+block `Page` (`renderers/chunk.py:json_to_chunks`). Nhưng `BlockId.__str__` in block Page
+ra `/page/0/Page/8` — phần tử cuối là **`block_id`**, không phải số trang. Đo trên
+`pdfs/sample_minimal.pdf` (đúng 1 trang): `page_info` có khoá `0`, mọi block khai `page=8`.
+
+Hậu quả nếu tin trường đó: không block nào tra được kích thước trang, tất cả bị bỏ, và
+Marker — engine mạnh nhất của bench — lên bảng với **0 vùng**. Không có exception nào.
+
+Quy tắc rút ra, áp cho cả A5/A6/A7: **số trang phải đối chiếu được với nguồn thứ hai**
+(ở đây là `id` của chính block), và adapter phải có một test *chạy thật* khẳng định
+`blocks` không rỗng — test dữ liệu giả không bắt được lớp lỗi này, vì dữ liệu giả là do
+chính ta dựng cho khớp.
+
+A4 tìm ra **ba** lỗi cùng lớp này, cả ba sau khi 46 test dữ liệu giả đã xanh:
+
+| # | Triệu chứng nếu tin engine | Loại |
+|---|---|---|
+| `FlatBlockOutput.page` sai | Marker lên bảng với **0 vùng** | số sai |
+| khoá `images` là `BlockId`, không phải `str` | `json.dumps` nổ ở tài liệu thứ 4 | kiểu sai |
+| `section_hierarchy` chứa `BlockId`, không chứa chữ | metric cấp mục ra **0 cho mọi block** | nội dung sai |
+
+Nên trước khi tin bất kỳ trường nào của engine, **kiểm kiểu và kiểm nội dung**, đừng chỉ
+kiểm "có giá trị". Ba lỗi trên đều có giá trị, đúng cấu trúc, và sai.
+
 ## Vì sao `aggregate()` trả về một đối tượng chứ không trả về một số
 
 `opendataloader-bench` loại tài liệu engine làm hỏng ra khỏi trung bình — tức là
@@ -86,9 +114,14 @@ và Marker tốn ~3h cho 200 trang trên CPU.
 | Task | Trạng thái |
 |---|---|
 | A0 — khảo sát đầu ra 3 công cụ | xong |
-| **A1a — repo + hợp đồng dữ liệu + `noop`** | **xong** — 50 test, coverage 100% |
-| A1b — `sabotage` + `scorer.py` | chưa |
-| A2 trở đi | chưa |
+| A1a — repo + hợp đồng dữ liệu + `noop` | xong — coverage 100% |
+| A1b — `sabotage` + `scorer.py` | xong |
+| A2 — lưu/nạp `prediction/` | xong |
+| A3 — bộ mẫu + ground truth | xong |
+| **A4 — bộ nối Marker** | **xong** — 63 test, coverage 100%, 20 tài liệu DocLayNet |
+| A5 — bộ nối OpenDataLoader | chưa |
+| A6 — bộ nối pdf-inspector | chưa |
+| A7 — bộ nối pipeline BE Sovereign | chưa |
 
 ## Cảnh báo dữ liệu
 

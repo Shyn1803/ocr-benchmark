@@ -9,6 +9,7 @@ from __future__ import annotations
 __version__ = "0.1.0"
 
 from ocr_bench import registry
+from ocr_bench.adapters.marker import MarkerAdapter
 from ocr_bench.adapters.noop import NoopAdapter
 from ocr_bench.adapters.sabotage import SabotageAdapter
 
@@ -17,5 +18,10 @@ from ocr_bench.adapters.sabotage import SabotageAdapter
 # bét mọi metric. Metric nào không xếp được như vậy thì metric đó sai (cổng C2).
 registry.register_adapter(NoopAdapter)
 registry.register_adapter(SabotageAdapter)
+
+# Engine thật đầu tiên (A4). Module `adapters.marker` KHÔNG import marker ở đầu file —
+# import ở trong hàm — nên dòng dưới chạy được trên máy chưa cài marker-pdf; chỉ
+# `MarkerAdapter.run()` mới đòi.
+registry.register_adapter(MarkerAdapter)
 
 __all__ = ["__version__", "registry"]

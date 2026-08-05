@@ -171,7 +171,9 @@ def test_dang_ky_lai_dung_lop_do_thi_khong_sao():
 
 def test_lay_adapter_khong_co_thi_bao_ro():
     with pytest.raises(KeyError, match="hiện có"):
-        registry.get_adapter("marker")
+        # Tên phải là tên KHÔNG bao giờ có thật. Trước đây chỗ này dùng "marker" —
+        # đến A4 thì marker được đăng ký và test tự hỏng, dù registry không sai gì.
+        registry.get_adapter("engine-khong-ton-tai")
 
 
 def test_applicable_metrics_biet_truoc_khong_can_chay():
