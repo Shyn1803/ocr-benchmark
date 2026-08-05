@@ -5,9 +5,13 @@ File này cố ý tách làm **hai nửa không dính nhau**:
     run_engines(adapters, docs)          → list[OcrResult]     ← đắt, ~3h cho Marker
     score_results(results, metrics, gt)  → ScoreTable          ← rẻ, vài giây
 
-Cái khe ở giữa chính là A2 (TASK-073): chèn cache vào đó thì sửa một dòng trong
-metric không còn phải chạy lại OCR. Viết liền một mạch bây giờ thì A2 sẽ phải tháo
-ra — nên tách sẵn.
+Cái khe ở giữa đã được A2 (TASK-073) lấp bằng `ocr_bench.prediction`:
+
+    save_predictions(run_engines(...), root)      # một lần, ~3h
+    score_results(load_predictions(root), ...)    # bao nhiêu lần cũng được, <30s
+
+`load_predictions()` không import adapter — chấm lại thì không có đường nào gọi
+engine, kể cả nhầm.
 
 Quy tắc trình bày, giữ nguyên tinh thần của `metrics/base.py`:
 
