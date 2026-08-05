@@ -1,0 +1,13 @@
+# Git trên Windows tự đổi LF→CRLF cho file nó đoán là text. Với PDF/ảnh thì đó là
+# **làm hỏng file**: byte 0x0A trong stream nén thành 0x0D0A, và người checkout ra sẽ
+# thấy một PDF mở không được mà không hiểu vì sao — trong khi máy tạo ra nó vẫn tốt.
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+
+# Kết quả chạy được commit (A2). Giữ LF để diff giữa các lần chạy không nhiễu loạn
+# chỉ vì đổi máy.
+*.json  text eol=lf
+*.py    text eol=lf
+*.md    text eol=lf
