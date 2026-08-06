@@ -15,6 +15,14 @@ from ocr_bench.adapters.opendataloader import OpenDataLoaderAdapter
 from ocr_bench.adapters.pdf_inspector import PdfInspectorAdapter
 from ocr_bench.adapters.sabotage import SabotageAdapter
 from ocr_bench.adapters.sovereign import SovereignAdapter
+from ocr_bench.metrics.assertions import (
+    BaselineMetric,
+    MathPresenceMetric,
+    ReadingOrderMetric,
+    TableRelationMetric,
+    TextAbsenceMetric,
+    TextPresenceMetric,
+)
 from ocr_bench.metrics.cer import CerMetric, WerMetric
 from ocr_bench.metrics.heading import HeadingMetric
 from ocr_bench.metrics.imgf1 import ImgF1Metric, ImgIouMetric
@@ -70,5 +78,16 @@ registry.register_metric(ImgIouMetric)
 # câu trả lời trung thực chứ không phải lỗ hổng.
 registry.register_metric(NidMetric)
 registry.register_metric(HeadingMetric)
+
+# B5 — bộ khẳng định olmOCR. **Sáu** metric riêng biệt chứ không một metric sáu chế độ:
+# `Metric.score()` trả đúng một `value`, nên gộp sáu loại vào một lớp là *buộc* phải
+# gộp sáu loại vào một con số — đúng cái AC-02 của TASK-083 cấm. Muốn có số gộp thì
+# phải viết thêm lớp mới, tức là phải cố ý. `rapidfuzz` nhập lười như B1/B2.
+registry.register_metric(TextPresenceMetric)
+registry.register_metric(TextAbsenceMetric)
+registry.register_metric(ReadingOrderMetric)
+registry.register_metric(MathPresenceMetric)
+registry.register_metric(TableRelationMetric)
+registry.register_metric(BaselineMetric)
 
 __all__ = ["__version__", "registry"]
