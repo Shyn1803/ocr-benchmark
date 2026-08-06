@@ -15,6 +15,7 @@ from ocr_bench.adapters.opendataloader import OpenDataLoaderAdapter
 from ocr_bench.adapters.pdf_inspector import PdfInspectorAdapter
 from ocr_bench.adapters.sabotage import SabotageAdapter
 from ocr_bench.adapters.sovereign import SovereignAdapter
+from ocr_bench.metrics.cer import CerMetric, WerMetric
 
 # Hai engine giả đăng ký sẵn. Chúng không đo engine nào cả — chúng đo *bộ thước*:
 # `noop` không làm gì, `sabotage` làm hỏng đầu ra engine khác, và cả hai phải đứng
@@ -41,5 +42,10 @@ registry.register_adapter(PdfInspectorAdapter)
 # `adapters.sovereign` không đụng `sys.path` cho tới khi `run()` được gọi, và khi gọi
 # thì cưỡng bức `os.environ` TRƯỚC rồi mới import.
 registry.register_adapter(SovereignAdapter)
+
+# B1 — hai thước đo nền. `jiwer` là extra `metrics` và cũng được import lười (trong
+# `_doi()`), nên đăng ký ở đây không đòi máy phải cài nó.
+registry.register_metric(CerMetric)
+registry.register_metric(WerMetric)
 
 __all__ = ["__version__", "registry"]

@@ -194,19 +194,29 @@ def test_applicable_metrics_biet_truoc_khong_can_chay():
         def _compute(self, gt, result):  # pragma: no cover
             return 1.0, {}
 
+    # Chụp lại rồi trả về nguyên trạng, KHÔNG `clear()`. Từ B1 trở đi registry đã có
+    # metric thật (`cer`, `wer`) đăng ký lúc import; xoá sạch ở đây sẽ làm hỏng các
+    # test chạy sau trong cùng phiên — một test làm hỏng test khác là kiểu hỏng tệ
+    # nhất vì thủ phạm không nằm trong test báo đỏ.
+    truoc = dict(registry._METRICS)
     registry.register_metric(CanText)
     registry.register_metric(CanAnh)
     try:
-        assert registry.applicable_metrics("noop") == {
+        ap = registry.applicable_metrics("noop")
+        # Kiểm tập con: khẳng định trên *toàn bộ* registry sẽ tự hỏng mỗi lần thêm
+        # một metric mới, dù registry không sai gì — đúng cái bẫy đã gặp với adapter.
+        assert {k: ap[k] for k in ("can_text", "can_anh")} == {
             "can_anh": False,
             "can_text": True,
         }
-        assert registry.list_metrics() == ["can_anh", "can_text"]
+        assert {"can_anh", "can_text"} <= set(registry.list_metrics())
+        assert registry.list_metrics() == sorted(registry.list_metrics())
         assert registry.get_metric("can_text") is CanText
         with pytest.raises(KeyError):
             registry.get_metric("teds")
     finally:
         registry._METRICS.clear()
+        registry._METRICS.update(truoc)
 
 
 def test_dang_ky_metric_sai_kieu_requires():

@@ -68,6 +68,10 @@ class Metric(abc.ABC):
                 },
             )
 
+        rieng = self._na_rieng(gt, result)
+        if rieng is not None:
+            return self._na(result, rieng[0], rieng[1])
+
         value, detail = self._compute(gt, result)
         if not (0.0 <= value <= 1.0):
             raise ValueError(f"{self.name} trả {value!r}, phải nằm trong [0,1]")
@@ -78,6 +82,21 @@ class Metric(abc.ABC):
             value=value,
             detail=detail,
         )
+
+    def _na_rieng(
+        self, gt: GroundTruth, result: OcrResult
+    ) -> tuple[NAReason, dict[str, object]] | None:
+        """Điều kiện N/A **riêng của từng metric**, kiểm sau ba cổng chung.
+
+        Có mặt vì cổng chung không đủ: CER cần *nhãn có chữ*, mà `AnnotationGT` cho
+        phép `text=None` (tài liệu chỉ có nhãn bố cục). Đúng loại GT nhưng không có
+        chữ để so thì phải ra `NO_GROUND_TRUTH`, không phải 0.0 — chấm 0 ở đây là
+        phạt engine vì **nhãn** thiếu.
+
+        Trả `None` = không có gì chặn. Đây là chỗ mở rộng duy nhất; `score()` vẫn là
+        cổng duy nhất, subclass vẫn không được override nó.
+        """
+        return None
 
     @abc.abstractmethod
     def _compute(

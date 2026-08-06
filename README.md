@@ -20,10 +20,10 @@ py -3 -m venv .venv
 (`.[marker]`, `.[opendataloader]`, `.[pdfinspector]`) vì marker kéo theo torch + model
 Surya vài GB và opendataloader cần Java 11+.
 
-## Bảy cái bẫy mà repo này chủ động chặn
+## Tám cái bẫy mà repo này chủ động chặn
 
-Cả bảy đều thuộc loại **không bao giờ ném exception** — chúng chỉ làm bảng xếp hạng sai
-một cách rất thuyết phục. Vì thế mỗi cái có test riêng, viết trước cả khi có engine thật.
+Bảy cái đầu thuộc loại **không bao giờ ném exception** — chúng chỉ làm bảng xếp hạng sai
+một cách rất thuyết phục. Cái thứ 8 có nửa ném được, và nửa đó còn dễ chịu hơn nửa im lặng. Vì thế mỗi cái có test riêng, viết trước cả khi có engine thật.
 
 ### 1. Ba engine dùng ba hệ toạ độ khác nhau
 
@@ -228,6 +228,29 @@ Fingerprint ghi `api_key_present` dạng **boolean**, không bao giờ ghi giá 
 Và **suy thoái âm thầm**: thiếu `pdfminer` hay thiếu cache Surya không ném — chỉ log WARNING
 rồi trả kết quả *tệ hơn*. Một baseline đo trong môi trường thiếu trông y hệt baseline thật.
 
+### 8. Tỉ lệ lỗi **vượt 1**, và nhãn rỗng không hề báo lỗi
+
+Phát hiện ở B1 (TASK-079), khi cài `cer`/`wer`.
+
+`jiwer.cer(ref, hyp)` chia số lỗi cho độ dài **nhãn**, nên phần chèn thừa không có trần:
+`jiwer.cer("ab", "abcdefghij")` trả **4.0**. Công thức hiển nhiên `1 - err` cho **−3.0**, mà
+`Metric.score()` ném khi điểm ra ngoài [0,1] → **một engine nói nhảm làm sập cả lượt chấm**
+thay vì bị xếp bét. Lỗi hạ tầng đội lốt lỗi engine, kiểu khó lần nhất. Nên `_kep()` kẹp về
+[0,1] và ghi `bi_kep=True` cùng `err` thô vào `detail` — kẹp mà không để lại dấu vết thì
+sau này không ai phân biệt được "sai vừa" với "nói nhảm gấp năm mươi lần".
+
+Cái thứ hai nguy hiểm hơn vì **im lặng**: `jiwer` không ném với nhãn rỗng. `cer("", "abc")`
+trả `3`, `cer("", "")` trả `0`. Mà `AnnotationGT.text` được phép `None` (DocLayNet chỉ có
+nhãn bố cục). Không tự chặn thì mọi tài liệu thiếu nhãn chữ bị chấm **0 điểm cho engine** —
+phạt engine vì cái *nhãn* không có. Vì thế `metrics/base.py` mọc thêm móc `_na_rieng()`:
+điều kiện N/A riêng của từng metric, kiểm **sau** ba cổng chung, `score()` vẫn là cổng duy
+nhất và subclass vẫn không được override nó.
+
+Hệ quả cần biết trước khi đọc bảng: trên bộ mẫu **hiện tại**, `cer`/`wer` ra N/A **toàn bộ** —
+DocLayNet là `text=None` (→ `no_ground_truth`), olmOCR là `AssertionGT` (→ `wrong_gt_kind`).
+Thước đo đã có, **dữ liệu để đo thì chưa**. Đó là việc của nhóm D, không phải lỗi metric — và
+đúng theo bẫy 3, nó hiện ra thành ô `N/A` chứ không thành điểm 0.
+
 ## Vì sao `aggregate()` trả về một đối tượng chứ không trả về một số
 
 `opendataloader-bench` loại tài liệu engine làm hỏng ra khỏi trung bình — tức là
@@ -283,6 +306,7 @@ khi thiếu — bỏ ảnh là bỏ cả `.json` đi kèm, hoặc sinh lại c�
 | **A5 — bộ nối OpenDataLoader** | **xong** — 49 test, coverage 91%, 1608 tài liệu, hỏng 0 |
 | **A6 — bộ nối pdf-inspector** | **xong** — engine duy nhất khai `SCAN_LABEL`; xem bẫy 6 |
 | **A7 — bộ nối pipeline BE Sovereign** | **xong** — baseline, 16 test, 2 chế độ đo; xem bẫy 7 |
+| **B1 — CER/WER** | **xong** — 21 test; N/A toàn bộ trên bộ mẫu hiện tại, xem bẫy 8 |
 
 ## Cảnh báo dữ liệu
 
