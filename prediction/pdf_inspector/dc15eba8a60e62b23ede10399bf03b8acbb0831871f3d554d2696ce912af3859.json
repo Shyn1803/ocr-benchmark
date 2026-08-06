@@ -1,0 +1,852 @@
+{
+  "schema_version": 1,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "dc15eba8a60e62b23ede10399bf03b8acbb0831871f3d554d2696ce912af3859",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "/* */ /* DESCRIPTION: This program will delete all non-AFP records (or */ /* records that do not begin with X(5A) from the */ /* output object before giving control back to ACIF */ /* */ /*********************************************************************/ /* Standard acif exit header file */ /************************************************/ */ #include \"apkexits.h\"\n\nlong OUTEXIT( OUTEXIT_PARMS *exitstruc ) {\n\n/************************************************************************/ /* Delete all records from the output that do not begin with Hex '5A' */ /************************************************************************/\n\nif(exitstruc->eof != ACIF_EOF) { if(exitstruc->record[0] == 0x5A) exitstruc->request = ACIF_USE; else exitstruc->request = ACIF_DELETE; } return( 0 ); <u>}</u>\n\n# 11.2.5 Resource exit\n\nIf you want to prevent ACIF from collecting a specific type of resource, such as overlays, you can use the ACIF **restype** parameter. However, if you want to prevent ACIF from writing a specific resource to the resource file, use the resource exit.\n\nThe resource exit is best used to control resources at the file name level. For example, you want to exclude particular fonts from the resource file. You can code this exit program to contain a table of the fonts that you want to exclude and filter them from the resource file. The program that is invoked at this exit is defined in the ACIF **resexit** parameter.\n\nACIF does not start the exit for the following resource types:\n\nPage definitions: The pagedef is a required resource for converting line data to AFP and it is never included in the resource file.\n\nForm definitions: The formdef is a required resource for processing print files. If you do not want the formdef to be included in the resource file, specify restype=none or explicitly exclude the formdef from the **restype** list.\n\nCoded fonts: If you specify MCF2REF=CF, ACIF writes coded fonts to the resource file if they are included in the **restype** list. The default is MCF2REF=CPCS; therefore, ACIF does not write coded fonts to the resource file.\n\n# 11.2.6 Debugging input user exit programs\n\nWhen you work with an input exit, you must know how the exit changed your data before you load it. A way to determine how the exit changed the data is to set up ACIF to run in stand-alone mode (not called from **arsload**).\n\nChapter 11. Exits\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.08712121212121215,
+        "x1": 0.7448985031227661,
+        "y1": 0.09848484848484851
+      },
+      "text": "/*                                                                   */",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.10098482382417928,
+        "x1": 0.7448985031227661,
+        "y1": 0.11234846018781564
+      },
+      "text": "/* DESCRIPTION:  This program will delete all non-AFP records (or    */",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.11484843552714652,
+        "x1": 0.7448985031227661,
+        "y1": 0.12621207189078287
+      },
+      "text": "/*               records that do not begin with X(5A) from the       */",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.12878818704624373,
+        "x1": 0.7448985031227661,
+        "y1": 0.14015182340988008
+      },
+      "text": "/*               output object before giving control back to ACIF    */",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.14265179874921086,
+        "x1": 0.7448985031227661,
+        "y1": 0.1540154351128472
+      },
+      "text": "/*                                                                   */",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.15651541045217798,
+        "x1": 0.7448985031227661,
+        "y1": 0.16787904681581445
+      },
+      "text": "/*********************************************************************/",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.1704551619712753,
+        "x1": 0.5906837812436172,
+        "y1": 0.18181879833491166
+      },
+      "text": "/* Standard acif exit header file               */",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.18431877367424243,
+        "x1": 0.5906837812436172,
+        "y1": 0.19568241003787878
+      },
+      "text": "/************************************************/",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.19825852519333964,
+        "x1": 0.23823529910417943,
+        "y1": 0.209622161556976
+      },
+      "text": "*/",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.21212213689630677,
+        "x1": 0.377744138630387,
+        "y1": 0.22348577325994323
+      },
+      "text": "#include \"apkexits.h\"",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.23992557718296248,
+        "x1": 0.25294118145712063,
+        "y1": 0.25128921354659883
+      },
+      "text": "long",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.2537891888859296,
+        "x1": 0.48048824734157985,
+        "y1": 0.26515282524956596
+      },
+      "text": "OUTEXIT( OUTEXIT_PARMS *exitstruc )",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.26765280058889673,
+        "x1": 0.23088235792770884,
+        "y1": 0.2790164369525332
+      },
+      "text": "{",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.29545624087555244,
+        "x1": 0.7668588925031276,
+        "y1": 0.3068198772391888
+      },
+      "text": "/************************************************************************/",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.30931985257851957,
+        "x1": 0.7668588925031276,
+        "y1": 0.3206834889421559
+      },
+      "text": "/* Delete all records from the output that do not begin with Hex '5A'   */",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.3232596040976168,
+        "x1": 0.7668588925031276,
+        "y1": 0.33462324046125314
+      },
+      "text": "/************************************************************************/",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.3509868660358467,
+        "x1": 0.45852795769186583,
+        "y1": 0.3623505023994831
+      },
+      "text": "if(exitstruc->eof != ACIF_EOF)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.3649266560872396,
+        "x1": 0.2601955887538935,
+        "y1": 0.376290292450876
+      },
+      "text": "{",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.3787903063225023,
+        "x1": 0.5025470708709916,
+        "y1": 0.3901539426861387
+      },
+      "text": "if(exitstruc->record[0] == 0x5A)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.39265395655776514,
+        "x1": 0.5099000120474622,
+        "y1": 0.4040175929214015
+      },
+      "text": "exitstruc->request = ACIF_USE;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.40659374660915804,
+        "x1": 0.2969603195689083,
+        "y1": 0.4179573829727944
+      },
+      "text": "else",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.42045739684442074,
+        "x1": 0.531958835576874,
+        "y1": 0.4318210332080571
+      },
+      "text": "exitstruc->request = ACIF_DELETE;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.43432104707968355,
+        "x1": 0.2601955887538935,
+        "y1": 0.4456846834433199
+      },
+      "text": "}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.44826083713107634,
+        "x1": 0.32637205934212876,
+        "y1": 0.4596244734947128
+      },
+      "text": "return( 0 );",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.46212448736633915,
+        "x1": 0.23088235792770884,
+        "y1": 0.4734881237299755
+      },
+      "text": "}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10588235792770885,
+        "y0": 0.5059091093564274,
+        "x1": 0.3149385639265472,
+        "y1": 0.5222727457682292
+      },
+      "text": "11.2.5  Resource exit",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.5400000184473366,
+        "x1": 0.8925989936379826,
+        "y1": 0.5525757760712595
+      },
+      "text": "If you want to prevent ACIF from collecting a specific type of resource, such as overlays, you",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.555151302405078,
+        "x1": 0.35381825764973956,
+        "y1": 0.567727060029001
+      },
+      "text": "can use the ACIF",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35372550814759496,
+        "y0": 0.555151302405078,
+        "x1": 0.4108815909990298,
+        "y1": 0.567727060029001
+      },
+      "text": "restype",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41539215885735803,
+        "y0": 0.5551515335988517,
+        "x1": 0.8714868882123161,
+        "y1": 0.5677272912227747
+      },
+      "text": "parameter. However, if you want to prevent ACIF from writing a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352869370404413,
+        "y0": 0.5703028175565932,
+        "x1": 0.6494407903135212,
+        "y1": 0.5828785751805161
+      },
+      "text": "specific resource to the resource file, use the resource exit.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352869370404413,
+        "y0": 0.5981052945358585,
+        "x1": 0.8803062688291462,
+        "y1": 0.6106810521597814
+      },
+      "text": "The resource exit is best used to control resources at the file name level. For example, you",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352869370404413,
+        "y0": 0.6132565784935999,
+        "x1": 0.8597352270986519,
+        "y1": 0.6258323361175229
+      },
+      "text": "want to exclude particular fonts from the resource file. You can code this exit program to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352869370404413,
+        "y0": 0.6284078624513414,
+        "x1": 0.8941980499068117,
+        "y1": 0.6409836200752643
+      },
+      "text": "contain a table of the fonts that you want to exclude and filter them from the resource file. The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352869370404413,
+        "y0": 0.6435591464090828,
+        "x1": 0.6342436347911561,
+        "y1": 0.6561349040330058
+      },
+      "text": "program that is invoked at this exit is defined in the ACIF",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6341166776769301,
+        "y0": 0.6435591464090828,
+        "x1": 0.691272760528365,
+        "y1": 0.6561349040330058
+      },
+      "text": "resexit",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6957843256931678,
+        "y0": 0.6435604950394294,
+        "x1": 0.7738076004327512,
+        "y1": 0.6561362526633523
+      },
+      "text": "parameter.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352894303066279,
+        "y0": 0.6713629720186947,
+        "x1": 0.6548309824825113,
+        "y1": 0.6839387296426176
+      },
+      "text": "ACIF does not start the exit for the following resource types:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24705861908158447,
+        "y0": 0.6928021293697935,
+        "x1": 0.8943379470725464,
+        "y1": 0.7053778869937164
+      },
+      "text": "Page definitions: The pagedef is a required resource for converting line data to AFP and it",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24705861908158447,
+        "y0": 0.7079533940613871,
+        "x1": 0.5109725652956495,
+        "y1": 0.7205291516853101
+      },
+      "text": "is never included in the resource file.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24705861908158447,
+        "y0": 0.7294679976472951,
+        "x1": 0.8943202947479447,
+        "y1": 0.742043755271218
+      },
+      "text": "Form definitions: The formdef is a required resource for processing print files. If you do not",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24705861908158447,
+        "y0": 0.7446192623388888,
+        "x1": 0.8641456903195849,
+        "y1": 0.7571950199628117
+      },
+      "text": "want the formdef to be included in the resource file, specify restype=none or explicitly",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24705864401424632,
+        "y0": 0.7597705270304824,
+        "x1": 0.45887302573210276,
+        "y1": 0.7723462846544054
+      },
+      "text": "exclude the formdef from the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.458921843884038,
+        "y0": 0.7597705270304824,
+        "x1": 0.5159802904316023,
+        "y1": 0.7723462846544054
+      },
+      "text": "restype",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5160779267354728,
+        "y0": 0.7597705270304824,
+        "x1": 0.5449831096175449,
+        "y1": 0.7723462846544054
+      },
+      "text": "list.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24705861908158447,
+        "y0": 0.7812096843815813,
+        "x1": 0.8941428739261004,
+        "y1": 0.7937854420055043
+      },
+      "text": "Coded fonts: If you specify MCF2REF=CF, ACIF writes coded fonts to the resource file if they",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2470585692162607,
+        "y0": 0.796360949073175,
+        "x1": 0.3850094664330576,
+        "y1": 0.8089367066970979
+      },
+      "text": "are included in the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3849996928296058,
+        "y0": 0.796360949073175,
+        "x1": 0.44215577568104064,
+        "y1": 0.8089367066970979
+      },
+      "text": "restype",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44215577568104064,
+        "y0": 0.796360949073175,
+        "x1": 0.8670848771637562,
+        "y1": 0.8089367066970979
+      },
+      "text": "list. The default is MCF2REF=CPCS; therefore, ACIF does not",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24705854428359886,
+        "y0": 0.8115122137647687,
+        "x1": 0.5179738562091504,
+        "y1": 0.8240879713886916
+      },
+      "text": "write coded fonts to the resource file.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10588235792770885,
+        "y0": 0.848105930318736,
+        "x1": 0.5406608082889731,
+        "y1": 0.8644695667305378
+      },
+      "text": "11.2.6  Debugging input user exit programs",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.8821968394096451,
+        "x1": 0.8941254709281173,
+        "y1": 0.8947725970335682
+      },
+      "text": "When you work with an input exit, you must know how the exit changed your data before you",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.8973481137343128,
+        "x1": 0.8303328620062934,
+        "y1": 0.9099238713582357
+      },
+      "text": "load it. A way to determine how the exit changed the data is to set up ACIF to run in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22352941675123825,
+        "y0": 0.9124993880589803,
+        "x1": 0.47591450011808106,
+        "y1": 0.9250751456829033
+      },
+      "text": "stand-alone mode (not called from",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.475881938061683,
+        "y0": 0.9124993880589803,
+        "x1": 0.5329403846092473,
+        "y1": 0.9250751456829033
+      },
+      "text": "arsload",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5330380209131178,
+        "y0": 0.9124993880589803,
+        "x1": 0.5475337209265216,
+        "y1": 0.9250751456829033
+      },
+      "text": ").",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7298039455039829,
+        "y0": 0.9507276518176301,
+        "x1": 0.8464204875472324,
+        "y1": 0.9621212121212122
+      },
+      "text": "Chapter 11. Exits",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8668627770118464,
+        "y0": 0.9495454544972892,
+        "x1": 0.8942137076184641,
+        "y1": 0.9621212121212122
+      },
+      "text": "247",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.011944500000026892,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

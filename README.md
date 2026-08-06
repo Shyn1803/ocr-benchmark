@@ -20,9 +20,9 @@ py -3 -m venv .venv
 (`.[marker]`, `.[opendataloader]`, `.[pdfinspector]`) vì marker kéo theo torch + model
 Surya vài GB và opendataloader cần Java 11+.
 
-## Bốn cái bẫy mà repo này chủ động chặn
+## Bảy cái bẫy mà repo này chủ động chặn
 
-Cả bốn đều thuộc loại **không bao giờ ném exception** — chúng chỉ làm bảng xếp hạng sai
+Cả bảy đều thuộc loại **không bao giờ ném exception** — chúng chỉ làm bảng xếp hạng sai
 một cách rất thuyết phục. Vì thế mỗi cái có test riêng, viết trước cả khi có engine thật.
 
 ### 1. Ba engine dùng ba hệ toạ độ khác nhau
@@ -44,6 +44,12 @@ từ `pdfium.get_bbox()`. Truyền `page_x0`/`page_y0` vào.
 MediaBox** — chép quy tắc trên từ Marker sang là trừ hai lần, và mọi box lệch đúng
 một lượng cố định trên mọi tài liệu có MediaBox không bắt đầu từ gốc. Đây là loại
 lỗi không có triệu chứng: IoU vẫn ra số, bảng vẫn xếp hạng, chỉ là sai.
+
+⚠️ **Và quy tắc đó không suy được từ engine hàng xóm.** pdf-inspector **không** trừ
+gốc MediaBox: dịch MediaBox đi (100, 200) làm mọi toạ độ dịch đúng (+100, +200).
+Nên adapter của nó **phải** truyền `page_x0`/`page_y0` — ngược hẳn OpenDataLoader,
+dù hai engine có cùng gốc và cùng chiều trục y. Chép quy tắc giữa hai bộ nối liền kề
+là cách nhanh nhất để sai câm.
 
 Hàng OpenDataLoader ở trên **đo** bằng `scripts/measure_opendataloader_coords.py`
 (A5, TASK-076), không suy từ tài liệu. Script dựng PDF có chữ đặt ở toạ độ biết
@@ -69,8 +75,21 @@ Hai điều nữa cần biết trước khi đọc điểm của engine này:
 
 ### 2. Số trang 0-based hay 1-based
 
-pdf-inspector trả **0-based** ở `classify_pdf()` và **1-based** ở `process_pdf()` trên
-cùng một file. Bench dùng **0-based ở mọi nơi**; `Box(page=-1)` bị chặn.
+Bench dùng **0-based ở mọi nơi**; `Box(page=-1)` bị chặn.
+
+pdf-inspector 0.2.6 dùng **ba** quy ước, và **hai trong số đó nằm trong cùng một object
+trả về** (đo ở A6, TASK-077):
+
+| Trường | Quy ước |
+|---|---|
+| `classify_pdf().pages_needing_ocr` | 0-based |
+| `PagesExtractionResult.pages[i].page` | 0-based |
+| `PagesExtractionResult.pages_needing_ocr` | **1-based** ← cùng object với hàng trên |
+| `TextItem.page` (`extract_text_with_positions`) | **1-based** |
+
+Nên adapter chuẩn hoá **từng trường một**, và lấy số trang cần OCR từ
+`PageMarkdown.page`, **không** từ `pages_needing_ocr` nằm ngay cạnh nó. Lấy nhầm thì
+lệch đúng một trang: không exception, không triệu chứng.
 
 ### 3. Thiếu năng lực ≠ điểm 0
 
@@ -135,6 +154,80 @@ recall, nhưng đó là phòng xa, không phải một cải thiện đã chứn
 → engine tìm ra 0). Đó là **kết quả chất lượng**, không phải lỗi bộ nối: đường bảng
 đã được chứng minh chạy thông từ đầu tới cuối trên tài liệu khác.
 
+### 6. Hộp diện tích 0, và hai API của **cùng một thư viện** cãi nhau
+
+Cả hai phát hiện ở A6 (TASK-077), engine `pdf_inspector`.
+
+**(a) `TextItem.width == 0.0` ở 370/971 item (38%) — và nó dồn cục.** Không rải đều:
+một tài liệu chiếm 93% (`12c38f48a5bf`, n=396), một tài liệu 1%, 22 tài liệu còn lại 0%.
+Chữ vẫn thật, `height` và `font_size` vẫn đúng — engine chỉ không cho biết bề rộng.
+
+`Box.from_absolute()` **chấp nhận `x1 == x0`** (đã thử: không ném; `__post_init__` chỉ
+chặn box lộn ngược). Bê thẳng `x + width` thì tài liệu đó vào bench với 396 hộp diện
+tích 0 → IoU 0 tuyệt đối → bảng đọc thành "pdf-inspector định vị kém", trong khi nó
+định vị tốt ở 22 tài liệu kia.
+
+Adapter **giữ chữ, để `box=None`**, và đếm — số item mất hộp ghi vào `OcrResult.error`
+dạng cảnh báo không-thất-bại. Hai hướng còn lại đều bị bỏ: suy bề rộng từ
+`font_size × len(text)` là đoán, và số đoán đi thẳng vào IoU như thể là số đo; bỏ luôn
+item thì mất 38% văn bản ở CER — sửa một chỗ sai thành hai chỗ sai.
+
+**(b) `classify_pdf()` và `extract_pages_markdown()` bất đồng 22/204 (10.8%).** Hai
+chiều, không phải một chiều. Và **18/22 ca bất đồng có `confidence = 1.00`** — độ tin
+cậy của `classify_pdf` không dùng được làm cổng chặn, nó tự tin ngay ở chỗ nó lệch.
+
+Bất đồng dồn theo **loại tài liệu**: `patents` 15/34 (44%), `laws_and_regulations` 4/34,
+`government_tenders` và `scientific_articles` **0/34**. Ở 14/18 ca, `needs_ocr=True`
+mà `ocr_reason` là `None` — cờ bật không kèm lý do nào.
+
+Vì vậy `ScanLabel.api` là **bắt buộc**: ghi "pdf-inspector nói tài liệu này cần OCR" mà
+không nói hàm nào là một con số vô nghĩa. Bảng đầy đủ + so với heuristic sản xuất của
+Sovereign: `results/scan_label_compare.md`, sinh bởi `scripts/compare_scan_label.py`.
+
+### 7. Baseline đo nhầm cấu hình — và cấu hình đó tính tiền theo trang
+
+Phát hiện ở A7 (TASK-078), engine `sovereign` (chính pipeline BE đang chạy production).
+
+Đề bài ghi cấu hình production là `ocr_use_local_first=False`, `ocr_use_vision_api=False`,
+dẫn chứng `app/config.py:122` và `:127`. Mặc định lớp đúng là `False` thật. Nhưng `.env` và
+`.env.stag` của BE **đều đặt cả hai thành `true`**, và `config.py:10` ghim
+`_ENV_FILE = Path(__file__).resolve().parent.parent / ".env"` — **theo đường dẫn, không theo
+cwd**. Import trần từ `ocr-bench/` (thư mục hoàn toàn khác) vẫn giải ra `vision=True` kèm
+`OPENROUTER_API_KEY` thật đã nạp. Chạy 204 tài liệu ở trạng thái đó là gửi hoá đơn theo trang.
+
+Bộ nối vì thế ghi `os.environ` **trước** khi import BE — bắt buộc đúng thứ tự đó, vì
+`_api_key`/`_api_url`/`_gdoc_parser_url`/`_groq_api_key` bị đóng băng ở cấp module lúc import
+(`openrouter_document_parser.py:30-38`); ghi env sau đó là ghi vào chỗ không ai đọc nữa. Rồi
+`kiem_config()` gọi `get_settings.cache_clear()` (hàm có `@lru_cache`) và **giải lại**, ném
+nếu vision còn bật hoặc khoá còn nạp. Kiểm cái mình vừa ghi, không tin là nó đã có hiệu lực.
+
+Ba hệ quả kéo theo:
+
+**(a) Tắt vision không có nghĩa là không OCR.** `_apply_vision_fallback` (`:418-420`) và
+`_maybe_ocr_embedded_images` (`:560-561`) có cổng chặn theo cờ; `_maybe_escalate_to_marker`
+**không có**. Chạy thật với vision tắt vẫn thấy log "Escalate sang Marker OCR". Marker là ML
+cục bộ trên CPU, ~54 s/trang. Nên trần chi phí phải bao **thời gian máy**, không chỉ tiền API.
+
+**(b) Trần chi phí phải thoát ra khỏi `execute()`.** `Adapter.execute()` bắt `Exception` và
+biến lỗi thành một dòng `failed=True` rồi **chạy tiếp** — đúng cho engine hỏng, sai chết người
+cho trần chi phí. `VuotTran` vì thế kế thừa `BaseException`, không phải `Exception`, và có test
+khoá đúng chuyện đó. Trần đã nổ thật một lần trên bộ olmocr (`đã chạy 250/250`, dừng ngay).
+
+**(c) Cùng một bộ nối, hai con số hoàn toàn khác nhau.** `.venv-sov` (bao đóng nhẹ, không
+torch) không leo thang được sang Marker; `.venv-marker` thì có. Chênh nhau hàng chục lần thời
+gian mà nhìn bảng thì trông như cùng một thứ — nên `marker_available` nằm trong
+`config_fingerprint` của **mọi** kết quả, cạnh cả hai cờ OCR và ba mức trần.
+
+Đo được, trên đúng một tài liệu: ở `light` nó hỏng `ocr.extractEmpty` trong ~0.0 s; ở `full`
+nó **thành công**, 838 ký tự, **162.8 s**. Tài liệu kế tiếp mất 550.5 s và đâm vào trần. Tắt
+vision không làm pipeline rẻ đi — nó đổi hoá đơn API lấy hoá đơn CPU.
+
+Fingerprint ghi `api_key_present` dạng **boolean**, không bao giờ ghi giá trị khoá: `prediction/`
+được commit, nên một khoá lọt vào fingerprint là lọt thẳng vào lịch sử git. Có test riêng.
+
+Và **suy thoái âm thầm**: thiếu `pdfminer` hay thiếu cache Surya không ném — chỉ log WARNING
+rồi trả kết quả *tệ hơn*. Một baseline đo trong môi trường thiếu trông y hệt baseline thật.
+
 ## Vì sao `aggregate()` trả về một đối tượng chứ không trả về một số
 
 `opendataloader-bench` loại tài liệu engine làm hỏng ra khỏi trung bình — tức là
@@ -188,8 +281,8 @@ khi thiếu — bỏ ảnh là bỏ cả `.json` đi kèm, hoặc sinh lại c�
 | A3 — bộ mẫu + ground truth | xong |
 | **A4 — bộ nối Marker** | **xong** — 63 test, coverage 100%, 20 tài liệu DocLayNet |
 | **A5 — bộ nối OpenDataLoader** | **xong** — 49 test, coverage 91%, 1608 tài liệu, hỏng 0 |
-| A6 — bộ nối pdf-inspector | chưa |
-| A7 — bộ nối pipeline BE Sovereign | chưa |
+| **A6 — bộ nối pdf-inspector** | **xong** — engine duy nhất khai `SCAN_LABEL`; xem bẫy 6 |
+| **A7 — bộ nối pipeline BE Sovereign** | **xong** — baseline, 16 test, 2 chế độ đo; xem bẫy 7 |
 
 ## Cảnh báo dữ liệu
 

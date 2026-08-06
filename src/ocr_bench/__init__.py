@@ -12,7 +12,9 @@ from ocr_bench import registry
 from ocr_bench.adapters.marker import MarkerAdapter
 from ocr_bench.adapters.noop import NoopAdapter
 from ocr_bench.adapters.opendataloader import OpenDataLoaderAdapter
+from ocr_bench.adapters.pdf_inspector import PdfInspectorAdapter
 from ocr_bench.adapters.sabotage import SabotageAdapter
+from ocr_bench.adapters.sovereign import SovereignAdapter
 
 # Hai engine giả đăng ký sẵn. Chúng không đo engine nào cả — chúng đo *bộ thước*:
 # `noop` không làm gì, `sabotage` làm hỏng đầu ra engine khác, và cả hai phải đứng
@@ -28,5 +30,16 @@ registry.register_adapter(MarkerAdapter)
 # A5 — cùng kỷ luật import lười; `adapters.opendataloader` không import
 # `opendataloader_pdf` (và không đụng tới Java) cho tới khi `run()` được gọi.
 registry.register_adapter(OpenDataLoaderAdapter)
+
+# A6 — engine duy nhất tới giờ khai `SCAN_LABEL`. Cũng import lười: `pdf_inspector`
+# và `pypdf` đều là extra.
+registry.register_adapter(PdfInspectorAdapter)
+
+# A7 — baseline: pipeline BE hiện tại. Import lười triệt để hơn cả ba cái trên, vì
+# import BE *sớm* là nguy hiểm chứ không chỉ nặng: `app/config.py` ghim `.env` của BE
+# theo đường dẫn, mà `.env` đó bật `OCR_USE_VISION_API=true` kèm khoá API thật. Module
+# `adapters.sovereign` không đụng `sys.path` cho tới khi `run()` được gọi, và khi gọi
+# thì cưỡng bức `os.environ` TRƯỚC rồi mới import.
+registry.register_adapter(SovereignAdapter)
 
 __all__ = ["__version__", "registry"]

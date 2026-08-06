@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "6e877f30a7743152e9f4e6f22c10b1ff55a3aa6fb6543095d6298f32b2934d47",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "Before we formally introduce this, we require the notion of\ncomputation tree and introduce some more notations.\nDeﬁnition 1: [16] A computation tree corresponding to a\nmessage-passing decoder of the Tanner graph G is a tree that\nis constructed by choosing an arbitrary variable node in G as\nits root and then recursively adding edges and leaf nodes to\nthe tree that correspond to the messages passed in the decoder\nup to a certain number of iterations. For each vertex that is\nadded to the tree, the corresponding node update function in\nG is also copied.\nLet G be the Tanner graph of a 3-left-regular code. Let H\nbe the induced subgraph of a trapping set (a, b) contained in\nG with variable node set P ⊆V and check node set W ⊆C.\nLet N(u) denote the set of neighbors of a node u. Let T k\ni (G)\nbe the computation tree of graph G corresponding to a decoder\nF enumerated for k iterations with variable node vi ∈V as its\nroot. Let W ′ ⊆W denote the set of degree-one check nodes in\nthe subgraph H. Let P ′ ⊆P denote the set of variable nodes\nin H where each variable node has at least one neighbor in\nW ′. During decoding on G, for a node vi ∈P ′, let µl denote\nthe message that vi receives from its neighboring degree-one\ncheck node in H in the lth iteration.\nDeﬁnition 2: A vertex w ∈T k\ni (G) is said to be a descen-\ndant of a vertex u ∈T k\ni (G) if there exists a path starting from\nvertex w to the root vi that traverses through vertex u. The\nset of all descendants of the vertex u in T k\ni (G) is denoted as\nD(u). For a given vertex set U, D(U) (with some abuse of\nnotation) denotes the set of descendants of all u ∈U.\nDeﬁnition 3: T k\ni (H) is called the computation tree of the\nsubgraph H enumerated for k iterations for the decoder F,\nif ∀cj ∈W ′, µl is given for all l ≤k, and if the root node\nvi ∈P requires only the messages computed by the nodes in\nH and µl to compute its binary hard-decision value.\nDeﬁnition 4 (Isolation assumption): The computation tree\nT k\ni (G) with the root vi ∈P is said to be isolated if: (i) for\nany check node cj ∈W ′ that is in T k\ni (G) with vt ∈P ′\nas its parent, D(cj) ∩D(N(vt) \\ cj) = ∅, and (ii) for any\ntwo check nodes cr, cs ∈W \\ W ′ that are also in T k\ni (G),\nD(cr)∩D(cs) ⊆(P ∪W). If T k\ni (G) is isolated ∀vi ∈P, then\nthe subgraph H is said to satisfy the isolation assumption in\nG for k iterations.\nRemark: The isolation assumption can still be satisﬁed even\nwhen there are nodes in H that appear multiple times in\nT k\ni (G) as long as these nodes are not descendants of the\ndegree-one check nodes. Whereas Gallager’s independence\nassumption will be violated if any node in H is repeated\nin T k\ni (G). Hence, isolation assumption is a weaker condition\nthan independence. For clarity, we illustrate with an example\nshown in Fig. 1.\nExample 1: Let us assume that the graph G of code C\ncontains a subgraph H induced by a (6, 2) trapping set. Fig.\n1 shows the subgraph H, and the computation tree T 2\n3 (G) of\ngraph G with v3 as its root enumerated for two iterations. The\n■denotes a odd-degree check node. The solid lines represent\nconnections within subgraph H and the dotted lines represent\nconnections from the rest of the graph G outside the subgraph\nv1\nv2\nv3\nv4\nv5\nv6\nc1\nc2\nc3\nc4\nc5\nc6\nc10\nc8\nc9\nc7\n(a)\nv3\nc8\nc9\nv4\nv5\nc7\nc4\nc1\nc2\nc5\nv2\nv1\nv1\nv2\n(b)\nFig. 1.\nSubgraph H induced by (6,2) trapping set contained in G: (a) Tanner\ngraph of H; (b) computational tree T 2\n3 (G)\nH. The isolation assumption is satisﬁed for two iterations if\nnone of the descendants of the check nodes c7 and c8 appear\nas a descendant of check node c9 (similar condition has to hold\nfor c10), and if the only common descendants of the degree-2\ncheck nodes are nodes in H. But the independence assumption\ndoes not hold for two iterations.\nTheorem 1 (Isolation theorem): Let G = {V ∪C, E} of\na 3-left-regular code which contains a subgraph H = {P ∪\nW, E′} that is induced by a trapping set (a, b). Let W ′ ⊆W\ndenote the set of degree-one check nodes in H and let P ′ ⊆P\ndenote the set of variable nodes in H where each has at\nleast one neighbor in W ′. If r is input to decoder F from\nthe BSC such that supp(r) ∈P, and if H satisﬁes the\nisolation assumption in G for k iterations, then for each\ncj ∈W ′, the message from cj to its neighbor in H in the\nlth iteration denoted by µl, is determined as the output of\nΦv(µl−1, µl−1, C) ∀l ≤k.\nProof: This follows by looking at the computation tree\nT l\ni (G) where l ≤k with any vi ∈P ′ as its root. Let the\ninitial messages passed from a variable node be ±µ0 ∈M.\nSince supp(r) ∈P, due to the isolation assumption, this\nmeans that all the variable nodes that are descendants to any\ncj ∈W ′ are initially correct. In the initial iteration, from the\ndeﬁnition of Φc, the outgoing message of check nodes that are\ndescendants to cj is µ0. In the next iteration, the variable nodes\nconnected to these check nodes receive µ0 on all their edges\ndue to the isolation assumption and send Φv(µ0, µ0, C) as\ntheir outgoing messages. Due to the deﬁnition of Φc, the check\nnodes connected to these nodes in T l\ni (G) send µ1 which is\nsimply Φv(µ0, µ0, C). This process inductively follows while\ntraversing up the tree for l iterations. Moreover, computation\nof the hard-decision value for any node vi in H requires only\nmessages from nodes in H in addition to µl.\nRemark: Note that the isolation assumption and theorem can\nbe restated for the min-sum decoder.\nCorollary 1: Consider the min-sum decoder for 3-left-\nregular LDPC codes with Y = {±1}. If subgraph H contained\nin G satisﬁes the isolation assumption for k iterations, and if\nall variable nodes outside H are initially correct, then µl of the\ndegree-one check node for the min-sum decoder is 2µl−1 +1.\nCorollary 2: If H is a subgraph contained in G such that\nit satisﬁes the isolation assumption for k iterations, and if\nall variable nodes outside H are initially correct, then the\ncomputation tree T k\ni (G) with vi ∈P is equivalent to T k\ni (H),\nprovided µl for each degree-one check node in H is computed",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.017370399998981156,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 250
+  }
+}

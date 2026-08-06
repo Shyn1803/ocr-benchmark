@@ -6,10 +6,18 @@ venv/
 # Marker chạy ở venv riêng Python 3.12 (torch chưa có bánh xe cho 3.14, và
 # marker-pdf + Surya vài GB không được phép làm nặng `pytest` của repo).
 .venv-marker/
+# pdf-inspector 0.2.6 là wheel native chạy được trên 3.14, nhưng phần đo cần thêm
+# pypdf + PyMuPDF — để riêng cho `.venv` của repo sạch engine (test AST cấm import
+# engine ở cấp cao nhất chỉ có nghĩa khi venv chạy test không có engine).
+.venv-pi/
 # OpenDataLoader gọi một .jar → cần JRE. `scripts/setup_java.py` tải bản Temurin
 # bỏ túi (~49 MB, có kiểm SHA-256) về đây thay vì cài JDK toàn máy.
 .tools/
 .venv-odl/
+# A7 chạy hai chế độ: `.venv-sov` là bao đóng import *nhẹ* của BE (~11 gói, không
+# torch) — đo nhánh trích cục bộ thuần; `.venv-marker` có thêm Surya nên đo được cả
+# leo thang Marker. Cùng một adapter, hai `marker_available` khác nhau.
+.venv-sov/
 .pytest_cache/
 .coverage
 htmlcov/

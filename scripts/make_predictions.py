@@ -40,11 +40,16 @@ CORPUS: dict[str, str] = {
 }
 
 
-def tim_tai_lieu(corpus: str, limit: int | None) -> list[Path]:
+def tim_tai_lieu(corpus: str, limit: int | None, chi: str | None = None) -> list[Path]:
     """Danh sách file, **sắp xếp** rồi mới cắt.
 
     Cắt theo thứ tự thư mục trả về (tuỳ hệ thống file) thì `--limit 20` trên máy này và
     máy kia ra hai bộ khác nhau, và hai bảng điểm không so được với nhau dù cùng lệnh.
+
+    ``chi`` lọc theo tên (stem) — dùng khi engine đắt tới mức chạy cả bộ là không khả
+    thi và ta chỉ cần trả lời một câu hỏi hẹp (A7: "10 tài liệu hỏng ở chế độ nhẹ có được
+    Marker cứu không"). Stem không khớp thì **ném**, không âm thầm chạy ít hơn: một lượt
+    chạy 3 tài liệu in ra như lượt chạy 10 tài liệu là cách hỏng khó thấy nhất.
     """
     mau = CORPUS[corpus]
     docs = sorted((ROOT / "pdfs").glob(mau))
@@ -53,6 +58,13 @@ def tim_tai_lieu(corpus: str, limit: int | None) -> list[Path]:
             f"không thấy tài liệu nào khớp pdfs/{mau}. "
             "Chạy scripts/fetch_doclaynet.py hoặc scripts/fetch_olmocr.py trước."
         )
+    if chi:
+        muon = {t.strip() for t in chi.split(",") if t.strip()}
+        theo_stem = {d.stem: d for d in docs}
+        thieu = sorted(muon - set(theo_stem))
+        if thieu:
+            raise SystemExit(f"--only: không có trong bộ {corpus}: {', '.join(thieu)}")
+        docs = [theo_stem[s] for s in sorted(muon)]
     return docs[:limit] if limit else docs
 
 
@@ -65,6 +77,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     p.add_argument("--corpus", choices=sorted(CORPUS), default="sample")
     p.add_argument("--limit", type=int, default=None, help="chỉ lấy N tài liệu đầu")
+    p.add_argument(
+        "--only",
+        default=None,
+        help="chỉ chạy các tài liệu có stem này (phân tách bằng dấu phẩy)",
+    )
     p.add_argument(
         "--out", default=str(ROOT / "prediction"), help="thư mục prediction (mặc định: repo)"
     )
@@ -81,7 +98,7 @@ def main(argv: list[str] | None = None) -> int:
 
     ten = [t.strip() for t in a.engines.split(",") if t.strip()]
     adapters = [registry.get_adapter(t)() for t in ten]
-    docs = tim_tai_lieu(a.corpus, a.limit)
+    docs = tim_tai_lieu(a.corpus, a.limit, a.only)
     out = Path(a.out)
 
     print(f"{len(adapters)} engine × {len(docs)} tài liệu → {out}")
