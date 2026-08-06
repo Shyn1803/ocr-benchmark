@@ -342,6 +342,7 @@ khi thiếu — bỏ ảnh là bỏ cả `.json` đi kèm, hoặc sinh lại c�
 | **A7 — bộ nối pipeline BE Sovereign** | **xong** — baseline, 16 test, 2 chế độ đo; xem bẫy 7 |
 | **B1 — CER/WER** | **xong** — 21 test; N/A toàn bộ trên bộ mẫu hiện tại, xem bẫy 8 |
 | **B2 — TEDS / TEDS-Struct** | **xong** — 22 test, coverage 100%; khớp bản tham chiếu 240/240 cặp; N/A toàn bộ, xem bẫy 9 |
+| **B3 — ImgF1 / ImgIou** | **xong** — 23 test, coverage 100%; **thước đo đầu tiên ra số thật**: opendataloader F1 0.355 (98 tài liệu), marker 0.667 (5) |
 
 ## Cảnh báo dữ liệu
 

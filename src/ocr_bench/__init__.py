@@ -16,6 +16,7 @@ from ocr_bench.adapters.pdf_inspector import PdfInspectorAdapter
 from ocr_bench.adapters.sabotage import SabotageAdapter
 from ocr_bench.adapters.sovereign import SovereignAdapter
 from ocr_bench.metrics.cer import CerMetric, WerMetric
+from ocr_bench.metrics.imgf1 import ImgF1Metric, ImgIouMetric
 from ocr_bench.metrics.teds import TedsMetric, TedsStructMetric
 
 # Hai engine giả đăng ký sẵn. Chúng không đo engine nào cả — chúng đo *bộ thước*:
@@ -54,5 +55,10 @@ registry.register_metric(WerMetric)
 # `apted`/`rapidfuzz` cũng nhập lười, cùng lý do với B1.
 registry.register_metric(TedsMetric)
 registry.register_metric(TedsStructMetric)
+
+# B3 — ảnh. Cũng hai cột: `img_f1` đếm ảnh tìm đúng, `img_iou` đo khung có sát
+# không. Không có phụ thuộc ngoài — `Box.iou()` là số học thuần.
+registry.register_metric(ImgF1Metric)
+registry.register_metric(ImgIouMetric)
 
 __all__ = ["__version__", "registry"]
