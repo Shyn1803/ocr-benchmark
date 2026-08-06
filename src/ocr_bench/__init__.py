@@ -16,6 +16,7 @@ from ocr_bench.adapters.pdf_inspector import PdfInspectorAdapter
 from ocr_bench.adapters.sabotage import SabotageAdapter
 from ocr_bench.adapters.sovereign import SovereignAdapter
 from ocr_bench.metrics.cer import CerMetric, WerMetric
+from ocr_bench.metrics.teds import TedsMetric, TedsStructMetric
 
 # Hai engine giả đăng ký sẵn. Chúng không đo engine nào cả — chúng đo *bộ thước*:
 # `noop` không làm gì, `sabotage` làm hỏng đầu ra engine khác, và cả hai phải đứng
@@ -47,5 +48,11 @@ registry.register_adapter(SovereignAdapter)
 # `_doi()`), nên đăng ký ở đây không đòi máy phải cài nó.
 registry.register_metric(CerMetric)
 registry.register_metric(WerMetric)
+
+# B2 — bảng. Hai cột chứ không một: chênh lệch giữa `teds` và `teds_struct` là thứ
+# duy nhất phân biệt "dựng đúng lưới nhưng đọc sai chữ" với "mất luôn cấu trúc".
+# `apted`/`rapidfuzz` cũng nhập lười, cùng lý do với B1.
+registry.register_metric(TedsMetric)
+registry.register_metric(TedsStructMetric)
 
 __all__ = ["__version__", "registry"]

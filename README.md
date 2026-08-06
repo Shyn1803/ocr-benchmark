@@ -20,10 +20,12 @@ py -3 -m venv .venv
 (`.[marker]`, `.[opendataloader]`, `.[pdfinspector]`) vì marker kéo theo torch + model
 Surya vài GB và opendataloader cần Java 11+.
 
-## Tám cái bẫy mà repo này chủ động chặn
+## Chín cái bẫy mà repo này chủ động chặn
 
 Bảy cái đầu thuộc loại **không bao giờ ném exception** — chúng chỉ làm bảng xếp hạng sai
-một cách rất thuyết phục. Cái thứ 8 có nửa ném được, và nửa đó còn dễ chịu hơn nửa im lặng. Vì thế mỗi cái có test riêng, viết trước cả khi có engine thật.
+một cách rất thuyết phục. Cái thứ 8 và cái thứ 9 mỗi cái có một nửa ném được, và nửa ném
+được luôn dễ chịu hơn nửa im lặng. Vì thế mỗi cái có test riêng, viết trước cả khi có
+engine thật.
 
 ### 1. Ba engine dùng ba hệ toạ độ khác nhau
 
@@ -251,6 +253,38 @@ DocLayNet là `text=None` (→ `no_ground_truth`), olmOCR là `AssertionGT` (→
 Thước đo đã có, **dữ liệu để đo thì chưa**. Đó là việc của nhóm D, không phải lỗi metric — và
 đúng theo bẫy 3, nó hiện ra thành ô `N/A` chứ không thành điểm 0.
 
+### 9. TEDS đo **cách viết HTML** nếu không chặn, và bản tham chiếu có hai bản khác nhau
+
+Phát hiện ở B2 (TASK-080), khi cài `teds`/`teds_struct`.
+
+**(a) Cùng một bảng, hai kiểu HTML, điểm khác nhau.** Đo trên `prediction/` đã lưu: Marker
+sinh `<table><thead><tr><th>…`, opendataloader sinh `<table><tr><td>…`. Cùng nội dung, cùng
+lưới. Không chuẩn hoá thì mỗi bảng bị trừ một nút `tbody` cộng một `rename` cho mỗi ô tiêu
+đề — cùng một bảng logic cho **0.5714** thay vì **1.0**. Đó là đo quy ước sinh HTML, không
+phải đo độ chính xác. Nên `thead/tbody/tfoot/colgroup` bị bỏ và `th` → `td` **mặc định**;
+`teds_score(..., chuan_hoa=False)` giữ lại hành vi thô để đối chiếu bản tham chiếu.
+
+**(b) Bản tham chiếu không thống nhất với chính nó.** Nguồn PubTabNet dùng mẫu số
+`len(table.xpath('.//*'))`; gói `table_recognition_metric` (bản đóng gói lại, và là bản duy
+nhất *chạy được* để đối chiếu) dùng `tree.size()`. Bảng một ô: **0.5** so với **0.6667**.
+Chọn `tree.size()` — thẻ inline trong ô (`<b>`, `<br/>`) **không phải nút của cây** nên
+khoảng cách sửa cây không bao giờ chạm tới chúng; để chúng trong mẫu số là cộng điểm miễn
+phí theo lượng markup. Khác về thang, không khác về thứ hạng. Đừng so số ở đây với bảng TEDS
+in trong bài báo mà không quy về cùng mẫu số.
+
+**(c) Một chỗ cố ý lệch, đã khoá bằng test.** Chữ trong ô đi qua `normalize_text()`. Bản
+tham chiếu chấm `<td>  Doanh   thu </td>` với `<td>Doanh thu</td>` là **0.0** — hai ô hiển
+thị y hệt nhau. Ngoài chỗ đó thì khớp tuyệt đối: 120 cặp bảng ngẫu nhiên khớp 120/120 khi ô
+không có khoảng trắng, và `teds_struct` khớp 120/120 kể cả khi có.
+
+**(d) Bảng nhãn rỗng ⇒ N/A, không phải 0 và cũng không phải 1.0.** Bản gốc trả 0 khi một
+phía thiếu `<table>`. Với bench thì đó là phạt engine vì nhãn hỏng. 1.0 cũng sai theo hướng
+ngược lại: nó **thưởng** cho engine phun `<table></table>` rỗng.
+
+Và cùng hệ quả với bẫy 8: trên bộ mẫu hiện tại `teds`/`teds_struct` ra N/A **toàn bộ** —
+`load_doclaynet()` không dựng `AnnotationGT.tables` cho tài liệu nào (0/204), dù engine
+**có** trả bảng (opendataloader 28, marker 2). Thước đo đã có, nhãn bảng thì chưa.
+
 ## Vì sao `aggregate()` trả về một đối tượng chứ không trả về một số
 
 `opendataloader-bench` loại tài liệu engine làm hỏng ra khỏi trung bình — tức là
@@ -307,6 +341,7 @@ khi thiếu — bỏ ảnh là bỏ cả `.json` đi kèm, hoặc sinh lại c�
 | **A6 — bộ nối pdf-inspector** | **xong** — engine duy nhất khai `SCAN_LABEL`; xem bẫy 6 |
 | **A7 — bộ nối pipeline BE Sovereign** | **xong** — baseline, 16 test, 2 chế độ đo; xem bẫy 7 |
 | **B1 — CER/WER** | **xong** — 21 test; N/A toàn bộ trên bộ mẫu hiện tại, xem bẫy 8 |
+| **B2 — TEDS / TEDS-Struct** | **xong** — 22 test, coverage 100%; khớp bản tham chiếu 240/240 cặp; N/A toàn bộ, xem bẫy 9 |
 
 ## Cảnh báo dữ liệu
 

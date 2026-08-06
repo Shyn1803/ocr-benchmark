@@ -213,7 +213,10 @@ def test_applicable_metrics_biet_truoc_khong_can_chay():
         assert registry.list_metrics() == sorted(registry.list_metrics())
         assert registry.get_metric("can_text") is CanText
         with pytest.raises(KeyError):
-            registry.get_metric("teds")
+            # Tên KHÔNG bao giờ được đăng ký. Trước đây chỗ này ghi "teds" và tự hỏng
+            # ngay khi B2 đăng ký thật — cùng cái bẫy "đoán trước tương lai của
+            # registry" đã gặp hai lần ở file này.
+            registry.get_metric("__khong_bao_gio_ton_tai__")
     finally:
         registry._METRICS.clear()
         registry._METRICS.update(truoc)
