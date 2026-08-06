@@ -6,6 +6,10 @@ venv/
 # Marker chạy ở venv riêng Python 3.12 (torch chưa có bánh xe cho 3.14, và
 # marker-pdf + Surya vài GB không được phép làm nặng `pytest` của repo).
 .venv-marker/
+# OpenDataLoader gọi một .jar → cần JRE. `scripts/setup_java.py` tải bản Temurin
+# bỏ túi (~49 MB, có kiểm SHA-256) về đây thay vì cài JDK toàn máy.
+.tools/
+.venv-odl/
 .pytest_cache/
 .coverage
 htmlcov/
@@ -15,6 +19,12 @@ dist/
 # Kết quả chạy: prediction/ và results/ ĐƯỢC commit (chấm lại không cần chạy lại
 # OCR — đó là cả điểm của A2). Chỉ file tạm là không.
 *.tmp
+
+# ...NGOẠI TRỪ prediction của bộ chưa có ground truth. `olmocr` cho ra 1.4 GB ảnh
+# tách được mà hiện không metric nào chấm nổi (`ground-truth/` chỉ phủ doclaynet +
+# sample). Chạy nó bằng `--out prediction-local`. Tên tài liệu olmocr không có tiền
+# tố chung nên không lọc theo bộ bằng glob được — tách thư mục là cách chặn duy nhất.
+prediction-local/
 .DS_Store
 
 # Bộ nhớ đệm của scripts/fetch_doclaynet.py: central directory hai file ZIP + bản

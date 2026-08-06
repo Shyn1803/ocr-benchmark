@@ -31,7 +31,7 @@ một cách rất thuyết phục. Vì thế mỗi cái có test riêng, viết 
 |---|---|---|---|
 | Marker (block bbox) | trên-trái | xuống | PDF point |
 | pdf-inspector (`TextItem`) | dưới-trái | **lên** | PDF point |
-| OpenDataLoader | chưa rõ — A5 phải đo | chưa rõ | chưa rõ |
+| OpenDataLoader | dưới-trái | **lên** | PDF point |
 | **`Box` của bench** | **trên-trái** | **xuống** | **đã chuẩn hoá [0,1]** |
 
 Trộn nhầm cho IoU thấp trông y hệt "engine tách ảnh kém". Adapter **phải** dùng
@@ -39,6 +39,33 @@ Trộn nhầm cho IoU thấp trông y hệt "engine tách ảnh kém". Adapter *
 
 ⚠️ Đừng giả định page box bắt đầu từ `(0,0)`: nhánh `force_ocr` của Marker lấy page box
 từ `pdfium.get_bbox()`. Truyền `page_x0`/`page_y0` vào.
+
+⚠️ **Nhưng cũng đừng truyền nó cho mọi engine.** OpenDataLoader **đã tự trừ gốc
+MediaBox** — chép quy tắc trên từ Marker sang là trừ hai lần, và mọi box lệch đúng
+một lượng cố định trên mọi tài liệu có MediaBox không bắt đầu từ gốc. Đây là loại
+lỗi không có triệu chứng: IoU vẫn ra số, bảng vẫn xếp hạng, chỉ là sai.
+
+Hàng OpenDataLoader ở trên **đo** bằng `scripts/measure_opendataloader_coords.py`
+(A5, TASK-076), không suy từ tài liệu. Script dựng PDF có chữ đặt ở toạ độ biết
+trước rồi đối chiếu box engine trả về:
+
+```
+1) TOPLEFT  = [50.0, 777.3, 104.012, 791.172]
+   BOTRIGHT = [400.0, 37.3, 462.004, 51.172]
+   → chữ ở mép TRÊN có y LỚN hơn ⇒ gốc DƯỚI-TRÁI, trục y hướng LÊN
+2) x lớn nhất 462.00 ≤ chiều rộng trang 595.0        ⇒ đơn vị ĐIỂM PDF
+3) box[2]-box[0] = 54.01 pt                          ⇒ thứ tự [x0, y0, x1, y1]
+4) MediaBox dịch (100, 200) → Δx=+0.00 Δy=+0.00      ⇒ đã trừ gốc MediaBox
+```
+
+Hai điều nữa cần biết trước khi đọc điểm của engine này:
+
+- **JSON của nó không có kích thước trang.** Đã kiểm mọi node của 24 tài liệu.
+  Nguồn duy nhất là MediaBox đọc bằng `pypdf` — nên `pypdf` nằm trong extra
+  `opendataloader`, dù engine không phụ thuộc nó.
+- **`page number` là 1-indexed** (bench 0-based ở mọi nơi — xem mục 2). Adapter
+  trừ 1 ngay ở biên; số ngoài khoảng thì **bỏ block và ghi `error`**, không rơi về
+  trang 0.
 
 ### 2. Số trang 0-based hay 1-based
 
@@ -86,6 +113,28 @@ A4 tìm ra **ba** lỗi cùng lớp này, cả ba sau khi 46 test dữ liệu gi
 Nên trước khi tin bất kỳ trường nào của engine, **kiểm kiểu và kiểm nội dung**, đừng chỉ
 kiểm "có giá trị". Ba lỗi trên đều có giá trị, đúng cấu trúc, và sai.
 
+### 5. Mặc định của engine có thể tắt hẳn một năng lực
+
+Phát hiện ở A5 (TASK-076). OpenDataLoader nhận `table_method` với mặc định `default`
+(dò bảng theo đường kẻ). Ở chế độ đó, trên **4 tài liệu DocLayNet nhiều bảng nhất**
+(ground truth 5, 4, 4, 3 bảng), engine trả về **0** node `table`. Đổi sang `cluster`
+thì ra bảng đủ `rows`/`cells`/`row span`/`column span`.
+
+Nếu chạy bằng mặc định rồi công bố, OpenDataLoader sẽ có TEDS ≈ 0 và kết luận sẽ là
+"engine này không đọc được bảng" — trong khi sự thật là "bench gọi sai cờ". Nên:
+
+- adapter đặt `table_method="cluster"`, và
+- `table_method` nằm trong `config_fingerprint()`, để bảng điểm luôn nói rõ đã chạy
+  chế độ nào.
+
+Đo thêm, và báo đúng như đã đo: `include_header_footer` **không đổi gì** trên bộ mẫu
+này — bật/tắt cho ra số node y hệt nhau trên 8 tài liệu. Vẫn để `True` cho an toàn về
+recall, nhưng đó là phòng xa, không phải một cải thiện đã chứng minh.
+
+Điểm bảng của engine này vẫn yếu ngay cả ở `cluster` (tài liệu được gán nhãn 5 bảng
+→ engine tìm ra 0). Đó là **kết quả chất lượng**, không phải lỗi bộ nối: đường bảng
+đã được chứng minh chạy thông từ đầu tới cuối trên tài liệu khác.
+
 ## Vì sao `aggregate()` trả về một đối tượng chứ không trả về một số
 
 `opendataloader-bench` loại tài liệu engine làm hỏng ra khỏi trung bình — tức là
@@ -109,6 +158,25 @@ pdfs/ ground-truth/ prediction/ results/ history/ charts/
 `prediction/` **được commit**: chấm lại không cần chạy lại OCR — đó là cả điểm của A2,
 và Marker tốn ~3h cho 200 trang trên CPU.
 
+⚠️ **Nhưng chỉ commit phần chấm được.** Prediction của bộ `olmocr` **không** vào repo:
+bộ đó chưa có ground truth (`ground-truth/` chỉ phủ `doclaynet` + `sample`), nên 1.4 GB
+ảnh tách ra từ 1403 tài liệu hiện không có metric nào chấm nổi. Đã chạy thật, **hỏng 0**,
+số liệu ghi ở `.claude/tasks/TASK-076/review.md`; sinh lại mất ~31 phút:
+
+```bash
+.venv-odl/Scripts/python.exe scripts/make_predictions.py \
+    --engines opendataloader --corpus olmocr --out prediction-local
+```
+
+`--out prediction-local/` chứ không ghi thẳng vào `prediction/`: `prediction-local/` nằm
+trong `.gitignore`, nên lần sau `git add -A` không lỡ tay kéo 1.4 GB vào lịch sử nữa.
+Tên tài liệu olmocr không có tiền tố chung nên không viết được glob lọc theo bộ — tách
+thư mục là cách chặn duy nhất chắc chắn.
+
+Và **đừng xoá `*.images/` mà giữ lại `*.json`** để tiết kiệm chỗ: `_image_from_json()`
+(`src/ocr_bench/prediction.py`) băm SHA-256 từng file ảnh và ném `PredictionSchemaError`
+khi thiếu — bỏ ảnh là bỏ cả `.json` đi kèm, hoặc sinh lại cả hai.
+
 ## Trạng thái
 
 | Task | Trạng thái |
@@ -119,7 +187,7 @@ và Marker tốn ~3h cho 200 trang trên CPU.
 | A2 — lưu/nạp `prediction/` | xong |
 | A3 — bộ mẫu + ground truth | xong |
 | **A4 — bộ nối Marker** | **xong** — 63 test, coverage 100%, 20 tài liệu DocLayNet |
-| A5 — bộ nối OpenDataLoader | chưa |
+| **A5 — bộ nối OpenDataLoader** | **xong** — 49 test, coverage 91%, 1608 tài liệu, hỏng 0 |
 | A6 — bộ nối pdf-inspector | chưa |
 | A7 — bộ nối pipeline BE Sovereign | chưa |
 

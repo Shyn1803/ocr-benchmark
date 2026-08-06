@@ -11,6 +11,7 @@ __version__ = "0.1.0"
 from ocr_bench import registry
 from ocr_bench.adapters.marker import MarkerAdapter
 from ocr_bench.adapters.noop import NoopAdapter
+from ocr_bench.adapters.opendataloader import OpenDataLoaderAdapter
 from ocr_bench.adapters.sabotage import SabotageAdapter
 
 # Hai engine giả đăng ký sẵn. Chúng không đo engine nào cả — chúng đo *bộ thước*:
@@ -23,5 +24,9 @@ registry.register_adapter(SabotageAdapter)
 # import ở trong hàm — nên dòng dưới chạy được trên máy chưa cài marker-pdf; chỉ
 # `MarkerAdapter.run()` mới đòi.
 registry.register_adapter(MarkerAdapter)
+
+# A5 — cùng kỷ luật import lười; `adapters.opendataloader` không import
+# `opendataloader_pdf` (và không đụng tới Java) cho tới khi `run()` được gọi.
+registry.register_adapter(OpenDataLoaderAdapter)
 
 __all__ = ["__version__", "registry"]

@@ -20,7 +20,10 @@ dependencies = ["Pillow>=10"]
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-cov>=5"]
 marker = ["marker-pdf==1.10.2"]
-opendataloader = ["opendataloader-pdf==2.5.0"]
+# `pypdf` không phải phụ thuộc của opendataloader-pdf — bộ nối cần nó vì JSON của
+# engine KHÔNG có kích thước trang (đã kiểm mọi node của 24 tài liệu), mà không có
+# kích thước thì không chuẩn hoá được toạ độ.
+opendataloader = ["opendataloader-pdf==2.5.0", "pypdf>=5"]
 pdfinspector = ["pdf-inspector==0.2.6"]
 metrics = ["jiwer>=3", "rapidfuzz>=3", "apted>=1.0.3", "Distance>=0.1.3"]
 
