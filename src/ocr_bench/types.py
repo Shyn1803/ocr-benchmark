@@ -51,6 +51,18 @@ class Capability(str, enum.Enum):
     tìm thấy ảnh nào. `images == []` lúc đó nghĩa là "không có ảnh", còn thiếu
     `IMAGE_BBOX` nghĩa là "không bao giờ biết được". Hai chuyện khác hẳn nhau, và
     gộp lại là cách nhanh nhất để một engine làm ít việc hơn lại trông giỏi hơn.
+
+    ``HEADING_LEVEL`` và ``SECTION_HIERARCHY`` là **hai** năng lực chứ không một, vì
+    ``OcrBlock`` có hai trường riêng cho chúng:
+
+    * ``HEADING_LEVEL`` → ``OcrBlock.level``: mỗi tiêu đề tự khai mình ở cấp mấy.
+    * ``SECTION_HIERARCHY`` → ``OcrBlock.section_hierarchy``: đường dẫn tổ tiên, tức
+      một cái **cây**.
+
+    Có cấp không suy ra được cây: opendataloader khai cấp 1..7 nhưng JSON của nó
+    phẳng, không node nào trỏ về mục cha (xem `OpenDataLoaderAdapter`). Gộp hai thứ
+    này lại thì `heading` (B4, đo cấp) sẽ loại nhầm engine khai đúng cấp, hoặc metric
+    nào đó cần cây sẽ nhận nhầm engine chỉ có cấp.
     """
 
     TEXT_MD = "text_md"
@@ -58,6 +70,7 @@ class Capability(str, enum.Enum):
     IMAGE_BBOX = "image_bbox"
     IMAGE_BYTES = "image_bytes"
     TABLE_HTML = "table_html"
+    HEADING_LEVEL = "heading_level"
     SECTION_HIERARCHY = "section_hierarchy"
     SCAN_LABEL = "scan_label"
 
@@ -310,6 +323,19 @@ class AnnotationGT:
     images: tuple[Box, ...] = ()
     tables: tuple[OcrTable, ...] = ()
     page_sizes: tuple[tuple[float, float], ...] = ()
+    reading_order: tuple[int, ...] = ()
+    """Thứ tự đọc **thật**, dưới dạng chỉ số vào ``blocks``. Rỗng = không có nhãn.
+
+    ⚠️ Rỗng với DocLayNet, và đó không phải thiếu sót của loader. Thứ tự
+    ``annotation.id`` của COCO là thứ tự người annotate **vẽ box** (gom theo loại),
+    không phải thứ tự đọc: đo trên tài liệu **một cột** — nơi thứ tự đọc bắt buộc
+    trùng thứ tự y — vẫn thấy 10% cặp nghịch thế và chỉ 5/11 tài liệu khớp.
+
+    Đừng điền trường này bằng cách sắp hình học. Làm vậy là chấm engine theo
+    heuristic của bench chứ không theo sự thật: engine sắp giống heuristic được
+    điểm cao kể cả khi heuristic sai. Rỗng ⇒ metric `nid` trả N/A, và N/A là câu
+    trả lời đúng cho tới khi có nhãn thật. Xem TASK-082 plan §0.
+    """
     human_ceiling: dict[str, float] = field(default_factory=dict)
     """Trần người: mức đồng thuận giữa hai người cùng annotate một trang.
 

@@ -96,7 +96,10 @@ def dung_ket_qua(blocks, page_info=None, block_bboxes=None):
 # --------------------------------------------------------------------------
 
 
-def test_khai_du_sau_nang_luc():
+def test_khai_du_bay_nang_luc():
+    """Marker là engine duy nhất khai CẢ HAI `HEADING_LEVEL` và `SECTION_HIERARCHY`:
+    nó vừa đặt `level` (từ `#`/`##`) vừa dựng được đường dẫn tổ tiên. So với
+    opendataloader — chỉ có cấp, không có cây."""
     assert MarkerAdapter.capabilities == frozenset(
         {
             Capability.TEXT_MD,
@@ -104,6 +107,7 @@ def test_khai_du_sau_nang_luc():
             Capability.IMAGE_BBOX,
             Capability.IMAGE_BYTES,
             Capability.TABLE_HTML,
+            Capability.HEADING_LEVEL,
             Capability.SECTION_HIERARCHY,
         }
     )

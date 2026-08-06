@@ -16,7 +16,9 @@ from ocr_bench.adapters.pdf_inspector import PdfInspectorAdapter
 from ocr_bench.adapters.sabotage import SabotageAdapter
 from ocr_bench.adapters.sovereign import SovereignAdapter
 from ocr_bench.metrics.cer import CerMetric, WerMetric
+from ocr_bench.metrics.heading import HeadingMetric
 from ocr_bench.metrics.imgf1 import ImgF1Metric, ImgIouMetric
+from ocr_bench.metrics.nid import NidMetric
 from ocr_bench.metrics.teds import TedsMetric, TedsStructMetric
 
 # Hai engine giả đăng ký sẵn. Chúng không đo engine nào cả — chúng đo *bộ thước*:
@@ -60,5 +62,13 @@ registry.register_metric(TedsStructMetric)
 # không. Không có phụ thuộc ngoài — `Box.iou()` là số học thuần.
 registry.register_metric(ImgF1Metric)
 registry.register_metric(ImgIouMetric)
+
+# B4 — thứ tự đọc + phân cấp tiêu đề. `nid` ra N/A trên toàn bộ mẫu hiện tại vì
+# DocLayNet KHÔNG có nhãn thứ tự đọc (thứ tự `annotation.id` là thứ tự vẽ box, đo
+# trên tài liệu một cột vẫn lệch 10%) — xem `AnnotationGT.reading_order` và
+# TASK-082 plan §0. Đăng ký vẫn đúng: metric sẵn sàng cho lúc có nhãn, và N/A là
+# câu trả lời trung thực chứ không phải lỗ hổng.
+registry.register_metric(NidMetric)
+registry.register_metric(HeadingMetric)
 
 __all__ = ["__version__", "registry"]

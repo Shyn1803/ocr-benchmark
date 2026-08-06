@@ -20,12 +20,12 @@ py -3 -m venv .venv
 (`.[marker]`, `.[opendataloader]`, `.[pdfinspector]`) vì marker kéo theo torch + model
 Surya vài GB và opendataloader cần Java 11+.
 
-## Chín cái bẫy mà repo này chủ động chặn
+## Mười cái bẫy mà repo này chủ động chặn
 
 Bảy cái đầu thuộc loại **không bao giờ ném exception** — chúng chỉ làm bảng xếp hạng sai
 một cách rất thuyết phục. Cái thứ 8 và cái thứ 9 mỗi cái có một nửa ném được, và nửa ném
-được luôn dễ chịu hơn nửa im lặng. Vì thế mỗi cái có test riêng, viết trước cả khi có
-engine thật.
+được luôn dễ chịu hơn nửa im lặng. Cái thứ 10 thì không ném gì cả: nó ra **một con số
+trông dùng được**. Vì thế mỗi cái có test riêng, viết trước cả khi có engine thật.
 
 ### 1. Ba engine dùng ba hệ toạ độ khác nhau
 
@@ -285,6 +285,46 @@ Và cùng hệ quả với bẫy 8: trên bộ mẫu hiện tại `teds`/`teds_s
 `load_doclaynet()` không dựng `AnnotationGT.tables` cho tài liệu nào (0/204), dù engine
 **có** trả bảng (opendataloader 28, marker 2). Thước đo đã có, nhãn bảng thì chưa.
 
+### 10. Trung bình của `heading` **không** đo phân cấp, và `nid` không có nhãn để đo
+
+Phát hiện ở B4 (TASK-082), và cả hai vế đều là chuyện "có số ≠ số có nghĩa".
+
+**(a) Bộ mẫu không có nhãn thứ tự đọc. `nid` ra N/A trên cả 205 tài liệu.** DocLayNet
+không phát hành thứ tự đọc; `corpus.py` xếp block theo `annotation["id"]` của COCO, tức
+**thứ tự người gán nhãn vẽ hộp** — không phải thứ tự đọc. Cám dỗ ở đây rất cụ thể: điền
+`reading_order` bằng cách sắp xếp hình học (trên xuống, trái sang) thì `nid` lập tức ra số
+đẹp cho mọi tài liệu. Số đó là **bench tự chấm heuristic của chính nó**: engine nào sắp xếp
+giống hàm sort của bench thì thắng, không liên quan gì tới đọc đúng hay sai. `nid` được
+viết đủ và có test cho đường chấm thật (kể cả test chứng minh nó đọc `reading_order` chứ
+không đọc hình học), rồi báo N/A cho tới ngày có nhãn thật.
+
+**(b) `heading` ra 0.5611 trên 15 tài liệu — và con số đó mô tả gần như không tài liệu
+nào.** Phân bố lưỡng cực: 7 tài liệu 1.0, 6 tài liệu 0.0. Tách theo số **cặp** so được:
+
+| nhóm | n | trung bình | đọc thế nào |
+|---|---|---|---|
+| 0 cặp (điểm 0.0 ép) | 5 | 0.0 | engine ghép được <2 tiêu đề — lỗi **độ phủ**, không phải lỗi phân cấp |
+| đúng 1 cặp | 6 | — | chỉ có thể 0.0 hoặc 1.0, không có giá trị giữa |
+| >1 cặp | 4 | **0.8542** | vùng duy nhất con số nói về phân cấp |
+| có ≥1 cặp | 10 | **0.8417** | |
+
+0.5611 bị kéo xuống bởi 5 tài liệu **không so cặp nào**. Vì thế `detail["n_cap"]` luôn có
+mặt kể cả ở nhánh 0.0, để tách hai nhóm mà không phải đoán. **Đừng in trung bình `heading`
+một mình.**
+
+**(c) Trần nhãn là 2 mức.** DocLayNet chỉ có `Title` và `Section-header`. `heading` cao chỉ
+có nghĩa "không đảo tiêu đề chính với tiêu đề mục" — lỗi lồng sâu (`###` so với `####`) là
+**vô hình**, và có test khẳng định đúng cái vô hình đó. Chỉ **17/204** tài liệu có đủ 2 cấp.
+
+**(d) `HEADING_LEVEL` và `SECTION_HIERARCHY` là hai năng lực, gộp lại là chấm sai.**
+`OcrBlock` có hai trường riêng: `level` (tiêu đề tự khai cấp mấy) và `section_hierarchy`
+(đường dẫn tổ tiên — một cái **cây**). Có cấp không suy ra cây: opendataloader khai cấp 1..7
+nhưng JSON của nó phẳng, không node nào trỏ về mục cha. Đòi cây ở `heading` sẽ loại đúng
+engine duy nhất chấm được. Ca thật theo chiều ngược lại: bản đầu chỉ gate theo `BLOCK_BBOX`,
+và pdf_inspector — **0 block tiêu đề trên toàn bộ 204 tài liệu** — rơi vào nhánh 0.0, ăn
+**0.0000 trên 17 tài liệu** vì một việc nó chưa từng khai nhận. Đúng bẫy 3, chỉ đổi metric.
+Số 0.0000 lặp lại y hệt ấy là thứ đáng nghi ngay từ đầu, không phải thứ đáng đem đi báo cáo.
+
 ## Vì sao `aggregate()` trả về một đối tượng chứ không trả về một số
 
 `opendataloader-bench` loại tài liệu engine làm hỏng ra khỏi trung bình — tức là
@@ -343,6 +383,7 @@ khi thiếu — bỏ ảnh là bỏ cả `.json` đi kèm, hoặc sinh lại c�
 | **B1 — CER/WER** | **xong** — 21 test; N/A toàn bộ trên bộ mẫu hiện tại, xem bẫy 8 |
 | **B2 — TEDS / TEDS-Struct** | **xong** — 22 test, coverage 100%; khớp bản tham chiếu 240/240 cặp; N/A toàn bộ, xem bẫy 9 |
 | **B3 — ImgF1 / ImgIou** | **xong** — 23 test, coverage 100%; **thước đo đầu tiên ra số thật**: opendataloader F1 0.355 (98 tài liệu), marker 0.667 (5) |
+| **B4 — NID / Heading** | **xong** — 42 test, coverage 100%; `nid` N/A toàn bộ (không có nhãn thứ tự đọc), `heading` chỉ 15 tài liệu / 1 engine và **không được đọc trung bình một mình** — xem bẫy 10 |
 
 ## Cảnh báo dữ liệu
 

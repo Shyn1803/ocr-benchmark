@@ -78,9 +78,15 @@ def dung_ket_qua(doc, trang=None, anh_bytes=None):
 # --------------------------------------------------------------------------
 
 
-def test_khai_nam_nang_luc_khong_khai_cap_muc():
-    """SECTION_HIERARCHY cố tình KHÔNG khai: JSON phẳng, không node nào trỏ về mục
-    cha. Suy cây từ thứ tự đọc là đoán, mà A5 cấm đoán."""
+def test_khai_cap_tieu_de_nhung_khong_khai_cay_muc():
+    """Hai chuyện khác nhau, và ranh giới giữa chúng là lý do `Capability` tách
+    `HEADING_LEVEL` khỏi `SECTION_HIERARCHY` (B4/TASK-082).
+
+    * **Cấp thì khai**: node `heading` mang sẵn `heading level` — dữ liệu engine tự
+      nói, không phải bench suy diễn.
+    * **Cây thì không**: JSON phẳng, không node nào trỏ về mục cha. Suy cây từ thứ
+      tự đọc là đoán, mà A5 cấm đoán.
+    """
     assert OpenDataLoaderAdapter.capabilities == frozenset(
         {
             Capability.TEXT_MD,
@@ -88,6 +94,7 @@ def test_khai_nam_nang_luc_khong_khai_cap_muc():
             Capability.IMAGE_BBOX,
             Capability.IMAGE_BYTES,
             Capability.TABLE_HTML,
+            Capability.HEADING_LEVEL,
         }
     )
     assert Capability.SECTION_HIERARCHY not in OpenDataLoaderAdapter.capabilities

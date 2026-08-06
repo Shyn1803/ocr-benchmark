@@ -414,11 +414,14 @@ class OpenDataLoaderAdapter(Adapter):
             Capability.IMAGE_BBOX,
             Capability.IMAGE_BYTES,
             Capability.TABLE_HTML,
+            Capability.HEADING_LEVEL,
         }
     )
-    # KHÔNG khai SECTION_HIERARCHY: node `heading` có `heading level` nhưng JSON
-    # phẳng, không node nào trỏ về mục cha. Dựng cây bằng cách suy từ thứ tự đọc
-    # là đoán, và A5 cấm đoán.
+    # HEADING_LEVEL có, SECTION_HIERARCHY không — và đó là hai chuyện khác nhau.
+    # Node `heading` mang sẵn `heading level` nên `OcrBlock.level` là dữ liệu engine
+    # tự khai, không phải suy diễn: khai được. Nhưng JSON phẳng, không node nào trỏ
+    # về mục cha, nên dựng **cây** thì phải đoán từ thứ tự đọc — A5 cấm đoán, và
+    # `section_hierarchy` vẫn để rỗng. Xem docstring `Capability`.
 
     def __init__(
         self, *, table_method: str = "cluster", include_header_footer: bool = True

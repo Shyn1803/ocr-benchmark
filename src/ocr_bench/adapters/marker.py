@@ -321,9 +321,12 @@ class MarkerAdapter(Adapter):
             Capability.IMAGE_BBOX,
             Capability.IMAGE_BYTES,
             Capability.TABLE_HTML,
+            Capability.HEADING_LEVEL,
             Capability.SECTION_HIERARCHY,
         }
     )
+    # Khai cả hai: marker vừa đặt `OcrBlock.level` (từ `#`/`##` trong markdown) vừa
+    # dựng được đường dẫn tổ tiên. Nó là engine duy nhất tới giờ có cây thật.
 
     def __init__(self, *, force_ocr: bool = False) -> None:
         self.force_ocr = force_ocr
