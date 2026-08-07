@@ -263,6 +263,25 @@ def test_thong_tin_git_khong_co_git_thi_ghi_khong_ro(tmp_path, monkeypatch):
     assert report.thong_tin_git(tmp_path) == {"commit": "không rõ", "dirty": None}
 
 
+def test_dirty_khong_tinh_thu_muc_history(tmp_path):
+    """`history/` là đầu ra của chính lượt chạy — nó không được tự làm bẩn báo cáo
+    của mình. Nhưng một file nguồn chưa commit thì PHẢI làm `dirty` bật lên."""
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "commit", "-q", "--allow-empty", "-m", "x"],
+                   cwd=tmp_path, check=True,
+                   env={**__import__("os").environ,
+                        "GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@t",
+                        "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@t"})
+    assert report.thong_tin_git(tmp_path)["dirty"] is False
+
+    (tmp_path / "history").mkdir()
+    (tmp_path / "history" / "raw.json").write_text("{}", encoding="utf-8")
+    assert report.thong_tin_git(tmp_path)["dirty"] is False, "history/ tự làm bẩn"
+
+    (tmp_path / "nguon.py").write_text("x = 1", encoding="utf-8")
+    assert report.thong_tin_git(tmp_path)["dirty"] is True, "bỏ sót file nguồn mới"
+
+
 def test_canh_bao_rong_khi_khong_co_engine():
     assert report._canh_bao({}) == []
 

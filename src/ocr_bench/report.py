@@ -178,6 +178,8 @@ def thong_tin_git(root: Path | None = None) -> dict[str, object]:
     `dirty=True` nghĩa là bản `history/` này sinh từ working tree có thay đổi chưa
     commit ⇒ **không truy ngược được**. Ghi ra chứ không chặn: chạy thử trên cây bẩn
     là chuyện bình thường, công bố một bản như vậy mà không biết mới là vấn đề.
+
+    Riêng `history/` không tính — xem chú thích trong thân hàm.
     """
     base = root or ROOT
 
@@ -191,7 +193,10 @@ def thong_tin_git(root: Path | None = None) -> dict[str, object]:
         return p.stdout.strip() if p.returncode == 0 else None
 
     commit = _git("rev-parse", "HEAD")
-    trang_thai = _git("status", "--porcelain")
+    # Loại `history/` khỏi phép đo: nó là ĐẦU RA của chính lượt chạy này, không phải
+    # đầu vào của con số. Không loại thì `dirty` luôn True — thư mục vừa ghi ra đã
+    # làm bẩn cây mà nó đang báo cáo, và cờ mất sạch ý nghĩa.
+    trang_thai = _git("status", "--porcelain", "--", ".", ":(exclude)history")
     return {
         "commit": commit or "không rõ",
         "dirty": bool(trang_thai) if trang_thai is not None else None,
