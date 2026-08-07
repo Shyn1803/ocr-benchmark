@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "engine": "sovereign_light",
+  "engine_version": "540c463",
+  "doc_id": "dc15eba8a60e62b23ede10399bf03b8acbb0831871f3d554d2696ce912af3859",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "Chapter 11. Exits \n247\n/*                                                                   */\n/* DESCRIPTION:  This program will delete all non-AFP records (or    */\n/*               records that do not begin with X(5A) from the       */\n/*               output object before giving control back to ACIF    */\n/*                                                                   */\n/*********************************************************************/\n/* Standard acif exit header file               */\n/************************************************/\n*/\n#include \"apkexits.h\"\nlong\nOUTEXIT( OUTEXIT_PARMS *exitstruc )\n{\n/************************************************************************/\n/* Delete all records from the output that do not begin with Hex '5A'   */\n/************************************************************************/\n  if(exitstruc->eof != ACIF_EOF)\n    {\n      if(exitstruc->record[0] == 0x5A)\n         exitstruc->request = ACIF_USE;\n      else\n         exitstruc->request = ACIF_DELETE;\n    }\n  return( 0 );\n}\n11.2.5  Resource exit\nIf you want to prevent ACIF from collecting a specific type of resource, such as overlays, you \ncan use the ACIF restype parameter. However, if you want to prevent ACIF from writing a \nspecific resource to the resource file, use the resource exit.\nThe resource exit is best used to control resources at the file name level. For example, you \nwant to exclude particular fonts from the resource file. You can code this exit program to \ncontain a table of the fonts that you want to exclude and filter them from the resource file. The \nprogram that is invoked at this exit is defined in the ACIF resexit parameter.\nACIF does not start the exit for the following resource types:\n\u0002\nPage definitions: The pagedef is a required resource for converting line data to AFP and it \nis never included in the resource file.\n\u0002\nForm definitions: The formdef is a required resource for processing print files. If you do not \nwant the formdef to be included in the resource file, specify restype=none or explicitly \nexclude the formdef from the restype list.\n\u0002\nCoded fonts: If you specify MCF2REF=CF, ACIF writes coded fonts to the resource file if they \nare included in the restype list. The default is MCF2REF=CPCS; therefore, ACIF does not \nwrite coded fonts to the resource file. \n11.2.6  Debugging input user exit programs\nWhen you work with an input exit, you must know how the exit changed your data before you \nload it. A way to determine how the exit changed the data is to set up ACIF to run in \nstand-alone mode (not called from arsload).",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.008873400000084075,
+  "model_load_seconds": null,
+  "peak_rss_mb": null,
+  "rss_scope": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 250
+  }
+}
