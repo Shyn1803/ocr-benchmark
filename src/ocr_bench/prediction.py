@@ -548,6 +548,31 @@ def load_prediction(path: Path) -> OcrResult:
         raise PredictionSchemaError(f"{path}: {exc}") from None
 
 
+def _kiem_bo_cuc(d: Path) -> None:
+    """Thư mục engine rỗng mà bên dưới lại có `*.json` ⇒ bố cục lồng, phải ném.
+
+    Thư mục engine **rỗng** vẫn hợp lệ: engine chưa chạy khác với engine chạy hỏng.
+    Nhưng rỗng *ở tầng này* mà có dữ liệu *ở tầng dưới* thì không phải "chưa chạy" —
+    đó là dữ liệu bị chôn, và cách hỏng của nó là im lặng: loader trả ít hơn thật mà
+    không có triệu chứng nào. Đúng chuyện đã xảy ra với `prediction/sovereign_*`
+    (206 file, xem TASK-091).
+
+    Điều kiện phải là "thư mục con **có `*.json`**", không phải "có thư mục con":
+    `prediction/opendataloader/` có 204 thư mục con `<doc_id>.images` chứa ảnh trích
+    ra, tất cả đều hợp lệ.
+    """
+    if any(d.glob("*.json")):
+        return
+    for con in sorted(d.iterdir()):
+        if con.is_dir() and any(con.glob("*.json")):
+            raise PredictionSchemaError(
+                f"{d}: không có `*.json` ở tầng này nhưng `{con.name}/` thì có. "
+                "Bố cục đúng là `prediction/<engine>/<doc_id>.json` — lồng thêm một "
+                "tầng thì `load_predictions()` bỏ qua toàn bộ mà không báo. "
+                "Thường do truyền `root=prediction/<engine>` vào `prediction_path()`."
+            )
+
+
 def load_predictions(
     root: Path, engines: Sequence[str] | None = None
 ) -> list[OcrResult]:
@@ -555,7 +580,12 @@ def load_predictions(
 
     `engines=None` nghĩa là mọi thư mục con. Thư mục rỗng không phải lỗi — engine
     chưa chạy khác với engine chạy hỏng, và cái sau đã nằm trong file với
-    `failed=True`.
+    `failed=True`. Thư mục rỗng mà **bên dưới** có `*.json` thì lại là lỗi:
+    xem :func:`_kiem_bo_cuc`.
+
+    Tên thư mục **là** danh tính engine. File nằm trong `prediction/X/` mà khai
+    `engine != "X"` sẽ bị ném — nếu không, dữ liệu chui vào nhầm cột của bảng điểm
+    và không có gì trong bảng chỉ ra điều đó.
     """
     root = Path(root)
     if not root.is_dir():
@@ -569,7 +599,16 @@ def load_predictions(
     for d in dirs:
         if not d.is_dir():
             raise PredictionSchemaError(f"{d}: chưa có prediction cho engine này")
-        out.extend(load_prediction(p) for p in sorted(d.glob("*.json")))
+        _kiem_bo_cuc(d)
+        for p in sorted(d.glob("*.json")):
+            r = load_prediction(p)
+            if r.engine != d.name:
+                raise PredictionSchemaError(
+                    f"{p}: engine={r.engine!r} nhưng nằm trong thư mục {d.name!r}. "
+                    "Tên thư mục là danh tính engine trong bảng điểm; lệch nhau thì "
+                    "kết quả bị gom vào nhầm cột."
+                )
+            out.append(r)
     return out
 
 

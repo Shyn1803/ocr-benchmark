@@ -485,6 +485,55 @@ def test_engine_chua_chay_thi_noi_ro_ten_engine(tmp_path: Path):
 
 
 # ---------------------------------------------------------------------------
+# Bố cục thư mục — TASK-091. Cả hai lỗi dưới đây từng hỏng IM LẶNG: loader trả
+# ít hơn thật, hoặc gom vào nhầm cột, mà không có triệu chứng nào trong bảng điểm.
+# ---------------------------------------------------------------------------
+
+
+def test_thu_muc_engine_rong_van_hop_le(tmp_path: Path):
+    """Engine chưa chạy khác engine chạy hỏng — guard bố cục không được lẫn hai thứ."""
+    (tmp_path / "chua-chay").mkdir()
+    assert load_predictions(tmp_path) == []
+
+
+def test_bo_cuc_long_them_mot_tang_thi_nem(tmp_path: Path):
+    """Đúng lỗi của `prediction/sovereign_*`: 206 file bị chôn, nạp 512/718 lặng lẽ."""
+    save_prediction(ket_qua_day_du(), tmp_path / "sovereign_full")
+    # → tmp/sovereign_full/giả/tai-lieu-1.json, tức tmp/sovereign_full/ rỗng ở tầng nó
+    with pytest.raises(PredictionSchemaError, match="lồng thêm một|không có `\\*.json`"):
+        load_predictions(tmp_path)
+
+
+def test_thu_muc_anh_khong_bi_nham_la_bo_cuc_long(tmp_path: Path):
+    """`<doc_id>.images/` là thư mục con HỢP LỆ — guard không được đụng tới nó.
+
+    `prediction/opendataloader/` có 204 thư mục như vậy. Nếu điều kiện của guard là
+    "có thư mục con" thay vì "thư mục con có `*.json`" thì nó phá sạch dữ liệu đang tốt.
+    """
+    save_prediction(ket_qua_day_du(), tmp_path)
+    anh = tmp_path / "giả" / "tai-lieu-1.images"
+    assert anh.is_dir(), "fixture phải thật sự sinh ra thư mục ảnh thì test mới có nghĩa"
+    (anh / "ghi-chu.txt").write_text("không phải json", encoding="utf-8")
+
+    assert [r.doc_id for r in load_predictions(tmp_path)] == ["tai-lieu-1"]
+
+
+def test_engine_khong_khop_ten_thu_muc_thi_nem(tmp_path: Path):
+    """Tên thư mục LÀ danh tính engine trong bảng điểm.
+
+    Hai biến thể `sovereign_full`/`sovereign_light` từng cùng khai `engine:"sovereign"`;
+    dời thư mục mà quên sửa trường này thì chúng gộp thành một cột — trộn 2 tài liệu
+    chế độ `full` với 204 tài liệu chế độ `light` thành một trung bình không mô tả cấu
+    hình nào có thật.
+    """
+    save_prediction(ket_qua_day_du(), tmp_path)
+    (tmp_path / "giả").rename(tmp_path / "ten-khac")
+
+    with pytest.raises(PredictionSchemaError, match="nằm trong thư mục 'ten-khac'"):
+        load_predictions(tmp_path)
+
+
+# ---------------------------------------------------------------------------
 # Tên file & fingerprint — chặn ở lúc GHI
 # ---------------------------------------------------------------------------
 
