@@ -208,6 +208,26 @@ def test_chay_hai_lan_cho_raw_json_giong_het(tmp_path):
     assert ja["rows"], "không có dòng nào — script chấm hụt, test xanh giả"
 
 
+@pytest.mark.slow
+def test_file_ghi_ra_khong_co_crlf(tmp_path):
+    """`.gitattributes` khai `eol=lf`, nên blob trong git luôn là LF.
+
+    Nếu script ghi CRLF (mặc định của Python trên Windows) thì bản trên đĩa khác
+    bản checkout ra ở **mọi dòng**, và người kiểm AC-04 bằng `diff` thấy một khác
+    biệt toàn tập không liên quan gì tới con số. Báo động giả kiểu đó tệ hơn không
+    kiểm, vì nó dạy người ta bỏ qua phép kiểm.
+    """
+    out = tmp_path / "x"
+    assert _chay_script(out).returncode == 0
+    da_soi = 0
+    for f in sorted(out.iterdir()):
+        b = f.read_bytes()
+        assert b"\r\n" not in b, f"{f.name} ghi CRLF"
+        assert b"\n" in b, f"{f.name} không có dòng nào — soi rỗng"
+        da_soi += 1
+    assert da_soi == 5, f"chờ 5 file, thấy {da_soi}"
+
+
 def test_khong_ghi_de_history_neu_thieu_force(tmp_path):
     """Ca âm: ghi đè lặng lẽ một bản `history/` là làm mất đúng thứ D1 sinh ra để giữ."""
     out = tmp_path / "co_san"

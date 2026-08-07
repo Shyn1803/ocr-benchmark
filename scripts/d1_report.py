@@ -64,16 +64,19 @@ def main() -> int:
     out.mkdir(parents=True, exist_ok=True)
     import json
 
-    (out / "manifest.json").write_text(
-        json.dumps(mani, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
-    (out / "overall.md").write_text(report.bao_cao_overall(bang, mani), encoding="utf-8")
-    (out / "by_group.md").write_text(report.bao_cao_by_group(bang), encoding="utf-8")
-    (out / "common_set.md").write_text(
-        report.bao_cao_common_set(bang, cov), encoding="utf-8"
-    )
-    (out / "raw.json").write_text(report.raw_json(bang, generated_at=moc) + "\n", encoding="utf-8")
+    def ghi(ten: str, noi_dung: str) -> None:
+        # `newline=""` để Python KHÔNG đổi \n → \r\n trên Windows. `.gitattributes`
+        # khai `*.json text eol=lf`, nên blob trong git luôn là LF; nếu để mặc định
+        # thì file trên đĩa là CRLF còn file checkout ra là LF, và người kiểm AC-04
+        # (`diff` bản chạy lại với bản đã commit) thấy **mọi dòng** khác nhau — một
+        # báo động giả đúng ở chỗ nó dạy người ta bỏ qua phép kiểm.
+        (out / ten).write_text(noi_dung, encoding="utf-8", newline="")
+
+    ghi("manifest.json", json.dumps(mani, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
+    ghi("overall.md", report.bao_cao_overall(bang, mani))
+    ghi("by_group.md", report.bao_cao_by_group(bang))
+    ghi("common_set.md", report.bao_cao_common_set(bang, cov))
+    ghi("raw.json", report.raw_json(bang, generated_at=moc) + "\n")
 
     print(f"ghi {out}")
     for c in mani["canh_bao"]:
