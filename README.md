@@ -20,14 +20,17 @@ py -3 -m venv .venv
 (`.[marker]`, `.[opendataloader]`, `.[pdfinspector]`) vì marker kéo theo torch + model
 Surya vài GB và opendataloader cần Java 11+.
 
-## Mười hai cái bẫy mà repo này chủ động chặn
+Thêm `.[perf]` (`psutil`) trước khi lấy số bộ nhớ để công bố. Thiếu nó thì cột RSS hiện
+`—` chứ không hiện 0, nhưng engine gọi tiến trình con sẽ **không đo được** — xem bẫy 13.
+
+## Mười ba cái bẫy mà repo này chủ động chặn
 
 Bảy cái đầu thuộc loại **không bao giờ ném exception** — chúng chỉ làm bảng xếp hạng sai
 một cách rất thuyết phục. Cái thứ 8 và cái thứ 9 mỗi cái có một nửa ném được, và nửa ném
 được luôn dễ chịu hơn nửa im lặng. Cái thứ 10 thì không ném gì cả: nó ra **một con số
-trông dùng được**. Hai cái cuối (B5) tệ hơn nữa — chúng ra con số dùng được *và* con số
-đó lệch **có hệ thống theo một hướng biết trước**. Vì thế mỗi cái có test riêng, viết
-trước cả khi có engine thật.
+trông dùng được**. Hai cái tiếp (B5) tệ hơn nữa — chúng ra con số dùng được *và* con số
+đó lệch **có hệ thống theo một hướng biết trước**. Cái thứ 13 (B6) cũng vậy, nhưng lệch
+theo *thứ tự chạy*. Vì thế mỗi cái có test riêng, viết trước cả khi có engine thật.
 
 ### 1. Ba engine dùng ba hệ toạ độ khác nhau
 
@@ -371,6 +374,31 @@ cân. Vì thế:
   0.517 của opendataloader trông như một con số tầm trung bình thường, chứ không lộ ra
   rằng nó là trung bình của 0.356 (đọc thật) và 1.000 (không đọc gì).
 
+### 13. Cột RSS xếp hạng bộ nhớ theo **thứ tự chạy**, và khen engine nuôi JVM là nhẹ nhất
+
+Hai nửa, cả hai đều im lặng (B6):
+
+**Nửa thứ nhất — RSS không bao giờ giảm.** RSS là mốc nước cao của *cả tiến trình*: nó
+không tụt khi Python trả vùng nhớ về allocator. Chạy ba engine trong một tiến trình rồi
+lấy `max(RSS)` cho từng engine thì engine thứ ba luôn thừa hưởng đỉnh của hai engine
+trước — bảng "ngốn RAM" sẽ đúng bằng thứ tự chạy, và đảo thứ tự sẽ ra một bảng khác.
+Chặn bằng cách đo **delta trong cửa sổ chạy**: lấy mốc ngay trước `run()`, lấy mẫu bằng
+luồng nền, báo `đỉnh − mốc`. Mốc chính là mẫu đầu tiên nên hiệu không có đường nào ra
+số âm — không phải kẹp về 0.
+
+**Nửa thứ hai — RSS của Python không thấy tiến trình con.** `opendataloader` chạy một
+`.jar` bằng tiến trình `java`, `sovereign` có nhánh `subprocess`. In một cột RSS trần
+trụi sẽ làm engine đang nuôi cả một JVM trông **nhẹ nhất bảng** — sai theo một hướng
+biết trước, tức còn tệ hơn nhiễu. Chặn bằng `rss_scope` đi kèm **mọi** con số RSS:
+`OcrResult` ném nếu có `peak_rss_mb` mà không có `rss_scope`, và bảng in kèm cảnh báo
+khi phạm vi là `process`. Đọc một tiến trình con không được thì **hạ** phạm vi xuống
+`process` chứ không im lặng báo thiếu.
+
+Cái bẫy thứ ba, nhỏ hơn nhưng cùng họ: **engine chết ngay lập tức có `s/trang` thấp
+nhất bảng.** Vì thế `PerfAggregate` mang `fail_rate` trong cùng dataclass với các trung
+bình, đúng như `Aggregate` — không có đường nào lấy trung bình mà không cầm sẵn tỉ lệ
+hỏng.
+
 ## Vì sao `aggregate()` trả về một đối tượng chứ không trả về một số
 
 `opendataloader-bench` loại tài liệu engine làm hỏng ra khỏi trung bình — tức là
@@ -385,11 +413,19 @@ src/ocr_bench/
 ├── types.py        hợp đồng dữ liệu — mọi quyết định của A0 nằm ở đây
 ├── normalize.py    NFC + gộp khoảng trắng; mọi metric text phải đi qua
 ├── registry.py     đăng ký adapter/metric, kiểm ngay lúc import
+├── rss.py          đo đỉnh RSS (psutil, lấy mẫu 50ms) — tầng thấp, không biết gì về bảng
 ├── adapters/       base.py · noop.py  (sabotage → A1b, engine thật → A4-A7)
 └── metrics/        base.py            (cer/teds/imgf1/nid/heading → nhóm B)
+    └── perf.py     sec/trang · RSS · FailRate — **không** kế thừa `Metric`, xem đầu file
 
 pdfs/ ground-truth/ prediction/ results/ history/ charts/
 ```
+
+`perf.py` nằm trong `metrics/` cho gần chỗ dùng, nhưng nó là **họ dữ liệu riêng**: `Metric`
+chặn giá trị ngoài `[0,1]` và quy ước cao là tốt, còn giây và MB thì không chặn trên và
+thấp mới tốt. Ép nó vào `Metric` chỉ có hai đường, đều hỏng: bỏ cổng `[0,1]` (mất cổng
+đang bảo vệ 14 metric) hoặc chuẩn hoá `1/(1+t)` (ra số không đơn vị, không trả lời nổi
+"1400 tài liệu mất bao lâu").
 
 `prediction/` **được commit**: chấm lại không cần chạy lại OCR — đó là cả điểm của A2,
 và Marker tốn ~3h cho 200 trang trên CPU.
@@ -431,6 +467,7 @@ khi thiếu — bỏ ảnh là bỏ cả `.json` đi kèm, hoặc sinh lại c�
 | **B3 — ImgF1 / ImgIou** | **xong** — 23 test, coverage 100%; **thước đo đầu tiên ra số thật**: opendataloader F1 0.355 (98 tài liệu), marker 0.667 (5) |
 | **B4 — NID / Heading** | **xong** — 42 test, coverage 100%; `nid` N/A toàn bộ (không có nhãn thứ tự đọc), `heading` chỉ 15 tài liệu / 1 engine và **không được đọc trung bình một mình** — xem bẫy 10 |
 | **B5 — bộ khẳng định olmOCR** | **xong** — 35 test, coverage 96%; **sáu** metric riêng cho sáu loại (AC-02 cấm gộp), chấm tách theo loại × theo tầng bằng `scripts/score_assertions.py`; xem bẫy 11 và 12 |
+| **B6 — tốc độ / bộ nhớ / tỉ lệ hỏng** | **xong** — 27 test, coverage 100% (`perf`) & 95% (`rss`); perf **không** kế thừa `Metric`; schema prediction lên bản 2, nâng 718 file tại chỗ không chạy lại engine; xem bẫy 13 |
 
 ## Cảnh báo dữ liệu
 

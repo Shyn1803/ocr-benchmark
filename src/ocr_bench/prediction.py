@@ -81,9 +81,23 @@ __all__ = [
     "run_engines_cached",
 ]
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 """Tăng khi đổi *hình dạng* file. Prediction schema cũ sẽ bị từ chối thẳng chứ không
-được cố nạp — nạp một nửa rồi chấm là đúng thứ AC-04 cấm."""
+được cố nạp — nạp một nửa rồi chấm là đúng thứ AC-04 cấm.
+
+Lịch sử:
+
+* **1** — bản đầu (A2/TASK-073).
+* **2** — thêm `model_load_seconds` và `rss_scope` (B6/TASK-084). File bản 1 nâng
+  được **không cần chạy lại engine**: hai trường mới đều là "không đo" =
+  ``null``, không suy được từ dữ liệu cũ và cũng không cần suy::
+
+      py -3 scripts/migrate_predictions.py prediction
+
+  Đây là lý do bản nâng cấp là script chứ không phải "sinh lại": repo đang giữ hơn
+  một nghìn file prediction, riêng marker mất khoảng 3 tiếng để chạy lại — đúng cái
+  giá mà module này tồn tại để khỏi phải trả.
+"""
 
 _IMAGE_NAME = re.compile(r"^[A-Za-z0-9._-]+$")
 """Tên file ảnh sidecar. Do chính bench sinh ra (`000.png`) nên siết chặt được: bất kỳ
@@ -118,7 +132,9 @@ _ResultKeys = frozenset(
         "scan_label",
         "page_sizes",
         "seconds",
+        "model_load_seconds",
         "peak_rss_mb",
+        "rss_scope",
         "failed",
         "error",
         "config_fingerprint",
@@ -268,7 +284,11 @@ def save_prediction(result: OcrResult, root: Path) -> Path:
         "scan_label": _scan_label_to_json(result.scan_label),
         "page_sizes": [list(p) for p in result.page_sizes],
         "seconds": result.seconds,
+        "model_load_seconds": result.model_load_seconds,
         "peak_rss_mb": result.peak_rss_mb,
+        # Đi cùng `peak_rss_mb` trong cả ghi lẫn đọc: một con số RSS không kèm phạm vi
+        # là một con số không so sánh được (xem `types.OcrResult.rss_scope`).
+        "rss_scope": result.rss_scope,
         "failed": result.failed,
         "error": result.error,
         "config_fingerprint": _jsonable_fingerprint(
@@ -467,7 +487,9 @@ def load_prediction(path: Path) -> OcrResult:
     if version != SCHEMA_VERSION:
         raise PredictionSchemaError(
             f"{path}: schema_version={version!r}, bản đang chạy đọc được "
-            f"{SCHEMA_VERSION}. Sinh lại bằng `scripts/make_predictions.py` — "
+            f"{SCHEMA_VERSION}. Nâng cấp tại chỗ bằng "
+            "`py -3 scripts/migrate_predictions.py prediction` (không chạy lại "
+            "engine), hoặc sinh lại bằng `scripts/make_predictions.py` — "
             "cố nạp file schema khác là cách chấm sai mà không có triệu chứng."
         )
 
@@ -510,7 +532,9 @@ def load_prediction(path: Path) -> OcrResult:
             scan_label=_scan_label_from_json(raw["scan_label"], path, "scan_label"),
             page_sizes=_page_sizes_from_json(raw["page_sizes"], path),
             seconds=raw["seconds"],
+            model_load_seconds=raw["model_load_seconds"],
             peak_rss_mb=raw["peak_rss_mb"],
+            rss_scope=raw["rss_scope"],
             failed=raw["failed"],
             error=raw["error"],
             config_fingerprint=raw["config_fingerprint"],

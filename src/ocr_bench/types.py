@@ -20,10 +20,11 @@ from __future__ import annotations
 
 import enum
 from dataclasses import dataclass, field
-from typing import ClassVar, Literal
+from typing import ClassVar, Literal, get_args
 
 __all__ = [
     "Capability",
+    "RssScope",
     "YAxis",
     "Box",
     "BlockType",
@@ -42,6 +43,14 @@ __all__ = [
     "NAReason",
     "MetricResult",
 ]
+
+
+RssScope = Literal["process", "process+children"]
+"""Số RSS đếm tới đâu — xem `OcrResult.rss_scope`.
+
+Là `Literal` chứ không phải `Enum` để đi thẳng vào JSON prediction mà không cần bộ
+quy đổi riêng; giá trị bị kiểm trong `OcrResult.__post_init__`.
+"""
 
 
 class Capability(str, enum.Enum):
@@ -263,7 +272,28 @@ class OcrResult:
     scan_label: ScanLabel | None = None
     page_sizes: tuple[tuple[float, float], ...] = ()
     seconds: float | None = None
+    """**Tổng** thời gian `run()`, kể cả thời gian nạp model."""
+    model_load_seconds: float | None = None
+    """Phần thời gian nạp model, tách khỏi `seconds` chứ không trừ sẵn (B6/AC-03).
+
+    Trừ sẵn rồi vứt thì mất câu trả lời cho "chạy 100 tài liệu thì chi phí nạp phân
+    bổ ra sao". Adapter không biết thì để `None` — cột hiện `—`. **Không** để 0.0:
+    số 0 ở đây là câu "nạp model mất 0 giây", một lời nói dối chứ không phải thiếu số.
+    """
     peak_rss_mb: float | None = None
+    """Đỉnh RSS **trong cửa sổ chạy**, đã trừ mốc trước khi chạy.
+
+    Không phải `max(RSS)` trần trụi: RSS là mốc nước cao của cả tiến trình và không
+    bao giờ giảm, nên engine chạy sau sẽ thừa hưởng vùng nhớ của engine chạy trước và
+    trông ngốn hơn **theo đúng thứ tự chạy**.
+    """
+    rss_scope: RssScope | None = None
+    """`peak_rss_mb` đếm tới đâu. Bắt buộc có nếu `peak_rss_mb` có (xem `__post_init__`).
+
+    `opendataloader` chạy một `.jar` bằng tiến trình `java` con, `sovereign` cũng có
+    nhánh `subprocess`. RSS đo ở tiến trình Python **không nhìn thấy JVM heap**, nên
+    một cột RSS không kèm phạm vi sẽ làm engine nuôi cả một JVM trông nhẹ nhất bảng.
+    """
     failed: bool = False
     error: str | None = None
     config_fingerprint: dict[str, object] = field(default_factory=dict)
@@ -273,6 +303,29 @@ class OcrResult:
     def __post_init__(self) -> None:
         if self.failed and not self.error:
             raise ValueError("failed=True thì phải có error")
+        # Ba kiểm tra dưới đây KHÔNG nằm trong nhánh `not failed`: một lượt chạy hỏng
+        # vẫn có số giờ và số nhớ, và số đó vẫn phải tự mô tả được.
+        if self.peak_rss_mb is not None and self.rss_scope is None:
+            raise ValueError(
+                f"{self.engine} trả peak_rss_mb={self.peak_rss_mb} nhưng không khai "
+                "rss_scope. Một con số RSS không kèm phạm vi thì không so được giữa "
+                "engine chạy trong tiến trình và engine gọi tiến trình con."
+            )
+        if self.rss_scope is not None and self.rss_scope not in get_args(RssScope):
+            raise ValueError(
+                f"rss_scope={self.rss_scope!r} không hợp lệ; "
+                f"phải là một trong {list(get_args(RssScope))}"
+            )
+        if (
+            self.model_load_seconds is not None
+            and self.seconds is not None
+            and self.model_load_seconds > self.seconds
+        ):
+            raise ValueError(
+                f"{self.engine}: model_load_seconds={self.model_load_seconds} lớn hơn "
+                f"seconds={self.seconds}. `seconds` là TỔNG thời gian run(), thời gian "
+                "nạp là một phần của nó — không phải một khoản cộng thêm."
+            )
         if not self.failed:
             self._require(Capability.TEXT_MD, self.text_md is not None, "text_md")
             self._require(

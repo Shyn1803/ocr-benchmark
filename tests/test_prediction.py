@@ -102,7 +102,9 @@ def ket_qua_day_du(doc_id: str = "tai-lieu-1") -> OcrResult:
         ),
         page_sizes=((612.0, 792.0), (595.5, 842.25)),
         seconds=12.5,
+        model_load_seconds=3.25,
         peak_rss_mb=1024.5,
+        rss_scope="process+children",
         config_fingerprint={"ocr_use_vision_api": False, "ngưỡng": 0.3, "list": [1, 2]},
     )
 
