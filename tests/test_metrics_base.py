@@ -150,6 +150,31 @@ def test_o_bang_luon_kem_ti_le_hong():
     assert aggregate(_rows([1.0, 1.0], failed=2)).cell() == "0.500 (fail 50%)"
 
 
+def test_hong_het_thi_o_khong_in_0_000():
+    """Hỏng hết ⇒ `penalized_mean` = 0/N = 0.0, nhưng đó **không phải một trung
+    bình** — không tài liệu nào được chấm. In "0.000 (fail 100%)" là nói engine
+    *đo được và tệ nhất*, trong khi sự thật là nó *chưa từng được đo*.
+
+    Đây là cùng một tiêu chí (`n_scored == 0`) mà `do_phan_tan()` và
+    `kiem_sabotage()` đã dùng để từ chối kết luận.
+    """
+    agg = aggregate(_rows([], failed=10))
+    assert agg.applicable is True          # có mẫu số ⇒ dòng vẫn phải hiện
+    assert agg.penalized_mean == 0.0       # con số 0.0 vẫn có, chỉ không được in ra
+    assert agg.n_scored == 0
+    o = agg.cell()
+    assert "0.000" not in o
+    assert o == "— (10 hỏng, 0 chấm được)"
+
+
+def test_diem_thap_that_van_in_binh_thuong():
+    """Ca âm: chấm được mà điểm thấp thì vẫn phải in số — nhánh trên không được
+    nuốt luôn engine thật sự tệ."""
+    agg = aggregate(_rows([0.0, 0.0], failed=2))
+    assert agg.n_scored == 2
+    assert agg.cell() == "0.000 (fail 50%)"
+
+
 def test_aggregate_rong():
     agg = aggregate([])
     assert agg == Aggregate(

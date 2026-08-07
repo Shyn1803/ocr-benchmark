@@ -147,6 +147,14 @@ class Aggregate:
             return "N/A"
         # applicable=True ⇒ denom>0 ⇒ penalized_mean khác None (xem aggregate()).
         assert self.penalized_mean is not None
+        if self.n_scored == 0:
+            # denom>0 mà không chấm được cái nào ⇒ denom toàn tài liệu HỎNG, và
+            # `penalized_mean` bằng 0.0 vì mẫu số toàn số 0. In "0.000" ở đây là nói
+            # engine **đo được và tệ nhất**, trong khi sự thật là nó **chưa từng
+            # được đo** — sai theo đúng hướng gây hiểu nhầm nặng nhất. Tiêu chí
+            # `n_scored == 0` giống hệt `_doc_cham_duoc` của `do_phan_tan()` và
+            # `kiem_sabotage()` trong `discrimination.py`.
+            return f"— ({self.n_failed} hỏng, 0 chấm được)"
         return f"{self.penalized_mean:.3f} (fail {self.fail_rate:.0%})"
 
 
