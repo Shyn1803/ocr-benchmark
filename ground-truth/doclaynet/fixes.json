@@ -1,0 +1,29 @@
+{
+  "_note": "Sửa nhãn DocLayNet — TASK-088 (D2). KHÔNG sửa `layout_coco.json`: file đó do `scripts/fetch_doclaynet.py` sinh lại và mọi sửa tay trong đó sẽ bị ghi đè lặng lẽ. Overlay này được `corpus.load_doclaynet` áp sau khi dựng nhãn gốc, và được băm vào manifest nên số nào sinh ra từ nhãn nào vẫn truy ngược được.",
+  "_quy_uoc_toa_do": "`hop_diem_pdf` là toạ độ ĐIỂM PDF thật lấy từ chính file PDF (không phải hệ 1025x1025 của COCO, không phải toạ độ engine). Quy đổi đi qua `Box.from_absolute`, đúng một chỗ có test.",
+  "_canh_bao": "Mỗi mục ở đây LÀM ĐỔI SỐ CÔNG BỐ. `bang_chung` phải là thứ đọc được từ PDF hoặc từ chính bộ nhãn, tuyệt đối không phải đầu ra của engine đang được chấm — lấy hộp của engine làm nhãn là chấm engine bằng chính nó.",
+  "fixes": [
+    {
+      "doc_id": "14654fbc59c74412a4251f06820ab30b096722f9cc41e15103024d10f5693503",
+      "hanh_dong": "them",
+      "lop": "Picture",
+      "hop_diem_pdf": {
+        "x0": 62.3,
+        "y0": 788.52,
+        "x1": 121.55,
+        "y1": 827.67,
+        "page_width": 595.32,
+        "page_height": 841.92,
+        "y_axis": "up"
+      },
+      "ly_do": "Nhãn gốc không có Picture nào, nhưng trang có đúng một ảnh nhúng: logo ENISA ở góc trên-trái. Mọi engine tìm ra nó đều bị chấm 0.0 vì phía nhãn khẳng định trang không có ảnh.",
+      "bang_chung": [
+        "PDF: page 0 có duy nhất XObject `/Image15`, đặt bằng `59.25 0 0 39.15 62.3 788.52 cm` — hộp trong mục này lấy thẳng từ ma trận đó, không lấy từ engine.",
+        "Quy ước DocLayNet: cùng logo này ĐƯỢC gán `Picture` ở tài liệu khác trong cùng bộ mẫu — `149e13c5815d…` có Picture tại 0.109/0.019/0.202/0.064 (đã chuẩn hoá), trùng khít vị trí. Nên đây là bỏ sót của người gán nhãn, không phải quy ước 'logo thì không gán'.",
+        "Ảnh dựng lại: `py -3 scripts/d2_render.py 14654fbc59c74412 opendataloader`"
+      ],
+      "task": "TASK-088",
+      "anh_huong": "img_f1/img_iou của `marker` và `opendataloader` trên tài liệu này đổi từ 0.0 lên >0. Trước/sau ghi ở `results/failure-analysis.md`."
+    }
+  ]
+}

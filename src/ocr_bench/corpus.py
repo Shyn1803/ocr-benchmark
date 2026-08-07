@@ -79,6 +79,57 @@ class CorpusError(RuntimeError):
 
 # --------------------------------------------------------------------- DocLayNet
 
+TEN_FILE_FIXES = "fixes.json"
+
+
+def doc_fixes(gt_dir: Path) -> dict[str, list[tuple[BlockType, Box]]]:
+    """`fixes.json` → `{doc_id: [(loại, hộp)]}` — nhãn thêm tay, có lý do ghi kèm.
+
+    Vì sao là overlay chứ không sửa thẳng `layout_coco.json`: file đó là **đầu ra**
+    của `scripts/fetch_doclaynet.py`; chạy lại script là mọi sửa tay biến mất mà
+    không có tín hiệu nào. Overlay nằm ngoài đường sinh đó nên sống sót, và diff của
+    nó đọc được — diff của một file COCO 1,5 MB thì không.
+
+    Thiếu file thì trả `{}`: bộ mẫu chưa sửa gì là trạng thái hợp lệ. Nhưng file
+    **có** mà nội dung sai (doc_id lạ, lớp lạ, hành động lạ) thì ném — một mục sửa
+    lặng lẽ không có tác dụng là kiểu hỏng tệ nhất ở đây: người viết tin là đã sửa.
+    """
+    p = gt_dir / TEN_FILE_FIXES
+    if not p.exists():
+        return {}
+    du_lieu = json.loads(p.read_text(encoding="utf-8"))
+    ra: dict[str, list[tuple[BlockType, Box]]] = {}
+    for i, f in enumerate(du_lieu.get("fixes", ())):
+        if f.get("hanh_dong") != "them":
+            raise CorpusError(
+                f"{p} mục {i}: hành động {f.get('hanh_dong')!r} chưa được hỗ trợ "
+                "(mới chỉ có 'them')"
+            )
+        if f["lop"] not in COCO_BLOCK_TYPE:
+            raise CorpusError(f"{p} mục {i}: lớp {f['lop']!r} không có trong COCO_BLOCK_TYPE")
+        if not f.get("bang_chung"):
+            raise CorpusError(
+                f"{p} mục {i}: thiếu `bang_chung`. Sửa nhãn làm đổi số công bố; "
+                "không có bằng chứng thì không phân biệt được với sửa cho bảng đẹp lên."
+            )
+        h = f["hop_diem_pdf"]
+        ra.setdefault(f["doc_id"], []).append(
+            (
+                COCO_BLOCK_TYPE[f["lop"]],
+                Box.from_absolute(
+                    page=int(f.get("page", 0)),
+                    x0=h["x0"],
+                    y0=h["y0"],
+                    x1=h["x1"],
+                    y1=h["y1"],
+                    page_width=h["page_width"],
+                    page_height=h["page_height"],
+                    y_axis=h["y_axis"],
+                ),
+            )
+        )
+    return ra
+
 
 def load_doclaynet(root: Path | None = None) -> dict[str, AnnotationGT]:
     """`ground-truth/doclaynet/` → `{hash: AnnotationGT}`.
@@ -92,6 +143,7 @@ def load_doclaynet(root: Path | None = None) -> dict[str, AnnotationGT]:
 
     coco = json.loads(coco_path.read_text(encoding="utf-8"))
     ten_lop = {c["id"]: c["name"] for c in coco["categories"]}
+    fixes = doc_fixes(gt_dir)
 
     theo_anh: dict[int, list[dict]] = {}
     for a in coco["annotations"]:
@@ -122,6 +174,11 @@ def load_doclaynet(root: Path | None = None) -> dict[str, AnnotationGT]:
             if loai is BlockType.PICTURE:
                 images.append(box)
 
+        for loai, box in fixes.pop(doc_id, ()):
+            blocks.append(OcrBlock(block_type=loai, box=box))
+            if loai is BlockType.PICTURE:
+                images.append(box)
+
         # Kích thước trang thật (điểm PDF) nằm ở metadata của file cell, không ở COCO.
         # Box đã chuẩn hoá nên đây chỉ là thông tin, nhưng thiếu nó thì không ai suy
         # ngược ra được engine đang báo toạ độ trên trang bao nhiêu điểm.
@@ -142,6 +199,12 @@ def load_doclaynet(root: Path | None = None) -> dict[str, AnnotationGT]:
 
     if not ra:
         raise CorpusError(f"{coco_path} không có ảnh nào")
+    if fixes:
+        # `pop` ở trên đã rút hết mục dùng được; còn lại là mục trỏ vào tài liệu
+        # không có trong bộ mẫu. Bỏ qua sẽ để lại một mục sửa nhìn như đã có hiệu lực.
+        raise CorpusError(
+            f"{gt_dir / TEN_FILE_FIXES}: {sorted(fixes)} không có trong {coco_path.name}"
+        )
     return ra
 
 

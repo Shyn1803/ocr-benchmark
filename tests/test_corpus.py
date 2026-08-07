@@ -232,15 +232,97 @@ def test_doclaynet_coco_rong_thi_no(tmp_path):
         load_doclaynet(root)
 
 
+# ------------------------------------------------------- fixes.json (sửa nhãn tay)
+
+
+def _ghi_fixes(root, muc: list[dict]):
+    (root / "ground-truth" / "doclaynet" / "fixes.json").write_text(
+        json.dumps({"fixes": muc}, ensure_ascii=False), encoding="utf-8"
+    )
+
+
+def _muc_hop_le(**thay):
+    m = {
+        "doc_id": "abc",
+        "hanh_dong": "them",
+        "lop": "Picture",
+        "hop_diem_pdf": {"x0": 61.2, "y0": 396.0, "x1": 306.0, "y1": 792.0,
+                         "page_width": 612.0, "page_height": 792.0, "y_axis": "up"},
+        "ly_do": "test",
+        "bang_chung": ["test"],
+    }
+    m.update(thay)
+    return m
+
+
+def test_fixes_thieu_file_thi_khong_doi_gi(tmp_path):
+    """Không có `fixes.json` là trạng thái bình thường của mọi bộ nhãn chưa sửa tay."""
+    ra = load_doclaynet(_dung_doclaynet(tmp_path))
+    assert len(ra["abc"].blocks) == 3
+    assert len(ra["abc"].images) == 1
+
+
+def test_fixes_them_nhan_anh_vao_ca_blocks_lan_images(tmp_path):
+    """`img_f1` đọc `.images`, các metric khác đọc `.blocks` — thiếu một bên là nhãn
+    thêm vào chỉ có tác dụng với nửa số metric, mà nửa nào thì không ai biết."""
+    _dung_doclaynet(tmp_path)
+    _ghi_fixes(tmp_path, [_muc_hop_le()])
+    g = load_doclaynet(tmp_path)["abc"]
+    assert len(g.blocks) == 4
+    assert len(g.images) == 2
+    them = g.images[-1]
+    # y_axis="up": y0=396 (nửa dưới theo PDF) → y1=0.5 theo hệ top-down của Box.
+    assert (round(them.x0, 3), round(them.y0, 3)) == (0.1, 0.0)
+    assert (round(them.x1, 3), round(them.y1, 3)) == (0.5, 0.5)
+
+
+def test_fixes_lop_khong_phai_anh_thi_khong_chui_vao_images(tmp_path):
+    _dung_doclaynet(tmp_path)
+    _ghi_fixes(tmp_path, [_muc_hop_le(lop="Text")])
+    g = load_doclaynet(tmp_path)["abc"]
+    assert len(g.blocks) == 4 and len(g.images) == 1
+
+
+@pytest.mark.parametrize(
+    "thay, khop",
+    [
+        ({"bang_chung": []}, "bang_chung"),
+        ({"lop": "Khong-Co-Lop-Nay"}, "không có trong COCO_BLOCK_TYPE"),
+        ({"hanh_dong": "xoa"}, "chưa được hỗ trợ"),
+    ],
+)
+def test_fixes_muc_hong_thi_nem_chu_khong_bo_qua(tmp_path, thay, khop):
+    """Một mục sửa nhãn bị bỏ qua lặng lẽ là kiểu hỏng tệ nhất ở đây: người viết tin
+    là đã sửa, bảng điểm thì vẫn chấm bằng nhãn cũ."""
+    _dung_doclaynet(tmp_path)
+    _ghi_fixes(tmp_path, [_muc_hop_le(**thay)])
+    with pytest.raises(CorpusError, match=khop):
+        load_doclaynet(tmp_path)
+
+
+def test_fixes_tro_vao_tai_lieu_khong_ton_tai_thi_nem(tmp_path):
+    """Gõ nhầm `doc_id` cho ra một mục nhìn như đã có hiệu lực mà không sửa gì cả."""
+    _dung_doclaynet(tmp_path)
+    _ghi_fixes(tmp_path, [_muc_hop_le(doc_id="khong-co-tai-lieu-nay")])
+    with pytest.raises(CorpusError, match="khong-co-tai-lieu-nay"):
+        load_doclaynet(tmp_path)
+
+
 # ------------------------------------------------------------- bộ mẫu thật
 
 
 @pytest.mark.needs_corpus
 def test_bo_mau_that_nap_du_khong_mat_mat():
-    """Con số chốt của A3. Lệch là bộ mẫu trên đĩa đã đổi — kiểm lại trước khi sửa test."""
+    """Con số chốt của A3. Lệch là bộ mẫu trên đĩa đã đổi — kiểm lại trước khi sửa test.
+
+    2941 → 2942 ở TASK-088: `ground-truth/doclaynet/fixes.json` thêm 1 nhãn `Picture`
+    (logo ENISA ở `14654fbc…`, bằng chứng lấy từ content stream PDF). Đây là **cách
+    duy nhất** một mục trong `fixes.json` phải khai báo mình ra ngoài — sửa nhãn làm
+    đổi số công bố, nên nó phải làm đỏ một test chứ không được lẳng lặng trôi qua.
+    """
     dl, olm = load_doclaynet(), load_olmocr()
     assert len(dl) == 204
-    assert sum(len(v.blocks) for v in dl.values()) == 2941
+    assert sum(len(v.blocks) for v in dl.values()) == 2942
     assert len(olm) == 1403
     assert sum(len(v.tests) for v in olm.values()) == 7019
 
