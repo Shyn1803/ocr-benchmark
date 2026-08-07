@@ -45,6 +45,7 @@ nguyên ý nghĩa gốc và số so sánh được với bảng đã công bố 
 from __future__ import annotations
 
 import re
+import unicodedata
 from typing import ClassVar
 
 from ocr_bench.metrics.base import Metric
@@ -105,6 +106,26 @@ là loại duy nhất bắt được engine trả về nguyên một trang toàn
 # ---------------------------------------------------------------------------
 
 
+def nfc(s: str) -> str:
+    """Hợp nhất hai cách viết **cùng một chữ** trước khi so.
+
+    "ề" viết được bằng một điểm mã (NFC) hoặc bằng "e" + hai dấu tổ hợp (NFD). Người
+    đọc thấy y hệt nhau; `rapidfuzz` thì không — đo thật trên một câu tiếng Việt 31 ký
+    tự: `partial_ratio(NFC, NFD) = 64.5`, trong khi `max_diffs=0` đòi 100. Không chuẩn
+    hoá thì điểm của một engine phụ thuộc vào **dạng nó xuất ra**, không phụ thuộc vào
+    việc nó đọc đúng hay sai. Ba engine hoàn toàn có thể khác nhau ở chỗ này.
+
+    Cố ý **không** dùng `normalize_text()` của repo dù nó sẵn có: nó còn gộp khoảng
+    trắng và gộp dấu câu. Gộp khoảng trắng đổi độ dài chuỗi ⇒ đổi ý nghĩa `first_n` /
+    `last_n` của `cua_so()`; gộp dấu câu nới ngưỡng đạt rộng hơn luật olmOCR. Cả hai
+    là **đổi con số công bố**, không phải sửa một lỗi.
+
+    NFC chứ không NFD, cùng lý do `normalize.py` đã chọn: độ dài chuỗi đi vào mẫu số
+    của CER, và NFC cho độ dài gần với cảm nhận người đọc hơn.
+    """
+    return unicodedata.normalize("NFC", s)
+
+
 def cua_so(text: str, first_n: int | None, last_n: int | None) -> str:
     """Thu vùng tìm về N ký tự đầu / cuối.
 
@@ -146,6 +167,7 @@ def co_mat(
     """`needle` có xuất hiện trong `haystack` (cho lệch tới `max_diffs` ký tự)?"""
     from rapidfuzz import fuzz  # extra `metrics` — import trong hàm, đúng lệ nid.py
 
+    needle, haystack = nfc(needle), nfc(haystack)
     if not needle:
         return True
     if not _du_dai(needle, haystack, max_diffs):
@@ -169,7 +191,9 @@ def tim_moi_vi_tri(
 
     if not needle or not haystack:
         return []
-    kim, dong = needle.lower(), haystack.lower()
+    # Chuẩn hoá TRƯỚC khi lấy vị trí: vị trí trả về được so với nhau (`min(truoc) <
+    # max(sau)`), nên chỉ cần hai đầu cùng một hệ toạ độ ký tự.
+    kim, dong = nfc(needle).lower(), nfc(haystack).lower()
     nguong = _nguong(kim, max_diffs) * 100.0
 
     vi_tri: list[int] = []
@@ -209,7 +233,10 @@ def chuan_hoa_latex(s: str) -> str:
     khen engine viết sai công thức. Thà để lại chặn dưới còn hơn có một con số rộng
     rãi mà không ai kiểm được — xem cảnh báo "cận dưới" ở docstring module.
     """
-    s = s.strip()
+    # NFC trước mọi luật khác: `\text{Điều 5}` bên trong công thức cũng là chữ tiếng
+    # Việt, và ở đây so **bằng chuỗi** chứ không dựng ảnh — hai dạng Unicode của cùng
+    # một chữ sẽ bị tính là hai công thức khác nhau.
+    s = nfc(s).strip()
     for cu, moi in ((re.compile(r"^\$\$|\$\$$"), ""), (re.compile(r"^\$|\$$"), "")):
         s = cu.sub(moi, s).strip()
     if s.startswith("\\[") and s.endswith("\\]"):
@@ -350,7 +377,9 @@ class AssertionMetric(Metric):
         self, gt: GroundTruth, result: OcrResult
     ) -> tuple[float, dict[str, object]]:
         assert isinstance(gt, AssertionGT)
-        text = result.text_md or ""
+        # NFC ngay tại cửa vào: `cua_so()` cắt theo SỐ KÝ TỰ, mà NFD dài hơn NFC ở
+        # cùng một câu — chuẩn hoá sau khi cắt là cắt nhầm cửa sổ.
+        text = nfc(result.text_md or "")
         cua_toi = self._cua_toi(gt)
         # Duyệt MỘT lần và giữ kết quả theo vị trí. Lọc kiểu `kd not in dat` sẽ so
         # bằng `__eq__` của dataclass: hai khẳng định trùng nội dung là bằng nhau,
@@ -451,7 +480,9 @@ class MathPresenceMetric(AssertionMetric):
         self, gt: GroundTruth, result: OcrResult
     ) -> tuple[float, dict[str, object]]:
         assert isinstance(gt, AssertionGT)
-        text = result.text_md or ""
+        # NFC ngay tại cửa vào: `cua_so()` cắt theo SỐ KÝ TỰ, mà NFD dài hơn NFC ở
+        # cùng một câu — chuẩn hoá sau khi cắt là cắt nhầm cửa sổ.
+        text = nfc(result.text_md or "")
         cua_toi = self._cua_toi(gt)
         nguyen_van = nho_chuan_hoa = 0
         for kd in cua_toi:
