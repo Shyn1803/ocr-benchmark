@@ -20,12 +20,14 @@ py -3 -m venv .venv
 (`.[marker]`, `.[opendataloader]`, `.[pdfinspector]`) vì marker kéo theo torch + model
 Surya vài GB và opendataloader cần Java 11+.
 
-## Mười cái bẫy mà repo này chủ động chặn
+## Mười hai cái bẫy mà repo này chủ động chặn
 
 Bảy cái đầu thuộc loại **không bao giờ ném exception** — chúng chỉ làm bảng xếp hạng sai
 một cách rất thuyết phục. Cái thứ 8 và cái thứ 9 mỗi cái có một nửa ném được, và nửa ném
 được luôn dễ chịu hơn nửa im lặng. Cái thứ 10 thì không ném gì cả: nó ra **một con số
-trông dùng được**. Vì thế mỗi cái có test riêng, viết trước cả khi có engine thật.
+trông dùng được**. Hai cái cuối (B5) tệ hơn nữa — chúng ra con số dùng được *và* con số
+đó lệch **có hệ thống theo một hướng biết trước**. Vì thế mỗi cái có test riêng, viết
+trước cả khi có engine thật.
 
 ### 1. Ba engine dùng ba hệ toạ độ khác nhau
 
@@ -325,6 +327,50 @@ và pdf_inspector — **0 block tiêu đề trên toàn bộ 204 tài liệu** �
 **0.0000 trên 17 tài liệu** vì một việc nó chưa từng khai nhận. Đúng bẫy 3, chỉ đổi metric.
 Số 0.0000 lặp lại y hệt ấy là thứ đáng nghi ngay từ đầu, không phải thứ đáng đem đi báo cáo.
 
+### 11. `assert_math_presence` ở đây là **cận dưới**, không phải điểm công thức thật
+
+Phát hiện ở B5 (TASK-083). olmOCR gốc chấm công thức bằng cách **dựng cả hai biểu thức
+LaTeX ra ảnh rồi so pixel** — `\frac{a}{b}` và `\dfrac{a}{b}` cho ra cùng một hình nên
+được tính là khớp. Bản ở đây so **chuỗi sau chuẩn hoá**, chặt hơn hẳn: mọi cách viết
+tương đương mà chuẩn hoá không gộp được đều bị chấm trượt. Điểm `math_presence` của
+repo này **≤ điểm olmOCR công bố**, luôn luôn, và độ lệch không đo được nếu không dựng
+ảnh.
+
+Chuyện này không nhỏ: `math_presence` là **3.385/7.019 khẳng định — 48% cả bộ nhãn**.
+Một engine bị trừ oan ở đây sẽ tụt hạng vì cách so, không phải vì đọc sai.
+
+Hai việc để bẫy này không âm thầm: `detail` tách `n_khop_nguyen_van` khỏi
+`n_khop_sau_chuan_hoa` (khoảng cách giữa hai số là phần chuẩn hoá đang gánh, và nếu nó
+lớn thì cận dưới đang lỏng), và docstring của metric ghi thẳng chữ "cận dưới". **So
+LaTeX bằng ảnh là task riêng** — nó kéo theo bộ dựng công thức + so ảnh, không nhét vào
+được B5.
+
+Ghi chú đọc số: `opendataloader` ra **0.000** trên cả `arxiv_math` (25 tài liệu) lẫn
+`old_scans_math` (8). Dò tay cho thấy nó xuất ký hiệu Unicode (`θ`, `ρ`) chứ không xuất
+LaTeX — tức 0.000 ở đây là sự thật về engine, **không** phải do cận dưới. Cận dưới là
+rủi ro cho engine *có* xuất LaTeX, chưa engine nào trong bộ này làm.
+
+### 12. `assert_text_absence` **thưởng cho engine không xuất gì cả**
+
+Cũng ở B5, và đây là cái bẫy khó chịu nhất của toàn bộ khẳng định: "chuỗi X không được
+xuất hiện" là đúng một cách tầm thường khi đầu ra rỗng. Không có gì thì không có gì bị cấm.
+
+Số thật, không phải giả thuyết: `opendataloader` trên tầng `old_scans` xuất **32–33 ký tự**
+mỗi tài liệu — đúng một dòng `![](<1_images/imageFile1.png>)`, tức là *không đọc được gì* —
+và ăn **`assert_text_absence` = 1.000**, điểm tuyệt đối, trong khi `text_presence` và
+`reading_order` của chính nó ở tầng đó là **0.000**.
+
+Thứ duy nhất chặn được chiêu này trong bộ nhãn là `assert_baseline` (đòi đầu ra phải có
+tối thiểu nội dung), và cả 1.403 tài liệu **chỉ có 9 khẳng định baseline**. Không đủ để
+cân. Vì thế:
+
+- **Không bao giờ đọc `text_absence` một mình.** Nó chỉ có nghĩa khi đặt cạnh
+  `text_presence` của cùng engine trên cùng tầng. Cao ở cột này + 0 ở cột kia = engine
+  im lặng, không phải engine sạch.
+- Đây cũng là lý do thứ hai để **tách điểm theo tầng**: gộp tầng lại thì `text_absence`
+  0.517 của opendataloader trông như một con số tầm trung bình thường, chứ không lộ ra
+  rằng nó là trung bình của 0.356 (đọc thật) và 1.000 (không đọc gì).
+
 ## Vì sao `aggregate()` trả về một đối tượng chứ không trả về một số
 
 `opendataloader-bench` loại tài liệu engine làm hỏng ra khỏi trung bình — tức là
@@ -384,6 +430,7 @@ khi thiếu — bỏ ảnh là bỏ cả `.json` đi kèm, hoặc sinh lại c�
 | **B2 — TEDS / TEDS-Struct** | **xong** — 22 test, coverage 100%; khớp bản tham chiếu 240/240 cặp; N/A toàn bộ, xem bẫy 9 |
 | **B3 — ImgF1 / ImgIou** | **xong** — 23 test, coverage 100%; **thước đo đầu tiên ra số thật**: opendataloader F1 0.355 (98 tài liệu), marker 0.667 (5) |
 | **B4 — NID / Heading** | **xong** — 42 test, coverage 100%; `nid` N/A toàn bộ (không có nhãn thứ tự đọc), `heading` chỉ 15 tài liệu / 1 engine và **không được đọc trung bình một mình** — xem bẫy 10 |
+| **B5 — bộ khẳng định olmOCR** | **xong** — 35 test, coverage 96%; **sáu** metric riêng cho sáu loại (AC-02 cấm gộp), chấm tách theo loại × theo tầng bằng `scripts/score_assertions.py`; xem bẫy 11 và 12 |
 
 ## Cảnh báo dữ liệu
 
