@@ -119,10 +119,17 @@ class SabotageAdapter(Adapter):
         self.seed = seed
 
     def version(self) -> str:
-        return f"sabotage/1+{self.source.name}"
+        # `ten_engine_that`, không phải `name`: nguồn có thể là `NguonTuDia` phát lại
+        # kết quả đã lưu, và khi đó `name` là `nguon_tu_dia` — bảng công bố sẽ ghi
+        # `sabotage/1+nguon_tu_dia` và giấu mất engine nào thực sự bị làm hỏng.
+        return f"sabotage/1+{self.source.ten_engine_that}"
 
     def config_fingerprint(self) -> dict[str, object]:
-        return {"source": self.source.name, "seed": self.seed, "keep_ratio": KEEP_RATIO}
+        return {
+            "source": self.source.ten_engine_that,
+            "seed": self.seed,
+            "keep_ratio": KEEP_RATIO,
+        }
 
     def run(self, doc_path: Path) -> OcrResult:
         src = self.source.execute(doc_path)

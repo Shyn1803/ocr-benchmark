@@ -44,11 +44,13 @@ from ocr_bench.types import Capability, MetricResult, OcrResult
 __all__ = [
     "NGUONG_PHAN_TAN",
     "ENGINE_TONG_HOP",
+    "NGUON_SABOTAGE",
     "PhanQuyet",
     "PhanTan",
     "KetQuaCong",
     "NguonTuDia",
     "do_phan_tan",
+    "dung_sabotage",
     "kiem_sabotage",
     "phan_nhom_metric",
 ]
@@ -67,6 +69,24 @@ ENGINE_TONG_HOP = frozenset({"sabotage", "noop"})
 `noop` không xuất gì; `sabotage` cố tình làm hỏng đầu ra của engine khác. Cả hai đều
 là **dụng cụ đo**, không phải đối tượng đo. Chúng vào cổng `sabotage` (nơi chúng có
 ích) và bị loại khỏi phép tính phân tán (nơi chúng làm số đẹp lên một cách vô nghĩa).
+"""
+
+NGUON_SABOTAGE = "opendataloader"
+"""Engine làm nguồn cho `sabotage`. Một chỗ khai duy nhất — có lý do.
+
+`SabotageAdapter()` mặc định bọc `noop`, và `noop` trả **chuỗi rỗng**. Làm hỏng cái
+rỗng thì vẫn rỗng: `sabotage` hoà `0.0000` với `noop` ở mọi metric, mà **hoà ở đáy
+không phải đứng bét** — cổng C2 xanh trong khi chưa kiểm được gì. Nguồn phải là một
+engine thật, và phải là engine mạnh nhất có mặt: làm hỏng đầu ra tốt mới là phép thử
+có ý nghĩa.
+
+Trước đây hằng số này nằm trong `scripts/c2_report.py`, còn `prediction/sabotage/`
+trên đĩa lại do `make_predictions.py` sinh với nguồn mặc định `noop`. Hệ quả: **hai
+quần thể `sabotage` khác nhau** cùng mang một cái tên — bảng công bố (D1) chấm bản
+`noop` 41 tài liệu, cổng C2 chấm bản `opendataloader` 205 tài liệu. Hai con số không
+nói về cùng một thứ, và không có gì trong bảng chỉ ra điều đó. Đặt hằng số ở tầng thư
+viện + dựng qua :func:`dung_sabotage` là để đường sinh ra đĩa và đường gác cổng
+**không thể** lệch nhau lần nữa.
 """
 
 
@@ -149,6 +169,15 @@ class NguonTuDia(Adapter):
         self.ten_nguon = ten or ten_nguon.pop()
 
     @property
+    def ten_engine_that(self) -> str:
+        """Danh tính engine là của **nguồn**, không phải của lớp phát lại này.
+
+        Nhờ đó `SabotageAdapter` bọc `NguonTuDia(opendataloader)` ghi ra
+        `sabotage/1+opendataloader` chứ không phải `sabotage/1+nguon_tu_dia`.
+        """
+        return self.ten_nguon
+
+    @property
     def doc_ids(self) -> list[str]:
         return sorted(self._ket_qua)
 
@@ -161,6 +190,35 @@ class NguonTuDia(Adapter):
 
     def run(self, doc_path: Path) -> OcrResult:
         return self._ket_qua[doc_path.stem]
+
+
+def dung_sabotage(
+    ket_qua: Iterable[OcrResult], *, nguon: str = NGUON_SABOTAGE
+) -> list[OcrResult]:
+    """Dựng quần thể `sabotage` từ dự đoán đã lưu của `nguon`. **Một** đường duy nhất.
+
+    Cả `scripts/c2_report.py` (gác cổng) lẫn `scripts/make_sabotage.py` (ghi xuống
+    `prediction/`) đều gọi hàm này, nên bản đem chấm ở bảng công bố và bản đem gác
+    cổng luôn là cùng một quần thể — xem :data:`NGUON_SABOTAGE` để biết chuyện gì đã
+    xảy ra khi chúng không phải.
+
+    Dùng **chính** `SabotageAdapter` chứ không chép lại phép làm hỏng: chép lại thì C2
+    kiểm bản sao, không kiểm bản đang chạy.
+
+    Ném nếu `nguon` không có dự đoán nào — dựng `sabotage` rỗng thì cổng xanh mà
+    không kiểm gì, đúng cái lỗi hàm này sinh ra để chặn.
+    """
+    from ocr_bench.adapters.sabotage import SabotageAdapter
+
+    goc = [r for r in ket_qua if r.engine == nguon]
+    if not goc:
+        raise ValueError(
+            f"không có dự đoán nào của {nguon!r} — không dựng được `sabotage`. "
+            f"Chạy engine đó trước, hoặc đổi `nguon=`."
+        )
+    tu_dia = NguonTuDia(goc)
+    sa = SabotageAdapter(tu_dia)
+    return [sa.execute(p) for p in tu_dia.duong_dan()]
 
 
 def _rows(bang: ScoreTable, metric: str, engine: str) -> list[MetricResult]:

@@ -19,8 +19,8 @@ Ngưỡng phân tán: **0.02**. Engine tổng hợp bị loại khỏi phép tí
 | `assert_text_presence` | ⬜ | — | — | — | metric không đo được ở đây (sabotage n_scored=0, opendataloader n_scored=0) — cổng KHÔNG chạy, không tính là đạt. |
 | `cer` | ⬜ | — | — | — | metric không đo được ở đây (sabotage n_scored=0, opendataloader n_scored=0) — cổng KHÔNG chạy, không tính là đạt. |
 | `heading` | ✅ | ✅ | 0.0000 | 0.5611 | đứng bét trong 2 engine đo được, 0.0000 < opendataloader 0.5611. |
-| `img_f1` | ✅ | ✅ | 0.1446 | 0.3548 | đứng bét trong 3 engine đo được, 0.1446 < opendataloader 0.3548. |
-| `img_iou` | ✅ | ✅ | 0.0912 | 0.3030 | đứng bét trong 3 engine đo được, 0.0912 < opendataloader 0.3030. |
+| `img_f1` | ✅ | ✅ | 0.1446 | 0.3650 | đứng bét trong 3 engine đo được, 0.1446 < opendataloader 0.3650. |
+| `img_iou` | ✅ | ✅ | 0.0912 | 0.3132 | đứng bét trong 3 engine đo được, 0.0912 < opendataloader 0.3132. |
 | `nid` | ⬜ | — | — | — | metric không đo được ở đây (sabotage n_scored=0, opendataloader n_scored=0) — cổng KHÔNG chạy, không tính là đạt. |
 | `teds` | ⬜ | — | — | — | metric không đo được ở đây (sabotage n_scored=0, opendataloader n_scored=0) — cổng KHÔNG chạy, không tính là đạt. |
 | `teds_struct` | ⬜ | — | — | — | metric không đo được ở đây (sabotage n_scored=0, opendataloader n_scored=0) — cổng KHÔNG chạy, không tính là đạt. |
@@ -43,7 +43,7 @@ Ngưỡng phân tán: **0.02**. Engine tổng hợp bị loại khỏi phép tí
 | `cer` | khong_du_du_lieu | — | 0 | — | chỉ 0 engine thật đo được metric này (không có engine nào) — cần ít nhất 2 để nói về phân tán. Thiếu nhãn, không phải metric hỏng. |
 | `heading` | khong_du_du_lieu | — | 0 | opendataloader | chỉ 1 engine thật đo được metric này (opendataloader) — cần ít nhất 2 để nói về phân tán. Thiếu nhãn, không phải metric hỏng. |
 | `img_f1` | phan_biet_duoc | 0.0667 | 5 | marker, opendataloader | spread 0.0667 ≥ ngưỡng 0.02 trên 2 engine / 5 tài liệu chung. |
-| `img_iou` | phan_biet_duoc | 0.0633 | 5 | marker, opendataloader | spread 0.0633 ≥ ngưỡng 0.02 trên 2 engine / 5 tài liệu chung. |
+| `img_iou` | phan_biet_duoc | 0.1075 | 5 | marker, opendataloader | spread 0.1075 ≥ ngưỡng 0.02 trên 2 engine / 5 tài liệu chung. |
 | `nid` | khong_du_du_lieu | — | 0 | — | chỉ 0 engine thật đo được metric này (không có engine nào) — cần ít nhất 2 để nói về phân tán. Thiếu nhãn, không phải metric hỏng. |
 | `teds` | khong_du_du_lieu | — | 0 | — | chỉ 0 engine thật đo được metric này (không có engine nào) — cần ít nhất 2 để nói về phân tán. Thiếu nhãn, không phải metric hỏng. |
 | `teds_struct` | khong_du_du_lieu | — | 0 | — | chỉ 0 engine thật đo được metric này (không có engine nào) — cần ít nhất 2 để nói về phân tán. Thiếu nhãn, không phải metric hỏng. |

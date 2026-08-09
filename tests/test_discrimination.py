@@ -371,6 +371,88 @@ class TestNguonTuDia:
         assert SabotageAdapter().source.name == "noop"
         assert NGUON_MANH != "noop"
 
+    def test_hang_so_nguon_khai_o_thu_vien_dung_bang_hang_so_o_test(self) -> None:
+        """Đổi `NGUON_SABOTAGE` phải hiện trong diff của test, không lặng lẽ.
+
+        Test ở file này cố tình viết `"opendataloader"` bằng chữ chứ không import hằng
+        số — import thì đổi hằng số là mọi test tự đổi theo và không còn ai canh. Dòng
+        này là chỗ duy nhất nối hai bên, nên nới nó phải cố ý.
+        """
+        assert D.NGUON_SABOTAGE == NGUON_MANH
+
+    def test_ten_engine_that_la_cua_nguon_chu_khong_phai_cua_lop_phat_lai(self) -> None:
+        """`sabotage/1+opendataloader`, KHÔNG phải `sabotage/1+nguon_tu_dia`.
+
+        `version()` và `config_fingerprint()` đi thẳng vào `manifest.json` của bản công
+        bố. Lấy `name` của `NguonTuDia` ở đó thì bảng ghi tên lớp phát lại, và người
+        đọc mất thông tin *engine nào đã bị làm hỏng* — tức mất luôn ý nghĩa của cổng.
+        """
+        tu_dia = D.NguonTuDia([self._kq("a")])
+        assert tu_dia.name == "nguon_tu_dia"
+        assert tu_dia.ten_engine_that == NGUON_MANH
+
+        sa = SabotageAdapter(tu_dia)
+        assert sa.version() == f"sabotage/1+{NGUON_MANH}"
+        assert sa.config_fingerprint()["source"] == NGUON_MANH
+
+    def test_adapter_thuong_thi_ten_engine_that_chinh_la_name(self) -> None:
+        """Mặc định ở lớp `Adapter` không được đổi hành vi của adapter thật."""
+        from ocr_bench.adapters.noop import NoopAdapter
+
+        assert NoopAdapter().ten_engine_that == "noop"
+
+    def test_dung_sabotage_thieu_nguon_thi_nem(self) -> None:
+        """Không có dự đoán của nguồn ⇒ phải ném, không trả danh sách rỗng.
+
+        Trả rỗng thì `kiem_sabotage` không thấy `sabotage` trong bảng và mọi metric
+        báo "cổng không chạy" — nhìn giống thiếu nhãn, không giống thiếu nguồn.
+        """
+        with pytest.raises(ValueError, match="không có dự đoán nào"):
+            D.dung_sabotage([self._kq("a", engine="marker")])
+
+    def test_dung_sabotage_ra_dung_quan_the_cua_nguon(self) -> None:
+        kq = [self._kq("a"), self._kq("b"), self._kq("c", engine="marker")]
+        sab = D.dung_sabotage(kq)
+        assert {r.doc_id for r in sab} == {"a", "b"}
+        assert {r.engine for r in sab} == {"sabotage"}
+        assert {r.engine_version for r in sab} == {f"sabotage/1+{NGUON_MANH}"}
+
+
+@pytest.mark.needs_corpus
+class TestQuanTheSabotageTrenDia:
+    """`prediction/sabotage/` phải là **cùng một** quần thể mà cổng C2 chấm.
+
+    Đã từng không phải: đĩa giữ 41 file `sabotage/1+noop` (do `make_predictions.py`
+    dựng với nguồn mặc định), còn `c2_report.py` dựng riêng 205 file
+    `sabotage/1+opendataloader` trong bộ nhớ. Bảng công bố D1 chấm bản thứ nhất, cổng
+    C2 gác bản thứ hai — hai con số dưới cùng một cái tên, và không có gì trong bảng
+    chỉ ra điều đó. Bản `noop` còn hoà `0.0000` với chính `noop` ở mọi metric, mà hoà ở
+    đáy thì không phải đứng bét: cổng xanh trong khi chưa kiểm được gì.
+
+    Ba test dưới đây canh đúng ba cách nó tái diễn: sai nguồn, trộn nguồn, lệch bộ
+    tài liệu.
+    """
+
+    @pytest.fixture(scope="class")
+    def tren_dia(self) -> list[OcrResult]:
+        res = load_predictions(GOC / "prediction", engines=["sabotage"])
+        if not res:
+            pytest.skip("chưa có prediction/sabotage/")
+        return res
+
+    def test_dung_nguon_manh_chu_khong_phai_noop(self, tren_dia: list[OcrResult]) -> None:
+        assert {r.engine_version for r in tren_dia} == {f"sabotage/1+{NGUON_MANH}"}
+        assert {r.config_fingerprint.get("source") for r in tren_dia} == {NGUON_MANH}
+
+    def test_khong_tron_hai_quan_the(self, tren_dia: list[OcrResult]) -> None:
+        """Một version duy nhất. Trộn thì trung bình cộng hai thứ khác nhau."""
+        assert len({r.engine_version for r in tren_dia}) == 1
+
+    def test_phu_dung_bo_tai_lieu_cua_nguon(self, tren_dia: list[OcrResult]) -> None:
+        """Thiếu tài liệu nào thì tài liệu đó vắng mặt ở cổng mà bảng không báo."""
+        nguon = load_predictions(GOC / "prediction", engines=[NGUON_MANH])
+        assert {r.doc_id for r in tren_dia} == {r.doc_id for r in nguon}
+
 
 # ------------------------------------------------------------ corpus thật
 
@@ -389,13 +471,12 @@ def bang_that() -> ScoreTable:
     gt.update(corpus.load_olmocr())
 
     res = load_predictions(GOC / "prediction")
-    nguon = [r for r in res if r.engine == NGUON_MANH]
-    if not nguon:
+    if not any(r.engine == NGUON_MANH for r in res):
         pytest.skip(f"không có dự đoán nào của {NGUON_MANH}")
 
-    tu_dia = D.NguonTuDia(nguon)
-    sa = SabotageAdapter(tu_dia)
-    sab = [sa.execute(p) for p in tu_dia.duong_dan()]
+    # Cùng một hàm mà `c2_report.py` và `make_sabotage.py` gọi. Chép lại phép dựng ở
+    # đây thì test canh bản sao, không canh bản đang chạy.
+    sab = D.dung_sabotage(res, nguon=NGUON_MANH)
 
     ten = sorted(registry.list_metrics())
     metrics = [registry.get_metric(t)() for t in ten]

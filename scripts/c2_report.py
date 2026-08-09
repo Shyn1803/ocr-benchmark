@@ -22,12 +22,14 @@ sys.path.insert(0, str(GOC / "src"))
 
 from ocr_bench import discrimination as D  # noqa: E402
 from ocr_bench import registry  # noqa: E402
-from ocr_bench.adapters.sabotage import SabotageAdapter  # noqa: E402
 from ocr_bench.corpus import load_doclaynet, load_olmocr  # noqa: E402
 from ocr_bench.prediction import load_predictions  # noqa: E402
 from ocr_bench.scorer import ScoreTable, score_results  # noqa: E402
 
-NGUON_MANH = "opendataloader"
+# Khai ở `discrimination`, không khai lại ở đây: hằng số này từng nằm trong file này
+# trong khi `prediction/sabotage/` trên đĩa lại sinh từ `noop`, và hai quần thể cùng
+# tên đã đi vào hai bảng khác nhau. Xem `D.NGUON_SABOTAGE`.
+NGUON_MANH = D.NGUON_SABOTAGE
 
 
 def _cham() -> ScoreTable:
@@ -37,12 +39,7 @@ def _cham() -> ScoreTable:
 
     res = load_predictions(GOC / "prediction")
     nguon = [r for r in res if r.engine == NGUON_MANH]
-    if not nguon:
-        raise SystemExit(f"không có dự đoán nào của `{NGUON_MANH}` — không dựng được sabotage")
-
-    tu_dia = D.NguonTuDia(nguon)
-    sa = SabotageAdapter(tu_dia)
-    sab = [sa.execute(p) for p in tu_dia.duong_dan()]
+    sab = D.dung_sabotage(res)
 
     ten = sorted(registry.list_metrics())
     metrics = [registry.get_metric(t)() for t in ten]

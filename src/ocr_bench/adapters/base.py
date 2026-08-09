@@ -27,6 +27,21 @@ class Adapter(abc.ABC):
     name: ClassVar[str]
     capabilities: ClassVar[frozenset[Capability]]
 
+    @property
+    def ten_engine_that(self) -> str:
+        """Engine **thật** đứng sau adapter này. Mặc định chính là `name`.
+
+        Chỉ khác `name` ở adapter đóng vai trung gian: `NguonTuDia` phát lại kết quả
+        đã lưu của một engine khác, nên `name` của nó (`nguon_tu_dia`) là chi tiết cài
+        đặt chứ không phải danh tính engine.
+
+        `SabotageAdapter` ghi tên nguồn vào `version()` và `config_fingerprint()`, và
+        hai thứ đó đi thẳng vào `manifest.json` của bản công bố. Lấy `name` ở đó thì
+        bảng ghi `sabotage/1+nguon_tu_dia` — người đọc mất luôn thông tin *engine nào
+        đã bị làm hỏng*, tức mất ý nghĩa của cả cổng C2.
+        """
+        return self.name
+
     def version(self) -> str:
         """Version engine, ghi vào kết quả. D1 lưu `history/` kèm số này."""
         return "unknown"
