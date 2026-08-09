@@ -23,6 +23,11 @@ Surya vài GB và opendataloader cần Java 11+.
 Thêm `.[perf]` (`psutil`) trước khi lấy số bộ nhớ để công bố. Thiếu nó thì cột RSS hiện
 `—` chứ không hiện 0, nhưng engine gọi tiến trình con sẽ **không đo được** — xem bẫy 13.
 
+Trên console dùng codepage không phải UTF-8 (cp932, cp1258…), các script trong `scripts/`
+chết ngay ở `print()` đầu tiên với `UnicodeEncodeError`. Đặt `PYTHONIOENCODING=utf-8` trước
+khi chạy. Chỉ ảnh hưởng phần in ra màn hình — file vẫn luôn được ghi bằng UTF-8, nên gặp lỗi
+này **không** có nghĩa dữ liệu hỏng.
+
 ## Mười ba cái bẫy mà repo này chủ động chặn
 
 Bảy cái đầu thuộc loại **không bao giờ ném exception** — chúng chỉ làm bảng xếp hạng sai
@@ -468,6 +473,19 @@ khi thiếu — bỏ ảnh là bỏ cả `.json` đi kèm, hoặc sinh lại c�
 | **B4 — NID / Heading** | **xong** — 42 test, coverage 100%; `nid` N/A toàn bộ (không có nhãn thứ tự đọc), `heading` chỉ 15 tài liệu / 1 engine và **không được đọc trung bình một mình** — xem bẫy 10 |
 | **B5 — bộ khẳng định olmOCR** | **xong** — 35 test, coverage 96%; **sáu** metric riêng cho sáu loại (AC-02 cấm gộp), chấm tách theo loại × theo tầng bằng `scripts/score_assertions.py`; xem bẫy 11 và 12 |
 | **B6 — tốc độ / bộ nhớ / tỉ lệ hỏng** | **xong** — 27 test, coverage 100% (`perf`) & 95% (`rss`); perf **không** kế thừa `Metric`; schema prediction lên bản 2, nâng 718 file tại chỗ không chạy lại engine; xem bẫy 13 |
+| **C1 — tự kiểm từng thước đo** | **xong** — identity / đơn điệu / bất biến Unicode cho cả 14 metric; danh sách đối chiếu lấy từ **registry**, nên đăng ký metric mới mà quên fixture là `pytest` đỏ ngay |
+| **C2 — thước đo có phân biệt được không** | **xong về code, cổng CHƯA QUA** — `results/c2_discrimination.md`: chỉ **3/14** metric có cổng `sabotage` chạy được (3/3 đạt), 11/14 thiếu nhãn nên cổng không chạy. Bảng chính còn `img_f1`, `img_iou` |
+| **D1 — chạy toàn bộ, lưu lịch sử** | **xong** — `history/2026-08-07/` và `history/2026-08-07-sau-sua-nhan/`, mỗi bản 5 file kèm version từng engine. Chạy lại từ `prediction/` ra **đúng cùng số** (chỉ khác `generated_at`) |
+| **D2 — đọc tay 20 ca hỏng nặng nhất** | **xong** — `results/failure-analysis.md`: 9 engine hỏng · 2 nhãn sai · 2 metric đo sai; nhãn sửa qua overlay `ground-truth/doclaynet/fixes.json`, **không** sửa `layout_coco.json` |
+| **D3 — viết tài liệu đánh giá** | **CHƯA LÀM — bị chặn bởi cổng C2.** Xem `.claude/tasks/TASK-086/review.md` |
+
+### Vì sao D3 chưa viết được
+
+Cổng §5 của kế hoạch đòi `sabotage` đứng bét ở **mọi** metric. Hiện 11/14 metric không có
+đủ nhãn để cổng chạy — đó là vấn đề **bộ mẫu**, không phải metric hỏng. Thêm nữa
+`scripts/c2_report.py` dựng `sabotage` từ `opendataloader`, còn `scripts/d1_report.py`
+công bố `sabotage` dựng từ `noop` (41 tài liệu): hai báo cáo đang nói về hai quần thể khác
+nhau dưới cùng một cái tên. Phải thống nhất trước khi công bố lại.
 
 ## Cảnh báo dữ liệu
 
