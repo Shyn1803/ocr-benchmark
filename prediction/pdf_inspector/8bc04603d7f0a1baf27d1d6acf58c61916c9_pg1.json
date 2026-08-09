@@ -1,0 +1,2866 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "8bc04603d7f0a1baf27d1d6acf58c61916c9_pg1",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "# A. Filter Intensities and their Respective Parameters\n\nIn Section 4.1 we introduce abstract levels of intensities for each filter we apply to an image. We now map each intensity to actual parameters passed to editing libraries to achieve the given filter intensity.\n\n|Distortion|Intensity|Actual Parameters||||\n|---|---|---|---|---|---|\n|JPEG compression|[0,... +4, +5]|||||\n|Defocus blur|[0,... +4, +5]|||||\n|Motion blur Pixelate Technical Gaussian noise Impulse noise|[0,... +4, +5] [0,... +4, +5] [0,... +4, +5] [0,... +4, +5]|The editing library accepts the technical intensities as is.||||\n|Brightness|[-5, -4,..., +4, +5]|[1:0,|0:8,..., 0:8, 1:0]|||\n|Contrast|[-5, -4,..., +4, +5]|[1:0,|0:8,..., 0:8, 1:0]|||\n|Saturation|[-5, -4,..., +4, +5]|[1:0,|0:8,..., 0:8, 1:0]|||\n|Exposure|[-5, -4,..., +4, +5]|[3:0,|2:4,..., 2:4, 3:0]|||\n|Style Shadows|[-5, -4,..., +2, +3]|[100,|60, 20, 20, 40, 50, 60, 80,100]|||\n|Highlights|[-3, -2,..., +4, +5]|[100,|80, 60,|50, 40,|20, 20, 60,100]|\n|Temperature|[-4, -3,..., +4, +5]|[2000, 3000, 5000, 6000, 6500, 7000, 8000, 10 000, 14 000, 18 000]||||\n|Tint|[-5, -4,..., +4, +5]|[0:75, 0:8,..., 1:2,1:25]||||\n|Vibrance|[-2, -1,..., +3, +4]|[0, 20, 25, 40, 60, 80, 100]||||\n|Rotation|[-5, -4,..., +4, +5]|[10|, 8,..., 8|, 10|]|\n|Horizontal crop|[-5, -4,..., +4, +5]|We resize the image to 336px and then crop patches of size 224px from the||||\n|Vertical crop|[-5, -4,..., +4, +5]|resulting image. Intensity 0 is a centercrop, while a jintensityj == 5 results||||\n|Left Diagonal crop Composition Right Diagonal crop|[-5, -4,..., +4, +5] [-5, -4,..., +4, +5]|in a crop from the images’ border.||||\n|Image Ratio|[-5, -4,..., +4, +5]|[stretch along y-axis 100 %, y80 %,..., x80 %, stretch along x-axis 100 %]||||\n\nTable 3. Actual parameters and implementation specifics for each distortion and intensity level. Technical parameters are passed to\n\nimagenet-c [12] and style parameters to darktable [37] while compositional distortions are implemented by us.\n\n# B. Dataset Content Analysis\n\nTo show that the images of our dataset (Section 4.2) contain a large variety of contents, we apply a pretrained DenseNet121 [16] for image classification and RetinaNet [25] for object detection on our newly introduced dataset. We find that the images of our dataset spread across many different classes and contain a wide variety of objects and subjects.\n\n|most common classes||most common objects||\n|---|---|---|---|\n|class|count|object|count|\n|seashore|3554|person|44301|\n|alp|2568|car|3186|\n|lakeside|2446|cup|2880|\n|fountain|2265|bird|2788|\n|valley|2011|cell phone|1749|\n|miniskirt|1455|boat|1618|\n|gown|1430|dog|1581|\n|bikini|1176|potted plant|1580|\n|...|...|...|...|\n|sloth bear|2|refrigerator|31|\n|affenpinscher|2|snowboard|25|\n|patas|1|skis|23|\n|Sealyham terrier|1|hair dryer|7|\n|Japanese spaniel|1|toaster|7|\n\nTable 4. Most commonly detected classes and objects in the images of our dataset.\n\nFull list: [https://github.com/janpf/self-supervised-multi-task-aesthetic-pretraining](https://github.com/janpf/self-supervised-multi-task-aesthetic-pretraining)\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0818823521433313,
+        "y0": 0.08839370265151514,
+        "x1": 0.5191066966337317,
+        "y1": 0.10348865239307137
+      },
+      "text": "A. Filter Intensities and their Respective Parameters",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10141666886074091,
+        "y0": 0.11480988516952051,
+        "x1": 0.8907087488112106,
+        "y1": 0.12738892526337597
+      },
+      "text": "In Section 4.1 we introduce abstract levels of intensities for each filter we apply to an image. We now map each intensity",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0818823521433313,
+        "y0": 0.12990460371730306,
+        "x1": 0.6152884290109273,
+        "y1": 0.1424836438111584
+      },
+      "text": "to actual parameters passed to editing libraries to achieve the given filter intensity.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.16088208285245031,
+        "x1": 0.19902681836894914,
+        "y1": 0.17220329515861743
+      },
+      "text": "Distortion",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.16088208285245031,
+        "x1": 0.33006520988115295,
+        "y1": 0.17220329515861743
+      },
+      "text": "Intensity",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4064847160788143,
+        "y0": 0.16088208285245031,
+        "x1": 0.5238976572074142,
+        "y1": 0.17220329515861743
+      },
+      "text": "Actual Parameters",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.18103485878067782,
+        "x1": 0.24664251788768893,
+        "y1": 0.19235607108684505
+      },
+      "text": "JPEG compression",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.18103485878067782,
+        "x1": 0.35520630880118975,
+        "y1": 0.19235607108684505
+      },
+      "text": "[0, . . . +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.19487196026426368,
+        "x1": 0.21162666370666106,
+        "y1": 0.2061931725704309
+      },
+      "text": "Defocus blur",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.19487196026426368,
+        "x1": 0.35520630880118975,
+        "y1": 0.2061931725704309
+      },
+      "text": "[0, . . . +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.20870906174784964,
+        "x1": 0.20595673953785615,
+        "y1": 0.22003027405401676
+      },
+      "text": "Motion blur",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.20870906174784964,
+        "x1": 0.35520630880118975,
+        "y1": 0.22003027405401676
+      },
+      "text": "[0, . . . +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4064771365496068,
+        "y0": 0.21562699597291268,
+        "x1": 0.7372962103949653,
+        "y1": 0.2269482082790799
+      },
+      "text": "The editing library accepts the technical intensities as is.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.22254493019797583,
+        "x1": 0.18252982345281862,
+        "y1": 0.23386614250414295
+      },
+      "text": "Pixelate",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.22254493019797583,
+        "x1": 0.35520630880118975,
+        "y1": 0.23386614250414295
+      },
+      "text": "[0, . . . +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "Technical",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.2363820316815617,
+        "x1": 0.22384558783637154,
+        "y1": 0.2477032439877288
+      },
+      "text": "Gaussian noise",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.2363820316815617,
+        "x1": 0.35520630880118975,
+        "y1": 0.2477032439877288
+      },
+      "text": "[0, . . . +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.25021913316514754,
+        "x1": 0.21734055662466809,
+        "y1": 0.26154034547131466
+      },
+      "text": "Impulse noise",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.25021913316514754,
+        "x1": 0.35520630880118975,
+        "y1": 0.26154034547131466
+      },
+      "text": "[0, . . . +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.2703719861579664,
+        "x1": 0.19822101967007505,
+        "y1": 0.28169319846413354
+      },
+      "text": "Brightness",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.2703719861579664,
+        "x1": 0.38694030163334864,
+        "y1": 0.28169319846413354
+      },
+      "text": "[-5, -4, . . . , +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4064847160788143,
+        "y0": 0.2703719861579664,
+        "x1": 0.41136348948759194,
+        "y1": 0.28169319846413354
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42306698069852944,
+        "y0": 0.2703719861579664,
+        "x1": 0.4305829316182853,
+        "y1": 0.28169319846413354
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43059639525569343,
+        "y0": 0.2703719861579664,
+        "x1": 0.4347719180038552,
+        "y1": 0.28169319846413354
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43477939780241526,
+        "y0": 0.2703719861579664,
+        "x1": 0.4459715699837878,
+        "y1": 0.28169319846413354
+      },
+      "text": "0,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4613447500989328,
+        "y0": 0.2703719861579664,
+        "x1": 0.4688607010186887,
+        "y1": 0.28169319846413354
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4688741646560968,
+        "y0": 0.2703719861579664,
+        "x1": 0.47304968740425857,
+        "y1": 0.28169319846413354
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47305716720281865,
+        "y0": 0.2703719861579664,
+        "x1": 0.520332934809666,
+        "y1": 0.28169319846413354
+      },
+      "text": "8, . . . , 0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5203463984470741,
+        "y0": 0.2703719861579664,
+        "x1": 0.5245219211952359,
+        "y1": 0.28169319846413354
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.524529400993796,
+        "y0": 0.2703719861579664,
+        "x1": 0.5468999326618669,
+        "y1": 0.28169319846413354
+      },
+      "text": "8, 1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5469133962992749,
+        "y0": 0.2703719861579664,
+        "x1": 0.5510889190474367,
+        "y1": 0.28169319846413354
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5510947532903135,
+        "y0": 0.2703719861579664,
+        "x1": 0.5635029412562551,
+        "y1": 0.28169319846413354
+      },
+      "text": "0]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.2842090876415523,
+        "x1": 0.1851962968414905,
+        "y1": 0.2955302999477194
+      },
+      "text": "Contrast",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.2842090876415523,
+        "x1": 0.38694030163334864,
+        "y1": 0.2955302999477194
+      },
+      "text": "[-5, -4, . . . , +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4064847160788143,
+        "y0": 0.2842090876415523,
+        "x1": 0.41136348948759194,
+        "y1": 0.2955302999477194
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42306698069852944,
+        "y0": 0.2842090876415523,
+        "x1": 0.4305829316182853,
+        "y1": 0.2955302999477194
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43059639525569343,
+        "y0": 0.2842090876415523,
+        "x1": 0.4347719180038552,
+        "y1": 0.2955302999477194
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43477939780241526,
+        "y0": 0.2842090876415523,
+        "x1": 0.4459715699837878,
+        "y1": 0.2955302999477194
+      },
+      "text": "0,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4613447500989328,
+        "y0": 0.2842090876415523,
+        "x1": 0.4688607010186887,
+        "y1": 0.2955302999477194
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4688741646560968,
+        "y0": 0.2842090876415523,
+        "x1": 0.47304968740425857,
+        "y1": 0.2955302999477194
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47305716720281865,
+        "y0": 0.2842090876415523,
+        "x1": 0.520332934809666,
+        "y1": 0.2955302999477194
+      },
+      "text": "8, . . . , 0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5203463984470741,
+        "y0": 0.2842090876415523,
+        "x1": 0.5245219211952359,
+        "y1": 0.2955302999477194
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.524529400993796,
+        "y0": 0.2842090876415523,
+        "x1": 0.5468999326618669,
+        "y1": 0.2955302999477194
+      },
+      "text": "8, 1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5469133962992749,
+        "y0": 0.2842090876415523,
+        "x1": 0.5510889190474367,
+        "y1": 0.2955302999477194
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5510947532903135,
+        "y0": 0.2842090876415523,
+        "x1": 0.5635029412562551,
+        "y1": 0.2955302999477194
+      },
+      "text": "0]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.29804618912513814,
+        "x1": 0.19577430276309743,
+        "y1": 0.30936740143130526
+      },
+      "text": "Saturation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471377802830116,
+        "y0": 0.29804618912513814,
+        "x1": 0.38694030163334864,
+        "y1": 0.30936740143130526
+      },
+      "text": "[-5, -4, . . . , +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4064847160788143,
+        "y0": 0.29804618912513814,
+        "x1": 0.41136348948759194,
+        "y1": 0.30936740143130526
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42306698069852944,
+        "y0": 0.29804618912513814,
+        "x1": 0.4305829316182853,
+        "y1": 0.30936740143130526
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43059639525569343,
+        "y0": 0.29804618912513814,
+        "x1": 0.4347719180038552,
+        "y1": 0.30936740143130526
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43477939780241526,
+        "y0": 0.29804618912513814,
+        "x1": 0.4459715699837878,
+        "y1": 0.30936740143130526
+      },
+      "text": "0,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4613447500989328,
+        "y0": 0.29804618912513814,
+        "x1": 0.4688607010186887,
+        "y1": 0.30936740143130526
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4688741646560968,
+        "y0": 0.29804618912513814,
+        "x1": 0.47304968740425857,
+        "y1": 0.30936740143130526
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47305716720281865,
+        "y0": 0.29804618912513814,
+        "x1": 0.5203345803653493,
+        "y1": 0.30936740143130526
+      },
+      "text": "8, . . . , 0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5203463984470741,
+        "y0": 0.29804618912513814,
+        "x1": 0.5245219211952359,
+        "y1": 0.30936740143130526
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.524529400993796,
+        "y0": 0.29804618912513814,
+        "x1": 0.5468999326618669,
+        "y1": 0.30936740143130526
+      },
+      "text": "8, 1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5469133962992749,
+        "y0": 0.29804618912513814,
+        "x1": 0.5510889190474367,
+        "y1": 0.30936740143130526
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5510947532903135,
+        "y0": 0.29804618912513814,
+        "x1": 0.5635029412562551,
+        "y1": 0.30936740143130526
+      },
+      "text": "0]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.311883290608724,
+        "x1": 0.1908808814154731,
+        "y1": 0.3232045029148911
+      },
+      "text": "Exposure",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.311883290608724,
+        "x1": 0.3869403514986724,
+        "y1": 0.3232045029148911
+      },
+      "text": "[-5, -4, . . . , +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40648476594413807,
+        "y0": 0.311883290608724,
+        "x1": 0.41136353935291564,
+        "y1": 0.3232045029148911
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42306698069852944,
+        "y0": 0.311883290608724,
+        "x1": 0.4305829316182853,
+        "y1": 0.3232045029148911
+      },
+      "text": "3",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43059639525569343,
+        "y0": 0.311883290608724,
+        "x1": 0.4347719180038552,
+        "y1": 0.3232045029148911
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43477939780241526,
+        "y0": 0.311883290608724,
+        "x1": 0.4459715699837878,
+        "y1": 0.3232045029148911
+      },
+      "text": "0,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4613447500989328,
+        "y0": 0.311883290608724,
+        "x1": 0.4688607010186887,
+        "y1": 0.3232045029148911
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4688741646560968,
+        "y0": 0.311883290608724,
+        "x1": 0.47304968740425857,
+        "y1": 0.3232045029148911
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47305716720281865,
+        "y0": 0.311883290608724,
+        "x1": 0.5203345803653493,
+        "y1": 0.3232045029148911
+      },
+      "text": "4, . . . , 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5203463984470741,
+        "y0": 0.311883290608724,
+        "x1": 0.5245219211952359,
+        "y1": 0.3232045029148911
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.524529400993796,
+        "y0": 0.311883290608724,
+        "x1": 0.5468999326618669,
+        "y1": 0.3232045029148911
+      },
+      "text": "4, 3",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5469133962992749,
+        "y0": 0.311883290608724,
+        "x1": 0.5510889190474367,
+        "y1": 0.3232045029148911
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5510947532903135,
+        "y0": 0.311883290608724,
+        "x1": 0.5635029412562551,
+        "y1": 0.3232045029148911
+      },
+      "text": "0]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.32572039209230985,
+        "x1": 0.18808253917818754,
+        "y1": 0.33704160439847697
+      },
+      "text": "Shadows",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.32572039209230985,
+        "x1": 0.38694030163334864,
+        "y1": 0.33704160439847697
+      },
+      "text": "[-5, -4, . . . , +2, +3]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4064847160788143,
+        "y0": 0.32572039209230985,
+        "x1": 0.41136348948759194,
+        "y1": 0.33704160439847697
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42306698069852944,
+        "y0": 0.32572039209230985,
+        "x1": 0.44931798199423,
+        "y1": 0.33704160439847697
+      },
+      "text": "100,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.464691162109375,
+        "y0": 0.32572039209230985,
+        "x1": 0.4834127488479116,
+        "y1": 0.33704160439847697
+      },
+      "text": "60,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49878592896305657,
+        "y0": 0.32572039209230985,
+        "x1": 0.6568885753357333,
+        "y1": 0.33704160439847697
+      },
+      "text": "20, 20, 40, 50, 60, 80,100]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "Style",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.3395574935758957,
+        "x1": 0.19741522097120098,
+        "y1": 0.3508787058820628
+      },
+      "text": "Highlights",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.3395574935758957,
+        "x1": 0.38694030163334864,
+        "y1": 0.3508787058820628
+      },
+      "text": "[-3, -2, . . . , +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4064847160788143,
+        "y0": 0.3395574935758957,
+        "x1": 0.41136348948759194,
+        "y1": 0.3508787058820628
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4230686262542126,
+        "y0": 0.3395574935758957,
+        "x1": 0.44931798199423,
+        "y1": 0.3508787058820628
+      },
+      "text": "100,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.464691162109375,
+        "y0": 0.3395574935758957,
+        "x1": 0.4834127488479116,
+        "y1": 0.3508787058820628
+      },
+      "text": "80,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49878592896305657,
+        "y0": 0.3395574935758957,
+        "x1": 0.5175075157015931,
+        "y1": 0.3508787058820628
+      },
+      "text": "60,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5328823413724214,
+        "y0": 0.3395574935758957,
+        "x1": 0.5516022825552747,
+        "y1": 0.3508787058820628
+      },
+      "text": "50,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5669771082261029,
+        "y0": 0.3395574935758957,
+        "x1": 0.5856970494089563,
+        "y1": 0.3508787058820628
+      },
+      "text": "40,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6010718750797845,
+        "y0": 0.3395574935758957,
+        "x1": 0.6920241810917075,
+        "y1": 0.3508787058820628
+      },
+      "text": "20, 20, 60,100]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.35339459505948156,
+        "x1": 0.20937040740368412,
+        "y1": 0.3647158073656487
+      },
+      "text": "Temperature",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.35339459505948156,
+        "x1": 0.38694030163334864,
+        "y1": 0.3647158073656487
+      },
+      "text": "[-4, -3, . . . , +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4064847160788143,
+        "y0": 0.35339459505948156,
+        "x1": 0.8168951296338848,
+        "y1": 0.3647158073656487
+      },
+      "text": "[2000, 3000, 5000, 6000, 6500, 7000, 8000, 10 000, 14 000, 18 000]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.36723046350960775,
+        "x1": 0.15945452023175807,
+        "y1": 0.378551675815775
+      },
+      "text": "Tint",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.36723046350960775,
+        "x1": 0.38694030163334864,
+        "y1": 0.378551675815775
+      },
+      "text": "[-5, -4, . . . , +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4064847160788143,
+        "y0": 0.36723046350960775,
+        "x1": 0.4188721600700827,
+        "y1": 0.378551675815775
+      },
+      "text": "[0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41888562370749083,
+        "y0": 0.36723046350960775,
+        "x1": 0.42306114645565257,
+        "y1": 0.378551675815775
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4230686262542126,
+        "y0": 0.36723046350960775,
+        "x1": 0.4529669269237643,
+        "y1": 0.378551675815775
+      },
+      "text": "75, 0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4529803905611724,
+        "y0": 0.36723046350960775,
+        "x1": 0.45715591330933414,
+        "y1": 0.378551675815775
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4571633931078942,
+        "y0": 0.36723046350960775,
+        "x1": 0.5044391607147416,
+        "y1": 0.378551675815775
+      },
+      "text": "8, . . . , 1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5044526243521497,
+        "y0": 0.36723046350960775,
+        "x1": 0.5086281471003115,
+        "y1": 0.378551675815775
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5086356268988715,
+        "y0": 0.36723046350960775,
+        "x1": 0.5273427526935254,
+        "y1": 0.378551675815775
+      },
+      "text": "2,1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5273562163309334,
+        "y0": 0.36723046350960775,
+        "x1": 0.5315317390790952,
+        "y1": 0.378551675815775
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5315392188776552,
+        "y0": 0.36723046350960775,
+        "x1": 0.5514751758450777,
+        "y1": 0.378551675815775
+      },
+      "text": "25]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.3810675649931936,
+        "x1": 0.1883609123479307,
+        "y1": 0.39238877729936084
+      },
+      "text": "Vibrance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.3810675649931936,
+        "x1": 0.38694030163334864,
+        "y1": 0.39238877729936084
+      },
+      "text": "[-2, -1, . . . , +3, +4]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4064847160788143,
+        "y0": 0.3810675649931936,
+        "x1": 0.5655928468392566,
+        "y1": 0.39238877729936084
+      },
+      "text": "[0, 20, 25, 40, 60, 80, 100]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554412243412992,
+        "y0": 0.40122045651830807,
+        "x1": 0.1860167559455423,
+        "y1": 0.4125416688244752
+      },
+      "text": "Rotation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27471380296096304,
+        "y0": 0.40122045651830807,
+        "x1": 0.38694030163334864,
+        "y1": 0.4125416688244752
+      },
+      "text": "[-5, -4, . . . , +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4064847160788143,
+        "y0": 0.40122045651830807,
+        "x1": 0.4260144701191023,
+        "y1": 0.4125416688244752
+      },
+      "text": "[10",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.448638916015625,
+        "y0": 0.40122045651830807,
+        "x1": 0.46328989664713544,
+        "y1": 0.4125416688244752
+      },
+      "text": ", 8",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4859216228809232,
+        "y0": 0.40122045651830807,
+        "x1": 0.5254792855455984,
+        "y1": 0.4125416688244752
+      },
+      "text": ", . . . , 8",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5481111613753574,
+        "y0": 0.40122045651830807,
+        "x1": 0.5700876073899612,
+        "y1": 0.4125416688244752
+      },
+      "text": ", 10",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5927206799874898,
+        "y0": 0.40122045651830807,
+        "x1": 0.5975994533962674,
+        "y1": 0.4125416688244752
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554422216477738,
+        "y0": 0.4150575965341895,
+        "x1": 0.22790400187174478,
+        "y1": 0.4263788088403567
+      },
+      "text": "Horizontal crop",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2747139026916105,
+        "y0": 0.4150575965341895,
+        "x1": 0.3869404013639961,
+        "y1": 0.4263788088403567
+      },
+      "text": "[-5, -4, . . . , +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4064772362802543,
+        "y0": 0.42184421269580574,
+        "x1": 0.8696533402586295,
+        "y1": 0.43316542500197286
+      },
+      "text": "We resize the image to 336px and then crop patches of size 224px from the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554422216477738,
+        "y0": 0.42889469801777536,
+        "x1": 0.21080630433325673,
+        "y1": 0.4402159103239426
+      },
+      "text": "Vertical crop",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2747139026916105,
+        "y0": 0.42889469801777536,
+        "x1": 0.3869404013639961,
+        "y1": 0.4402159103239426
+      },
+      "text": "[-5, -4, . . . , +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4064772362802543,
+        "y0": 0.4356813141793916,
+        "x1": 0.7121113297206904,
+        "y1": 0.4470025264855587
+      },
+      "text": "resulting image. Intensity 0 is a centercrop, while a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7162811678219465,
+        "y0": 0.4356813141793916,
+        "x1": 0.7859419779060712,
+        "y1": 0.4470025264855587
+      },
+      "text": "jintensityj",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7911112168255974,
+        "y0": 0.4356813141793916,
+        "x1": 0.8696557337941687,
+        "y1": 0.4470025264855587
+      },
+      "text": "== 5 results",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554422216477738,
+        "y0": 0.4427317995013613,
+        "x1": 0.24702353882633782,
+        "y1": 0.45405301180752844
+      },
+      "text": "Left Diagonal crop",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2747139026916105,
+        "y0": 0.4427317995013613,
+        "x1": 0.3869404013639961,
+        "y1": 0.45405301180752844
+      },
+      "text": "[-5, -4, . . . , +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "Composition",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554422216477738,
+        "y0": 0.4565689009849472,
+        "x1": 0.2551841486513225,
+        "y1": 0.4678901132911143
+      },
+      "text": "Right Diagonal crop",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2747139026916105,
+        "y0": 0.4565689009849472,
+        "x1": 0.3869404013639961,
+        "y1": 0.4678901132911143
+      },
+      "text": "[-5, -4, . . . , +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4064772362802543,
+        "y0": 0.44951841566297746,
+        "x1": 0.6062580183440563,
+        "y1": 0.46083962796914457
+      },
+      "text": "in a crop from the images’ border.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13554422216477738,
+        "y0": 0.47040600246853304,
+        "x1": 0.2075684491325827,
+        "y1": 0.48172721477470015
+      },
+      "text": "Image Ratio",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2747139026916105,
+        "y0": 0.47040600246853304,
+        "x1": 0.3869404013639961,
+        "y1": 0.48172721477470015
+      },
+      "text": "[-5, -4, . . . , +4, +5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40648481580946183,
+        "y0": 0.47040600246853304,
+        "x1": 0.8498348659939237,
+        "y1": 0.48172721477470015
+      },
+      "text": "[stretch along y-axis 100 %, y80 %, . . . , x80 %, stretch along x-axis 100 %]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0818823521433313,
+        "y0": 0.48670909380671956,
+        "x1": 0.6663393008163552,
+        "y1": 0.4980303061128867
+      },
+      "text": "Table 3. Actual parameters and implementation specifics for each distortion and intensity level.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6776498532762715,
+        "y0": 0.48670909380671956,
+        "x1": 0.890704385595384,
+        "y1": 0.4980303061128867
+      },
+      "text": "Technical parameters are passed to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0818823521433313,
+        "y0": 0.5005449622568459,
+        "x1": 0.7292653002770119,
+        "y1": 0.5118661745630129
+      },
+      "text": "imagenet-c [12] and style parameters to darktable [37] while compositional distortions are implemented by us.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0818823521433313,
+        "y0": 0.5371613935990767,
+        "x1": 0.3152041217080908,
+        "y1": 0.5522563433406329
+      },
+      "text": "B. Dataset Content Analysis",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10141666886074091,
+        "y0": 0.563577576117082,
+        "x1": 0.7288651559867111,
+        "y1": 0.5761566162109375
+      },
+      "text": "To show that the images of our dataset (Section 4.2) contain a large variety of contents,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7379975163079555,
+        "y0": 0.563577576117082,
+        "x1": 0.8907085742825777,
+        "y1": 0.5761566162109375
+      },
+      "text": "we apply a pretrained",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0818823521433313,
+        "y0": 0.5786735276983241,
+        "x1": 0.8592582154118158,
+        "y1": 0.5912525677921796
+      },
+      "text": "DenseNet121 [16] for image classification and RetinaNet [25] for object detection on our newly introduced dataset.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8694161807789522,
+        "y0": 0.5786735276983241,
+        "x1": 0.8907087737438726,
+        "y1": 0.5912525677921796
+      },
+      "text": "We",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0818823521433313,
+        "y0": 0.5937682077138111,
+        "x1": 0.8742510228375204,
+        "y1": 0.6063472478076666
+      },
+      "text": "find that the images of our dataset spread across many different classes and contain a wide variety of objects and subjects.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3426617641074985,
+        "y0": 0.624745725381254,
+        "x1": 0.4753117779501123,
+        "y1": 0.6360669376874211
+      },
+      "text": "most common classes",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043206807055505,
+        "y0": 0.624745725381254,
+        "x1": 0.6394027011846405,
+        "y1": 0.6360669376874211
+      },
+      "text": "most common objects",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3331928128510519,
+        "y0": 0.644645960644038,
+        "x1": 0.36167431501002095,
+        "y1": 0.6559671729502052
+      },
+      "text": "class",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4515727423374949,
+        "y0": 0.644645960644038,
+        "x1": 0.4841272192063674,
+        "y1": 0.6559671729502052
+      },
+      "text": "count",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043153451159109,
+        "y0": 0.644645960644038,
+        "x1": 0.5401223375906352,
+        "y1": 0.6559671729502052
+      },
+      "text": "object",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6068428887261285,
+        "y0": 0.644645960644038,
+        "x1": 0.639397365595001,
+        "y1": 0.6559671729502052
+      },
+      "text": "count",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3331928128510519,
+        "y0": 0.6645474674725773,
+        "x1": 0.38363615048477073,
+        "y1": 0.6758686797787445
+      },
+      "text": "seashore",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4548252579433466,
+        "y0": 0.6645474674725773,
+        "x1": 0.4841272192063674,
+        "y1": 0.6758686797787445
+      },
+      "text": "3554",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043153451159109,
+        "y0": 0.6645474674725773,
+        "x1": 0.5433748531964869,
+        "y1": 0.6758686797787445
+      },
+      "text": "person",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6027699389488869,
+        "y0": 0.6645474674725773,
+        "x1": 0.6393974154603248,
+        "y1": 0.6758686797787445
+      },
+      "text": "44301",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3331928128510519,
+        "y0": 0.678384588222311,
+        "x1": 0.351096309088414,
+        "y1": 0.6897058005284782
+      },
+      "text": "alp",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4548252579433466,
+        "y0": 0.678384588222311,
+        "x1": 0.4841272192063674,
+        "y1": 0.6897058005284782
+      },
+      "text": "2568",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043153451159109,
+        "y0": 0.678384588222311,
+        "x1": 0.5222041809480954,
+        "y1": 0.6897058005284782
+      },
+      "text": "car",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6100954541973039,
+        "y0": 0.678384588222311,
+        "x1": 0.6393974154603248,
+        "y1": 0.6897058005284782
+      },
+      "text": "3186",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3331928128510519,
+        "y0": 0.6922217089720446,
+        "x1": 0.38105756472917945,
+        "y1": 0.7035429212782118
+      },
+      "text": "lakeside",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4548252579433466,
+        "y0": 0.6922217089720446,
+        "x1": 0.4841272192063674,
+        "y1": 0.7035429212782118
+      },
+      "text": "2446",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043153451159109,
+        "y0": 0.6922217089720446,
+        "x1": 0.5254713569591248,
+        "y1": 0.7035429212782118
+      },
+      "text": "cup",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6100954541973039,
+        "y0": 0.6922217089720446,
+        "x1": 0.6393974154603248,
+        "y1": 0.7035429212782118
+      },
+      "text": "2880",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3331928128510519,
+        "y0": 0.7060588297217782,
+        "x1": 0.3820245281543607,
+        "y1": 0.7173800420279455
+      },
+      "text": "fountain",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4548252579433466,
+        "y0": 0.7060588297217782,
+        "x1": 0.4841272192063674,
+        "y1": 0.7173800420279455
+      },
+      "text": "2265",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043153451159109,
+        "y0": 0.7060588297217782,
+        "x1": 0.5279180987987643,
+        "y1": 0.7173800420279455
+      },
+      "text": "bird",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6100954541973039,
+        "y0": 0.7060588297217782,
+        "x1": 0.6393974154603248,
+        "y1": 0.7173800420279455
+      },
+      "text": "2788",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3331928128510519,
+        "y0": 0.719895950471512,
+        "x1": 0.3684137631085963,
+        "y1": 0.7312171627776791
+      },
+      "text": "valley",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4548252579433466,
+        "y0": 0.719895950471512,
+        "x1": 0.4841272192063674,
+        "y1": 0.7312171627776791
+      },
+      "text": "2011",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043153451159109,
+        "y0": 0.719895950471512,
+        "x1": 0.5649411070580576,
+        "y1": 0.7312171627776791
+      },
+      "text": "cell phone",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6100954541973039,
+        "y0": 0.719895950471512,
+        "x1": 0.6393974154603248,
+        "y1": 0.7312171627776791
+      },
+      "text": "1749",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3331928128510519,
+        "y0": 0.7337330712212456,
+        "x1": 0.38611216326944187,
+        "y1": 0.7450542835274128
+      },
+      "text": "miniskirt",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4548252579433466,
+        "y0": 0.7337330712212456,
+        "x1": 0.4841272192063674,
+        "y1": 0.7450542835274128
+      },
+      "text": "1455",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043153451159109,
+        "y0": 0.7337330712212456,
+        "x1": 0.5295443566016902,
+        "y1": 0.7450542835274128
+      },
+      "text": "boat",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6100954541973039,
+        "y0": 0.7337330712212456,
+        "x1": 0.6393974154603248,
+        "y1": 0.7450542835274128
+      },
+      "text": "1618",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3331928128510519,
+        "y0": 0.747568920405224,
+        "x1": 0.36538102891710067,
+        "y1": 0.7588901327113913
+      },
+      "text": "gown",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4548252579433466,
+        "y0": 0.747568920405224,
+        "x1": 0.4841272192063674,
+        "y1": 0.7588901327113913
+      },
+      "text": "1430",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043153451159109,
+        "y0": 0.747568939671372,
+        "x1": 0.5262918409958385,
+        "y1": 0.7588901519775391
+      },
+      "text": "dog",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6100954541973039,
+        "y0": 0.747568939671372,
+        "x1": 0.6393974154603248,
+        "y1": 0.7588901519775391
+      },
+      "text": "1581",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3331928128510519,
+        "y0": 0.7614060604211056,
+        "x1": 0.36738820792802795,
+        "y1": 0.7727272727272727
+      },
+      "text": "bikini",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4548252579433466,
+        "y0": 0.7614060604211056,
+        "x1": 0.4841272192063674,
+        "y1": 0.7727272727272727
+      },
+      "text": "1176",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043153451159109,
+        "y0": 0.7614060604211056,
+        "x1": 0.5739074906492545,
+        "y1": 0.7727272727272727
+      },
+      "text": "potted plant",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6100954541973039,
+        "y0": 0.7614060604211056,
+        "x1": 0.6393974154603248,
+        "y1": 0.7727272727272727
+      },
+      "text": "1580",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3331928128510519,
+        "y0": 0.7752431811708392,
+        "x1": 0.3485763400208716,
+        "y1": 0.7865643934770064
+      },
+      "text": ". . .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4665460524216197,
+        "y0": 0.7752431811708392,
+        "x1": 0.48192960452410133,
+        "y1": 0.7865643934770064
+      },
+      "text": ". . .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043153451159109,
+        "y0": 0.7752431811708392,
+        "x1": 0.5196988972183926,
+        "y1": 0.7865643934770064
+      },
+      "text": ". . .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6218161988102533,
+        "y0": 0.7752431811708392,
+        "x1": 0.6371997509127348,
+        "y1": 0.7865643934770064
+      },
+      "text": ". . .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3331928128510519,
+        "y0": 0.7890803019205729,
+        "x1": 0.3921767590092678,
+        "y1": 0.80040151422674
+      },
+      "text": "sloth bear",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4768008063821232,
+        "y0": 0.7890803019205729,
+        "x1": 0.4841262717652165,
+        "y1": 0.80040151422674
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043153451159109,
+        "y0": 0.7890803019205729,
+        "x1": 0.5710212857115502,
+        "y1": 0.80040151422674
+      },
+      "text": "refrigerator",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6247463849634906,
+        "y0": 0.7890803019205729,
+        "x1": 0.639397365595001,
+        "y1": 0.80040151422674
+      },
+      "text": "31",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3331928128510519,
+        "y0": 0.8029174226703066,
+        "x1": 0.4125571905397901,
+        "y1": 0.8142386349764738
+      },
+      "text": "affenpinscher",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4768017538232741,
+        "y0": 0.8029174226703066,
+        "x1": 0.4841272690716912,
+        "y1": 0.8142386349764738
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043153451159109,
+        "y0": 0.8029174226703066,
+        "x1": 0.5682375540141187,
+        "y1": 0.8142386349764738
+      },
+      "text": "snowboard",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6247463849634906,
+        "y0": 0.8029174226703066,
+        "x1": 0.639397365595001,
+        "y1": 0.8142386349764738
+      },
+      "text": "25",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3331928128510519,
+        "y0": 0.8167545434200403,
+        "x1": 0.3633005728129468,
+        "y1": 0.8280757557262074
+      },
+      "text": "patas",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4768017538232741,
+        "y0": 0.8167545434200403,
+        "x1": 0.4841272690716912,
+        "y1": 0.8280757557262074
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043153451159109,
+        "y0": 0.8167545434200403,
+        "x1": 0.5271122751672284,
+        "y1": 0.8280757557262074
+      },
+      "text": "skis",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6247463849634906,
+        "y0": 0.8167545434200403,
+        "x1": 0.639397365595001,
+        "y1": 0.8280757557262074
+      },
+      "text": "23",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3331928128510519,
+        "y0": 0.8305916641697739,
+        "x1": 0.43204234004799835,
+        "y1": 0.841912876475941
+      },
+      "text": "Sealyham terrier",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4768011055740656,
+        "y0": 0.8305916641697739,
+        "x1": 0.4841265709571589,
+        "y1": 0.841912876475941
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043153451159109,
+        "y0": 0.8305916641697739,
+        "x1": 0.5616739310470282,
+        "y1": 0.841912876475941
+      },
+      "text": "hair dryer",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6320719002119077,
+        "y0": 0.8305916641697739,
+        "x1": 0.6393974154603248,
+        "y1": 0.841912876475941
+      },
+      "text": "7",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3331928128510519,
+        "y0": 0.8444287849195076,
+        "x1": 0.4320421904520272,
+        "y1": 0.8557499972256747
+      },
+      "text": "Japanese spaniel",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47680090611277065,
+        "y0": 0.8444287849195076,
+        "x1": 0.48412637149586396,
+        "y1": 0.8557499972256747
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5043153451159109,
+        "y0": 0.8444287849195076,
+        "x1": 0.5433748531964869,
+        "y1": 0.8557499972256747
+      },
+      "text": "toaster",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6320719002119077,
+        "y0": 0.8444287849195076,
+        "x1": 0.6393974154603248,
+        "y1": 0.8557499972256747
+      },
+      "text": "7",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0818823521433313,
+        "y0": 0.8607305565265694,
+        "x1": 0.5645296184066074,
+        "y1": 0.8720517688327365
+      },
+      "text": "Table 4. Most commonly detected classes and objects in the images of our dataset.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0818823521433313,
+        "y0": 0.8745676772763031,
+        "x1": 0.7814803777956495,
+        "y1": 0.8858888895824703
+      },
+      "text": "Full list: https://github.com/janpf/self-supervised-multi-task-aesthetic-pretraining",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.13406535379247728,
+        "y0": 0.8769103541518702,
+        "x1": 0.7831012875426049,
+        "y1": 0.8889242422701132
+      },
+      "text": "https://github.com/janpf/self-supervised-multi-task-aesthetic-pretraining",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.029568900004960597,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": "3/203 item không có bề rộng (width=0) — giữ chữ, bỏ hộp",
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

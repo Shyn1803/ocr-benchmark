@@ -1,0 +1,3752 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.07509_pg2",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "Fig. 1: The architecture of the implemented AE-NOMA for two-users. Each FCNN[*ℓ*] represents a fully connected layer with\n\n*ℓ* nodes. The main structure which consists five hidden layers each with 32 neurons is replicated at Tx, Rx1 and Rx2. The Tx, however, has a side block (Sub-Network 2) which is used to adjust power allocation for each symbol.\n\nII. SYSTEM MODEL Consider a downlink NOMA system involving a base station (BS) communicating with two users. All nodes are equipped\n\n|vector. Here, σ(x) =||is the sigmoid function and σ(x) =|||\n|---|---|---|---|---|\n|1|d T||||\n|||θ|′|d ′|\n|′ ′|(i)||(i) (i)||\n\nwith single antennas. The user with weaker (stronger) channel is referred to as the weak (strong) user. The channels between the BS and the weak and strong users are respectively denoted 2 2 by *h₁* and *h₂* satisfying *|h₁| ≤|h₂|*. Both channel gains are known at the BS, but each user only knows its own channel gain. All channel gains are complex-valued and independently drawn from a continuous distribution. In a NOMA system, the BS employs superposition coding to concurrently transmit messages to both users. The transmitted *√ √* signal *x* is defined by *x* = *αPs₁*+ *αPs* ¯2, where *s₁* and *s₂* are independent and identically distributed complex Gaussian signals with zero mean and unit variance, *CN*(0*,*1). Here, *P* represents the BS’s transmit power budget, *α ∈* [0*,*1] is the fraction of power allocated to the weak user, and *α*¯≜1 *− α*. The received signals at the users are expressed as\n\n*y* *k*= *hkx* + *nk, k ∈{*1*,*2*}* (1)\n\nwhere the noises *n₁* and *n₂* are independent and identically distributed circularly-symmetric complex Gaussian random variables with zero mean and unit variance, *CN*(0*,*1). The weak user decodes its message by treating the interfer- ing signal from the other user as noise. In contrast, the strong user first decodes the weak user’s message, treating its own interfering signal as noise, and then applies SIC to decode its own message. The combined use of superposition coding and SIC decoding with Gaussian codebooks results in achieving the capacity region of this channel.\n\nIII. NETWORK STRUCTURE\n\n*A. Autoencoder’s Structure* An autoencoder consists of two parts, an encoder and a decoder. The AE processes a binary input vector s *∈* [0*,*1]\n*d*\n\n*d* *′* by first mapping it to a hidden representation u *∈* [0*,*1] through a deterministic mapping *′* u = *fθ*(s) = *σ*(*W*s + b), where *θ* = *{W,*b*}*, *W* is a <u>1</u> *d ×d* weight matrix, and b is a bias 1+*ex* [*σ*(x)*,...,σ*(x)] *T*. The resulting latent representation u is 1 *d* then transformed back to a reconstructed vector ˆs *∈* [0*,*1] in the input space, given by ˆs = *g ′*(u) = *σ*(*W* u + b ) with *θ* = *{W ,*b *′* *}*. For each training sample s, the AE maps it to a corresponding u and a reconstruction ˆs. The proposed AE-NOMA network, illustrated in Fig. 1, consists of one transmitter (Tx) encoder and two decoders each at one of the receivers, i.e., Rx1 and Rx2. Each encoder and decoder, include a fully connected neural network (FCNN) composed of a sequence of fully connected layers and some residual connections. As seen in Fig. 1, the encoder (Tx) comprises a main block and a secondary network, referred to as Sub-Network 1 and Sub-Network 2, respectively. This main block, replicated at Tx, Rx1 and Rx2, consists of an input layer, five hidden layers, and an output layer. The hidden layers contain 32 neurons each, while the final layer (output layer) has two neurons representing the in-phase (I) and quadrature-phase (Q) components of the symbol designed by the autoencoder for transmission. In addition to the main block, the Tx has a side block (Sub-network 2) which helps to better adjust the I and Q components under a given average power constraint, thereby optimizing the use of the I/Q plane in a way similar to a quadrature amplitude modulation (QAM). In the main block, we have also implemented residual connections to enhance learning capacity and improves perfor- mance without the need for additional parameters or a wider network. These shortcuts also play a crucial role in preserving gradients within the network. We have used the activation function *exponential linear unit* which provides a smooth, non- zero output for negative inputs, and can help improve learning stability and performance.\n",
+  "blocks": [
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.08025163139393127,
+        "y0": 0.06381433660333802,
+        "x1": 0.9197492163165722,
+        "y1": 0.29025376445115214
+      },
+      "text": "[Image: Im1]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653709461486,
+        "y0": 0.29578968129976835,
+        "x1": 0.6435608894996394,
+        "y1": 0.3083687213936237
+      },
+      "text": "Fig. 1: The architecture of the implemented AE-NOMA for two-users. Each FCNN[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6435637131235958,
+        "y0": 0.29578968129976835,
+        "x1": 0.6503356734132455,
+        "y1": 0.3083687213936237
+      },
+      "text": "ℓ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6503463944578483,
+        "y0": 0.29578968129976835,
+        "x1": 0.9199876972273284,
+        "y1": 0.3083687213936237
+      },
+      "text": "] represents a fully connected layer with",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000651839511846,
+        "y0": 0.3108843998475508,
+        "x1": 0.08677847868476818,
+        "y1": 0.32346343994140625
+      },
+      "text": "ℓ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09297547309227239,
+        "y0": 0.3108843998475508,
+        "x1": 0.9199922661376155,
+        "y1": 0.32346343994140625
+      },
+      "text": "nodes. The main structure which consists five hidden layers each with 32 neurons is replicated at Tx, Rx1 and Rx2. The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065682604422,
+        "y0": 0.32597911839533333,
+        "x1": 0.7948715608883528,
+        "y1": 0.3385581584891888
+      },
+      "text": "Tx, however, has a side block (Sub-Network 2) which is used to adjust power allocation for each symbol.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9080000734017566,
+        "y0": 0.36820854863735164,
+        "x1": 0.9147687924453636,
+        "y1": 0.37701385189788506
+      },
+      "text": "d",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9147761725132761,
+        "y0": 0.366928862200843,
+        "x1": 0.9183656779769199,
+        "y1": 0.3732183822477707
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21512910431506588,
+        "y0": 0.3689993090099759,
+        "x1": 0.23166831022773693,
+        "y1": 0.38157834910383126
+      },
+      "text": "II.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2406216291041156,
+        "y0": 0.3689993090099759,
+        "x1": 0.35512378169041053,
+        "y1": 0.38157834910383126
+      },
+      "text": "SYSTEM MODEL",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.36899919341308907,
+        "x1": 0.8473858802147161,
+        "y1": 0.3815782335069444
+      },
+      "text": "by first mapping it to a hidden representation u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8559951283573325,
+        "y0": 0.36899919341308907,
+        "x1": 0.8668367473128574,
+        "y1": 0.3815782335069444
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8754428040747549,
+        "y0": 0.36899919341308907,
+        "x1": 0.8880914426317402,
+        "y1": 0.3815782335069444
+      },
+      "text": "[0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8881046070772058,
+        "y0": 0.36899919341308907,
+        "x1": 0.8926138285717933,
+        "y1": 0.3815782335069444
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8953382703993056,
+        "y0": 0.36899919341308907,
+        "x1": 0.9079869089562909,
+        "y1": 0.3815782335069444
+      },
+      "text": "1]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628592597113715,
+        "y0": 0.3885081332139294,
+        "x1": 0.49023183186848956,
+        "y1": 0.40108717330778487
+      },
+      "text": "Consider a downlink NOMA system involving a base station",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.3840951449943312,
+        "x1": 0.7305405560661765,
+        "y1": 0.3966741850881865
+      },
+      "text": "through a deterministic mapping",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6963743820689083,
+        "y0": 0.39839790866832536,
+        "x1": 0.7001233568378523,
+        "y1": 0.4072032119288589
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7375196569106158,
+        "y0": 0.3840951449943312,
+        "x1": 0.7674542096705218,
+        "y1": 0.3966741850881865
+      },
+      "text": "u =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7743546230341095,
+        "y0": 0.3840951449943312,
+        "x1": 0.7823149238536561,
+        "y1": 0.3966741850881865
+      },
+      "text": "f",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7823236004199857,
+        "y0": 0.3897552303593568,
+        "x1": 0.7885225582746119,
+        "y1": 0.3985605336198903
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7896896063112745,
+        "y0": 0.3840951449943312,
+        "x1": 0.8292543498519199,
+        "y1": 0.3966741850881865
+      },
+      "text": "(s) =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8361683764488869,
+        "y0": 0.3840951449943312,
+        "x1": 0.8454635719847835,
+        "y1": 0.3966741850881865
+      },
+      "text": "σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.846055672838797,
+        "y0": 0.3840951449943312,
+        "x1": 0.8523718142041973,
+        "y1": 0.3966741850881865
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8523857764948427,
+        "y0": 0.3840951449943312,
+        "x1": 0.8677529727711397,
+        "y1": 0.3966741850881865
+      },
+      "text": "W",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8700214460784313,
+        "y0": 0.3840951449943312,
+        "x1": 0.9199947781032987,
+        "y1": 0.3966741850881865
+      },
+      "text": "s + b),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.080006512161953,
+        "y0": 0.4036040847951715,
+        "x1": 0.4902312272514393,
+        "y1": 0.416183124889027
+      },
+      "text": "(BS) communicating with two users. All nodes are equipped",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097682179968341,
+        "y0": 0.39918982500981803,
+        "x1": 0.5495372099034926,
+        "y1": 0.4117688651036735
+      },
+      "text": "where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5535247403811785,
+        "y0": 0.39918982500981803,
+        "x1": 0.561159470502068,
+        "y1": 0.4117688651036735
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.566140767016442,
+        "y0": 0.39918982500981803,
+        "x1": 0.5787893557081035,
+        "y1": 0.4117688651036735
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5833237591911765,
+        "y0": 0.39918982500981803,
+        "x1": 0.6108831767163245,
+        "y1": 0.4117688651036735
+      },
+      "text": "{W,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6136211320465687,
+        "y0": 0.39918982500981803,
+        "x1": 0.6240069819431678,
+        "y1": 0.4117688651036735
+      },
+      "text": "b",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6240214428870506,
+        "y0": 0.39918982500981803,
+        "x1": 0.6321608100841248,
+        "y1": 0.4117688651036735
+      },
+      "text": "}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6321603114308875,
+        "y0": 0.39918982500981803,
+        "x1": 0.6362300199620864,
+        "y1": 0.4117688651036735
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6402175005744485,
+        "y0": 0.39918982500981803,
+        "x1": 0.6555846469854217,
+        "y1": 0.4117688651036735
+      },
+      "text": "W",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6618416979421977,
+        "y0": 0.39918982500981803,
+        "x1": 0.6839156805300245,
+        "y1": 0.4117688651036735
+      },
+      "text": "is a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6645377165351818,
+        "y0": 0.4131049537899518,
+        "x1": 0.6710215051189746,
+        "y1": 0.42191025705048535
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.687902163835912,
+        "y0": 0.39918982500981803,
+        "x1": 0.7229716481726154,
+        "y1": 0.4117688651036735
+      },
+      "text": "d ×d",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7269675061593648,
+        "y0": 0.39918982500981803,
+        "x1": 0.9199966729856005,
+        "y1": 0.4117688651036735
+      },
+      "text": "weight matrix, and b is a bias",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.080006512161953,
+        "y0": 0.4186987648106585,
+        "x1": 0.4902311773861156,
+        "y1": 0.43127780490451384
+      },
+      "text": "with single antennas. The user with weaker (stronger) channel",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097681182661867,
+        "y0": 0.4142845050253049,
+        "x1": 0.593196744233175,
+        "y1": 0.42686354511916036
+      },
+      "text": "vector. Here,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5973138746872447,
+        "y0": 0.4142845050253049,
+        "x1": 0.6066090702231414,
+        "y1": 0.42686354511916036
+      },
+      "text": "σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6072011212118311,
+        "y0": 0.4142845050253049,
+        "x1": 0.6135172625772314,
+        "y1": 0.42686354511916036
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.613531175002553,
+        "y0": 0.4142845050253049,
+        "x1": 0.6228263705384498,
+        "y1": 0.42686354511916036
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6228350969701032,
+        "y0": 0.4142845050253049,
+        "x1": 0.6463253544826134,
+        "y1": 0.42686354511916036
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6528235541449653,
+        "y0": 0.4223954370527556,
+        "x1": 0.669300852258221,
+        "y1": 0.43120074031328914
+      },
+      "text": "1+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6693055894639757,
+        "y0": 0.4223954370527556,
+        "x1": 0.6754817090003319,
+        "y1": 0.43120074031328914
+      },
+      "text": "e",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6754820580575981,
+        "y0": 0.4223960632025593,
+        "x1": 0.6819203196008221,
+        "y1": 0.428685583249487
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6888121062634038,
+        "y0": 0.41428458208989616,
+        "x1": 0.8662668863932291,
+        "y1": 0.4268636221837516
+      },
+      "text": "is the sigmoid function and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8703823712916156,
+        "y0": 0.41428458208989616,
+        "x1": 0.8796775668275123,
+        "y1": 0.4268636221837516
+      },
+      "text": "σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8802696676815257,
+        "y0": 0.41428458208989616,
+        "x1": 0.919970743017259,
+        "y1": 0.4268636221837516
+      },
+      "text": "(x) =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509768068400863,
+        "y0": 0.430251748874934,
+        "x1": 0.5142772898954504,
+        "y1": 0.44283078896878947
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5142893074384702,
+        "y0": 0.430251748874934,
+        "x1": 0.5235845029743669,
+        "y1": 0.44283078896878947
+      },
+      "text": "σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5241749084073734,
+        "y0": 0.430251748874934,
+        "x1": 0.5403715146133323,
+        "y1": 0.44283078896878947
+      },
+      "text": "(x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5476895999285131,
+        "y0": 0.430251748874934,
+        "x1": 0.5540057412939134,
+        "y1": 0.44283078896878947
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5540196537192351,
+        "y0": 0.430251748874934,
+        "x1": 0.5994210835375817,
+        "y1": 0.44283078896878947
+      },
+      "text": ",...,σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6000801036560458,
+        "y0": 0.430251748874934,
+        "x1": 0.6162767098620047,
+        "y1": 0.44283078896878947
+      },
+      "text": "(x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6238823684991575,
+        "y0": 0.430251748874934,
+        "x1": 0.6347077313591453,
+        "y1": 0.44283078896878947
+      },
+      "text": ")]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6347353068831699,
+        "y0": 0.4294611040991966,
+        "x1": 0.642415613909952,
+        "y1": 0.4382664073597301
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6449902104396447,
+        "y0": 0.430251748874934,
+        "x1": 0.919993581335529,
+        "y1": 0.44283078896878947
+      },
+      "text": ". The resulting latent representation u is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.080006512161953,
+        "y0": 0.43379344482614535,
+        "x1": 0.4902312272514393,
+        "y1": 0.4463724849200008
+      },
+      "text": "is referred to as the weak (strong) user. The channels between",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5403856763652727,
+        "y0": 0.43591310580571496,
+        "x1": 0.5468694649490655,
+        "y1": 0.4447184090662484
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.616290871613945,
+        "y0": 0.43591310580571496,
+        "x1": 0.6230595407922284,
+        "y1": 0.4447184090662484
+      },
+      "text": "d",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.4453477004561761,
+        "x1": 0.8416879691329657,
+        "y1": 0.4579267405500316
+      },
+      "text": "then transformed back to a reconstructed vector ˆs",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8462206273297079,
+        "y0": 0.4453477004561761,
+        "x1": 0.8570622462852329,
+        "y1": 0.4579267405500316
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8615948047513277,
+        "y0": 0.4453477004561761,
+        "x1": 0.8742434433083129,
+        "y1": 0.4579267405500316
+      },
+      "text": "[0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8742566077537786,
+        "y0": 0.4453477004561761,
+        "x1": 0.878765829248366,
+        "y1": 0.4579267405500316
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8814918667662377,
+        "y0": 0.4453477004561761,
+        "x1": 0.8941405053232231,
+        "y1": 0.4579267405500316
+      },
+      "text": "1]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8941519743476818,
+        "y0": 0.44455578411468355,
+        "x1": 0.9009206933912888,
+        "y1": 0.45336108737521696
+      },
+      "text": "d",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9073284872217116,
+        "y0": 0.4453477004561761,
+        "x1": 0.9199933818742341,
+        "y1": 0.4579267405500316
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.080006512161953,
+        "y0": 0.4488881248416323,
+        "x1": 0.4902312272514393,
+        "y1": 0.4614671649354877
+      },
+      "text": "the BS and the weak and strong users are respectively denoted",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26746076696059284,
+        "y0": 0.46319216008138175,
+        "x1": 0.2739445804770476,
+        "y1": 0.4719974633419153
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3221944422503702,
+        "y0": 0.46319216008138175,
+        "x1": 0.32867825576682497,
+        "y1": 0.4719974633419153
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.4604423804716631,
+        "x1": 0.7166208504072202,
+        "y1": 0.47302142056551844
+      },
+      "text": "the input space, given by ˆs =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7234330520131229,
+        "y0": 0.4604423804716631,
+        "x1": 0.7311980303596047,
+        "y1": 0.47302142056551844
+      },
+      "text": "g",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7377484390159058,
+        "y0": 0.46610309198649247,
+        "x1": 0.741337894614226,
+        "y1": 0.4723926120334201
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7429657481075113,
+        "y0": 0.4604423419393674,
+        "x1": 0.785465365141825,
+        "y1": 0.47302138203322286
+      },
+      "text": "(u) =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7922875896777982,
+        "y0": 0.4604423419393674,
+        "x1": 0.8015827852136949,
+        "y1": 0.47302138203322286
+      },
+      "text": "σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8021731906467013,
+        "y0": 0.4604423419393674,
+        "x1": 0.8084893320121017,
+        "y1": 0.47302138203322286
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8085032444374234,
+        "y0": 0.4604423419393674,
+        "x1": 0.8238703908483966,
+        "y1": 0.47302138203322286
+      },
+      "text": "W",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8261388641556883,
+        "y0": 0.45965042559787483,
+        "x1": 0.8298878389246324,
+        "y1": 0.46845572885840825
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.830705879560483,
+        "y0": 0.4604423419393674,
+        "x1": 0.9199942794500613,
+        "y1": 0.47302138203322286
+      },
+      "text": "u + b ) with",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.873225492589614,
+        "y0": 0.45965042559787483,
+        "x1": 0.876974467358558,
+        "y1": 0.46845572885840825
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.080006512161953,
+        "y0": 0.4639828048571192,
+        "x1": 0.09628527148876315,
+        "y1": 0.47656184495097464
+      },
+      "text": "by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10133984509636373,
+        "y0": 0.4639828048571192,
+        "x1": 0.11720274632273156,
+        "y1": 0.47656184495097464
+      },
+      "text": "h₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12307678172790926,
+        "y0": 0.4639828048571192,
+        "x1": 0.1465833078022876,
+        "y1": 0.47656184495097464
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15163723316067965,
+        "y0": 0.4639828048571192,
+        "x1": 0.167500128153882,
+        "y1": 0.47656184495097464
+      },
+      "text": "h₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17337416355905969,
+        "y0": 0.4639828048571192,
+        "x1": 0.23668226852915644,
+        "y1": 0.47656184495097464
+      },
+      "text": "satisfying",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24173527137905942,
+        "y0": 0.4639828048571192,
+        "x1": 0.26211941787619997,
+        "y1": 0.47656184495097464
+      },
+      "text": "|h₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2629395279229856,
+        "y0": 0.4639828048571192,
+        "x1": 0.267448749417573,
+        "y1": 0.47656184495097464
+      },
+      "text": "|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27928592956144044,
+        "y0": 0.4639828048571192,
+        "x1": 0.3168530931659773,
+        "y1": 0.47656184495097464
+      },
+      "text": "≤|h₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.317673203212763,
+        "y0": 0.4639828048571192,
+        "x1": 0.32218242470735037,
+        "y1": 0.47656184495097464
+      },
+      "text": "|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3294983658136106,
+        "y0": 0.4639828048571192,
+        "x1": 0.4902348237879136,
+        "y1": 0.47656184495097464
+      },
+      "text": ". Both channel gains are",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7311977810329862,
+        "y0": 0.4661024658366887,
+        "x1": 0.7373967388876124,
+        "y1": 0.4749077690972222
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.47553702195485437,
+        "x1": 0.517402698791105,
+        "y1": 0.4881160620487097
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5178611107121885,
+        "y0": 0.47474637717911694,
+        "x1": 0.5216100854811325,
+        "y1": 0.48355168043965036
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.52695096084495,
+        "y0": 0.47553702195485437,
+        "x1": 0.5395995495366115,
+        "y1": 0.4881160620487097
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5441339530196845,
+        "y0": 0.47553702195485437,
+        "x1": 0.5789846781811683,
+        "y1": 0.4881160620487097
+      },
+      "text": "{W ,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5699084412817862,
+        "y0": 0.47474637717911694,
+        "x1": 0.5736574160507302,
+        "y1": 0.48355168043965036
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5817107655643637,
+        "y0": 0.47553702195485437,
+        "x1": 0.592096615460963,
+        "y1": 0.4881160620487097
+      },
+      "text": "b",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5921110764048458,
+        "y0": 0.47474637717911694,
+        "x1": 0.5958600511737898,
+        "y1": 0.48355168043965036
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5966780918096405,
+        "y0": 0.47553702195485437,
+        "x1": 0.6048174590067147,
+        "y1": 0.4881160620487097
+      },
+      "text": "}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6048169603534773,
+        "y0": 0.47553702195485437,
+        "x1": 0.7930458417904922,
+        "y1": 0.4881160620487097
+      },
+      "text": ". For each training sample s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7930555655286203,
+        "y0": 0.47474637717911694,
+        "x1": 0.7981377894582312,
+        "y1": 0.48355168043965036
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7981421776067198,
+        "y0": 0.47474637717911694,
+        "x1": 0.802745794159135,
+        "y1": 0.48355168043965036
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8027483871559692,
+        "y0": 0.47474637717911694,
+        "x1": 0.8078306110855801,
+        "y1": 0.48355168043965036
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8086487015867545,
+        "y0": 0.47553702195485437,
+        "x1": 0.9199953764871834,
+        "y1": 0.4881160620487097
+      },
+      "text": ", the AE maps it",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.47907748487260604,
+        "x1": 0.49023118361928103,
+        "y1": 0.4916565249664615
+      },
+      "text": "known at the BS, but each user only knows its own channel",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.4906317019703412,
+        "x1": 0.6502698511859171,
+        "y1": 0.5032107420641967
+      },
+      "text": "to a corresponding u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6502843121297999,
+        "y0": 0.4898410571946038,
+        "x1": 0.6553665360594108,
+        "y1": 0.4986463604551373
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6553709242078993,
+        "y0": 0.4898410571946038,
+        "x1": 0.6599745407603146,
+        "y1": 0.4986463604551373
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6599771337571487,
+        "y0": 0.4898410571946038,
+        "x1": 0.6650593576867596,
+        "y1": 0.4986463604551373
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6715751598083896,
+        "y0": 0.4906317019703412,
+        "x1": 0.8199069453220741,
+        "y1": 0.5032107420641967
+      },
+      "text": "and a reconstruction ˆs",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8199166690602022,
+        "y0": 0.4898410571946038,
+        "x1": 0.8249988929898131,
+        "y1": 0.4986463604551373
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8250032811383017,
+        "y0": 0.4898410571946038,
+        "x1": 0.8296068976907169,
+        "y1": 0.4986463604551373
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8296094906875511,
+        "y0": 0.4898410571946038,
+        "x1": 0.834691714617162,
+        "y1": 0.4986463604551373
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8355114506740197,
+        "y0": 0.4906317019703412,
+        "x1": 0.8395811592052186,
+        "y1": 0.5032107420641967
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.49417343645384815,
+        "x1": 0.4902312833499285,
+        "y1": 0.5067524765477036
+      },
+      "text": "gain. All channel gains are complex-valued and independently",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.5092681164693351,
+        "x1": 0.332376118578942,
+        "y1": 0.5218471565631905
+      },
+      "text": "drawn from a continuous distribution.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5260457556232129,
+        "y0": 0.5087011522716947,
+        "x1": 0.5513592389673968,
+        "y1": 0.52128019236555
+      },
+      "text": "The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5598079207675909,
+        "y0": 0.5087011522716947,
+        "x1": 0.6194858426362081,
+        "y1": 0.52128019236555
+      },
+      "text": "proposed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6279182184755413,
+        "y0": 0.5087011522716947,
+        "x1": 0.7047702564912683,
+        "y1": 0.52128019236555
+      },
+      "text": "AE-NOMA",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7132026323306015,
+        "y0": 0.5087011522716947,
+        "x1": 0.7704550549874898,
+        "y1": 0.52128019236555
+      },
+      "text": "network,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7789037367876839,
+        "y0": 0.5087011522716947,
+        "x1": 0.8440187740949244,
+        "y1": 0.52128019236555
+      },
+      "text": "illustrated",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8524511997995813,
+        "y0": 0.5087011522716947,
+        "x1": 0.8651160944521038,
+        "y1": 0.52128019236555
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8735646765216504,
+        "y0": 0.5087011522716947,
+        "x1": 0.8993502348856209,
+        "y1": 0.52128019236555
+      },
+      "text": "Fig.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9077826605902778,
+        "y0": 0.5087011522716947,
+        "x1": 0.9199916864532272,
+        "y1": 0.52128019236555
+      },
+      "text": "1,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628595713696449,
+        "y0": 0.5244385895102914,
+        "x1": 0.4902319378323025,
+        "y1": 0.5370176296041469
+      },
+      "text": "In a NOMA system, the BS employs superposition coding to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.5237958322871815,
+        "x1": 0.9199925840290544,
+        "y1": 0.5363748723810369
+      },
+      "text": "consists of one transmitter (Tx) encoder and two decoders",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.5395332695257784,
+        "x1": 0.4902312833499285,
+        "y1": 0.5521123096196339
+      },
+      "text": "concurrently transmit messages to both users. The transmitted",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25654085944680605,
+        "y0": 0.5439777000985964,
+        "x1": 0.27010106105430454,
+        "y1": 0.5565567401924518
+      },
+      "text": "√",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.323517967672909,
+        "y0": 0.5439777771631877,
+        "x1": 0.33707816928040746,
+        "y1": 0.5565568172570431
+      },
+      "text": "√",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.5388905123026684,
+        "x1": 0.9199949775645936,
+        "y1": 0.5514695523965238
+      },
+      "text": "each at one of the receivers, i.e., Rx1 and Rx2. Each encoder",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.5546279495412654,
+        "x1": 0.11889649684133094,
+        "y1": 0.5672069896351207
+      },
+      "text": "signal",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12334968217837265,
+        "y0": 0.5546279495412654,
+        "x1": 0.13264485278160743,
+        "y1": 0.5672069896351207
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13710784912109375,
+        "y0": 0.5546279495412654,
+        "x1": 0.2210736991533267,
+        "y1": 0.5672069896351207
+      },
+      "text": "is defined by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22553268133425244,
+        "y0": 0.5546279495412654,
+        "x1": 0.23482785193748723,
+        "y1": 0.5672069896351207
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2393578423394097,
+        "y0": 0.5546279495412654,
+        "x1": 0.2520064310310713,
+        "y1": 0.5672069896351207
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2701061971826491,
+        "y0": 0.5546280266058565,
+        "x1": 0.3074070051604626,
+        "y1": 0.567207066699712
+      },
+      "text": "αPs₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3095408420936734,
+        "y0": 0.5546280266058565,
+        "x1": 0.32218943078533496,
+        "y1": 0.567207066699712
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3370833303414139,
+        "y0": 0.5546280266058565,
+        "x1": 0.36788274727615655,
+        "y1": 0.567207066699712
+      },
+      "text": "αPs",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33870260699901705,
+        "y0": 0.5546280266058565,
+        "x1": 0.3468419741960912,
+        "y1": 0.567207066699712
+      },
+      "text": "¯",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3679003248027727,
+        "y0": 0.5602881119708822,
+        "x1": 0.37438413831922746,
+        "y1": 0.5690934152314158
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37520260281032985,
+        "y0": 0.5546280266058565,
+        "x1": 0.4235016567255157,
+        "y1": 0.567207066699712
+      },
+      "text": ", where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42795098996629904,
+        "y0": 0.5546280266058565,
+        "x1": 0.4420655194450827,
+        "y1": 0.567207066699712
+      },
+      "text": "s₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4473382787766799,
+        "y0": 0.5546280266058565,
+        "x1": 0.4708447923847273,
+        "y1": 0.567207066699712
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47529906229256025,
+        "y0": 0.5546280266058565,
+        "x1": 0.48941359177134397,
+        "y1": 0.567207066699712
+      },
+      "text": "s₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.5539864638839105,
+        "x1": 0.9199927834903493,
+        "y1": 0.566565503977766
+      },
+      "text": "and decoder, include a fully connected neural network (FCNN)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000659319310406,
+        "y0": 0.5697227066213435,
+        "x1": 0.4902312833499285,
+        "y1": 0.5823017467151989
+      },
+      "text": "are independent and identically distributed complex Gaussian",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.5690811438993975,
+        "x1": 0.9199927834903493,
+        "y1": 0.5816601839932529
+      },
+      "text": "composed of a sequence of fully connected layers and some",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000659319310406,
+        "y0": 0.5848173866368304,
+        "x1": 0.35921981911254086,
+        "y1": 0.5973964267306857
+      },
+      "text": "signals with zero mean and unit variance,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36491835351083796,
+        "y0": 0.5848173866368304,
+        "x1": 0.3877737257215712,
+        "y1": 0.5973964267306857
+      },
+      "text": "CN",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39019448772754545,
+        "y0": 0.5848173866368304,
+        "x1": 0.4046500212226818,
+        "y1": 0.5973964267306857
+      },
+      "text": "(0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40466508055044936,
+        "y0": 0.5848173866368304,
+        "x1": 0.40917430204503674,
+        "y1": 0.5973964267306857
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4119003644955704,
+        "y0": 0.5848173866368304,
+        "x1": 0.4718358656939338,
+        "y1": 0.5973964267306857
+      },
+      "text": "1). Here,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47752126057942706,
+        "y0": 0.5848173866368304,
+        "x1": 0.4879722345888225,
+        "y1": 0.5973964267306857
+      },
+      "text": "P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.5841758239148843,
+        "x1": 0.5613065732070823,
+        "y1": 0.5967548640087397
+      },
+      "text": "residual",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5698203292547488,
+        "y0": 0.5841758239148843,
+        "x1": 0.6516536637848499,
+        "y1": 0.5967548640087397
+      },
+      "text": "connections.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6601511637369791,
+        "y0": 0.5841758239148843,
+        "x1": 0.6782368678672641,
+        "y1": 0.5967548640087397
+      },
+      "text": "As",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6867506737802543,
+        "y0": 0.5841758239148843,
+        "x1": 0.7156780467313879,
+        "y1": 0.5967548640087397
+      },
+      "text": "seen",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7241918027790544,
+        "y0": 0.5841758239148843,
+        "x1": 0.7368566974315768,
+        "y1": 0.5967548640087397
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7453541973837061,
+        "y0": 0.5841758239148843,
+        "x1": 0.7711397557476767,
+        "y1": 0.5967548640087397
+      },
+      "text": "Fig.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7796535117953431,
+        "y0": 0.5841758239148843,
+        "x1": 0.7918625875236163,
+        "y1": 0.5967548640087397
+      },
+      "text": "1,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8003763934366064,
+        "y0": 0.5841758239148843,
+        "x1": 0.8202690174377042,
+        "y1": 0.5967548640087397
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8287665672551573,
+        "y0": 0.5841758239148843,
+        "x1": 0.8802888159658394,
+        "y1": 0.5967548640087397
+      },
+      "text": "encoder",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8888026218788296,
+        "y0": 0.5841758239148843,
+        "x1": 0.9199943791807087,
+        "y1": 0.5967548640087397
+      },
+      "text": "(Tx)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.5999120666523172,
+        "x1": 0.3722265156265957,
+        "y1": 0.6124911067461727
+      },
+      "text": "represents the BS’s transmit power budget,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3790065540986903,
+        "y0": 0.5999120666523172,
+        "x1": 0.4068416520660999,
+        "y1": 0.6124911067461727
+      },
+      "text": "α ∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41337256338082107,
+        "y0": 0.5999120666523172,
+        "x1": 0.42602115207248265,
+        "y1": 0.6124911067461727
+      },
+      "text": "[0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4260343165179483,
+        "y0": 0.5999120666523172,
+        "x1": 0.43054353801253575,
+        "y1": 0.6124911067461727
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.433267979840048,
+        "y0": 0.5999120666523172,
+        "x1": 0.49022839116115197,
+        "y1": 0.6124911067461727
+      },
+      "text": "1] is the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.5992705039303712,
+        "x1": 0.9199926837597018,
+        "y1": 0.6118495440242266
+      },
+      "text": "comprises a main block and a secondary network, referred",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.6150080182335593,
+        "x1": 0.4097653557272518,
+        "y1": 0.6275870583274148
+      },
+      "text": "fraction of power allocated to the weak user, and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4154705970115911,
+        "y0": 0.6150080182335593,
+        "x1": 0.42587270300372754,
+        "y1": 0.6275870583274148
+      },
+      "text": "α",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41708987366919426,
+        "y0": 0.6150080182335593,
+        "x1": 0.45579134872536253,
+        "y1": 0.6275870583274148
+      },
+      "text": "¯≜1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4594101749993617,
+        "y0": 0.6150080182335593,
+        "x1": 0.4860917135001787,
+        "y1": 0.6275870583274148
+      },
+      "text": "− α",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48616346970103147,
+        "y0": 0.6150080182335593,
+        "x1": 0.4902331782322304,
+        "y1": 0.6275870583274148
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.6143651839458582,
+        "x1": 0.8758447185840482,
+        "y1": 0.6269442240397136
+      },
+      "text": "to as Sub-Network 1 and Sub-Network 2, respectively.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000661812576593,
+        "y0": 0.6301026982490463,
+        "x1": 0.41308626162460427,
+        "y1": 0.6426817383429017
+      },
+      "text": "The received signals at the users are expressed as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5260457556232129,
+        "y0": 0.6324346342472115,
+        "x1": 0.9199887942644506,
+        "y1": 0.6450136743410669
+      },
+      "text": "This main block, replicated at Tx, Rx1 and Rx2, consists",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.6475293142626983,
+        "x1": 0.9199926837597018,
+        "y1": 0.6601083543565538
+      },
+      "text": "of an input layer, five hidden layers, and an output layer. The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1798530279421339,
+        "y0": 0.6540231620422517,
+        "x1": 0.18782962225621042,
+        "y1": 0.6666022021361071
+      },
+      "text": "y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18783342448714513,
+        "y0": 0.6596832474072774,
+        "x1": 0.1947502435422411,
+        "y1": 0.6684885506678109
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20036610123378779,
+        "y0": 0.6540231620422517,
+        "x1": 0.21301468992544934,
+        "y1": 0.6666022021361071
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21754911834118412,
+        "y0": 0.6540231620422517,
+        "x1": 0.2269256940854141,
+        "y1": 0.6666022021361071
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22692821228426266,
+        "y0": 0.6596832474072774,
+        "x1": 0.23384503133935866,
+        "y1": 0.6684885506678109
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23493638381459356,
+        "y0": 0.6540231620422517,
+        "x1": 0.24423155441782832,
+        "y1": 0.6666022021361071
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24785796022103504,
+        "y0": 0.6540231620422517,
+        "x1": 0.2605065489126966,
+        "y1": 0.6666022021361071
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2641373677970537,
+        "y0": 0.6540231620422517,
+        "x1": 0.27390461342007505,
+        "y1": 0.6666022021361071
+      },
+      "text": "n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2739086026459738,
+        "y0": 0.6596832474072774,
+        "x1": 0.2808254217010698,
+        "y1": 0.6684885506678109
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28191839479932596,
+        "y0": 0.6540231620422517,
+        "x1": 0.2864276162939134,
+        "y1": 0.6666022021361071
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3217036926668454,
+        "y0": 0.6540231620422517,
+        "x1": 0.3587255540236928,
+        "y1": 0.6666022021361071
+      },
+      "text": "k ∈{",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.358733756869447,
+        "y0": 0.6540231620422517,
+        "x1": 0.3668731240665211,
+        "y1": 0.6666022021361071
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3668726503459457,
+        "y0": 0.6540231620422517,
+        "x1": 0.37138187184053306,
+        "y1": 0.6666022021361071
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3741079342910667,
+        "y0": 0.6540231620422517,
+        "x1": 0.38224730148814084,
+        "y1": 0.6666022021361071
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38224682776756536,
+        "y0": 0.6540231620422517,
+        "x1": 0.3903861949646395,
+        "y1": 0.6666022021361071
+      },
+      "text": "}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4712517432917177,
+        "y0": 0.6540231620422517,
+        "x1": 0.49023277930964054,
+        "y1": 0.6666022021361071
+      },
+      "text": "(1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.6626239942781853,
+        "x1": 0.9199927834903493,
+        "y1": 0.6752030343720408
+      },
+      "text": "hidden layers contain 32 neurons each, while the final layer",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000664305842779,
+        "y0": 0.6779436258354572,
+        "x1": 0.19381144155863844,
+        "y1": 0.6905226659293127
+      },
+      "text": "where the noises",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20054258708081213,
+        "y0": 0.6779436258354572,
+        "x1": 0.21679764791251788,
+        "y1": 0.6905226659293127
+      },
+      "text": "n₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2243416231442121,
+        "y0": 0.6779436258354572,
+        "x1": 0.24784816168492135,
+        "y1": 0.6905226659293127
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25457364749285133,
+        "y0": 0.6779436258354572,
+        "x1": 0.2708286958582261,
+        "y1": 0.6905226659293127
+      },
+      "text": "n₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2783742917129417,
+        "y0": 0.6779436258354572,
+        "x1": 0.49022604749093646,
+        "y1": 0.6905226659293127
+      },
+      "text": "are independent and identically",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.6777199458594274,
+        "x1": 0.9199927834903493,
+        "y1": 0.6902989859532829
+      },
+      "text": "(output layer) has two neurons representing the in-phase (I)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000664305842779,
+        "y0": 0.693038325117092,
+        "x1": 0.14932159972346687,
+        "y1": 0.7056173652109474
+      },
+      "text": "distributed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15910513884101818,
+        "y0": 0.693038325117092,
+        "x1": 0.29563507379270065,
+        "y1": 0.7056173652109474
+      },
+      "text": "circularly-symmetric",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3054348814721201,
+        "y0": 0.693038325117092,
+        "x1": 0.361254723243464,
+        "y1": 0.7056173652109474
+      },
+      "text": "complex",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3710382498946844,
+        "y0": 0.693038325117092,
+        "x1": 0.4307161717633017,
+        "y1": 0.7056173652109474
+      },
+      "text": "Gaussian",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4404996984145221,
+        "y0": 0.693038325117092,
+        "x1": 0.4902312833499285,
+        "y1": 0.7056173652109474
+      },
+      "text": "random",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.6928146451410622,
+        "x1": 0.9199927834903493,
+        "y1": 0.7053936852349175
+      },
+      "text": "and quadrature-phase (Q) components of the symbol designed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000664305842779,
+        "y0": 0.7081330243987267,
+        "x1": 0.37240565680210885,
+        "y1": 0.7207120644925821
+      },
+      "text": "variables with zero mean and unit variance,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3781014236749387,
+        "y0": 0.7081330243987267,
+        "x1": 0.40095679588567196,
+        "y1": 0.7207120644925821
+      },
+      "text": "CN",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40337920344732947,
+        "y0": 0.7081330243987267,
+        "x1": 0.4178347369424658,
+        "y1": 0.7207120644925821
+      },
+      "text": "(0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41784815071455017,
+        "y0": 0.7081330243987267,
+        "x1": 0.42235734727647567,
+        "y1": 0.7207120644925821
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42508343465967113,
+        "y0": 0.7081330243987267,
+        "x1": 0.44362371108111215,
+        "y1": 0.7207120644925821
+      },
+      "text": "1).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.7079093444226968,
+        "x1": 0.9199926837597018,
+        "y1": 0.7204883845165522
+      },
+      "text": "by the autoencoder for transmission. In addition to the main",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628602570178461,
+        "y0": 0.7233034781735352,
+        "x1": 0.49023203132978455,
+        "y1": 0.7358825182673907
+      },
+      "text": "The weak user decodes its message by treating the interfer-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.7230040437043315,
+        "x1": 0.9199881958805658,
+        "y1": 0.7355830837981869
+      },
+      "text": "block, the Tx has a side block (Sub-network 2) which helps",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000661189260047,
+        "y0": 0.73839817745517,
+        "x1": 0.49023127711676306,
+        "y1": 0.7509772175490255
+      },
+      "text": "ing signal from the other user as noise. In contrast, the strong",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509768068400863,
+        "y0": 0.7380987429859662,
+        "x1": 0.9199927834903493,
+        "y1": 0.7506777830798217
+      },
+      "text": "to better adjust the I and Q components under a given average",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000661189260047,
+        "y0": 0.7534928767368047,
+        "x1": 0.49023132698208677,
+        "y1": 0.7660719168306601
+      },
+      "text": "user first decodes the weak user’s message, treating its own",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509768068400863,
+        "y0": 0.7531946945672083,
+        "x1": 0.9199928832209967,
+        "y1": 0.7657737346610638
+      },
+      "text": "power constraint, thereby optimizing the use of the I/Q plane",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000661189260047,
+        "y0": 0.7685875760184394,
+        "x1": 0.49023127711676306,
+        "y1": 0.7811666161122948
+      },
+      "text": "interfering signal as noise, and then applies SIC to decode its",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509768068400863,
+        "y0": 0.7682893938488431,
+        "x1": 0.9199927834903493,
+        "y1": 0.7808684339426984
+      },
+      "text": "in a way similar to a quadrature amplitude modulation (QAM).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000661189260047,
+        "y0": 0.7836822753000741,
+        "x1": 0.4902313768474105,
+        "y1": 0.7962613153939295
+      },
+      "text": "own message. The combined use of superposition coding and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5260458553538603,
+        "y0": 0.7863588441501964,
+        "x1": 0.5396060818940206,
+        "y1": 0.7989378842440519
+      },
+      "text": "In",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5490802939421211,
+        "y0": 0.7863588441501964,
+        "x1": 0.5689729179432189,
+        "y1": 0.7989378842440519
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5784471798566432,
+        "y0": 0.7863588441501964,
+        "x1": 0.6110046985102635,
+        "y1": 0.7989378842440519
+      },
+      "text": "main",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.620478910558364,
+        "y0": 0.7863588441501964,
+        "x1": 0.6607200273501328,
+        "y1": 0.7989378842440519
+      },
+      "text": "block,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6701942393982333,
+        "y0": 0.7863588441501964,
+        "x1": 0.6891752754161561,
+        "y1": 0.7989378842440519
+      },
+      "text": "we",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6986495373295802,
+        "y0": 0.7863588441501964,
+        "x1": 0.728814068962546,
+        "y1": 0.7989378842440519
+      },
+      "text": "have",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.738272074780433,
+        "y0": 0.7863588441501964,
+        "x1": 0.7644971461077921,
+        "y1": 0.7989378842440519
+      },
+      "text": "also",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7739713581558926,
+        "y0": 0.7863588441501964,
+        "x1": 0.8589790693295547,
+        "y1": 0.7989378842440519
+      },
+      "text": "implemented",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8684532813776552,
+        "y0": 0.7863588441501964,
+        "x1": 0.9199918859145221,
+        "y1": 0.7989378842440519
+      },
+      "text": "residual",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000661189260047,
+        "y0": 0.7987782268813162,
+        "x1": 0.49023127711676306,
+        "y1": 0.8113572669751716
+      },
+      "text": "SIC decoding with Gaussian codebooks results in achieving",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509768068400863,
+        "y0": 0.8014535434318311,
+        "x1": 0.9199928832209967,
+        "y1": 0.8140325835256865
+      },
+      "text": "connections to enhance learning capacity and improves perfor-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000661189260047,
+        "y0": 0.8138729261629509,
+        "x1": 0.315755551157434,
+        "y1": 0.8264519662568064
+      },
+      "text": "the capacity region of this channel.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509768068400863,
+        "y0": 0.8165482427134658,
+        "x1": 0.9199927834903493,
+        "y1": 0.8291272828073213
+      },
+      "text": "mance without the need for additional parameters or a wider",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509768068400863,
+        "y0": 0.8316429419951006,
+        "x1": 0.9199926837597018,
+        "y1": 0.8442219820889559
+      },
+      "text": "network. These shortcuts also play a crucial role in preserving",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1888971266403697,
+        "y0": 0.8380976794946073,
+        "x1": 0.2116711186427696,
+        "y1": 0.8506767195884628
+      },
+      "text": "III.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2206244375191483,
+        "y0": 0.8380976794946073,
+        "x1": 0.38136032204222836,
+        "y1": 0.8506767195884628
+      },
+      "text": "NETWORK STRUCTURE",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509768068400863,
+        "y0": 0.8467376412767352,
+        "x1": 0.5694459902694802,
+        "y1": 0.8593166813705907
+      },
+      "text": "gradients",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.577845853917739,
+        "y0": 0.8467376412767352,
+        "x1": 0.6194543776169322,
+        "y1": 0.8593166813705907
+      },
+      "text": "within",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6278541913998672,
+        "y0": 0.8467376412767352,
+        "x1": 0.6477468154009651,
+        "y1": 0.8593166813705907
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6561466790492239,
+        "y0": 0.8467376412767352,
+        "x1": 0.7133990518407884,
+        "y1": 0.8593166813705907
+      },
+      "text": "network.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7218151715845843,
+        "y0": 0.8467376412767352,
+        "x1": 0.7431078144148284,
+        "y1": 0.8593166813705907
+      },
+      "text": "We",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7515076281977635,
+        "y0": 0.8467376412767352,
+        "x1": 0.7816721598307291,
+        "y1": 0.8593166813705907
+      },
+      "text": "have",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7900719736136642,
+        "y0": 0.8467376412767352,
+        "x1": 0.8199109345479728,
+        "y1": 0.8593166813705907
+      },
+      "text": "used",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8283107981962317,
+        "y0": 0.8467376412767352,
+        "x1": 0.8482034720626532,
+        "y1": 0.8593166813705907
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8566032858455882,
+        "y0": 0.8467376412767352,
+        "x1": 0.9199927834903493,
+        "y1": 0.8593166813705907
+      },
+      "text": "activation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000659319310406,
+        "y0": 0.8576077752643161,
+        "x1": 0.09402260125852098,
+        "y1": 0.8701868153581716
+      },
+      "text": "A.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10216198092192606,
+        "y0": 0.8576077752643161,
+        "x1": 0.26180775960286456,
+        "y1": 0.8701868153581716
+      },
+      "text": "Autoencoder’s Structure",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509768068400863,
+        "y0": 0.86183234055837,
+        "x1": 0.5640251807917177,
+        "y1": 0.8744113806522253
+      },
+      "text": "function",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5679184159422233,
+        "y0": 0.86183234055837,
+        "x1": 0.7155504912332772,
+        "y1": 0.8744113806522253
+      },
+      "text": "exponential linear unit",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7197403253293505,
+        "y0": 0.86183234055837,
+        "x1": 0.9200015597873263,
+        "y1": 0.8744113806522253
+      },
+      "text": "which provides a smooth, non-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628600700228822,
+        "y0": 0.8769284848010901,
+        "x1": 0.4902319378323025,
+        "y1": 0.8895075248949456
+      },
+      "text": "An autoencoder consists of two parts, an encoder and a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097681182661867,
+        "y0": 0.876928301772686,
+        "x1": 0.9199928832209967,
+        "y1": 0.8895073418665413
+      },
+      "text": "zero output for negative inputs, and can help improve learning",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000659319310406,
+        "y0": 0.8920231840827249,
+        "x1": 0.42688576692070057,
+        "y1": 0.9046022241765803
+      },
+      "text": "decoder. The AE processes a binary input vector s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43306378133935863,
+        "y0": 0.8920231840827249,
+        "x1": 0.4439054501602073,
+        "y1": 0.9046022241765803
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45008501040390114,
+        "y0": 0.8920231840827249,
+        "x1": 0.4627335990955627,
+        "y1": 0.9046022241765803
+      },
+      "text": "[0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4627467635410284,
+        "y0": 0.8920231840827249,
+        "x1": 0.46725598503561583,
+        "y1": 0.9046022241765803
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4699804268631281,
+        "y0": 0.8920231840827249,
+        "x1": 0.4826290155547896,
+        "y1": 0.9046022241765803
+      },
+      "text": "1]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4826421800002553,
+        "y0": 0.8912312677412322,
+        "x1": 0.4894108491785386,
+        "y1": 0.9000365710017657
+      },
+      "text": "d",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097681182661867,
+        "y0": 0.8920230010543206,
+        "x1": 0.6834624546026092,
+        "y1": 0.9046020411481761
+      },
+      "text": "stability and performance.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.03142600000137463,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

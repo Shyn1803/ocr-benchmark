@@ -1,0 +1,148 @@
+{
+  "schema_version": 2,
+  "engine": "sabotage",
+  "engine_version": "sabotage/1+opendataloader",
+  "doc_id": "2503.08059_pg6",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "(8)\n![](<2503.08059_pg6_images/imageFile2.png>)\nFigure 4: Predicting DR and KS systems using SNODEs. (a) and (b) show the testing examples for the DR and KS systems, respectively. Here, the training set features a spatial resolution of Nx = 32, whereas the test set has Nx = 128. (c), (d), and (e) respectively illustrate the variations in training and validation losses across three training stages.\nst = Dsxx + Ks2 + u(x,t), x ∈ [0,1], t ∈ [0,1], (7) where D = 0.01 is the diffusion coefficient and K = 0.01 is the reaction rate. Here, we use u(x,t) = (πx)/5 + u1(t), where u1(t) is a sampling function from the GRF. In addition, we consider the KS equation, which exhibits complex chaotic dynamics, of the following form\nHere, we take the DR system as an example and provide the training details for our SNODEs framework. In stage 1, the rapid capture of critical components of unknown dynamics is facilitated through flow matching pre-training, with the training error depicted in Figure 4(c), and we obtain Fˆ1 = 0.0099sxx + 0.9955u. Herein, the regularization parameter α is set to 0.01, resulting in the training loss exceeding the validation loss. In stage 2, Fˆ1 was fine-tuned through the ODESolve prediction, with the corresponding prediction error illustrated in Figure 4(d), culminating in Fˆ1 = 0.0098sxx+u−0.0083s+0.0046. Herein, we employ the ”Euler” method for the initial 120 epochs, incorporating\nwhere u(x,t) = x/16 + u2(t), and u2(t) is the sampling function from the GRF. After training, our SNODEs framework exhibits excellent modeling capabilities on the aforementioned PDE systems. Moreover, our framework can be naturally applied to the super-resolution learning by using higher-resolution spatiotemporal data as the test set. In the temporal dimension, our approach is capable of estimating the system state for any given future moment through the ODESolve process. In terms of spatial dimension, our method allows for training with lower resolution data (Nx = 32) and testing in higher resolution data (Nx = 128). The corresponding outcomes are presented in Figures 4(a)-(b).\n![](<2503.08059_pg6_images/imageFile1.png>)",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5200980764376858,
+        "y0": 0.5405453804941018,
+        "x1": 0.8211603652171179,
+        "y1": 0.6387100693283907
+      },
+      "text": "st = γxsy − γysx + ν∆s + u(x,y,t), ∆γ = −s, (x,y) ∈ [0,2]2, t ∈ [0,20],",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.08166922823129445,
+        "y0": 0.0,
+        "x1": 0.38643732854372187,
+        "y1": 0.27199353442811647
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.5501239293859183,
+        "y0": 0.1394053925751947,
+        "x1": 0.8226441660395932,
+        "y1": 0.31371087809989806
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2127258439170896,
+        "y0": 0.5045917157152949,
+        "x1": 0.3051935262152144,
+        "y1": 0.5759197298108887
+      },
+      "text": "st = −ssx − sxx − u(x,t)sxxxx, x ∈ [0,32π], t ∈ [0,20],",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4941312049177239,
+        "y0": 0.5544650936392467,
+        "x1": 0.8121923620228483,
+        "y1": 0.798380436959455
+      },
+      "text": "where γ represents the stream function, ∆ is the Laplacian operator, and ν = 0.001. Additionally, u(x,y,t) = u3(t)×{0.1sin[2π(x+y)]+cos[2π(x+y)]} is the forcing function, where u3(t) is a function obtained from a GRF. The system is defined over a square domain with dimensions [0,2]2, and the time interval is [0,20]. Under this condition, we can express the stream function as the vorticity, i.e., γ = −∆−1s. In the discrete scenario within the Fourier domain, this corresponds to γ˜ = −1/(k2 + l2)˜s. To facilitate the training, we augment the first layer of SymNet with ik/(k2 +l2)˜s and il/(k2 +l2)˜s in the Fourier domain. Then after training, Figure 5 demonstrates that our framework achieves the accurate operator learning in modeling the underlying dynamics, enabling the precise and stable prediction of system evolutions, even the initial values and parameter functions outside the training set distribution. Additional training details and experimental results for the above parametric PDE systems are provided in Appendix B.4.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5678481791835579,
+        "y0": 0.43018813934314715,
+        "x1": 0.9425010461465144,
+        "y1": 0.509256453435308
+      },
+      "text": "progressively increasing prediction steps. Subsequently, for the remaining 80 epochs, the number of prediction steps is maintained at a constant 20, and we switch to the ”Dopri5” method for further training. In stage 3, we maintain Fˆ1 fixed and employ a GeNN for residual learning, where the optimization objective is F − Fˆ1 and the prediction error is presented in Figure 4(e). Herein, the training strategy remains consistent with that of stage 2. In fact, within the temporalspatial domain of the DR experiment, the influence of Ks2 on the dynamics is minimal. Consequently, this term was not identified in stage 1. However, accurate predictions were achieved through the employment of simple substitute terms in stage 2. Then in the stage 3, the modeling accuracy was further enhanced through residual learning.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12314609781442372,
+        "y0": 0.4731181517608034,
+        "x1": 0.44612681086139183,
+        "y1": 0.5741504597354321
+      },
+      "text": "st = Dsxx + Ks2 + u(x,t), x ∈ [0,1], t ∈ [0,1], (7) where D = 0.01 is the diffusion coefficient and K = 0.01 is the reaction rate. Here, we use u(x,t) = (πx)/5 + u1(t), where u1(t) is a sampling function from the GRF. In addition, we consider the KS equation, which exhibits complex chaotic dynamics, of the following form",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.4348904881807434,
+        "y0": 0.0,
+        "x1": 0.8677477979013701,
+        "y1": 0.27102466677191744
+      },
+      "source_id": "2503.08059_pg6_images/imageFile2.png",
+      "file": "000.png",
+      "sha256": "2e709f9b44a44115f187d1b6a5c74bb79a3fc4ad6f06340f5d2e93f95c8ef896"
+    }
+  ],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.0408119999920018,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "source": "opendataloader",
+    "seed": 1337,
+    "keep_ratio": 0.5
+  }
+}

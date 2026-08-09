@@ -1,0 +1,3444 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.06701_pg5",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "*1) Observations:* The observations that were fed to the RL\nagent from the environment included current blood glucose levels and their rate of change. It’s worth noting that these observations undergo a normalization process. Normalization is employed to prevent the emergence of excessively large or excessively small parameters, thereby enhancing numerical stability within the system.\n\n*2) The reward function:* The reward function is designed\nbased on the error *e*(*t*) we carefully considered key criteria derived from the glucose levels of a type 1 diabetes patient. The normal glucose range, defined as 80 to 100 mg/dL, serves as a crucial reference point. Within this range, the RL agent receives a significantly higher reward to reinforce behaviors that maintain glucose levels within the healthy boundaries. We also designated an acceptable range, consisting of two sub-ranges (100 to 160 mg/dL and 70 to 80 mg/dL), where the agent receives a moderate reward. This encourages the agent to navigate glucose levels within an acceptable but broader spectrum. Additionally, we identified two distinct bad ranges (160 or higher and 0 to 70 mg/dL) and assigned a negative reward within these intervals.we also considered the derivative *de*(*t*) to guide the reinforcement learning agent toward desired performance. Additionally, *i*(*t*) the integral of the absolute value of the normalized error, aimed at mitigating large overshooting and oscillations. Furthermore, *c*(*t*) denotes the integral of the control signal, serving to penalize the agent for excessive insulin usage. The reward is given to the agent at each step. And the formulation is as follows:\n\n- ** If the error is less than 90 (the glucose is less than the reference), the reward will be given by the linear function: (1 *−|e|*)*/*20\n- ** If the error is greater than 90 (the glucose is greater than the reference), the reward will be given by the linear function: (1 *−|e|*)*/*70\n- ** If the error is less than 10 (the glucose is close to our reference), the reward will be given by the function, which at *e* = 0 gives the value 20, and at *e* = 10 gives\n<u>1</u> 0: 1*.*262 *·* (*|e|*)5+ 2\n\n- ** We then apply penalties to our agent as follows: *−*2 *×* 10 *−*6 *· i −* 10\n*−*6 *· c*, where the first term is introduced to mitigate oscillations in the blood glucose signal, ensuring stability, and the second term is designed to optimize the injected insulin, discouraging excessive usage. These penalties contribute to fine-tuning the agent’s behavior for more effective and stable blood glucose regulation.\n\n*3) Stop of episode:* In our specific implementation,\nepisodes conclude under three conditions: after reaching the predefined simulation time of 24 hours, or when the glucose level exceeds 300 (indicating hyperglycemia), or falls below 50 (indicating hypoglycemia). These extreme glucose levels are considered hazardous situations for the patient, demanding immediate intervention. In such instances, we assert that the agent has failed to maintain glucose within the desired range, prompting a termination of the episode. This safety-centric approach aligns with our commitment to avoiding potentially\n\nharmful glucose extremes and ensures that the reinforcement learning agent operates within clinically acceptable bounds during the artificial pancreas control simulations.\n\nIV. EXPERIMENTATION AND RESULTS We present a thorough and comprehensive comparative analysis of three distinct and well-defined methods for control- ling blood glucose levels, specifically tailored to address the challenges associated with Type 1 diabetes management. The methods evaluated in this study include a direct reinforcement learning agent, which autonomously learns optimal control strategies; a non-adaptive fuzzy logic controller with finely tuned and optimized parameters; and an adaptive fuzzy logic controller, where the parameters are continuously and dynam- ically adjusted by the RL agent at each simulation timestep. It is important to explicitly highlight that all simulations, as well as the tuning processes for each of the proposed methods, were systematically carried out using MATLAB2022b and Simulink.\n\n*A. Direct insulin control through Reinforcement Learning* The results of the Direct insulin control through Reinforcement Learning in the nominal case are presented below:\nFig. 1. Glucose level (mg/dL) response of the Direct insulin control through\n Reinforcement Learning, along with corresponding meals intake (mg/dl) and insulin injections in units in the nominal case. In the Glucose-level subplot, the two black dotted lines clearly indicate the boundaries of the safe range for blood glucose levels, spanning from 70 to 180 units, while the green dotted line represents our chosen reference value, set at 90 units. It is important to emphasize that this visual representation, including both the safe range and the reference line, will consistently appear in all the glucose-level subplots presented throughout this article to maintain clarity and uniformity. In order to thoroughly examine the robustness of the pro- posed approach, the Reinforcement Learning Controller was subjected to a comprehensive series of tests conducted under various sets of randomly generated time spans and differing quantities of meal intakes, allowing us to assess its perfor- mance across a wide range of possible scenarios.\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628594467063355,
+        "y0": 0.061802239129037595,
+        "x1": 0.10984615251129749,
+        "y1": 0.07438127922289295
+      },
+      "text": "1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11798553217470256,
+        "y0": 0.061802239129037595,
+        "x1": 0.21022098516327103,
+        "y1": 0.07438127922289295
+      },
+      "text": "Observations:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21792156244415084,
+        "y0": 0.061802239129037595,
+        "x1": 0.4902326297136693,
+        "y1": 0.07438127922289295
+      },
+      "text": "The observations that were fed to the RL",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.06180231619362875,
+        "x1": 0.9199925840290544,
+        "y1": 0.07438135628748421
+      },
+      "text": "harmful glucose extremes and ensures that the reinforcement",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.0768981907102797,
+        "x1": 0.49023129581625946,
+        "y1": 0.08947723080413506
+      },
+      "text": "agent from the environment included current blood glucose",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.07689826777487085,
+        "x1": 0.563113343481924,
+        "y1": 0.08947730786872632
+      },
+      "text": "learning",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5713503968481924,
+        "y0": 0.07689826777487085,
+        "x1": 0.6066101672602635,
+        "y1": 0.08947730786872632
+      },
+      "text": "agent",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6148635265873927,
+        "y0": 0.07689826777487085,
+        "x1": 0.6691043330173866,
+        "y1": 0.08947730786872632
+      },
+      "text": "operates",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6773414362489788,
+        "y0": 0.07689826777487085,
+        "x1": 0.718949959948172,
+        "y1": 0.08947730786872632
+      },
+      "text": "within",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7271869634491166,
+        "y0": 0.07689826777487085,
+        "x1": 0.7877764733009089,
+        "y1": 0.08947730786872632
+      },
+      "text": "clinically",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7960298326280382,
+        "y0": 0.07689826777487085,
+        "x1": 0.8647261476205066,
+        "y1": 0.08947730786872632
+      },
+      "text": "acceptable",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8729633007174223,
+        "y0": 0.07689826777487085,
+        "x1": 0.9199926837597018,
+        "y1": 0.08947730786872632
+      },
+      "text": "bounds",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.09199290925806214,
+        "x1": 0.4902312459509357,
+        "y1": 0.1045719493519176
+      },
+      "text": "levels and their rate of change. It’s worth noting that these",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.0919929863226534,
+        "x1": 0.8371174132901859,
+        "y1": 0.10457202641650887
+      },
+      "text": "during the artificial pancreas control simulations.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.10708762780584469,
+        "x1": 0.4902312459509357,
+        "y1": 0.11966666789970015
+      },
+      "text": "observations undergo a normalization process. Normalization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5823315888448478,
+        "y0": 0.1155788356607611,
+        "x1": 0.6031032886380464,
+        "y1": 0.12815787575461646
+      },
+      "text": "IV.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.612056607514425,
+        "y0": 0.1155788356607611,
+        "x1": 0.8474360447303921,
+        "y1": 0.12815787575461646
+      },
+      "text": "EXPERIMENTATION AND RESULTS",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.12218234635362724,
+        "x1": 0.49023129581625946,
+        "y1": 0.1347613864474826
+      },
+      "text": "is employed to prevent the emergence of excessively large",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.13727706490140967,
+        "x1": 0.4902312459509357,
+        "y1": 0.14985610499526514
+      },
+      "text": "or excessively small parameters, thereby enhancing numerical",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5260456558925654,
+        "y0": 0.13463567603718152,
+        "x1": 0.5473382488574857,
+        "y1": 0.14721471613103698
+      },
+      "text": "We",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5570729573567709,
+        "y0": 0.13463567603718152,
+        "x1": 0.6040859845728656,
+        "y1": 0.14721471613103698
+      },
+      "text": "present",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6138206930721507,
+        "y0": 0.13463567603718152,
+        "x1": 0.6210484722860499,
+        "y1": 0.14721471613103698
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.630783180785335,
+        "y0": 0.13463567603718152,
+        "x1": 0.6895657707663143,
+        "y1": 0.14721471613103698
+      },
+      "text": "thorough",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6993004792655995,
+        "y0": 0.13463567603718152,
+        "x1": 0.7228069928736468,
+        "y1": 0.14721471613103698
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.732541701372932,
+        "y0": 0.13463567603718152,
+        "x1": 0.8304421418632557,
+        "y1": 0.14721471613103698
+      },
+      "text": "comprehensive",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8401768503625409,
+        "y0": 0.13463567603718152,
+        "x1": 0.9199915867225796,
+        "y1": 0.14721471613103698
+      },
+      "text": "comparative",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.15237178344919222,
+        "x1": 0.26035889768912124,
+        "y1": 0.1649508235430477
+      },
+      "text": "stability within the system.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.14973039458496407,
+        "x1": 0.9199925840290544,
+        "y1": 0.16230943467881942
+      },
+      "text": "analysis of three distinct and well-defined methods for control-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628594467063355,
+        "y0": 0.1697417569882942,
+        "x1": 0.10984615251129749,
+        "y1": 0.18232079708214965
+      },
+      "text": "2)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11798553217470256,
+        "y0": 0.1697417569882942,
+        "x1": 0.260424645118464,
+        "y1": 0.18232079708214965
+      },
+      "text": "The reward function:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26998038697086907,
+        "y0": 0.1697417569882942,
+        "x1": 0.4902319814644608,
+        "y1": 0.18232079708214965
+      },
+      "text": "The reward function is designed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.1648251131327465,
+        "x1": 0.9199925840290544,
+        "y1": 0.17740415322660197
+      },
+      "text": "ling blood glucose levels, specifically tailored to address the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.18483647553607674,
+        "x1": 0.20577621459960938,
+        "y1": 0.1974155156299321
+      },
+      "text": "based on the error",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21273364896088645,
+        "y0": 0.18483647553607674,
+        "x1": 0.22030327990164164,
+        "y1": 0.1974155156299321
+      },
+      "text": "e",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22031372668696383,
+        "y0": 0.18483647553607674,
+        "x1": 0.22662989298502603,
+        "y1": 0.1974155156299321
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22664378047768585,
+        "y0": 0.18483647553607674,
+        "x1": 0.23252040887969772,
+        "y1": 0.1974155156299321
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23252287721322254,
+        "y0": 0.18483647553607674,
+        "x1": 0.4902278925079146,
+        "y1": 0.1974155156299321
+      },
+      "text": ") we carefully considered key criteria",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.1799210647139886,
+        "x1": 0.9199924842984069,
+        "y1": 0.19250010480784407
+      },
+      "text": "challenges associated with Type 1 diabetes management. The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.19993119408385918,
+        "x1": 0.49023129581625946,
+        "y1": 0.21251023417771464
+      },
+      "text": "derived from the glucose levels of a type 1 diabetes patient.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.19501578326177116,
+        "x1": 0.9199925840290544,
+        "y1": 0.20759482335562662
+      },
+      "text": "methods evaluated in this study include a direct reinforcement",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.21502591263164172,
+        "x1": 0.49023114622028824,
+        "y1": 0.2276049527254972
+      },
+      "text": "The normal glucose range, defined as 80 to 100 mg/dL, serves",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.2101105018095537,
+        "x1": 0.563113343481924,
+        "y1": 0.22268954190340906
+      },
+      "text": "learning",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.571578331242979,
+        "y0": 0.2101105018095537,
+        "x1": 0.610907810186249,
+        "y1": 0.22268954190340906
+      },
+      "text": "agent,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6193727480819802,
+        "y0": 0.2101105018095537,
+        "x1": 0.6591580459494996,
+        "y1": 0.22268954190340906
+      },
+      "text": "which",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6676229838452308,
+        "y0": 0.2101105018095537,
+        "x1": 0.7598747303283292,
+        "y1": 0.22268954190340906
+      },
+      "text": "autonomously",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7683234121285233,
+        "y0": 0.2101105018095537,
+        "x1": 0.8071971220128676,
+        "y1": 0.22268954190340906
+      },
+      "text": "learns",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8156620599085989,
+        "y0": 0.2101105018095537,
+        "x1": 0.8654099009395425,
+        "y1": 0.22268954190340906
+      },
+      "text": "optimal",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8738748388352737,
+        "y0": 0.2101105018095537,
+        "x1": 0.9199925840290544,
+        "y1": 0.22268954190340906
+      },
+      "text": "control",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.23012186421288383,
+        "x1": 0.49023129581625946,
+        "y1": 0.2427009043067393
+      },
+      "text": "as a crucial reference point. Within this range, the RL agent",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.22520522035733614,
+        "x1": 0.9199925840290544,
+        "y1": 0.2377842604511916
+      },
+      "text": "strategies; a non-adaptive fuzzy logic controller with finely",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.24521658276066638,
+        "x1": 0.49023129581625946,
+        "y1": 0.25779562285452173
+      },
+      "text": "receives a significantly higher reward to reinforce behaviors",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.2402999389051187,
+        "x1": 0.9199926837597018,
+        "y1": 0.25287897899897416
+      },
+      "text": "tuned and optimized parameters; and an adaptive fuzzy logic",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.2603113013084488,
+        "x1": 0.10442466985166463,
+        "y1": 0.2728903414023043
+      },
+      "text": "that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1125640495150697,
+        "y0": 0.2603113013084488,
+        "x1": 0.22739440319584867,
+        "y1": 0.2728903414023043
+      },
+      "text": "maintain glucose",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23553379532558466,
+        "y0": 0.2603113013084488,
+        "x1": 0.35062460805855544,
+        "y1": 0.2728903414023043
+      },
+      "text": "levels within the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35876400018829147,
+        "y0": 0.2603113013084488,
+        "x1": 0.4902312334846048,
+        "y1": 0.2728903414023043
+      },
+      "text": "healthy boundaries.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.25539465745290124,
+        "x1": 0.9199925840290544,
+        "y1": 0.2679736975467566
+      },
+      "text": "controller, where the parameters are continuously and dynam-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.27540601985623137,
+        "x1": 0.49023129581625946,
+        "y1": 0.28798505995008683
+      },
+      "text": "We also designated an acceptable range, consisting of two",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.27049060903414335,
+        "x1": 0.9132694418913399,
+        "y1": 0.2830696491279987
+      },
+      "text": "ically adjusted by the RL agent at each simulation timestep.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.2905007384040139,
+        "x1": 0.49023129581625946,
+        "y1": 0.30307977849786927
+      },
+      "text": "sub-ranges (100 to 160 mg/dL and 70 to 80 mg/dL), where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.28916482371513286,
+        "x1": 0.9199925840290544,
+        "y1": 0.3017438638089883
+      },
+      "text": "It is important to explicitly highlight that all simulations, as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.305596689985256,
+        "x1": 0.490231196085612,
+        "y1": 0.3181757300791114
+      },
+      "text": "the agent receives a moderate reward. This encourages the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.3042595422629154,
+        "x1": 0.9199925840290544,
+        "y1": 0.31683858235677087
+      },
+      "text": "well as the tuning processes for each of the proposed methods,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.32069140853303857,
+        "x1": 0.11526632620618234,
+        "y1": 0.3332704486268939
+      },
+      "text": "agent",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12456149680941712,
+        "y0": 0.32069140853303857,
+        "x1": 0.13722636652927772,
+        "y1": 0.3332704486268939
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1465215371325125,
+        "y0": 0.32069140853303857,
+        "x1": 0.20126700557135288,
+        "y1": 0.3332704486268939
+      },
+      "text": "navigate",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21056216370825673,
+        "y0": 0.32069140853303857,
+        "x1": 0.26029377357632505,
+        "y1": 0.3332704486268939
+      },
+      "text": "glucose",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26958894417955986,
+        "y0": 0.32069140853303857,
+        "x1": 0.30691615584629034,
+        "y1": 0.3332704486268939
+      },
+      "text": "levels",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.316195070353988,
+        "y0": 0.32069140853303857,
+        "x1": 0.3578035691205193,
+        "y1": 0.3332704486268939
+      },
+      "text": "within",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36709873972375406,
+        "y0": 0.32069140853303857,
+        "x1": 0.3824658861347273,
+        "y1": 0.3332704486268939
+      },
+      "text": "an",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39176103180530025,
+        "y0": 0.32069140853303857,
+        "x1": 0.4604573966630923,
+        "y1": 0.3332704486268939
+      },
+      "text": "acceptable",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46975259219898896,
+        "y0": 0.32069140853303857,
+        "x1": 0.4902312833499285,
+        "y1": 0.3332704486268939
+      },
+      "text": "but",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.31935426081069795,
+        "x1": 0.5413974936491524,
+        "y1": 0.3319333009045533
+      },
+      "text": "were",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5502368702607996,
+        "y0": 0.31935426081069795,
+        "x1": 0.6433839486315359,
+        "y1": 0.3319333009045533
+      },
+      "text": "systematically",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6522232753778595,
+        "y0": 0.31935426081069795,
+        "x1": 0.6974131266276041,
+        "y1": 0.3319333009045533
+      },
+      "text": "carried",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7062524533739277,
+        "y0": 0.31935426081069795,
+        "x1": 0.7270567152235243,
+        "y1": 0.3319333009045533
+      },
+      "text": "out",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7359123479307087,
+        "y0": 0.31935426081069795,
+        "x1": 0.7711884243036408,
+        "y1": 0.3319333009045533
+      },
+      "text": "using",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.780027800915288,
+        "y0": 0.31935426081069795,
+        "x1": 0.8876466439440359,
+        "y1": 0.3319333009045533
+      },
+      "text": "MATLAB2022b",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8964859706903595,
+        "y0": 0.31935426081069795,
+        "x1": 0.9199924842984069,
+        "y1": 0.3319333009045533
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.335786127080821,
+        "x1": 0.49023129581625946,
+        "y1": 0.34836516717467647
+      },
+      "text": "broader spectrum. Additionally, we identified two distinct bad",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.3344489793584804,
+        "x1": 0.5735480613957823,
+        "y1": 0.34702801945233586
+      },
+      "text": "Simulink.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.350880807096308,
+        "x1": 0.49023129581625946,
+        "y1": 0.36345984719016333
+      },
+      "text": "ranges (160 or higher and 0 to 70 mg/dL) and assigned a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.3580348286965881,
+        "x1": 0.523783864538654,
+        "y1": 0.37061386879044345
+      },
+      "text": "A.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5319232816010518,
+        "y0": 0.3580348286965881,
+        "x1": 0.8968767153671364,
+        "y1": 0.37061386879044345
+      },
+      "text": "Direct insulin control through Reinforcement Learning",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.36597548711179484,
+        "x1": 0.4902312459509357,
+        "y1": 0.3785545272056503
+      },
+      "text": "negative reward within these intervals.we also considered the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.3810701671272817,
+        "x1": 0.14364018159754136,
+        "y1": 0.39364920722113717
+      },
+      "text": "derivative",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15269117417678335,
+        "y0": 0.3810701671272817,
+        "x1": 0.1687257554796007,
+        "y1": 0.39364920722113717
+      },
+      "text": "de",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16874345766952614,
+        "y0": 0.3810701671272817,
+        "x1": 0.1750596115012574,
+        "y1": 0.39364920722113717
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17507515701593138,
+        "y0": 0.3810701671272817,
+        "x1": 0.1809517854179432,
+        "y1": 0.39364920722113717
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18095260819578482,
+        "y0": 0.3810701671272817,
+        "x1": 0.18726876202751608,
+        "y1": 0.39364920722113717
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19633496353049684,
+        "y0": 0.3810701671272817,
+        "x1": 0.20899983325035743,
+        "y1": 0.39364920722113717
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21805083829593036,
+        "y0": 0.3810701671272817,
+        "x1": 0.2542222465565002,
+        "y1": 0.39364920722113717
+      },
+      "text": "guide",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2632732017367494,
+        "y0": 0.3810701671272817,
+        "x1": 0.2831658506705091,
+        "y1": 0.39364920722113717
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29221683078342015,
+        "y0": 0.3810701671272817,
+        "x1": 0.3835243773616217,
+        "y1": 0.39364920722113717
+      },
+      "text": "reinforcement",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39257538240719464,
+        "y0": 0.3810701671272817,
+        "x1": 0.44592085694955064,
+        "y1": 0.39364920722113717
+      },
+      "text": "learning",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45497186199512357,
+        "y0": 0.3810701671272817,
+        "x1": 0.4902316822725184,
+        "y1": 0.39364920722113717
+      },
+      "text": "agent",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.37709163054071293,
+        "x1": 0.9199925840290544,
+        "y1": 0.3896706706345684
+      },
+      "text": "The results of the Direct insulin control through Reinforcement",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.3961661187085238,
+        "x1": 0.36037561005237057,
+        "y1": 0.40874515880237927
+      },
+      "text": "toward desired performance. Additionally,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36606697631038093,
+        "y0": 0.3961661187085238,
+        "x1": 0.37166687709833285,
+        "y1": 0.40874515880237927
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3716764512404897,
+        "y0": 0.3961661187085238,
+        "x1": 0.3779926175385519,
+        "y1": 0.40874515880237927
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3780065050312117,
+        "y0": 0.3961661187085238,
+        "x1": 0.38388313343322356,
+        "y1": 0.40874515880237927
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38388560176674835,
+        "y0": 0.3961661187085238,
+        "x1": 0.4902275933159722,
+        "y1": 0.40874515880237927
+      },
+      "text": ") the integral of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.39218758212195504,
+        "x1": 0.8485125373391544,
+        "y1": 0.4047666222158105
+      },
+      "text": "Learning in the nominal case are presented below:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000651839511846,
+        "y0": 0.4112607987240108,
+        "x1": 0.49023118361928103,
+        "y1": 0.42383983881786613
+      },
+      "text": "the absolute value of the normalized error, aimed at mitigating",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000651839511846,
+        "y0": 0.42635547873949764,
+        "x1": 0.4046049429700265,
+        "y1": 0.4389345188333531
+      },
+      "text": "large overshooting and oscillations. Furthermore,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40975815018797235,
+        "y0": 0.42635547873949764,
+        "x1": 0.4167905819961448,
+        "y1": 0.4389345188333531
+      },
+      "text": "c",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41680227541456033,
+        "y0": 0.42635547873949764,
+        "x1": 0.42311844171262253,
+        "y1": 0.4389345188333531
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42313399969362747,
+        "y0": 0.42635547873949764,
+        "x1": 0.4290106280956393,
+        "y1": 0.4389345188333531
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42901142594081904,
+        "y0": 0.42635547873949764,
+        "x1": 0.49023322809755415,
+        "y1": 0.4389345188333531
+      },
+      "text": ") denotes",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.4414501587549845,
+        "x1": 0.4902312833499285,
+        "y1": 0.45402919884883997
+      },
+      "text": "the integral of the control signal, serving to penalize the agent",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.4565448387704715,
+        "x1": 0.49023118361928103,
+        "y1": 0.4691238788643268
+      },
+      "text": "for excessive insulin usage. The reward is given to the agent",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.47163951878595833,
+        "x1": 0.39962367138831445,
+        "y1": 0.4842185588798138
+      },
+      "text": "at each step. And the formulation is as follows:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628595713696449,
+        "y0": 0.49622512646395756,
+        "x1": 0.10295209074332044,
+        "y1": 0.505030429724491
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1127222347882838,
+        "y0": 0.4924513896306356,
+        "x1": 0.4902266458748213,
+        "y1": 0.505030429724491
+      },
+      "text": "If the error is less than 90 (the glucose is less than the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1127222347882838,
+        "y0": 0.5075473412118776,
+        "x1": 0.49022659600949753,
+        "y1": 0.5201263813057331
+      },
+      "text": "reference), the reward will be given by the linear function:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1127222347882838,
+        "y0": 0.5226420212273646,
+        "x1": 0.12717776828342015,
+        "y1": 0.53522106132122
+      },
+      "text": "(1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1308104695837482,
+        "y0": 0.5226420212273646,
+        "x1": 0.16370041541803895,
+        "y1": 0.53522106132122
+      },
+      "text": "−|e|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16371243296105878,
+        "y0": 0.5226420212273646,
+        "x1": 0.17002858679279004,
+        "y1": 0.53522106132122
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17004249921811174,
+        "y0": 0.5226420212273646,
+        "x1": 0.1781818788815168,
+        "y1": 0.53522106132122
+      },
+      "text": "/",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17818302578396267,
+        "y0": 0.5226420212273646,
+        "x1": 0.19446178511077283,
+        "y1": 0.53522106132122
+      },
+      "text": "20",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628596960329543,
+        "y0": 0.5415104380761735,
+        "x1": 0.10295210320965137,
+        "y1": 0.5503157413367069
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11272224725461473,
+        "y0": 0.5377367012428516,
+        "x1": 0.4902266334084904,
+        "y1": 0.5503157413367069
+      },
+      "text": "If the error is greater than 90 (the glucose is greater than",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11272224725461473,
+        "y0": 0.5528313812583383,
+        "x1": 0.1326148837220435,
+        "y1": 0.5654104213521938
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1408031064700457,
+        "y0": 0.5528313812583383,
+        "x1": 0.21081804761699602,
+        "y1": 0.5654104213521938
+      },
+      "text": "reference),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2190062578986673,
+        "y0": 0.5528313812583383,
+        "x1": 0.2388988818997651,
+        "y1": 0.5654104213521938
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2470708360858992,
+        "y0": 0.5528313812583383,
+        "x1": 0.29169095107932497,
+        "y1": 0.5654104213521938
+      },
+      "text": "reward",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29987913642833436,
+        "y0": 0.5528313812583383,
+        "x1": 0.3252088758680556,
+        "y1": 0.5654104213521938
+      },
+      "text": "will",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3333808051215278,
+        "y0": 0.5528313812583383,
+        "x1": 0.34874795153250104,
+        "y1": 0.5654104213521938
+      },
+      "text": "be",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35693618674683414,
+        "y0": 0.5528313812583383,
+        "x1": 0.39245640374476615,
+        "y1": 0.5654104213521938
+      },
+      "text": "given",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40062833299823836,
+        "y0": 0.5528313812583383,
+        "x1": 0.4169070923250485,
+        "y1": 0.5654104213521938
+      },
+      "text": "by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4250953026067198,
+        "y0": 0.5528313812583383,
+        "x1": 0.44498797647314137,
+        "y1": 0.5654104213521938
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4531598558612898,
+        "y0": 0.5528313812583383,
+        "x1": 0.49022659600949753,
+        "y1": 0.5654104213521938
+      },
+      "text": "linear",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11272224725461473,
+        "y0": 0.5679260612738253,
+        "x1": 0.19165816961550244,
+        "y1": 0.5805051013676807
+      },
+      "text": "function: (1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19528923782647825,
+        "y0": 0.5679260612738253,
+        "x1": 0.228179183660769,
+        "y1": 0.5805051013676807
+      },
+      "text": "−|e|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22819284675947202,
+        "y0": 0.5679260612738253,
+        "x1": 0.23450901305753422,
+        "y1": 0.5805051013676807
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23452290055019404,
+        "y0": 0.5679260612738253,
+        "x1": 0.24266226774726818,
+        "y1": 0.5805051013676807
+      },
+      "text": "/",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24266179402669272,
+        "y0": 0.5679260612738253,
+        "x1": 0.25894055335350286,
+        "y1": 0.5805051013676807
+      },
+      "text": "70",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628597583646088,
+        "y0": 0.5867944781226342,
+        "x1": 0.10295210944281684,
+        "y1": 0.5955997813831676
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11272224725461473,
+        "y0": 0.5830207412893122,
+        "x1": 0.4902266334084904,
+        "y1": 0.5955997813831676
+      },
+      "text": "If the error is less than 10 (the glucose is close to our",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11272224725461473,
+        "y0": 0.5981166928705544,
+        "x1": 0.1827534694297641,
+        "y1": 0.6106957329644097
+      },
+      "text": "reference),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1917881685144761,
+        "y0": 0.5981166928705544,
+        "x1": 0.2116808174482358,
+        "y1": 0.6106957329644097
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22071554146560968,
+        "y0": 0.5981166928705544,
+        "x1": 0.26533563152637357,
+        "y1": 0.6106957329644097
+      },
+      "text": "reward",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27435404958288656,
+        "y0": 0.5981166928705544,
+        "x1": 0.2996838139552696,
+        "y1": 0.6106957329644097
+      },
+      "text": "will",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3087185130399816,
+        "y0": 0.5981166928705544,
+        "x1": 0.32408565945095485,
+        "y1": 0.6106957329644097
+      },
+      "text": "be",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33312035853566685,
+        "y0": 0.5981166928705544,
+        "x1": 0.36864057553359886,
+        "y1": 0.6106957329644097
+      },
+      "text": "given",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37767527461831085,
+        "y0": 0.5981166928705544,
+        "x1": 0.393954033945121,
+        "y1": 0.6106957329644097
+      },
+      "text": "by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4029887579624949,
+        "y0": 0.5981166928705544,
+        "x1": 0.4228813819635927,
+        "y1": 0.6106957329644097
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4318998249527676,
+        "y0": 0.5981166928705544,
+        "x1": 0.49022659600949753,
+        "y1": 0.6106957329644097
+      },
+      "text": "function,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11272224725461473,
+        "y0": 0.6132113728860412,
+        "x1": 0.1704304514367596,
+        "y1": 0.6257904129798966
+      },
+      "text": "which at",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17660133511412376,
+        "y0": 0.6132113728860412,
+        "x1": 0.18417095358854804,
+        "y1": 0.6257904129798966
+      },
+      "text": "e",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18957846149120455,
+        "y0": 0.6132113728860412,
+        "x1": 0.39686138178008834,
+        "y1": 0.6257904129798966
+      },
+      "text": "= 0 gives the value 20, and at",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40303433486838747,
+        "y0": 0.6132113728860412,
+        "x1": 0.41060396580914266,
+        "y1": 0.6257904129798966
+      },
+      "text": "e",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41601146124546823,
+        "y0": 0.6132113728860412,
+        "x1": 0.4902329289056117,
+        "y1": 0.6257904129798966
+      },
+      "text": "= 10 gives",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.5302794213388481,
+        "y0": 0.42484495374891496,
+        "x1": 0.8994804831112132,
+        "y1": 0.6227247450086806
+      },
+      "text": "[Image: Im1]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21116014867047078,
+        "y0": 0.6262774136331346,
+        "x1": 0.21669492534562654,
+        "y1": 0.6325669336800623
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1127222347882838,
+        "y0": 0.6296924448976613,
+        "x1": 0.1392243578543071,
+        "y1": 0.6422714849915168
+      },
+      "text": "0: 1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1392238716674007,
+        "y0": 0.6296924448976613,
+        "x1": 0.1437330931619881,
+        "y1": 0.6422714849915168
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1437467437943602,
+        "y0": 0.6296924448976613,
+        "x1": 0.16816488278457542,
+        "y1": 0.6422714849915168
+      },
+      "text": "262",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.171782699285769,
+        "y0": 0.6296924448976613,
+        "x1": 0.1762919207803564,
+        "y1": 0.6422714849915168
+      },
+      "text": "·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17992159276226766,
+        "y0": 0.6296924448976613,
+        "x1": 0.18623774659399892,
+        "y1": 0.6422714849915168
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18625165901932061,
+        "y0": 0.6296924448976613,
+        "x1": 0.20286381790061403,
+        "y1": 0.6422714849915168
+      },
+      "text": "|e|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20287583544363383,
+        "y0": 0.6296924448976613,
+        "x1": 0.2091919892753651,
+        "y1": 0.6422714849915168
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21116012373780893,
+        "y0": 0.632687761928096,
+        "x1": 0.21669490041296466,
+        "y1": 0.6389772819750237
+      },
+      "text": "5",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22308332156511693,
+        "y0": 0.6296924448976613,
+        "x1": 0.24748519199346405,
+        "y1": 0.6422714849915168
+      },
+      "text": "+ 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.6353041818647673,
+        "x1": 0.5444352891710069,
+        "y1": 0.6453674393470841
+      },
+      "text": "Fig. 1.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.552965401044858,
+        "y0": 0.6353041818647673,
+        "x1": 0.9199936810661765,
+        "y1": 0.6453674393470841
+      },
+      "text": "Glucose level (mg/dL) response of the Direct insulin control through",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628593843746809,
+        "y0": 0.6485608617464702,
+        "x1": 0.10295207204382403,
+        "y1": 0.6573661650070036
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11272220985562194,
+        "y0": 0.6447871249131483,
+        "x1": 0.4457368040396497,
+        "y1": 0.6573661650070036
+      },
+      "text": "We then apply penalties to our agent as follows:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45241990432240603,
+        "y0": 0.6447871249131483,
+        "x1": 0.4650684930140676,
+        "y1": 0.6573661650070036
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46508001190385007,
+        "y0": 0.6447871249131483,
+        "x1": 0.4732193791009242,
+        "y1": 0.6573661650070036
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.477571824017693,
+        "y0": 0.6447871249131483,
+        "x1": 0.49022041270935457,
+        "y1": 0.6573661650070036
+      },
+      "text": "×",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.6466248932510916,
+        "x1": 0.9199936810661765,
+        "y1": 0.6566881507334084
+      },
+      "text": "Reinforcement Learning, along with corresponding meals intake (mg/dl) and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1127221599902982,
+        "y0": 0.6598818049286351,
+        "x1": 0.12900091931710836,
+        "y1": 0.6724608450224905
+      },
+      "text": "10",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1290015675663169,
+        "y0": 0.6590911601528977,
+        "x1": 0.13916599049287684,
+        "y1": 0.6678964634134312
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13917476678985397,
+        "y0": 0.6590911601528977,
+        "x1": 0.1456585803063087,
+        "y1": 0.6678964634134312
+      },
+      "text": "6",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1502254211824704,
+        "y0": 0.6598818049286351,
+        "x1": 0.18049818550059998,
+        "y1": 0.6724608450224905
+      },
+      "text": "· i −",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1842597263311249,
+        "y0": 0.6598818049286351,
+        "x1": 0.20053848565793506,
+        "y1": 0.6724608450224905
+      },
+      "text": "10",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20053750081779131,
+        "y0": 0.6590911601528977,
+        "x1": 0.2107019362106822,
+        "y1": 0.6678964634134312
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21071233313068066,
+        "y0": 0.6590911601528977,
+        "x1": 0.2171961466471354,
+        "y1": 0.6678964634134312
+      },
+      "text": "6",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22176298752329707,
+        "y0": 0.6598818049286351,
+        "x1": 0.23706338919845282,
+        "y1": 0.6724608450224905
+      },
+      "text": "· c",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23707670323988972,
+        "y0": 0.6598818049286351,
+        "x1": 0.4902276930466197,
+        "y1": 0.6724608450224905
+      },
+      "text": ", where the first term is introduced to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.6579468762031709,
+        "x1": 0.75764849295024,
+        "y1": 0.6680101336854877
+      },
+      "text": "insulin injections in units in the nominal case.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1127221225913054,
+        "y0": 0.6749765042102698,
+        "x1": 0.49022655861050474,
+        "y1": 0.6875555443041252
+      },
+      "text": "mitigate oscillations in the blood glucose signal, ensuring",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.6828111410140991,
+        "x1": 0.9199926837597018,
+        "y1": 0.6953901811079546
+      },
+      "text": "In the Glucose-level subplot, the two black dotted lines clearly",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1127221225913054,
+        "y0": 0.6900724557915119,
+        "x1": 0.16820012510212418,
+        "y1": 0.7026514958853673
+      },
+      "text": "stability,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1763557857937283,
+        "y0": 0.6900724557915119,
+        "x1": 0.19986231186810663,
+        "y1": 0.7026514958853673
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20801797255971075,
+        "y0": 0.6900724557915119,
+        "x1": 0.2279106090271395,
+        "y1": 0.7026514958853673
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23605000115687552,
+        "y0": 0.6900724557915119,
+        "x1": 0.28125613343481926,
+        "y1": 0.7026514958853673
+      },
+      "text": "second",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2894117816600924,
+        "y0": 0.6900724557915119,
+        "x1": 0.31925074259440106,
+        "y1": 0.7026514958853673
+      },
+      "text": "term",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3274063908196742,
+        "y0": 0.6900724557915119,
+        "x1": 0.33826431573606003,
+        "y1": 0.7026514958853673
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3464199888939951,
+        "y0": 0.6900724557915119,
+        "x1": 0.40429096595913755,
+        "y1": 0.7026514958853673
+      },
+      "text": "designed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41244661418441075,
+        "y0": 0.6900724557915119,
+        "x1": 0.49022649627885007,
+        "y1": 0.7026514958853673
+      },
+      "text": "to optimize",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.6979070925953412,
+        "x1": 0.9199926837597018,
+        "y1": 0.7104861326891967
+      },
+      "text": "indicate the boundaries of the safe range for blood glucose",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1127221225913054,
+        "y0": 0.7051671550731466,
+        "x1": 0.49022650874518103,
+        "y1": 0.7177461951670021
+      },
+      "text": "the injected insulin, discouraging excessive usage. These",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.713001791876976,
+        "x1": 0.9199925840290544,
+        "y1": 0.7255808319708313
+      },
+      "text": "levels, spanning from 70 to 180 units, while the green dotted",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1127221225913054,
+        "y0": 0.7202618543547814,
+        "x1": 0.49022655861050474,
+        "y1": 0.7328408944486368
+      },
+      "text": "penalties contribute to fine-tuning the agent’s behavior for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.7280964911586106,
+        "x1": 0.9199926837597018,
+        "y1": 0.740675531252466
+      },
+      "text": "line represents our chosen reference value, set at 90 units.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1127221225913054,
+        "y0": 0.735356553636416,
+        "x1": 0.45438067118326825,
+        "y1": 0.7479355937302714
+      },
+      "text": "more effective and stable blood glucose regulation.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.7431911904402453,
+        "x1": 0.9199926837597018,
+        "y1": 0.7557702305341008
+      },
+      "text": "It is important to emphasize that this visual representation,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628585117315155,
+        "y0": 0.7561684244810933,
+        "x1": 0.10984605278065002,
+        "y1": 0.7687474645749487
+      },
+      "text": "3)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1179854324440551,
+        "y0": 0.7561684244810933,
+        "x1": 0.14692906149072585,
+        "y1": 0.7687474645749487
+      },
+      "text": "Stop",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16052183762095332,
+        "y0": 0.7561684244810933,
+        "x1": 0.17318670734081393,
+        "y1": 0.7687474645749487
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18676318997651145,
+        "y0": 0.7561684244810933,
+        "x1": 0.2419156342550041,
+        "y1": 0.7687474645749487
+      },
+      "text": "episode:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2582172069674224,
+        "y0": 0.7561684244810933,
+        "x1": 0.27177740857492083,
+        "y1": 0.7687474645749487
+      },
+      "text": "In",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2853701722388174,
+        "y0": 0.7561684244810933,
+        "x1": 0.3070697659760519,
+        "y1": 0.7687474645749487
+      },
+      "text": "our",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3206462486117494,
+        "y0": 0.7561684244810933,
+        "x1": 0.3703778584798177,
+        "y1": 0.7687474645749487
+      },
+      "text": "specific",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38397062214371425,
+        "y0": 0.7561684244810933,
+        "x1": 0.49023836422589867,
+        "y1": 0.7687474645749487
+      },
+      "text": "implementation,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.75828588972188,
+        "x1": 0.5712691163705066,
+        "y1": 0.7708649298157355
+      },
+      "text": "including",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.580124749077691,
+        "y0": 0.75828588972188,
+        "x1": 0.6090683781243618,
+        "y1": 0.7708649298157355
+      },
+      "text": "both",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.617940316792407,
+        "y0": 0.75828588972188,
+        "x1": 0.6378329407935049,
+        "y1": 0.7708649298157355
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6466886233660131,
+        "y0": 0.75828588972188,
+        "x1": 0.672897438597835,
+        "y1": 0.7708649298157355
+      },
+      "text": "safe",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6817693274005566,
+        "y0": 0.75828588972188,
+        "x1": 0.7179244297002655,
+        "y1": 0.7708649298157355
+      },
+      "text": "range",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7267801122727737,
+        "y0": 0.75828588972188,
+        "x1": 0.7502866258808211,
+        "y1": 0.7708649298157355
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7591585645488664,
+        "y0": 0.75828588972188,
+        "x1": 0.779051238415288,
+        "y1": 0.7708649298157355
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7879068212571487,
+        "y0": 0.75828588972188,
+        "x1": 0.8484475129570057,
+        "y1": 0.7708649298157355
+      },
+      "text": "reference",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8573194516250511,
+        "y0": 0.75828588972188,
+        "x1": 0.8858073116127961,
+        "y1": 0.7708649298157355
+      },
+      "text": "line,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8946628944546569,
+        "y0": 0.75828588972188,
+        "x1": 0.9199926837597018,
+        "y1": 0.7708649298157355
+      },
+      "text": "will",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.080006418664471,
+        "y0": 0.771263123762728,
+        "x1": 0.49023118361928103,
+        "y1": 0.7838421638565835
+      },
+      "text": "episodes conclude under three conditions: after reaching the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.7733818413031222,
+        "x1": 0.9199926837597018,
+        "y1": 0.7859608813969776
+      },
+      "text": "consistently appear in all the glucose-level subplots presented",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.080006418664471,
+        "y0": 0.7863578230443626,
+        "x1": 0.49023118361928103,
+        "y1": 0.7989368631382181
+      },
+      "text": "predefined simulation time of 24 hours, or when the glucose",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.7884765405847569,
+        "x1": 0.8926932141671773,
+        "y1": 0.8010555806786123
+      },
+      "text": "throughout this article to maintain clarity and uniformity.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.080006418664471,
+        "y0": 0.8014537746256047,
+        "x1": 0.4902311337539573,
+        "y1": 0.8140328147194602
+      },
+      "text": "level exceeds 300 (indicating hyperglycemia), or falls below",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.080006418664471,
+        "y0": 0.8165484739072395,
+        "x1": 0.49023108388863357,
+        "y1": 0.829127514001095
+      },
+      "text": "50 (indicating hypoglycemia). These extreme glucose levels",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.8107290761639374,
+        "x1": 0.5233281952103758,
+        "y1": 0.8233081162577928
+      },
+      "text": "In",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5315977607677186,
+        "y0": 0.8107290761639374,
+        "x1": 0.5659459431966146,
+        "y1": 0.8233081162577928
+      },
+      "text": "order",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5742155586192811,
+        "y0": 0.8107290761639374,
+        "x1": 0.5868804532718035,
+        "y1": 0.8233081162577928
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.59515006869447,
+        "y0": 0.8107290761639374,
+        "x1": 0.6665975533279718,
+        "y1": 0.8233081162577928
+      },
+      "text": "thoroughly",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6748671188853146,
+        "y0": 0.8107290761639374,
+        "x1": 0.7297753726734835,
+        "y1": 0.8233081162577928
+      },
+      "text": "examine",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7380449880961499,
+        "y0": 0.8107290761639374,
+        "x1": 0.7579376619625715,
+        "y1": 0.8233081162577928
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.766207277385238,
+        "y0": 0.8107290761639374,
+        "x1": 0.834610633600771,
+        "y1": 0.8233081162577928
+      },
+      "text": "robustness",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8428802490234375,
+        "y0": 0.8107290761639374,
+        "x1": 0.856440425698274,
+        "y1": 0.8233081162577928
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8647100909862643,
+        "y0": 0.8107290761639374,
+        "x1": 0.8846027648526859,
+        "y1": 0.8233081162577928
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8928723304100286,
+        "y0": 0.8107290761639374,
+        "x1": 0.9199926837597018,
+        "y1": 0.8233081162577928
+      },
+      "text": "pro-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.080006418664471,
+        "y0": 0.8316431731888743,
+        "x1": 0.49023118361928103,
+        "y1": 0.8442222132827296
+      },
+      "text": "are considered hazardous situations for the patient, demanding",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.8258237754455721,
+        "x1": 0.9199926837597018,
+        "y1": 0.8384028155394274
+      },
+      "text": "posed approach, the Reinforcement Learning Controller was",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.080006418664471,
+        "y0": 0.8467378724705089,
+        "x1": 0.4902311337539573,
+        "y1": 0.8593169125643644
+      },
+      "text": "immediate intervention. In such instances, we assert that the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.8409184747272067,
+        "x1": 0.9199926837597018,
+        "y1": 0.8534975148210622
+      },
+      "text": "subjected to a comprehensive series of tests conducted under",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.080006418664471,
+        "y0": 0.8618325717521436,
+        "x1": 0.49023108388863357,
+        "y1": 0.874411611845999
+      },
+      "text": "agent has failed to maintain glucose within the desired range,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.8560144359415227,
+        "x1": 0.9199926837597018,
+        "y1": 0.8685934760353782
+      },
+      "text": "various sets of randomly generated time spans and differing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.080006418664471,
+        "y0": 0.8769272710337783,
+        "x1": 0.49023118361928103,
+        "y1": 0.8895063111276338
+      },
+      "text": "prompting a termination of the episode. This safety-centric",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.8711091352231575,
+        "x1": 0.9199926837597018,
+        "y1": 0.8836881753170129
+      },
+      "text": "quantities of meal intakes, allowing us to assess its perfor-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.080006418664471,
+        "y0": 0.8920232322480943,
+        "x1": 0.49023118361928103,
+        "y1": 0.9046022723419498
+      },
+      "text": "approach aligns with our commitment to avoiding potentially",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.8862038345047922,
+        "x1": 0.8394128138722937,
+        "y1": 0.8987828745986476
+      },
+      "text": "mance across a wide range of possible scenarios.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.02818459999980405,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

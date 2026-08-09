@@ -1,11 +1,17 @@
 # Đọc tay 20 ca hỏng nặng nhất — D2 (TASK-088)
 
-> **Cổng §5 của `OCR-BENCHMARK-PLAN.md` CHƯA QUA.** `sabotage` chưa đứng bét mọi metric —
-> trên bảng hợp lệ duy nhất chứa nó (`noop × sabotage` ở `common_set.md`) hai engine **hoà**
-> ở `0.000`, mà hoà ở đáy không phải đứng bét; và bản công bố với cổng C2 còn chấm hai quần
-> thể `sabotage` khác nhau. Vì vậy **D3 (`DANH-GIA-OCR-ENGINE.md`) vẫn bị chặn**. Tài liệu
-> này là phân tích nội bộ, không phải bản đánh giá engine; **không được trích số ở đây ra
-> ngoài như một kết luận xếp hạng.** Lý lẽ đầy đủ cho việc vẫn làm D2: `.claude/tasks/TASK-088/plan.md` §1.
+> **Cổng §5 đã qua (2026-08-10) — nhưng chưa qua cho mọi metric.** Hai chuyện đã chặn D3
+> nay không còn: hai quần thể `sabotage` đã hợp nhất về một (nguồn `opendataloader`,
+> 1608 tài liệu), và thế hoà `0.000` đã bị phá vì `sabotage` giờ làm hỏng đầu ra **thật**
+> chứ không phải đầu ra rỗng.
+>
+> Còn lại **2/9 metric có cổng chạy được vẫn trượt** và đã bị loại khỏi bảng chính:
+> `assert_baseline` (hoà đúng bằng nguồn, 1.0000) và `assert_text_absence` (0.7556 >
+> nguồn 0.4589 — làm hỏng tài liệu lại **được thưởng** điểm). Số của hai metric đó nằm ở
+> phụ lục và **không** được dùng để xếp hạng engine. Xem `results/c2_discrimination.md`.
+>
+> Tài liệu này vẫn là phân tích nội bộ, không phải bản đánh giá engine. Lý lẽ cho việc
+> làm D2 trước khi cổng xanh: `.claude/tasks/TASK-088/plan.md` §1.
 
 Bộ 20 ca đã phân tích: `results/d2-cases.json` (đã commit).
 

@@ -1,0 +1,2562 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.09086_pg5",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "A PREPRINT\n\nis employed to construct the following practical loss function to train the neural network solution U (x; θ), ∑ () ∑ wI12wB 2 JR,M(θ) := |∇U (x; θ)| − f (x)U (x; θ) + (U (x; θ) − g(x)). (2.7) |X (Ω)| 2 |X (∂Ω)| x∈X (Ω) x∈X (∂Ω) Here, again, the boundary condition is enforced with the L²-integral of the error, U (x; θ) − g(x), and the integrals of the energy term and the boundary condition term are approximated by the Monte–Carlo method; the weight factors w and w are analogous to those in the PINN loss.\n\n|I B|||\n|---|---|---|\n|R|I|B|\n||Ω|∂Ω|\n|R,M||R|\n\nThe integral form of the deep Ritz loss function, before approximation via numerical integration, reads ∫ () ∫ 12 2 J (θ) := w |∇U (x; θ)| − f (x)U (x; θ) dx + w (U (x; θ) − g(x)) ds(x). (2.8) 2 The subscript R indicates that the loss is formed by the deep Ritz formulation. In addition, the subscript M in the loss J (θ) in Eq. (2.7) means that the integral in the deep Ritz loss J (θ) in Eq. (2.8) is approximated by the Monte–Carlo method. When the boundary condition is implemented as hard constraints using ansatz functions, that is, using the neural network function U˜ (x; θ) in Eq. (2.6), we obtain the integral loss function ∫ () 1 ˜ (x; θ)|2˜ (x; θ) JRI(θ) := |∇U − f (x)U dx Ω2 and train the neural network U˜ (x; θ) for the loss JRI,M(θ) by approximating the integral in JRIusing the Monte– Carlo method. It has been numerically studied that for the Poisson model problem, the trained solution U (x; θP) with the PINN loss JP,M(θ) gives better training results than the trained solution U (x; θR) with the deep Ritz loss JR,M(θ); see [40]. In our work, we will reinvestigate the performance of the two approaches for various hyper parameter settings and report some of our new findings. As an enhancement to soft enforcement of boundary conditions, an augmented Lagrangian term can be included to the loss function [42] to obtain, 1 ∑ LP,M(θ, λ) := JP,M(θ) + (U (x; θ) − g(x))λ(x) X (∂Ω) x∈X (∂Ω) and ∑ 1 LR,M(θ, λ) := JR,M(θ) + (U (x; θ) − g(x))λ(x), X (∂Ω) x∈X (∂Ω) for the PINN and deep Ritz loss functions, respectively. Here, the boundary condition is enforced as constraints on the neural network solution U (x; θ) by introducing Lagrange multipliers λ(x) for each collocation point x in the training sampling set X (∂Ω). Hence, λ(x) are additional parameters that have to be trained, in addition to θ. The use of such an augmented Lagrangian term can improve slow training progress for the boundary loss term and can provide a more accurate trained neural network solution, U (x; θ). In the augmented Lagrangian approach, the parameters θ and λ are then optimized for the PINN and deep Ritz loss functions in the following sense: () () (θP, λP) := arg max min LP,M(θ, λ) resp. (θR, λR) := arg max min LR,M(θ, λ). λ θ λ θ We note that the above optimization problems for θ are non-linear and non-convex while those for λ are linear. We thus use the Adam optimization method [20] in the gradient update for θ with a small learning rate ǫ and a simple gradient update for λ with a learning rate α, i.e., λ = λ + α∇λLP,Mor λ = λ + α∇λLR,M. The learning rate α is often set to a larger value than the learning rate ǫ, as proposed in two-scale update schemes for min-max optimization problems; see [14, 25, 7]. In our numerical experiments, we set ǫ = 0.001 for the Adam optimizer and α = 1 for the gradient ascent update. We note that the augmented Lagrangian method can be considered as a loss balancing scheme, and in our numerical experiments, we will also conduct comparisons on various loss balancing schemes as listed in Table 1.\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8049019707573785,
+        "y0": 0.043224282939024694,
+        "x1": 0.8282350527694802,
+        "y1": 0.05454546995837284
+      },
+      "text": "A P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8290192847158394,
+        "y0": 0.04548852552067151,
+        "x1": 0.8827445834290748,
+        "y1": 0.05454546995837284
+      },
+      "text": "REPRINT",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.09348151539311267,
+        "x1": 0.8078421299753625,
+        "y1": 0.10606060606060608
+      },
+      "text": "is employed to construct the following practical loss function to train the neural network solution U (x; θ),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29901955797781354,
+        "y0": 0.10681499977304476,
+        "x1": 0.3225489847021165,
+        "y1": 0.11939409044053817
+      },
+      "text": "∑",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3372547922570721,
+        "y0": 0.10105711883968782,
+        "x1": 0.3492155885384753,
+        "y1": 0.11363620950718123
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5447062573401756,
+        "y0": 0.10105727296887024,
+        "x1": 0.5566670536215789,
+        "y1": 0.11363636363636365
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.65705881555096,
+        "y0": 0.10681499977304476,
+        "x1": 0.6805882672079249,
+        "y1": 0.11939409044053817
+      },
+      "text": "∑",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24862835454005822,
+        "y0": 0.110299552329863,
+        "x1": 0.260196984982958,
+        "y1": 0.1228786429973564
+      },
+      "text": "w",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2601964863297207,
+        "y0": 0.11589177028097286,
+        "x1": 0.2658827538583793,
+        "y1": 0.1246971361564867
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3511762432023591,
+        "y0": 0.11029947526527173,
+        "x1": 0.3594115263496349,
+        "y1": 0.12287856593276514
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4345097261316636,
+        "y0": 0.11740686014445145,
+        "x1": 0.44098035026999083,
+        "y1": 0.1262122260199653
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5962744320140165,
+        "y0": 0.110299552329863,
+        "x1": 0.6078430375242545,
+        "y1": 0.1228786429973564
+      },
+      "text": "w",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6078431871202257,
+        "y0": 0.11589177028097286,
+        "x1": 0.6176471086888532,
+        "y1": 0.1246971361564867
+      },
+      "text": "B",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8103925916883681,
+        "y0": 0.11740670601526892,
+        "x1": 0.8168632158266953,
+        "y1": 0.12621207189078287
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14803982404322405,
+        "y0": 0.11878428675911645,
+        "x1": 0.1570594264011757,
+        "y1": 0.13136337742660986
+      },
+      "text": "J",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15705930173786636,
+        "y0": 0.12437650471022632,
+        "x1": 0.18313773161445568,
+        "y1": 0.13318187058574027
+      },
+      "text": "R,M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.185098847532584,
+        "y0": 0.11878428675911645,
+        "x1": 0.22764677159926472,
+        "y1": 0.13136337742660986
+      },
+      "text": "(θ) :=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3613729289933747,
+        "y0": 0.11878428675911645,
+        "x1": 0.4345082301719516,
+        "y1": 0.13136337742660986
+      },
+      "text": "|∇U (x; θ)|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44568658965864993,
+        "y0": 0.11878428675911645,
+        "x1": 0.5447052101683773,
+        "y1": 0.13136337742660986
+      },
+      "text": "− f (x)U (x; θ)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5605884626799938,
+        "y0": 0.11878428675911645,
+        "x1": 0.5733335906384038,
+        "y1": 0.13136337742660986
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6964704725477431,
+        "y0": 0.11878413262993404,
+        "x1": 0.8103910957286561,
+        "y1": 0.13136322329742744
+      },
+      "text": "(U (x; θ) − g(x))",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8180391398909824,
+        "y0": 0.11878413262993404,
+        "x1": 0.8225483613855699,
+        "y1": 0.13136322329742744
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8521569943895527,
+        "y0": 0.11878413262993404,
+        "x1": 0.8837256338082108,
+        "y1": 0.13136322329742744
+      },
+      "text": "(2.7)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23411764506421057,
+        "y0": 0.12742091549767387,
+        "x1": 0.28235267190372243,
+        "y1": 0.14000000616516728
+      },
+      "text": "|X (Ω)|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3511764675963159,
+        "y0": 0.12742091549767387,
+        "x1": 0.3594117507435917,
+        "y1": 0.14000000616516728
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5788235134548612,
+        "y0": 0.12742091549767387,
+        "x1": 0.6366657431608711,
+        "y1": 0.14000000616516728
+      },
+      "text": "|X (∂Ω)|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28705891129238154,
+        "y0": 0.13816420779083716,
+        "x1": 0.33470607583039724,
+        "y1": 0.146969573666351
+      },
+      "text": "x∈X (Ω)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6411766102111417,
+        "y0": 0.13816420779083716,
+        "x1": 0.6964708216050092,
+        "y1": 0.146969573666351
+      },
+      "text": "x∈X (∂Ω)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764720841950062,
+        "y0": 0.1521174967891038,
+        "x1": 0.5068620170643127,
+        "y1": 0.1646965874565972
+      },
+      "text": "Here, again, the boundary condition is enforced with the L²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5074507270763123,
+        "y0": 0.1521174967891038,
+        "x1": 0.8825467178244996,
+        "y1": 0.1646965874565972
+      },
+      "text": "-integral of the error, U (x; θ) − g(x), and the integrals of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.17014791387500183,
+        "x1": 0.8825490116293914,
+        "y1": 0.18272700454249524
+      },
+      "text": "the energy term and the boundary condition term are approximated by the Monte–Carlo method; the weight factors",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.18802697610373453,
+        "x1": 0.12921568926642923,
+        "y1": 0.20060606677122794
+      },
+      "text": "w",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12921581392973855,
+        "y0": 0.19361865460270578,
+        "x1": 0.1349020939247281,
+        "y1": 0.20242402047821972
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14078456903594772,
+        "y0": 0.18802697610373453,
+        "x1": 0.18000009324815539,
+        "y1": 0.20060606677122794
+      },
+      "text": "and w",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18000021791146473,
+        "y0": 0.19361865460270578,
+        "x1": 0.18980413948009217,
+        "y1": 0.20242402047821972
+      },
+      "text": "B",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.195293962565902,
+        "y0": 0.18802697610373453,
+        "x1": 0.45666689654580905,
+        "y1": 0.20060606677122794
+      },
+      "text": "are analogous to those in the PINN loss.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13725490196078433,
+        "y0": 0.2059054988803286,
+        "x1": 0.8058819739647161,
+        "y1": 0.21848458954782202
+      },
+      "text": "The integral form of the deep Ritz loss function, before approximation via numerical integration, reads",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29176512574837876,
+        "y0": 0.21378458268714673,
+        "x1": 0.30078474057266136,
+        "y1": 0.22636367335464014
+      },
+      "text": "∫",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31372563979204965,
+        "y0": 0.2131785467417553,
+        "x1": 0.32568641114079094,
+        "y1": 0.2257576374092487
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5209802365770527,
+        "y0": 0.21317846967716414,
+        "x1": 0.5329410328584558,
+        "y1": 0.22575756034465755
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6025493846220129,
+        "y0": 0.21378458268714673,
+        "x1": 0.6115689745136336,
+        "y1": 0.22636367335464014
+      },
+      "text": "∫",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3276470907373366,
+        "y0": 0.2224209031673393,
+        "x1": 0.33588237388461245,
+        "y1": 0.23499999383483272
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4107843536177492,
+        "y0": 0.22952805685274524,
+        "x1": 0.4172549777560764,
+        "y1": 0.2383334227282592
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7433334051393995,
+        "y0": 0.2295281339173365,
+        "x1": 0.7498040292777267,
+        "y1": 0.23833349979285035
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20333331238989735,
+        "y0": 0.23090548346741036,
+        "x1": 0.21235292721417995,
+        "y1": 0.24348457413490376
+      },
+      "text": "J",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2123534258674173,
+        "y0": 0.23649770141852022,
+        "x1": 0.22215734743604473,
+        "y1": 0.24530306729403406
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22294115552715227,
+        "y0": 0.23090548346741036,
+        "x1": 0.28156789143880206,
+        "y1": 0.24348457413490376
+      },
+      "text": "(θ) := w",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28156866435131994,
+        "y0": 0.23649770141852022,
+        "x1": 0.2872549318799786,
+        "y1": 0.24530306729403406
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3376469331629136,
+        "y0": 0.23090548346741036,
+        "x1": 0.41078225927415235,
+        "y1": 0.24348457413490376
+      },
+      "text": "|∇U (x; θ)|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42196056889552697,
+        "y0": 0.23090548346741036,
+        "x1": 0.5209791894052543,
+        "y1": 0.24348457413490376
+      },
+      "text": "− f (x)U (x; θ)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5386272754544527,
+        "y0": 0.23090548346741036,
+        "x1": 0.5884318632238051,
+        "y1": 0.24348457413490376
+      },
+      "text": "dx + w",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5884313645705678,
+        "y0": 0.23649770141852022,
+        "x1": 0.5982352861391953,
+        "y1": 0.24530306729403406
+      },
+      "text": "B",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6294118843826593,
+        "y0": 0.2309055605320015,
+        "x1": 0.7433325075635723,
+        "y1": 0.24348465119949492
+      },
+      "text": "(U (x; θ) − g(x))",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7535298665364584,
+        "y0": 0.2309055605320015,
+        "x1": 0.7964696946486928,
+        "y1": 0.24348465119949492
+      },
+      "text": "ds(x).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8521561965443729,
+        "y0": 0.2309055605320015,
+        "x1": 0.8837248359630311,
+        "y1": 0.24348465119949492
+      },
+      "text": "(2.8)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30078459097669014,
+        "y0": 0.24604292168761743,
+        "x1": 0.3100002762538935,
+        "y1": 0.25484828756313127
+      },
+      "text": "Ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32764706580467473,
+        "y0": 0.23954211220596777,
+        "x1": 0.33588234895195057,
+        "y1": 0.2521212028734612
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6115688747829862,
+        "y0": 0.24604292168761743,
+        "x1": 0.6284317315793505,
+        "y1": 0.25484828756313127
+      },
+      "text": "∂Ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11705814935023488,
+        "y0": 0.25545124935381336,
+        "x1": 0.8825476154003268,
+        "y1": 0.26803034002130677
+      },
+      "text": "The subscript R indicates that the loss is formed by the deep Ritz formulation. In addition, the subscript M in the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764755747676675,
+        "y0": 0.27332977213040743,
+        "x1": 0.15784379547717525,
+        "y1": 0.28590886279790084
+      },
+      "text": "loss J",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1578436708138659,
+        "y0": 0.2789219900815174,
+        "x1": 0.18392210069045523,
+        "y1": 0.28772735595703125
+      },
+      "text": "R,M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18588321660858353,
+        "y0": 0.27332977213040743,
+        "x1": 0.6080399556876788,
+        "y1": 0.28590886279790084
+      },
+      "text": "(θ) in Eq. (2.7) means that the integral in the deep Ritz loss J",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6080398559570312,
+        "y0": 0.2789219900815174,
+        "x1": 0.6178437775256587,
+        "y1": 0.28772735595703125
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6186282089333129,
+        "y0": 0.27332977213040743,
+        "x1": 0.882550008935866,
+        "y1": 0.28590886279790084
+      },
+      "text": "(θ) in Eq. (2.8) is approximated by the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764720841950062,
+        "y0": 0.29120883435914013,
+        "x1": 0.26196104560802186,
+        "y1": 0.30378792502663354
+      },
+      "text": "Monte–Carlo method.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13725505155675552,
+        "y0": 0.3090873571357342,
+        "x1": 0.8827470766952614,
+        "y1": 0.3216664478032276
+      },
+      "text": "When the boundary condition is implemented as hard constraints using ansatz functions, that is, using the neural",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764720841950062,
+        "y0": 0.32711777422163224,
+        "x1": 0.2443139568652982,
+        "y1": 0.33969686488912565
+      },
+      "text": "network function U",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23568610895692912,
+        "y0": 0.3239360855083273,
+        "x1": 0.5998039993585325,
+        "y1": 0.3365151761758207
+      },
+      "text": "˜ (x; θ) in Eq. (2.6), we obtain the integral loss function",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4039217132368898,
+        "y0": 0.33529956774278125,
+        "x1": 0.4129413031285105,
+        "y1": 0.34787865841027465
+      },
+      "text": "∫",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4258822272805607,
+        "y0": 0.3346933776682074,
+        "x1": 0.43784302356196386,
+        "y1": 0.3472724683357008
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6331373725841248,
+        "y0": 0.33469360886198096,
+        "x1": 0.645098168865528,
+        "y1": 0.3472726995294745
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4398043264750562,
+        "y0": 0.3439356955614957,
+        "x1": 0.44803958468967015,
+        "y1": 0.35651478622898913
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4701961442535999,
+        "y0": 0.34923889540662667,
+        "x1": 0.522939295550577,
+        "y1": 0.3618179860741201
+      },
+      "text": "˜ (x; θ)|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.522940791510289,
+        "y0": 0.35104323456985786,
+        "x1": 0.5294114156486163,
+        "y1": 0.3598486004453717
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.584902146283318,
+        "y0": 0.34923889540662667,
+        "x1": 0.6331363254123263,
+        "y1": 0.3618179860741201
+      },
+      "text": "˜ (x; θ)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33078421798406865,
+        "y0": 0.35242104650747896,
+        "x1": 0.3398038078756893,
+        "y1": 0.36500013717497237
+      },
+      "text": "J",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33980433146158856,
+        "y0": 0.3580127635387459,
+        "x1": 0.349608253030216,
+        "y1": 0.36681812941425973
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.349608253030216,
+        "y0": 0.3617408871650696,
+        "x1": 0.3547062842674505,
+        "y1": 0.3680304324988163
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35705885544321897,
+        "y0": 0.35242104650747896,
+        "x1": 0.3996067919762306,
+        "y1": 0.36500013717497237
+      },
+      "text": "(θ) :=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44980381984336704,
+        "y0": 0.3524211235720702,
+        "x1": 0.47901926476970996,
+        "y1": 0.36500021423956364
+      },
+      "text": "|∇U",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5341176550372754,
+        "y0": 0.3524211235720702,
+        "x1": 0.593725266799428,
+        "y1": 0.36500021423956364
+      },
+      "text": "− f (x)U",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6507844114615247,
+        "y0": 0.3524211235720702,
+        "x1": 0.6690199608896293,
+        "y1": 0.36500021423956364
+      },
+      "text": "dx",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4129411784652012,
+        "y0": 0.3677098010525559,
+        "x1": 0.42215683880974264,
+        "y1": 0.37651516692806974
+      },
+      "text": "Ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4398039275524663,
+        "y0": 0.3610572899230803,
+        "x1": 0.4480391857670803,
+        "y1": 0.3736363805905737
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764740788079554,
+        "y0": 0.3807541902619179,
+        "x1": 0.32235293918185765,
+        "y1": 0.39333328092941133
+      },
+      "text": "and train the neural network U",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3135297688004238,
+        "y0": 0.3775724630163173,
+        "x1": 0.4564699160507302,
+        "y1": 0.3901515536838107
+      },
+      "text": "˜ (x; θ) for the loss J",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4564710629531761,
+        "y0": 0.38634590729318485,
+        "x1": 0.4662749845218035,
+        "y1": 0.3951512731686987
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4662749845218035,
+        "y0": 0.39007403091950854,
+        "x1": 0.471373015759038,
+        "y1": 0.39636357625325525
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47274520973754086,
+        "y0": 0.38634590729318485,
+        "x1": 0.4890197055791718,
+        "y1": 0.3951512731686987
+      },
+      "text": ",M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4911767298879187,
+        "y0": 0.3807541902619179,
+        "x1": 0.7458824706233405,
+        "y1": 0.39333328092941133
+      },
+      "text": "(θ) by approximating the integral in J",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7458829194112541,
+        "y0": 0.38634590729318485,
+        "x1": 0.7556868409798816,
+        "y1": 0.3951512731686987
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7556868409798816,
+        "y0": 0.39007403091950854,
+        "x1": 0.7607849220824398,
+        "y1": 0.39636357625325525
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7684319190729677,
+        "y0": 0.3807541902619179,
+        "x1": 0.8850988250931883,
+        "y1": 0.39333328092941133
+      },
+      "text": "using the Monte–",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764760734209048,
+        "y0": 0.39863321395835494,
+        "x1": 0.21117700314989277,
+        "y1": 0.41121230462584835
+      },
+      "text": "Carlo method.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1372554504793454,
+        "y0": 0.416511736734949,
+        "x1": 0.7643136417164522,
+        "y1": 0.4290908274024424
+      },
+      "text": "It has been numerically studied that for the Poisson model problem, the trained solution U (x; θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7643144395616319,
+        "y0": 0.4221039161537633,
+        "x1": 0.7725497476415697,
+        "y1": 0.43090928202927714
+      },
+      "text": "P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7752946841171364,
+        "y0": 0.416511736734949,
+        "x1": 0.882353240368413,
+        "y1": 0.4290908274024424
+      },
+      "text": ") with the PINN",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764745774611927,
+        "y0": 0.434390760431386,
+        "x1": 0.15588290395300372,
+        "y1": 0.44696985109887943
+      },
+      "text": "loss J",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1558827792896944,
+        "y0": 0.43998247746265295,
+        "x1": 0.18078487371307572,
+        "y1": 0.4487878433381668
+      },
+      "text": "P,M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1827451917860243,
+        "y0": 0.434390760431386,
+        "x1": 0.5911753037396599,
+        "y1": 0.44696985109887943
+      },
+      "text": "(θ) gives better training results than the trained solution U (x; θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5911766999687245,
+        "y0": 0.43998247746265295,
+        "x1": 0.6009806215373519,
+        "y1": 0.4487878433381668
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6019610236672794,
+        "y0": 0.434390760431386,
+        "x1": 0.7721569086211959,
+        "y1": 0.44696985109887943
+      },
+      "text": ") with the deep Ritz loss J",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7721573574091095,
+        "y0": 0.43998247746265295,
+        "x1": 0.7982358246846916,
+        "y1": 0.4487878433381668
+      },
+      "text": "R,M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8001962300219567,
+        "y0": 0.434390760431386,
+        "x1": 0.8852941974315768,
+        "y1": 0.44696985109887943
+      },
+      "text": "(θ); see [40].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764656017029207,
+        "y0": 0.4522692832079801,
+        "x1": 0.8825489118987438,
+        "y1": 0.4648483738754735
+      },
+      "text": "In our work, we will reinvestigate the performance of the two approaches for various hyper parameter settings and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764656017029207,
+        "y0": 0.47029970029387813,
+        "x1": 0.32999908846188214,
+        "y1": 0.48287879096137154
+      },
+      "text": "report some of our new findings.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13725440330754698,
+        "y0": 0.48817872399031514,
+        "x1": 0.8823538387522978,
+        "y1": 0.5007578146578086
+      },
+      "text": "As an enhancement to soft enforcement of boundary conditions, an augmented Lagrangian term can be included to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764656017029207,
+        "y0": 0.5060577476867522,
+        "x1": 0.3223522909326491,
+        "y1": 0.5186368383542456
+      },
+      "text": "the loss function [42] to obtain,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48294077355877246,
+        "y0": 0.5201483916754674,
+        "x1": 0.4911760317733864,
+        "y1": 0.5327274823429609
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5319610296511182,
+        "y0": 0.5168148471851541,
+        "x1": 0.5554904314427594,
+        "y1": 0.5293939378526475
+      },
+      "text": "∑",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2823524475097656,
+        "y0": 0.5286331261047209,
+        "x1": 0.29352891211416204,
+        "y1": 0.5412122167722143
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2935286627875434,
+        "y0": 0.5342253055235352,
+        "x1": 0.31843075721092473,
+        "y1": 0.5430306713990491
+      },
+      "text": "P,M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3203917359994128,
+        "y0": 0.5286331261047209,
+        "x1": 0.39313606810725593,
+        "y1": 0.5412122167722143
+      },
+      "text": "(θ, λ) := J",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3931365916931551,
+        "y0": 0.5342253055235352,
+        "x1": 0.4180386611838746,
+        "y1": 0.5430306713990491
+      },
+      "text": "P,M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42019573535794524,
+        "y0": 0.5286331261047209,
+        "x1": 0.457254048266442,
+        "y1": 0.5412122167722143
+      },
+      "text": "(θ) +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5713726866479013,
+        "y0": 0.5286326637171735,
+        "x1": 0.7172541400186376,
+        "y1": 0.5412117543846671
+      },
+      "text": "(U (x; θ) − g(x))λ(x)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4627451179853452,
+        "y0": 0.5372694080526179,
+        "x1": 0.511568406048943,
+        "y1": 0.5498484987201113
+      },
+      "text": "X (∂Ω)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5160781760620915,
+        "y0": 0.5481640937352421,
+        "x1": 0.5713724373212827,
+        "y1": 0.556969459610756
+      },
+      "text": "x∈X (∂Ω)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764636070899714,
+        "y0": 0.5602994675588127,
+        "x1": 0.1413718578862209,
+        "y1": 0.5728785582263061
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5309806275211908,
+        "y0": 0.5663602894002742,
+        "x1": 0.5545100293128319,
+        "y1": 0.5789393800677676
+      },
+      "text": "∑",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48196017196755003,
+        "y0": 0.5696937568259961,
+        "x1": 0.490195430182164,
+        "y1": 0.5822728474934895
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27882250617532167,
+        "y0": 0.5781784912552497,
+        "x1": 0.28999897077971815,
+        "y1": 0.5907575819227431
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2899993447696461,
+        "y0": 0.5837702082865166,
+        "x1": 0.3160777871125664,
+        "y1": 0.5925755741620304
+      },
+      "text": "R,M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3182348114213133,
+        "y0": 0.5781784912552497,
+        "x1": 0.39097914352915647,
+        "y1": 0.5907575819227431
+      },
+      "text": "(θ, λ) := J",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39097966711505566,
+        "y0": 0.5837702082865166,
+        "x1": 0.4170581094579759,
+        "y1": 0.5925755741620304
+      },
+      "text": "R,M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41901856466056475,
+        "y0": 0.5781784912552497,
+        "x1": 0.45627284829133474,
+        "y1": 0.5907575819227431
+      },
+      "text": "(θ) +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5703922845179739,
+        "y0": 0.5781786068521364,
+        "x1": 0.720586839065053,
+        "y1": 0.5907576975196298
+      },
+      "text": "(U (x; θ) − g(x))λ(x),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4617647158554177,
+        "y0": 0.5868148502677377,
+        "x1": 0.5105880039190155,
+        "y1": 0.5993939409352312
+      },
+      "text": "X (∂Ω)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.515097773932164,
+        "y0": 0.5975581425609011,
+        "x1": 0.5703920351913552,
+        "y1": 0.606363508436415
+      },
+      "text": "x∈X (∂Ω)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764785666870915,
+        "y0": 0.6084816371551668,
+        "x1": 0.8825508067810458,
+        "y1": 0.6210607278226602
+      },
+      "text": "for the PINN and deep Ritz loss functions, respectively. Here, the boundary condition is enforced as constraints on the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764788160137102,
+        "y0": 0.6263601599317609,
+        "x1": 0.8827456056682113,
+        "y1": 0.6389392505992543
+      },
+      "text": "neural network solution U (x; θ) by introducing Lagrange multipliers λ(x) for each collocation point x in the training",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764765720741421,
+        "y0": 0.6443905770176589,
+        "x1": 0.8825492110906863,
+        "y1": 0.6569696676851523
+      },
+      "text": "sampling set X (∂Ω). Hence, λ(x) are additional parameters that have to be trained, in addition to θ. The use of such",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764745774611927,
+        "y0": 0.6622696007140959,
+        "x1": 0.8825506073197508,
+        "y1": 0.6748486913815893
+      },
+      "text": "an augmented Lagrangian term can improve slow training progress for the boundary loss term and can provide a more",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764743281345741,
+        "y0": 0.6801481427568378,
+        "x1": 0.8825477899289599,
+        "y1": 0.6927272334243312
+      },
+      "text": "accurate trained neural network solution, U (x; θ). In the augmented Lagrangian approach, the parameters θ and λ are",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764750761144302,
+        "y0": 0.6980271857194227,
+        "x1": 0.6431373147403493,
+        "y1": 0.7106062763869161
+      },
+      "text": "then optimized for the PINN and deep Ritz loss functions in the following sense:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30039240020552493,
+        "y0": 0.7052996555964153,
+        "x1": 0.31235317155426623,
+        "y1": 0.7178787462639087
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4505888995002298,
+        "y0": 0.7052996555964153,
+        "x1": 0.46254969578163296,
+        "y1": 0.7178787462639087
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.637059330161101,
+        "y0": 0.7052996555964153,
+        "x1": 0.6490201264425041,
+        "y1": 0.7178787462639087
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7884316537894455,
+        "y0": 0.7052996555964153,
+        "x1": 0.8003924500708487,
+        "y1": 0.7178787462639087
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19215734643873825,
+        "y0": 0.7230271895726521,
+        "x1": 0.2060786727207159,
+        "y1": 0.7356062802401455
+      },
+      "text": "(θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2060787849176943,
+        "y0": 0.7286188873377712,
+        "x1": 0.21431408053130105,
+        "y1": 0.7374242532132852
+      },
+      "text": "P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2170590419395297,
+        "y0": 0.7230271895726521,
+        "x1": 0.23372490577448427,
+        "y1": 0.7356062802401455
+      },
+      "text": ", λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23372570361966402,
+        "y0": 0.7286188873377712,
+        "x1": 0.2419610116996017,
+        "y1": 0.7374242532132852
+      },
+      "text": "P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24470659642437703,
+        "y0": 0.7230271895726521,
+        "x1": 0.29803990382774204,
+        "y1": 0.7356062802401455
+      },
+      "text": ") := arg",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3123536951401654,
+        "y0": 0.7230271895726521,
+        "x1": 0.3864712185329861,
+        "y1": 0.7356062802401455
+      },
+      "text": "max min L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3864709692063674,
+        "y0": 0.7286188873377712,
+        "x1": 0.4113730636297488,
+        "y1": 0.7374242532132852
+      },
+      "text": "P,M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41333404241823685,
+        "y0": 0.7230271895726521,
+        "x1": 0.4505885005776399,
+        "y1": 0.7356062802401455
+      },
+      "text": "(θ, λ)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48176489935980904,
+        "y0": 0.7230271895726521,
+        "x1": 0.5131374683255464,
+        "y1": 0.7356062802401455
+      },
+      "text": "resp.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5292155446569904,
+        "y0": 0.7230271895726521,
+        "x1": 0.5431368460063062,
+        "y1": 0.7356062802401455
+      },
+      "text": "(θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5431376438514859,
+        "y0": 0.7286188873377712,
+        "x1": 0.5529415654201134,
+        "y1": 0.7374242532132852
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5539219675500409,
+        "y0": 0.7230271895726521,
+        "x1": 0.5705878064523335,
+        "y1": 0.7356062802401455
+      },
+      "text": ", λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.570588654162837,
+        "y0": 0.7286188873377712,
+        "x1": 0.5803925757314644,
+        "y1": 0.7374242532132852
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5811770071391187,
+        "y0": 0.7230271895726521,
+        "x1": 0.6345102646771599,
+        "y1": 0.7356062802401455
+      },
+      "text": ") := arg",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6490199768465329,
+        "y0": 0.7230271895726521,
+        "x1": 0.7229415295170802,
+        "y1": 0.7356062802401455
+      },
+      "text": "max min L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7229413300557853,
+        "y0": 0.7286188873377712,
+        "x1": 0.7490197973313675,
+        "y1": 0.7374242532132852
+      },
+      "text": "R,M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7511767717747907,
+        "y0": 0.7230271895726521,
+        "x1": 0.7884312050015319,
+        "y1": 0.7356062802401455
+      },
+      "text": "(θ, λ)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8033335068646599,
+        "y0": 0.7230271895726521,
+        "x1": 0.8078427283592473,
+        "y1": 0.7356062802401455
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3237258811402165,
+        "y0": 0.7349828427488154,
+        "x1": 0.3313729529287301,
+        "y1": 0.7437882086243293
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35568691079133474,
+        "y0": 0.7349828427488154,
+        "x1": 0.3619614146114175,
+        "y1": 0.7437882086243293
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6601961921243107,
+        "y0": 0.7349828427488154,
+        "x1": 0.6678432888454862,
+        "y1": 0.7437882086243293
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6923531924977022,
+        "y0": 0.7349828427488154,
+        "x1": 0.6986277461831086,
+        "y1": 0.7437882086243293
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13725505155675552,
+        "y0": 0.7477239057271168,
+        "x1": 0.8821549758412479,
+        "y1": 0.7603029963946102
+      },
+      "text": "We note that the above optimization problems for θ are non-linear and non-convex while those for λ are linear. We",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764715855417687,
+        "y0": 0.7656029486897016,
+        "x1": 0.8825496100132761,
+        "y1": 0.778182039357195
+      },
+      "text": "thus use the Adam optimization method [20] in the gradient update for θ with a small learning rate ǫ and a simple",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764765720741421,
+        "y0": 0.7834819916522864,
+        "x1": 0.43215737934985193,
+        "y1": 0.7960610823197798
+      },
+      "text": "gradient update for λ with a learning rate α, i.e.,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34294185763091045,
+        "y0": 0.8042393200325244,
+        "x1": 0.42745208740234375,
+        "y1": 0.8168184107000178
+      },
+      "text": "λ = λ + α∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42745158874910644,
+        "y0": 0.8098310177976435,
+        "x1": 0.43509868547028185,
+        "y1": 0.8186363836731574
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4360791873308568,
+        "y0": 0.8042393200325244,
+        "x1": 0.4472556519352533,
+        "y1": 0.8168184107000178
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4472554026086346,
+        "y0": 0.8098310177976435,
+        "x1": 0.4721574970320159,
+        "y1": 0.8186363836731574
+      },
+      "text": "P,M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49039264753753065,
+        "y0": 0.8042393200325244,
+        "x1": 0.5041181277605443,
+        "y1": 0.8168184107000178
+      },
+      "text": "or",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5201962539573121,
+        "y0": 0.8042393200325244,
+        "x1": 0.604706558526731,
+        "y1": 0.8168184107000178
+      },
+      "text": "λ = λ + α∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6047067081227022,
+        "y0": 0.8098310177976435,
+        "x1": 0.6123538048438777,
+        "y1": 0.8186363836731574
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6133343067044527,
+        "y0": 0.8042393200325244,
+        "x1": 0.624510771308849,
+        "y1": 0.8168184107000178
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6245105219822303,
+        "y0": 0.8098310177976435,
+        "x1": 0.6505889393924887,
+        "y1": 0.8186363836731574
+      },
+      "text": "R,M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6525500428442862,
+        "y0": 0.8042393200325244,
+        "x1": 0.6570592643388735,
+        "y1": 0.8168184107000178
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11705984477124183,
+        "y0": 0.8248452550233012,
+        "x1": 0.8825496100132761,
+        "y1": 0.8374243456907946
+      },
+      "text": "The learning rate α is often set to a larger value than the learning rate ǫ, as proposed in two-scale update schemes",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764760734209048,
+        "y0": 0.8427242979858861,
+        "x1": 0.8825475156696794,
+        "y1": 0.8553033886533795
+      },
+      "text": "for min-max optimization problems; see [14, 25, 7]. In our numerical experiments, we set ǫ = 0.001 for the Adam",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764750761144302,
+        "y0": 0.860754724704858,
+        "x1": 0.4531381644454657,
+        "y1": 0.8733338153723514
+      },
+      "text": "optimizer and α = 1 for the gradient ascent update.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13725538814769073,
+        "y0": 0.878633257114526,
+        "x1": 0.8827438728482115,
+        "y1": 0.8912123477820194
+      },
+      "text": "We note that the augmented Lagrangian method can be considered as a loss balancing scheme, and in our numerical",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764755747676675,
+        "y0": 0.8965123000771108,
+        "x1": 0.7835292442172181,
+        "y1": 0.9090913907446042
+      },
+      "text": "experiments, we will also conduct comparisons on various loss balancing schemes as listed in Table 1.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49509774002374385,
+        "y0": 0.9317238403089119,
+        "x1": 0.5049016615923714,
+        "y1": 0.9468187900504681
+      },
+      "text": "5",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.03157270001247525,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

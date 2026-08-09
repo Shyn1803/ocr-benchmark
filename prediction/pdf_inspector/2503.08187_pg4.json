@@ -1,0 +1,3626 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.08187_pg4",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "Optimal Space-Variant Anisotropic Tikhonov Regularization Gholami and Gazzola A PREPRINT\n\nwhere α > 0. The FWI problem in equation 7 ensures that the estimated model, while satisfying the data (and the wave equation), is smooth along the direction θ.\n\nFigure 1, top row, shows the anisotropic regularization balls for only one term of the regularizer equation 4 and for\n\ndifferent values of [σ]i= σ and [θ]i= θ. We observe that for σ = 0.5, the anisotropic regularization becomes equivalent to the standard isotropic regularization. When the value of σ increases, reaching the maximum considered value of 0.9, the degree of regularization applied in the direction θ and its normal is maximally different, resulting in a needle-shaped ellipse. This shape favors models with elongated features aligned with θ, while allowing variations in the normal direction to it, as illustrated in the bottom row.\n\n# 3 Algorithm\n\nThe augmented Lagrangian function of equation 7 is n s 1 ∑2\n\n|L(θ, σ, u, m, λ, ν) =||‖P u|− d ‖|+ αR(m, θ, σ)|\n|---|---|---|---|---|\n|s|||s s 2 2||\n|||s=1|||\n|n s=1|s|s 2 2|T s|s s|\n||2 T||||\n||2||||\n|π 2 π 2 s|||||\n\ns s s 2 s µ ∑ + ‖A(m)u − b ‖ − λ (A(m)u − b) 2 τ + ‖θ − z‖ − ν (θ − z), 2 where z(θ) = min(max(θ, −),), λ and ν are Lagrange multipliers associated to the constraints, and µ > 0 and τ > 0 are the penalty parameters. The regularization parameter α > 0 is given, being typically determined by the discrepancy principle.\n\nThis problem can be efficiently solved using the alternating direction method of multipliers (ADMM, [15]), resulting in the following iterative procedure starting from initial guess m (typically encoding some prior information), (spatially invariant) σ = 0.5 and initial multipliers λs= ν = 0:\n\n|+||s||\n|---|---|---|---|\n||θ|||\n|+||+|s|\n||σ|||\n|+||+ +||\n|s|u|||\n|+|m|+ +|+ s|\n|+ s|s|+ + s|s|\n|+|+|+||\n\nθ + = arg min L(θ, σ, us, m, λ, ν) (8a)\n\nσ = arg min L(θ, σ, u, m, λ, ν) (8b)\n\nu = arg min L(θ, σ, u, m, λ, ν) (8c)\n\nm = arg min L(θ, σ, u, m, λ, ν) (8d)\n\nλ = λ − µ(A(m)u − b) (8e)\n\nν = ν − τ (θ − z). (8f) Here, the updated variables at each iteration are denoted by a superscript “+”. Each step of the algorithm addresses a specific subproblem, as described more in details below.\n\nSubproblem equation 8a involves minimizing the regularization function R, as defined in equation 4, with respect to θ, given the current values of m and σ. This can can be efficiently achieved using a single iteration of the Gauss-Newton method. To ensure the stability of the θ update, it is essential to incorporate a smoothing term, as suggested by [11].\n\nSubproblem equation 8b involves minimizing R with respect to σ, resulting in: [gz′] 2 i [σ]i= 2 2, (9) [gx′]i+ [gz′]i\n\nwhere ([gx′]i, [gz′]i) T = R([θ]i)[∇m]irepresent the rotated gradient of the current model at the ith pixel. This expres- sion for equation 9 is justified by considering that, when [θ]icorresponds to the correct orientation angle, we typically expect |[gx′i z′iIn this case, directly minimizing [gx′ 2\n\n|] | ≪ |[g|] |.|] + [g|] would heavily penalize [g||], which is|\n|---|---|---|---|---|---|\n|x i|z i|x 2 i|z 2 i 2 i x 2 i|i|z i i 2 z 2 i|\n|||i||||\n\ni z ′ 2 i z ′i undesirable because we aim to apply more smoothing along the direction defined by [θ]. The weights [σ] in equation 9 balance the contributions of gradient components in the weighted sum [σ] [g ′] + (1 − [σ]i) [g ′], ensuring that the magnitudes of both terms are approximately equal before penalization. This adaptive weighting mechanism effec- tively enhances smoothing along the structural direction [θ] while allowing variations across it, eventually enabling the recovery of dominating structures and details in the model m. To maintain stability during the σ update, the com- puted weights are smoothed using a convolution with a 5 × 5 averaging filter; alternatively, one could incorporate a smoothing term.\n\nA comprehensive analysis of the methods for solving subproblems equation 8c and equation 8d can be found in [14].\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20058823878469031,
+        "y0": 0.042420906249922896,
+        "x1": 0.596768435309915,
+        "y1": 0.054999996917416305
+      },
+      "text": "Optimal Space-Variant Anisotropic Tikhonov Regularization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6574528014737796,
+        "y0": 0.042420906249922896,
+        "x1": 0.8282366484598397,
+        "y1": 0.054999996917416305
+      },
+      "text": "Gholami and Gazzola A P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8290208804061989,
+        "y0": 0.045943052479715085,
+        "x1": 0.8827461791194342,
+        "y1": 0.054999996917416305
+      },
+      "text": "REPRINT",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.09090578556060791,
+        "x1": 0.8825491113600388,
+        "y1": 0.10348487622810132
+      },
+      "text": "where α > 0. The FWI problem in equation 7 ensures that the estimated model, while satisfying the data (and the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.1046935657058099,
+        "x1": 0.43019433115042893,
+        "y1": 0.11727265637330331
+      },
+      "text": "wave equation), is smooth along the direction θ.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764690922755822,
+        "y0": 0.12545091335219571,
+        "x1": 0.30565937515956904,
+        "y1": 0.13803000401968912
+      },
+      "text": "Figure 1, top row, shows the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31509823269314235,
+        "y0": 0.12545122161056055,
+        "x1": 0.8825492110906863,
+        "y1": 0.13803031227805396
+      },
+      "text": "anisotropic regularization balls for only one term of the regularizer equation 4 and for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.13908756983400594,
+        "x1": 0.2645098368326823,
+        "y1": 0.15166666050149935
+      },
+      "text": "different values of [σ]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26451001136131536,
+        "y0": 0.14467978778511592,
+        "x1": 0.26901980630712574,
+        "y1": 0.15348515366062976
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27784297668855956,
+        "y0": 0.13908756983400594,
+        "x1": 0.3605876997405407,
+        "y1": 0.15166666050149935
+      },
+      "text": "= σ and [θ]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36058852251838236,
+        "y0": 0.14467978778511592,
+        "x1": 0.36509834239685457,
+        "y1": 0.15348515366062976
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3741180569517846,
+        "y0": 0.13908756983400594,
+        "x1": 0.40661917792426217,
+        "y1": 0.15166666050149935
+      },
+      "text": "= θ.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41725537667866625,
+        "y0": 0.13908756983400594,
+        "x1": 0.5650976343092575,
+        "y1": 0.15166666050149935
+      },
+      "text": "We observe that for σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.573529012842116,
+        "y0": 0.13908756983400594,
+        "x1": 0.8827443839677798,
+        "y1": 0.15166666050149935
+      },
+      "text": "= 0.5, the anisotropic regularization becomes",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764795639935662,
+        "y0": 0.15287534997920793,
+        "x1": 0.882746976964614,
+        "y1": 0.16545444064670134
+      },
+      "text": "equivalent to the standard isotropic regularization. When the value of σ increases, reaching the maximum considered",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764780680338542,
+        "y0": 0.1666635925119574,
+        "x1": 0.8823539384829453,
+        "y1": 0.1792426831794508
+      },
+      "text": "value of 0.9, the degree of regularization applied in the direction θ and its normal is maximally different, resulting in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764795639935662,
+        "y0": 0.18045137265715938,
+        "x1": 0.8823541379442402,
+        "y1": 0.1930304633246528
+      },
+      "text": "a needle-shaped ellipse. This shape favors models with elongated features aligned with θ, while allowing variations in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764950222439235,
+        "y0": 0.19423915280236137,
+        "x1": 0.4944642010857077,
+        "y1": 0.20681824346985478
+      },
+      "text": "the normal direction to it, as illustrated in the bottom row.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764950222439235,
+        "y0": 0.22657174775094702,
+        "x1": 0.1274168226453993,
+        "y1": 0.24166669749250314
+      },
+      "text": "3",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1468653959386489,
+        "y0": 0.22657174775094702,
+        "x1": 0.23372839634714562,
+        "y1": 0.24166669749250314
+      },
+      "text": "Algorithm",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764950222439235,
+        "y0": 0.257420712047153,
+        "x1": 0.4598039115955627,
+        "y1": 0.2699998027146465
+      },
+      "text": "The augmented Lagrangian function of equation 7 is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47705915862438725,
+        "y0": 0.27361902143016004,
+        "x1": 0.48509834638608046,
+        "y1": 0.2824243873056739
+      },
+      "text": "n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.485098246655433,
+        "y0": 0.27734668266893636,
+        "x1": 0.4905884686638327,
+        "y1": 0.28363622800268307
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4598040611915339,
+        "y0": 0.2771178821120599,
+        "x1": 0.4960784912109375,
+        "y1": 0.2896969727795533
+      },
+      "text": "1 ∑",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5794118245442709,
+        "y0": 0.2842251128620572,
+        "x1": 0.5858824486825981,
+        "y1": 0.29303047873757104
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30980390660903034,
+        "y0": 0.28560261654131336,
+        "x1": 0.3680368560591554,
+        "y1": 0.29818170720880677
+      },
+      "text": "L(θ, σ, u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36803902520073783,
+        "y0": 0.29119483449242334,
+        "x1": 0.374117433635238,
+        "y1": 0.3000002003679372
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37509835935106467,
+        "y0": 0.28560261654131336,
+        "x1": 0.45333318772658804,
+        "y1": 0.29818170720880677
+      },
+      "text": ", m, λ, ν) =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49882367701312297,
+        "y0": 0.2856025394767222,
+        "x1": 0.5292155446569904,
+        "y1": 0.2981816301442156
+      },
+      "text": "‖P u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5292158937142566,
+        "y0": 0.2911947574278321,
+        "x1": 0.5352943270814186,
+        "y1": 0.3000001233033459
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5394117068621068,
+        "y0": 0.2856025394767222,
+        "x1": 0.5641178804285386,
+        "y1": 0.2981816301442156
+      },
+      "text": "− d",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5641174815059488,
+        "y0": 0.2911947574278321,
+        "x1": 0.5701959148731107,
+        "y1": 0.3000001233033459
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5711768156562755,
+        "y0": 0.2856025394767222,
+        "x1": 0.5794120738708896,
+        "y1": 0.2981816301442156
+      },
+      "text": "‖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5794118245442709,
+        "y0": 0.29255841536955396,
+        "x1": 0.5858824486825981,
+        "y1": 0.3013637812450679
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5901961482428257,
+        "y0": 0.28560246241213094,
+        "x1": 0.6898038776871426,
+        "y1": 0.29818155307962435
+      },
+      "text": "+ αR(m, θ, σ)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4598039115955627,
+        "y0": 0.29423909115068836,
+        "x1": 0.4680391698101767,
+        "y1": 0.30681818181818177
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4729409809985192,
+        "y0": 0.304073483654947,
+        "x1": 0.4954898809295854,
+        "y1": 0.31287884953046086
+      },
+      "text": "s=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36705832387886794,
+        "y0": 0.3154372741477658,
+        "x1": 0.37509753657322303,
+        "y1": 0.3242426400232796
+      },
+      "text": "n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3750980352264604,
+        "y0": 0.3191649353865421,
+        "x1": 0.3805882572348601,
+        "y1": 0.3254544807202888
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.347843469357958,
+        "y0": 0.3190876438160135,
+        "x1": 0.38588233399235344,
+        "y1": 0.3316667344835069
+      },
+      "text": "µ ∑",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4943133086160897,
+        "y0": 0.32619479750141955,
+        "x1": 0.5007839327544169,
+        "y1": 0.3350001633769334
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.530783809088414,
+        "y0": 0.32619479750141955,
+        "x1": 0.5384309058095894,
+        "y1": 0.3350001633769334
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32960784513186786,
+        "y0": 0.32757237824526697,
+        "x1": 0.3423529481576159,
+        "y1": 0.3401514689127604
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38862689647799226,
+        "y0": 0.3275726865036319,
+        "x1": 0.4452928031971252,
+        "y1": 0.3401517771711253
+      },
+      "text": "‖A(m)u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4452937007729524,
+        "y0": 0.33316436500260327,
+        "x1": 0.4513721341401144,
+        "y1": 0.3419697308781171
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4558820537492341,
+        "y0": 0.3275726865036319,
+        "x1": 0.47921568427989686,
+        "y1": 0.3401517771711253
+      },
+      "text": "− b",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47921553468392564,
+        "y0": 0.33316436500260327,
+        "x1": 0.4852939680510876,
+        "y1": 0.3419697308781171
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48607829972809435,
+        "y0": 0.3275726865036319,
+        "x1": 0.4943135579427083,
+        "y1": 0.3401517771711253
+      },
+      "text": "‖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4943133086160897,
+        "y0": 0.334376745151751,
+        "x1": 0.5007839327544169,
+        "y1": 0.3431821110272648
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5050976323146447,
+        "y0": 0.3275726865036319,
+        "x1": 0.5307842080110039,
+        "y1": 0.3401517771711253
+      },
+      "text": "− λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.530783809088414,
+        "y0": 0.334376745151751,
+        "x1": 0.536862242455576,
+        "y1": 0.3431821110272648
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5411762412077461,
+        "y0": 0.3275726865036319,
+        "x1": 0.5958813935323478,
+        "y1": 0.3401517771711253
+      },
+      "text": "(A(m)u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.595882291108175,
+        "y0": 0.33316436500260327,
+        "x1": 0.601960724475337,
+        "y1": 0.3419697308781171
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6064706440844567,
+        "y0": 0.3275726865036319,
+        "x1": 0.6298042746151195,
+        "y1": 0.3401517771711253
+      },
+      "text": "− b",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6298034767699398,
+        "y0": 0.33316436500260327,
+        "x1": 0.6358819101371017,
+        "y1": 0.3419697308781171
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6366662418141085,
+        "y0": 0.3275726865036319,
+        "x1": 0.6429407456341911,
+        "y1": 0.3401517771711253
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3486274519776986,
+        "y0": 0.3362087757900508,
+        "x1": 0.35686273512497446,
+        "y1": 0.3487878664575442
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36274482377993517,
+        "y0": 0.3460431297620138,
+        "x1": 0.38529374864366317,
+        "y1": 0.35484849563752763
+      },
+      "text": "s=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3478430455027063,
+        "y0": 0.3539364446293224,
+        "x1": 0.35490188099979575,
+        "y1": 0.3665155352968158
+      },
+      "text": "τ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41156888475605086,
+        "y0": 0.3610432129917722,
+        "x1": 0.4180395088943781,
+        "y1": 0.36984857886728617
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44764749364915235,
+        "y0": 0.3610432129917722,
+        "x1": 0.4552945903703278,
+        "y1": 0.36984857886728617
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32960742127661613,
+        "y0": 0.36242117905857585,
+        "x1": 0.3423525243023642,
+        "y1": 0.37500026972606926
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3588236640481388,
+        "y0": 0.3624211019939847,
+        "x1": 0.41156913408266954,
+        "y1": 0.3750001926614781
+      },
+      "text": "‖θ − z‖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41156888475605086,
+        "y0": 0.3693765540315648,
+        "x1": 0.4180395088943781,
+        "y1": 0.3781819199070786
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4223532084546058,
+        "y0": 0.3624211019939847,
+        "x1": 0.44666724111519607,
+        "y1": 0.3750001926614781
+      },
+      "text": "− ν",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45784330679700264,
+        "y0": 0.3624211019939847,
+        "x1": 0.5113721860000511,
+        "y1": 0.3750001926614781
+      },
+      "text": "(θ − z),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34823528613919524,
+        "y0": 0.37105726834499475,
+        "x1": 0.3564705692864711,
+        "y1": 0.38363635901248816
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764728321748621,
+        "y0": 0.3851483747212574,
+        "x1": 0.31235217424779155,
+        "y1": 0.3977274653887508
+      },
+      "text": "where z(θ) = min(max(θ, −",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31431422514073987,
+        "y0": 0.38407331103026265,
+        "x1": 0.32196129692925346,
+        "y1": 0.3928786769057765
+      },
+      "text": "π",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31509803323184743,
+        "y0": 0.39331586011732467,
+        "x1": 0.32156863243751277,
+        "y1": 0.4021212259928385
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32431409249897875,
+        "y0": 0.38514810499518803,
+        "x1": 0.3350975934196921,
+        "y1": 0.39772719566268155
+      },
+      "text": "),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33980440625957414,
+        "y0": 0.3840730413041934,
+        "x1": 0.3474515029807496,
+        "y1": 0.39287840717970723
+      },
+      "text": "π",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34058823928334353,
+        "y0": 0.39331586011732467,
+        "x1": 0.34705886342167075,
+        "y1": 0.4021212259928385
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3498042985504749,
+        "y0": 0.38514810499518803,
+        "x1": 0.374313828212763,
+        "y1": 0.39772719566268155
+      },
+      "text": "), λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3743141024720435,
+        "y0": 0.3907398220264551,
+        "x1": 0.3803925109065436,
+        "y1": 0.3995451879019689
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38588285757825264,
+        "y0": 0.38514810499518803,
+        "x1": 0.8825492110906863,
+        "y1": 0.39772719566268155
+      },
+      "text": "and ν are Lagrange multipliers associated to the constraints, and µ > 0 and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764710868885314,
+        "y0": 0.39893584660809445,
+        "x1": 0.12476095810435177,
+        "y1": 0.41151493727558786
+      },
+      "text": "τ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13313743491577945,
+        "y0": 0.39893584660809445,
+        "x1": 0.8825495227489596,
+        "y1": 0.41151493727558786
+      },
+      "text": "> 0 are the penalty parameters. The regularization parameter α > 0 is given, being typically determined by the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764740788079554,
+        "y0": 0.41272358822100086,
+        "x1": 0.2615688049715329,
+        "y1": 0.42530267888849427
+      },
+      "text": "discrepancy principle.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764740788079554,
+        "y0": 0.43348139825493404,
+        "x1": 0.8823528414458232,
+        "y1": 0.44606048892242744
+      },
+      "text": "This problem can be efficiently solved using the alternating direction method of multipliers (ADMM, [15]), resulting in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.4472692554647272,
+        "x1": 0.8825490116293914,
+        "y1": 0.4598483461322207
+      },
+      "text": "the following iterative procedure starting from initial guess m (typically encoding some prior information), (spatially",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764670976626328,
+        "y0": 0.4610569970776336,
+        "x1": 0.39411644530452156,
+        "y1": 0.473636087745127
+      },
+      "text": "invariant) σ = 0.5 and initial multipliers λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3941173428803488,
+        "y0": 0.46664871410890063,
+        "x1": 0.40019575131484886,
+        "y1": 0.47545407998441447
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4056860979865579,
+        "y0": 0.4610569970776336,
+        "x1": 0.46627353842741526,
+        "y1": 0.473636087745127
+      },
+      "text": "= ν = 0:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37058791615604575,
+        "y0": 0.4781784758423314,
+        "x1": 0.37823496301189746,
+        "y1": 0.4907575665098248
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3786270041870915,
+        "y0": 0.47680058684011906,
+        "x1": 0.3886269962086397,
+        "y1": 0.4856059527156329
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3939213721580755,
+        "y0": 0.4781784758423314,
+        "x1": 0.5288208606196385,
+        "y1": 0.4907575665098248
+      },
+      "text": "= arg min L(θ, σ, u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.528823004828559,
+        "y0": 0.48377019287359835,
+        "x1": 0.534901438195721,
+        "y1": 0.4925755587491122
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5360782598358353,
+        "y0": 0.4781784758423314,
+        "x1": 0.596862244450189,
+        "y1": 0.4907575665098248
+      },
+      "text": ", m, λ, ν)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8560779047947303,
+        "y0": 0.4781784758423314,
+        "x1": 0.882548512976154,
+        "y1": 0.4907575665098248
+      },
+      "text": "(8a)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4470584844452104,
+        "y0": 0.4901341097523467,
+        "x1": 0.4533329882652931,
+        "y1": 0.4989394756278607
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3705877166947508,
+        "y0": 0.5033298538188742,
+        "x1": 0.3798033770392923,
+        "y1": 0.5159089444863676
+      },
+      "text": "σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3803916382633783,
+        "y0": 0.5019519648166618,
+        "x1": 0.39039163028492646,
+        "y1": 0.5107573306921757
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39568600623436223,
+        "y0": 0.5033298538188742,
+        "x1": 0.4974500369402318,
+        "y1": 0.5159089444863676
+      },
+      "text": "= arg min L(θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4978427263646344,
+        "y0": 0.5019519648166618,
+        "x1": 0.5078427183861826,
+        "y1": 0.5107573306921757
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5088229709201388,
+        "y0": 0.5033298538188742,
+        "x1": 0.5415663875006382,
+        "y1": 0.5159089444863676
+      },
+      "text": ", σ, u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5415677338643791,
+        "y0": 0.5089215708501411,
+        "x1": 0.547646167231541,
+        "y1": 0.517726936725655
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5486270680147058,
+        "y0": 0.5033298538188742,
+        "x1": 0.6094110526290595,
+        "y1": 0.5159089444863676
+      },
+      "text": ", m, λ, ν)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8552934235217524,
+        "y0": 0.5033298538188742,
+        "x1": 0.8827443839677798,
+        "y1": 0.5159089444863676
+      },
+      "text": "(8b)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4480386372485192,
+        "y0": 0.5146793361866113,
+        "x1": 0.4554896635167739,
+        "y1": 0.5234847020621252
+      },
+      "text": "σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3705875172334559,
+        "y0": 0.5278750417208431,
+        "x1": 0.3799992978962418,
+        "y1": 0.5404541323883365
+      },
+      "text": "u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3799995472228605,
+        "y0": 0.526345720796874,
+        "x1": 0.3899995392444087,
+        "y1": 0.5351510866723879
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3799995472228605,
+        "y0": 0.5346790618366666,
+        "x1": 0.3860779556573606,
+        "y1": 0.5434844277121804
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3950973211550245,
+        "y0": 0.5278750417208431,
+        "x1": 0.4968614765242034,
+        "y1": 0.5404541323883365
+      },
+      "text": "= arg min L(θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.497254165948606,
+        "y0": 0.526345720796874,
+        "x1": 0.5072541579701542,
+        "y1": 0.5351510866723879
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5082344105041104,
+        "y0": 0.5278750417208431,
+        "x1": 0.5247041290881587,
+        "y1": 0.5404541323883365
+      },
+      "text": ", σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5252935372146905,
+        "y0": 0.526345720796874,
+        "x1": 0.5352935292362387,
+        "y1": 0.5351510866723879
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.536273781770195,
+        "y0": 0.5278750417208431,
+        "x1": 0.613724403132021,
+        "y1": 0.5404541323883365
+      },
+      "text": ", u, m, λ, ν)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8560773064108456,
+        "y0": 0.5278750417208431,
+        "x1": 0.8825479145922692,
+        "y1": 0.5404541323883365
+      },
+      "text": "(8c)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4476466459386489,
+        "y0": 0.5392245240885802,
+        "x1": 0.4552936927945006,
+        "y1": 0.5480298899640941
+      },
+      "text": "u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.370587118310866,
+        "y0": 0.5522693756854895,
+        "x1": 0.3849008597579657,
+        "y1": 0.5648484663529829
+      },
+      "text": "m",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38490110908458436,
+        "y0": 0.5508914866832771,
+        "x1": 0.3949011011061326,
+        "y1": 0.5596968525587911
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40019485373902164,
+        "y0": 0.5522693756854895,
+        "x1": 0.5019590589735243,
+        "y1": 0.5648484663529829
+      },
+      "text": "= arg min L(θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5023517483979268,
+        "y0": 0.5508914866832771,
+        "x1": 0.5123517404194751,
+        "y1": 0.5596968525587911
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5133326412026399,
+        "y0": 0.5522693756854895,
+        "x1": 0.5298023597866881,
+        "y1": 0.5648484663529829
+      },
+      "text": ", σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5303911196640114,
+        "y0": 0.5508914866832771,
+        "x1": 0.5403911116855596,
+        "y1": 0.5596968525587911
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5411754433625664,
+        "y0": 0.5522693756854895,
+        "x1": 0.5578412822648591,
+        "y1": 0.5648484663529829
+      },
+      "text": ", u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5578421299753625,
+        "y0": 0.5508914866832771,
+        "x1": 0.5678421219969108,
+        "y1": 0.5596968525587911
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5578421299753625,
+        "y0": 0.5592248277230696,
+        "x1": 0.5639205633425245,
+        "y1": 0.5680301935985834
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5686264536739175,
+        "y0": 0.5522693756854895,
+        "x1": 0.629410438288271,
+        "y1": 0.5648484663529829
+      },
+      "text": ", m, λ, ν)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8552928251378676,
+        "y0": 0.5522693756854895,
+        "x1": 0.882743785583895,
+        "y1": 0.5648484663529829
+      },
+      "text": "(8d)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4507834241281148,
+        "y0": 0.5636188580532266,
+        "x1": 0.46235207950367646,
+        "y1": 0.5724242239287405
+      },
+      "text": "m",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37058691884957107,
+        "y0": 0.5768145635874584,
+        "x1": 0.37999867457969516,
+        "y1": 0.5893936542549518
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37999894883897567,
+        "y0": 0.575436674585246,
+        "x1": 0.3899989408605239,
+        "y1": 0.58424204046076
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37999894883897567,
+        "y0": 0.5836185837032819,
+        "x1": 0.3860773572734758,
+        "y1": 0.5924239495787957
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.395292693493413,
+        "y0": 0.5768145635874584,
+        "x1": 0.42195967131969975,
+        "y1": 0.5893936542549518
+      },
+      "text": "= λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4219593222624336,
+        "y0": 0.5824062806187253,
+        "x1": 0.42803775562959556,
+        "y1": 0.5912116464942392
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4325476752387153,
+        "y0": 0.5768145635874584,
+        "x1": 0.4976452596826491,
+        "y1": 0.5893936542549518
+      },
+      "text": "− µ(A(m",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49764615725847633,
+        "y0": 0.575436674585246,
+        "x1": 0.5076461492800245,
+        "y1": 0.58424204046076
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5086264018139808,
+        "y0": 0.5768145635874584,
+        "x1": 0.5243124369702308,
+        "y1": 0.5893936542549518
+      },
+      "text": ")u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5243126862968495,
+        "y0": 0.575436674585246,
+        "x1": 0.5343126783183977,
+        "y1": 0.58424204046076
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5243126862968495,
+        "y0": 0.5836185837032819,
+        "x1": 0.5303911196640114,
+        "y1": 0.5924239495787957
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5388225979275174,
+        "y0": 0.5768145635874584,
+        "x1": 0.5621562284581801,
+        "y1": 0.5893936542549518
+      },
+      "text": "− b",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5621554306130004,
+        "y0": 0.5824062806187253,
+        "x1": 0.5682338639801624,
+        "y1": 0.5912116464942392
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5690181956571692,
+        "y0": 0.5768145635874584,
+        "x1": 0.5752926994772518,
+        "y1": 0.5893936542549518
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8560770072189032,
+        "y0": 0.5768145635874584,
+        "x1": 0.8825476154003268,
+        "y1": 0.5893936542549518
+      },
+      "text": "(8e)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3705868191189236,
+        "y0": 0.5966629343803482,
+        "x1": 0.3786260318132787,
+        "y1": 0.6092420250478416
+      },
+      "text": "ν",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.379606284347235,
+        "y0": 0.5951336134563793,
+        "x1": 0.3896062763687832,
+        "y1": 0.6039389793318932
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39490065231821897,
+        "y0": 0.5966629343803482,
+        "x1": 0.46392059326171875,
+        "y1": 0.6092420250478416
+      },
+      "text": "= ν − τ (θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4643126344369128,
+        "y0": 0.5951336134563793,
+        "x1": 0.474312626458461,
+        "y1": 0.6039389793318932
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47882194768369585,
+        "y0": 0.5966629343803482,
+        "x1": 0.5027438394384447,
+        "y1": 0.6092420250478416
+      },
+      "text": "− z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5035283705767464,
+        "y0": 0.5951336134563793,
+        "x1": 0.5135283625982945,
+        "y1": 0.6039389793318932
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5143126942753012,
+        "y0": 0.5966629343803482,
+        "x1": 0.5250961702633528,
+        "y1": 0.6092420250478416
+      },
+      "text": ").",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8580379112094056,
+        "y0": 0.5966629343803482,
+        "x1": 0.882743785583895,
+        "y1": 0.6092420250478416
+      },
+      "text": "(8f)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764576232511234,
+        "y0": 0.6137844131450461,
+        "x1": 0.8823519438699959,
+        "y1": 0.6263635038125395
+      },
+      "text": "Here, the updated variables at each iteration are denoted by a superscript “+”. Each step of the algorithm addresses a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764573739245048,
+        "y0": 0.6275721547579525,
+        "x1": 0.48411669762305964,
+        "y1": 0.6401512454254459
+      },
+      "text": "specific subproblem, as described more in details below.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764573739245048,
+        "y0": 0.6483294638720425,
+        "x1": 0.8823533151663986,
+        "y1": 0.660908554539536
+      },
+      "text": "Subproblem equation 8a involves minimizing the regularization function R, as defined in equation 4, with respect to θ,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764740788079554,
+        "y0": 0.6621177449370875,
+        "x1": 0.8827454810049019,
+        "y1": 0.674696835604581
+      },
+      "text": "given the current values of m and σ. This can can be efficiently achieved using a single iteration of the Gauss-Newton",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764775693806168,
+        "y0": 0.6759060067359848,
+        "x1": 0.8715685676125919,
+        "y1": 0.6884850974034782
+      },
+      "text": "method. To ensure the stability of the θ update, it is essential to incorporate a smoothing term, as suggested by [11].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764710868885314,
+        "y0": 0.6965116912668401,
+        "x1": 0.6331368240655637,
+        "y1": 0.7090907819343335
+      },
+      "text": "Subproblem equation 8b involves minimizing R with respect to σ, resulting in:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5027455348594516,
+        "y0": 0.7142389362508601,
+        "x1": 0.5150987712386387,
+        "y1": 0.7268180269183535
+      },
+      "text": "[g",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5150981229894301,
+        "y0": 0.7198311349358222,
+        "x1": 0.5213726268095129,
+        "y1": 0.728636500811336
+      },
+      "text": "z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5217649173113256,
+        "y0": 0.7197708981205719,
+        "x1": 0.5252943350598703,
+        "y1": 0.7260604434543185
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5268628488179126,
+        "y0": 0.7142389362508601,
+        "x1": 0.5313720703125,
+        "y1": 0.7268180269183535
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5313729180230035,
+        "y0": 0.7133157861353171,
+        "x1": 0.5378435421613307,
+        "y1": 0.722121152010831
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5313729180230035,
+        "y0": 0.7211943690222924,
+        "x1": 0.5358827379014757,
+        "y1": 0.7299997348978062
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42647093729256025,
+        "y0": 0.7227236899462612,
+        "x1": 0.445294149560866,
+        "y1": 0.7353027806137548
+      },
+      "text": "[σ]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.445294349022161,
+        "y0": 0.7283158886312234,
+        "x1": 0.4498041689006332,
+        "y1": 0.7371212545067374
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4552942413130617,
+        "y0": 0.7227236899462612,
+        "x1": 0.4680393692714716,
+        "y1": 0.7353027806137548
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.50392160851971,
+        "y0": 0.7307399553481979,
+        "x1": 0.5103922326580371,
+        "y1": 0.7395453212237117
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5598039814070159,
+        "y0": 0.7307399168159022,
+        "x1": 0.5662746055453431,
+        "y1": 0.7395452826914162
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5690193924249387,
+        "y0": 0.7227235550832267,
+        "x1": 0.5735286139195261,
+        "y1": 0.7353026457507201
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.863333109936683,
+        "y0": 0.7227235550832267,
+        "x1": 0.8825488121680964,
+        "y1": 0.7353026457507201
+      },
+      "text": "(9)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4745097939485039,
+        "y0": 0.731360299418671,
+        "x1": 0.48686303032769096,
+        "y1": 0.7439393900861644
+      },
+      "text": "[g",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48686298046236726,
+        "y0": 0.7369519971837901,
+        "x1": 0.4943139568652982,
+        "y1": 0.745757363059304
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4943136078080321,
+        "y0": 0.7370436739439916,
+        "x1": 0.4978430255565768,
+        "y1": 0.7433332192777383
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49941153931461907,
+        "y0": 0.7313602801525232,
+        "x1": 0.5039207608092064,
+        "y1": 0.7439393708200166
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.50392160851971,
+        "y0": 0.7386185382351731,
+        "x1": 0.5084314283981822,
+        "y1": 0.7474239041106869
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5147059322182649,
+        "y0": 0.7313602608863754,
+        "x1": 0.5433339137657016,
+        "y1": 0.7439393515538688
+      },
+      "text": "+ [g",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5433332655164931,
+        "y0": 0.7369519586514945,
+        "x1": 0.5496077693365757,
+        "y1": 0.7457573245270084
+      },
+      "text": "z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5500000598383885,
+        "y0": 0.737043635411696,
+        "x1": 0.5535294775869332,
+        "y1": 0.7433331807454426
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.555293912201925,
+        "y0": 0.7313602416202276,
+        "x1": 0.5598031336965125,
+        "y1": 0.743939332287721
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5598039814070159,
+        "y0": 0.7386184997028775,
+        "x1": 0.5643138012854881,
+        "y1": 0.7474238655783914
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764685936223447,
+        "y0": 0.7518147254231,
+        "x1": 0.17960816426993975,
+        "y1": 0.7643938160905934
+      },
+      "text": "where ([g",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17960751602073122,
+        "y0": 0.7574064231882192,
+        "x1": 0.18705847995733124,
+        "y1": 0.766211789063733
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18705875421661178,
+        "y0": 0.7574980999484207,
+        "x1": 0.19058815949882557,
+        "y1": 0.7637876452821674
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19215666079053692,
+        "y0": 0.7518147061569522,
+        "x1": 0.19666589475145527,
+        "y1": 0.7643937968244456
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19666672999562781,
+        "y0": 0.7574064039220714,
+        "x1": 0.20117653740776908,
+        "y1": 0.7662117697975852
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20196058235916436,
+        "y0": 0.7518147061569522,
+        "x1": 0.2215684379627502,
+        "y1": 0.7643937968244456
+      },
+      "text": ", [g",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2215684379627502,
+        "y0": 0.7574064039220714,
+        "x1": 0.22784296671549478,
+        "y1": 0.7662117697975852
+      },
+      "text": "z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22823523228464562,
+        "y0": 0.7574980806822729,
+        "x1": 0.2317646251005285,
+        "y1": 0.7637876260160196
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23333313885857077,
+        "y0": 0.7518146868908044,
+        "x1": 0.23784238528582005,
+        "y1": 0.7643937775582978
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23784320806366166,
+        "y0": 0.7574063846559236,
+        "x1": 0.24235300300947202,
+        "y1": 0.7662117505314374
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2433330311494715,
+        "y0": 0.7518146868908044,
+        "x1": 0.24960753496955423,
+        "y1": 0.7643937775582978
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24960790895948223,
+        "y0": 0.7493763891133396,
+        "x1": 0.2572549807479958,
+        "y1": 0.7581817549888534
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26450973710203485,
+        "y0": 0.7518146868908044,
+        "x1": 0.31745005588905484,
+        "y1": 0.7643937775582978
+      },
+      "text": "= R([θ]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3174508786668964,
+        "y0": 0.7574063846559236,
+        "x1": 0.3219606736127068,
+        "y1": 0.7662117505314374
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3229407017527063,
+        "y0": 0.7518146868908044,
+        "x1": 0.36607779708563115,
+        "y1": 0.7643937775582978
+      },
+      "text": ")[∇m]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3660779716142642,
+        "y0": 0.7574063846559236,
+        "x1": 0.3705877914927364,
+        "y1": 0.7662117505314374
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3750980850917841,
+        "y0": 0.7518146868908044,
+        "x1": 0.8827448826210171,
+        "y1": 0.7643937775582978
+      },
+      "text": "represent the rotated gradient of the current model at the ith pixel. This expres-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764720841950062,
+        "y0": 0.7656024477698586,
+        "x1": 0.5033328486423866,
+        "y1": 0.778181538437352
+      },
+      "text": "sion for equation 9 is justified by considering that, when [θ]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5033336963528902,
+        "y0": 0.7711944345271948,
+        "x1": 0.5078435162313624,
+        "y1": 0.7799998004027087
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5127457263422948,
+        "y0": 0.7656027367620757,
+        "x1": 0.8824536691304126,
+        "y1": 0.7781818274295691
+      },
+      "text": "corresponds to the correct orientation angle, we typically",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764768214007608,
+        "y0": 0.7793904976411299,
+        "x1": 0.1825501809712329,
+        "y1": 0.7919695883086233
+      },
+      "text": "expect |[g",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18254954518835528,
+        "y0": 0.7849826963260921,
+        "x1": 0.1900005091249553,
+        "y1": 0.7937880622016059
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19000078338423584,
+        "y0": 0.7850738914325984,
+        "x1": 0.19353018866644967,
+        "y1": 0.7913634367663451
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.195098689958161,
+        "y0": 0.7793904976411299,
+        "x1": 0.19960792391907936,
+        "y1": 0.7919695883086233
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19960875916325188,
+        "y0": 0.7849826963260921,
+        "x1": 0.20411856657539318,
+        "y1": 0.7937880622016059
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20490261152678846,
+        "y0": 0.7793904976411299,
+        "x1": 0.2578437406253191,
+        "y1": 0.7919695883086233
+      },
+      "text": "| ≪ |[g",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2578437406253191,
+        "y0": 0.7849826963260921,
+        "x1": 0.2641182693780637,
+        "y1": 0.7937880622016059
+      },
+      "text": "z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26451053494721455,
+        "y0": 0.7850738914325984,
+        "x1": 0.26803992776309743,
+        "y1": 0.7913634367663451
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2696084415211397,
+        "y0": 0.7793904976411299,
+        "x1": 0.274117687948389,
+        "y1": 0.7919695883086233
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2741185107262306,
+        "y0": 0.7849826963260921,
+        "x1": 0.27862830567204094,
+        "y1": 0.7937880622016059
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2796083338120404,
+        "y0": 0.7793904976411299,
+        "x1": 0.2881881115483303,
+        "y1": 0.7919695883086233
+      },
+      "text": "|.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29823579975202974,
+        "y0": 0.7793904976411299,
+        "x1": 0.5335304409849877,
+        "y1": 0.7919695883086233
+      },
+      "text": "In this case, directly minimizing [g",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5335297927357792,
+        "y0": 0.7849826963260921,
+        "x1": 0.5409807691387102,
+        "y1": 0.7937880622016059
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5409810184653289,
+        "y0": 0.7850738914325984,
+        "x1": 0.5445104362138735,
+        "y1": 0.7913634367663451
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5460789499719159,
+        "y0": 0.7793904976411299,
+        "x1": 0.5505881714665033,
+        "y1": 0.7919695883086233
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5505890191770068,
+        "y0": 0.7786187601811958,
+        "x1": 0.557059643315334,
+        "y1": 0.7874241260567096
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5505890191770068,
+        "y0": 0.7864978439880139,
+        "x1": 0.555098839055479,
+        "y1": 0.7953032098635279
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.562745636584712,
+        "y0": 0.7793904976411299,
+        "x1": 0.5927460115719465,
+        "y1": 0.7919695883086233
+      },
+      "text": "+ [g",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5927459617066227,
+        "y0": 0.7849826963260921,
+        "x1": 0.5990204655267055,
+        "y1": 0.7937880622016059
+      },
+      "text": "z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5994121077793096,
+        "y0": 0.7850738914325984,
+        "x1": 0.6029415255278544,
+        "y1": 0.7913634367663451
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6045106376697814,
+        "y0": 0.7793904976411299,
+        "x1": 0.6090198591643688,
+        "y1": 0.7919695883086233
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6090200586256638,
+        "y0": 0.7786187601811958,
+        "x1": 0.615490682763991,
+        "y1": 0.7874241260567096
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6090200586256638,
+        "y0": 0.7864978439880139,
+        "x1": 0.613529878504136,
+        "y1": 0.7953032098635279
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6221576765471813,
+        "y0": 0.7793904976411299,
+        "x1": 0.7939223245857587,
+        "y1": 0.7919695883086233
+      },
+      "text": "would heavily penalize [g",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7939223245857587,
+        "y0": 0.7849826963260921,
+        "x1": 0.8001968284058415,
+        "y1": 0.7937880622016059
+      },
+      "text": "z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8005891189076542,
+        "y0": 0.7850738914325984,
+        "x1": 0.8041185366561989,
+        "y1": 0.7913634367663451
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8058829712711908,
+        "y0": 0.7793904976411299,
+        "x1": 0.8103921927657782,
+        "y1": 0.7919695883086233
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8103930404762817,
+        "y0": 0.7849826963260921,
+        "x1": 0.8149028603547539,
+        "y1": 0.7937880622016059
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8156868928398182,
+        "y0": 0.7793904976411299,
+        "x1": 0.8823535395603553,
+        "y1": 0.7919695883086233
+      },
+      "text": ", which is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764765720741421,
+        "y0": 0.7931782585201841,
+        "x1": 0.6835300719815921,
+        "y1": 0.8057573491876775
+      },
+      "text": "undesirable because we aim to apply more smoothing along the direction defined by [θ]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.683530271442887,
+        "y0": 0.7987704572051463,
+        "x1": 0.6880400913213592,
+        "y1": 0.8075758230806601
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6890207427779055,
+        "y0": 0.7931782585201841,
+        "x1": 0.8003926495321436,
+        "y1": 0.8057573491876775
+      },
+      "text": ". The weights [σ]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8003928489934385,
+        "y0": 0.7987704572051463,
+        "x1": 0.8049026688719108,
+        "y1": 0.8075758230806601
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8098048789828431,
+        "y0": 0.7931782585201841,
+        "x1": 0.8827463785807291,
+        "y1": 0.8057573491876775
+      },
+      "text": "in equation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.8069663661898989,
+        "x1": 0.6147057527030995,
+        "y1": 0.8195454568573923
+      },
+      "text": "9 balance the contributions of gradient components in the weighted sum [σ]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6147059521643944,
+        "y0": 0.8061946287299647,
+        "x1": 0.6211765763027216,
+        "y1": 0.8149999946054787
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6147059521643944,
+        "y0": 0.8139217989613312,
+        "x1": 0.6192157720428666,
+        "y1": 0.822727164836845
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6221571778939441,
+        "y0": 0.8069663661898989,
+        "x1": 0.6345104142731312,
+        "y1": 0.8195454568573923
+      },
+      "text": "[g",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6345097660239226,
+        "y0": 0.8125580639550181,
+        "x1": 0.6419607424268535,
+        "y1": 0.8213634298305319
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6419609917534722,
+        "y0": 0.8126497407152196,
+        "x1": 0.645490409502017,
+        "y1": 0.8189392860489663
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6470589232600592,
+        "y0": 0.806966346923751,
+        "x1": 0.6515681447546466,
+        "y1": 0.8195454375912445
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6515689924651501,
+        "y0": 0.8061946094638169,
+        "x1": 0.6580396166034773,
+        "y1": 0.8149999753393308
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6515689924651501,
+        "y0": 0.8139217796951833,
+        "x1": 0.6560788123436223,
+        "y1": 0.8227271455706973
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6629411784652012,
+        "y0": 0.806966346923751,
+        "x1": 0.7333333632525276,
+        "y1": 0.8195454375912445
+      },
+      "text": "+ (1 − [σ]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7333335627138226,
+        "y0": 0.8125580446888703,
+        "x1": 0.7378433825922948,
+        "y1": 0.8213634105643841
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7390199549057904,
+        "y0": 0.806966346923751,
+        "x1": 0.7452944088605494,
+        "y1": 0.8195454375912445
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7452942093992545,
+        "y0": 0.8061946094638169,
+        "x1": 0.7517648335375817,
+        "y1": 0.8149999753393308
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7525494644065308,
+        "y0": 0.806966346923751,
+        "x1": 0.7649026509203942,
+        "y1": 0.8195454375912445
+      },
+      "text": "[g",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7649020525365094,
+        "y0": 0.8125580446888703,
+        "x1": 0.7711765563565921,
+        "y1": 0.8213634105643841
+      },
+      "text": "z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7715688468584048,
+        "y0": 0.8126497214490718,
+        "x1": 0.7750982646069495,
+        "y1": 0.8189392667828184
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7766667783649919,
+        "y0": 0.8069663276576032,
+        "x1": 0.7811759998595792,
+        "y1": 0.8195454183250966
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7811768475700828,
+        "y0": 0.8061945901976691,
+        "x1": 0.7876474717084099,
+        "y1": 0.814999956073183
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7811768475700828,
+        "y0": 0.8139217604290355,
+        "x1": 0.785686667448555,
+        "y1": 0.8227271263045494
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7886274749157476,
+        "y0": 0.8069663276576032,
+        "x1": 0.8823533400990604,
+        "y1": 0.8195454183250966
+      },
+      "text": ", ensuring that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.8207540885366574,
+        "x1": 0.882745281543607,
+        "y1": 0.8333331792041508
+      },
+      "text": "the magnitudes of both terms are approximately equal before penalization. This adaptive weighting mechanism effec-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764703389086754,
+        "y0": 0.8345418397826377,
+        "x1": 0.5090191411037072,
+        "y1": 0.8471209304501313
+      },
+      "text": "tively enhances smoothing along the structural direction [θ]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5090193405650021,
+        "y0": 0.8401335471808309,
+        "x1": 0.5135291604434743,
+        "y1": 0.8489389130563447
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5194117726843341,
+        "y0": 0.8345418397826377,
+        "x1": 0.8827455807355494,
+        "y1": 0.8471209304501313
+      },
+      "text": "while allowing variations across it, eventually enabling",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.8483295910286182,
+        "x1": 0.8825511059729881,
+        "y1": 0.8609086816961116
+      },
+      "text": "the recovery of dominating structures and details in the model m. To maintain stability during the σ update, the com-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764740788079554,
+        "y0": 0.8621173422745985,
+        "x1": 0.8823538387522978,
+        "y1": 0.8746964329420919
+      },
+      "text": "puted weights are smoothed using a convolution with a 5 × 5 averaging filter; alternatively, one could incorporate a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764733308280995,
+        "y0": 0.8757537097641916,
+        "x1": 0.2245099435444751,
+        "y1": 0.888332800431685
+      },
+      "text": "smoothing term.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764733308280995,
+        "y0": 0.8965115390642725,
+        "x1": 0.8774508557288475,
+        "y1": 0.9090906297317659
+      },
+      "text": "A comprehensive analysis of the methods for solving subproblems equation 8c and equation 8d can be found in [14].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4958823210273693,
+        "y0": 0.9342392177292795,
+        "x1": 0.5041175792419833,
+        "y1": 0.946818308396773
+      },
+      "text": "4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.03080980002414435,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

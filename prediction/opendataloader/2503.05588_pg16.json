@@ -1,0 +1,797 @@
+{
+  "schema_version": 2,
+  "engine": "opendataloader",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.05588_pg16",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "that 𝐼𝑡 is surjective. Suppose 𝑍∈𝐿2(𝑌,𝑡,𝑑′) so that ‖𝑍𝑛−𝑍‖2 →0 for some 𝑍𝑛 ∈ (𝑌,𝑡,𝑑′). By isometry we conclude that 𝐻𝑛 ∶=𝐼𝑡−1(𝑍𝑛) is a Cauchy sequence converging to some 𝐻∈𝐿2(𝑋,𝑡,𝑑′). Finally ‖𝐼𝑡𝐻−𝑍‖= lim𝑛→∞ ‖𝑍𝑛 −𝑍‖= 0 and therefore 𝐼𝑡(𝐻) =𝑍.\n\nEquation (3.11) is evident in the case that 𝛾 is a simple function. For general 𝛾∈𝐿𝑡(𝑋,𝑑′), choose a sequence of simple 𝛾(𝑛) with ‖𝛾(𝑛)−𝛾‖2 →0. By (3.9) and Ito’s isometry we have¯\n\n𝑡\n\n𝑡\n\n𝑡\n\n𝑡\n\n→0\n\n𝛾(𝑛)(𝑠) d𝑌(𝑠) − ∫\n\n𝛾(𝑠) d𝑌(𝑠)\n\n→0,\n\n𝛾(𝑛)(𝑠) d𝑋(𝑠) − ∫\n\n𝛾(𝑠) d𝑋(𝑠)\n\n‖∫\n\n‖∫\n\n‖2\n\n‖2\n\n0\n\n0\n\n0\n\n0\n\nas 𝑛→∞. The claim then follows because the continuity of the operator 𝐼𝑡 yields\n\n𝑡\n\n𝑡\n\n𝑡\n\n𝑡\n\n𝐼𝑡 ∫\n\n𝛾(𝑠) d𝑋(𝑠) = lim\n\n𝐼𝑡 ∫\n\n𝛾(𝑛)(𝑠) d𝑋(𝑠) = lim 𝑛→∞∫\n\n𝛾(𝑛)(𝑠) d𝑌(𝑠) = ∫\n\n𝛾(𝑠) d𝑌(𝑠).\n\n𝑛→∞\n\n0\n\n0\n\n0\n\n0\n\n<table>\n  <tr>\n    <td> </td>\n  </tr>\n</table>\n\n\n# 4 Filtering, smoothing, and prediction\n\nThis section is devoted to optimal linear filtering, prediction and smoothing of partially observed polynomial processes. We let either 𝐼∶=ℕ or 𝐼∶=ℝ+ and fix a probability space (Ω,F,(F𝑡)𝑡∈𝐼,ℙ) as well as an ℝ𝑑-valued adapted process 𝑋= (𝑋(𝑡))𝑡∈𝐼. If 𝐼=ℝ+, we assume (F𝑡)𝑡∈𝐼 to be right-continuous. Suppose that the components 𝑋𝑚+1(𝑡),…,𝑋𝑑(𝑡) are observable whereas 𝑋1(𝑡),…,𝑋𝑚(𝑡) are not. We let the subscript o stand for the observable part of a vector 𝑥∈ℝ𝑑 and let 𝐻∶= (𝛿𝑚+𝑖,𝑗)𝑖=1,…,𝑑−𝑚;𝑗=1,…,𝑑, i.e. 𝑥o ∶=𝐻𝑥= (𝑥𝑚+1,…,𝑥𝑑). For Σ ∈ℝ𝑑×𝑑 we set Σ∶,o ∶= Σ𝐻⊤ = Σ1∶𝑑,𝑚+1∶𝑑, Σo,∶ ∶=𝐻Σ = Σ𝑚+1∶𝑑,1∶𝑑 as well as Σo ∶=𝐻Σ𝐻⊤ = Σ𝑚+1∶𝑑,𝑚+1∶𝑑. The subscript u standing for the unobservable part of a vector is treated in the same manner.\n\nWe suppose that 𝔼(‖𝑋(𝑡)‖2)<∞ for 𝑡∈𝐼 and consider the following general filtering problem for fixed 𝑡∈𝐼. The goal is to minimise the mean square error 𝔼(‖𝑋(𝑡) −𝑌‖2) over all random variables 𝑌 that are measurable with respect to the observable information\n\n{\n\n}\n\nG𝑡 ∶=𝜎(\n\n𝑋o(𝑠) ∶𝑠∈𝐼, 𝑠≤𝑡\n\n). (4.1)\n\nWe call the minimiser of (4.1) the optimal filter for . Regardless of any specific model the optimal filter is then given by the conditional mean 𝑋(𝑡,𝑡)̂ ∶=𝔼(𝑋(𝑡)|G𝑡).\n\n## 4.1 Discrete-time linear filtering problems\n\nLet 𝐼=ℕ. For Gaussian state space models, the optimal filter can be computed recursively:\n\nProposition 4.1 (Kálmán filter). Suppose that 𝑋 is a linear Gaussian state space model as in Definition 3.1 and set 𝐶(𝑡) ∶=𝐵(𝑡)𝐵(𝑡)⊤. Let 𝑋(0,−1)̂ ∶=𝔼(𝑋(0)), Σ(0,−1)̂ ∶= Cov(𝑋(0)) and\n\n𝑋(𝑡+̂ 1,𝑡 𝑎(𝑡+ 1) +𝐴(𝑡+ 1)𝑋(𝑡,𝑡),̂\n\n𝑋(𝑡,𝑡̂ 𝑋(𝑡,𝑡−̂ 1) + Σ̂∶,o(𝑡,𝑡− 1)Σ̂o(𝑡,𝑡− 1)+(𝑋o(𝑡) − 𝑋̂o(𝑡,𝑡− 1)), Σ(𝑡+̂ 1,𝑡 𝐴(𝑡+ 1)Σ(𝑡,𝑡)𝐴(𝑡+̂ 1)⊤ +𝐶(𝑡+ 1),\n\nΣ(𝑡,𝑡)̂ ∶= Σ(𝑡,𝑡−̂ 1) − Σ̂∶,o(𝑡,𝑡− 1)Σ̂o(𝑡,𝑡− 1)+Σ̂o,∶(𝑡,𝑡− 1)\n\n16\n\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17011436711710198,
+        "y0": 0.062417893073916986,
+        "x1": 0.8790527419213945,
+        "y1": 0.1879022200049888
+      },
+      "text": "that 𝐼𝑡 is surjective. Suppose 𝑍∈𝐿2(𝑌,𝑡,𝑑′) so that ‖𝑍𝑛−𝑍‖2 →0 for some 𝑍𝑛 ∈ (𝑌,𝑡,𝑑′). By isometry we conclude that 𝐻𝑛 ∶=𝐼𝑡−1(𝑍𝑛) is a Cauchy sequence converging to some 𝐻∈𝐿2(𝑋,𝑡,𝑑′). Finally ‖𝐼𝑡𝐻−𝑍‖= lim𝑛→∞ ‖𝑍𝑛 −𝑍‖= 0 and therefore 𝐼𝑡(𝐻) =𝑍.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17011436711710198,
+        "y0": 0.1198113767831901,
+        "x1": 0.8790477022423212,
+        "y1": 0.22813669244200552
+      },
+      "text": "Equation (3.11) is evident in the case that 𝛾 is a simple function. For general 𝛾∈𝐿𝑡(𝑋,𝑑′), choose a sequence of simple 𝛾(𝑛) with ‖𝛾(𝑛)−𝛾‖2 →0. By (3.9) and Ito’s isometry we have¯",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5861566735430288,
+        "y0": 0.17344664979985513,
+        "x1": 0.5895702161686344,
+        "y1": 0.234224186057561
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7368615566560722,
+        "y0": 0.17344664979985513,
+        "x1": 0.7402750992816778,
+        "y1": 0.234224186057561
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20597672340225376,
+        "y0": 0.17344664979985513,
+        "x1": 0.20939026602785935,
+        "y1": 0.234224186057561
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3607385481692526,
+        "y0": 0.17344664979985513,
+        "x1": 0.36415209079485816,
+        "y1": 0.234224186057561
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8435045256318078,
+        "y0": 0.17629737851738347,
+        "x1": 0.8767378493337544,
+        "y1": 0.2674636829039423
+      },
+      "text": "→0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5945981359907001,
+        "y0": 0.17629737851738347,
+        "x1": 0.7240691712751732,
+        "y1": 0.27208899024813216
+      },
+      "text": "𝛾(𝑛)(𝑠) d𝑌(𝑠) − ∫",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7453030191037435,
+        "y0": 0.17629737851738347,
+        "x1": 0.8246578057909273,
+        "y1": 0.2674636829039423
+      },
+      "text": "𝛾(𝑠) d𝑌(𝑠)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47143845879894375,
+        "y0": 0.17629737851738347,
+        "x1": 0.5090899011550944,
+        "y1": 0.2674636829039423
+      },
+      "text": "→0,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2144181858499251,
+        "y0": 0.17629737851738347,
+        "x1": 0.34794616278835366,
+        "y1": 0.27208899024813216
+      },
+      "text": "𝛾(𝑛)(𝑠) d𝑋(𝑠) − ∫",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36918001061692396,
+        "y0": 0.17629737851738347,
+        "x1": 0.45259173895806315,
+        "y1": 0.2674636829039423
+      },
+      "text": "𝛾(𝑠) d𝑋(𝑠)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5526041701664438,
+        "y0": 0.18092268586157334,
+        "x1": 0.5733642881621299,
+        "y1": 0.2760408129328059
+      },
+      "text": "‖∫",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1724242200256688,
+        "y0": 0.18092268586157334,
+        "x1": 0.19318433802135482,
+        "y1": 0.2760408129328059
+      },
+      "text": "‖∫",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8246578057909273,
+        "y0": 0.1848745085462471,
+        "x1": 0.8370890141715776,
+        "y1": 0.2760408129328059
+      },
+      "text": "‖2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45259173895806315,
+        "y0": 0.1848745085462471,
+        "x1": 0.4650229473387135,
+        "y1": 0.2760408129328059
+      },
+      "text": "‖2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5733626082691056,
+        "y0": 0.20076138212830652,
+        "x1": 0.5795882918175771,
+        "y1": 0.2615389183860124
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7240691712751732,
+        "y0": 0.20076138212830652,
+        "x1": 0.7302948548236449,
+        "y1": 0.2615389183860124
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19318433802135482,
+        "y0": 0.20076138212830652,
+        "x1": 0.19941002156982643,
+        "y1": 0.2615389183860124
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34794616278835366,
+        "y0": 0.20076138212830652,
+        "x1": 0.3541718463368253,
+        "y1": 0.2615389183860124
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17011436711710198,
+        "y0": 0.21346494197579247,
+        "x1": 0.8330051942292316,
+        "y1": 0.3046312463623514
+      },
+      "text": "as 𝑛→∞. The claim then follows because the continuity of the operator 𝐼𝑡 yields",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22501831083396612,
+        "y0": 0.249941203720201,
+        "x1": 0.2284318534595717,
+        "y1": 0.3107187399779069
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41187617172538454,
+        "y0": 0.249941203720201,
+        "x1": 0.41528971435099016,
+        "y1": 0.3107187399779069
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.601537774074547,
+        "y0": 0.249941203720201,
+        "x1": 0.6049513167001526,
+        "y1": 0.3107187399779069
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7544752350170342,
+        "y0": 0.249941203720201,
+        "x1": 0.7578887776426398,
+        "y1": 0.3107187399779069
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1868528212123452,
+        "y0": 0.25279193243772935,
+        "x1": 0.21222424556004274,
+        "y1": 0.34858354416847803
+      },
+      "text": "𝐼𝑡 ∫",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23345977328163747,
+        "y0": 0.25279193243772935,
+        "x1": 0.3690069816354095,
+        "y1": 0.34395823682428817
+      },
+      "text": "𝛾(𝑠) d𝑋(𝑠) = lim",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3737106821037637,
+        "y0": 0.25279193243772935,
+        "x1": 0.3990821064514612,
+        "y1": 0.34858354416847803
+      },
+      "text": "𝐼𝑡 ∫",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4203176341730559,
+        "y0": 0.25279193243772935,
+        "x1": 0.588745388693648,
+        "y1": 0.34858354416847803
+      },
+      "text": "𝛾(𝑛)(𝑠) d𝑋(𝑠) = lim 𝑛→∞∫",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6099792365222183,
+        "y0": 0.25279193243772935,
+        "x1": 0.7416811697431108,
+        "y1": 0.34858354416847803
+      },
+      "text": "𝛾(𝑛)(𝑠) d𝑌(𝑠) = ∫",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7629166974647056,
+        "y0": 0.25279193243772935,
+        "x1": 0.8466879229130689,
+        "y1": 0.34395823682428817
+      },
+      "text": "𝛾(𝑠) d𝑌(𝑠).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3410418024580195,
+        "y0": 0.27374716411882793,
+        "x1": 0.37036433519913453,
+        "y1": 0.3345247003765338
+      },
+      "text": "𝑛→∞",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21222424556004274,
+        "y0": 0.2772559360486524,
+        "x1": 0.2184499291085144,
+        "y1": 0.3380334723063583
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3990821064514612,
+        "y0": 0.2772559360486524,
+        "x1": 0.40530778999993283,
+        "y1": 0.3380334723063583
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.588745388693648,
+        "y0": 0.2772559360486524,
+        "x1": 0.5949710722421198,
+        "y1": 0.3380334723063583
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7416811697431108,
+        "y0": 0.2772559360486524,
+        "x1": 0.7479068532915825,
+        "y1": 0.3380334723063583
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "table",
+      "box": {
+        "page": 0,
+        "x0": 0.8645435058695464,
+        "y0": 0.280510518001164,
+        "x1": 0.8779305733810872,
+        "y1": 0.29009609331385344
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.1209522977576788,
+        "y0": 0.318491726947701,
+        "x1": 0.6392278539702592,
+        "y1": 0.3459335542648089
+      },
+      "text": "4 Filtering, smoothing, and prediction",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1209522977576788,
+        "y0": 0.35025003266459986,
+        "x1": 0.8790561017074433,
+        "y1": 0.527211393412441
+      },
+      "text": "This section is devoted to optimal linear filtering, prediction and smoothing of partially observed polynomial processes. We let either 𝐼∶=ℕ or 𝐼∶=ℝ+ and fix a probability space (Ω,F,(F𝑡)𝑡∈𝐼,ℙ) as well as an ℝ𝑑-valued adapted process 𝑋= (𝑋(𝑡))𝑡∈𝐼. If 𝐼=ℝ+, we assume (F𝑡)𝑡∈𝐼 to be right-continuous. Suppose that the components 𝑋𝑚+1(𝑡),…,𝑋𝑑(𝑡) are observable whereas 𝑋1(𝑡),…,𝑋𝑚(𝑡) are not. We let the subscript o stand for the observable part of a vector 𝑥∈ℝ𝑑 and let 𝐻∶= (𝛿𝑚+𝑖,𝑗)𝑖=1,…,𝑑−𝑚;𝑗=1,…,𝑑, i.e. 𝑥o ∶=𝐻𝑥= (𝑥𝑚+1,…,𝑥𝑑). For Σ ∈ℝ𝑑×𝑑 we set Σ∶,o ∶= Σ𝐻⊤ = Σ1∶𝑑,𝑚+1∶𝑑, Σo,∶ ∶=𝐻Σ = Σ𝑚+1∶𝑑,1∶𝑑 as well as Σo ∶=𝐻Σ𝐻⊤ = Σ𝑚+1∶𝑑,𝑚+1∶𝑑. The subscript u standing for the unobservable part of a vector is treated in the same manner.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1209522977576788,
+        "y0": 0.4703619237667629,
+        "x1": 0.8790561017074433,
+        "y1": 0.5958462506978346
+      },
+      "text": "We suppose that 𝔼(‖𝑋(𝑡)‖2)<∞ for 𝑡∈𝐼 and consider the following general filtering problem for fixed 𝑡∈𝐼. The goal is to minimise the mean square error 𝔼(‖𝑋(𝑡) −𝑌‖2) over all random variables 𝑌 that are measurable with respect to the observable information",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44003621849360636,
+        "y0": 0.5241539868628918,
+        "x1": 0.4540952432149121,
+        "y1": 0.6153202912494506
+      },
+      "text": "{",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6056081548726978,
+        "y0": 0.5241539868628918,
+        "x1": 0.6196671795940035,
+        "y1": 0.6153202912494506
+      },
+      "text": "}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3665157002802062,
+        "y0": 0.5360391500077207,
+        "x1": 0.44003621849360636,
+        "y1": 0.6296547054840893
+      },
+      "text": "G𝑡 ∶=𝜎(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4540952432149121,
+        "y0": 0.5360391500077207,
+        "x1": 0.6043431954253153,
+        "y1": 0.6272054543942795
+      },
+      "text": "𝑋o(𝑠) ∶𝑠∈𝐼, 𝑠≤𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6196671795940035,
+        "y0": 0.5360391500077207,
+        "x1": 0.8790477022423212,
+        "y1": 0.6296547054840893
+      },
+      "text": "). (4.1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1209522977576788,
+        "y0": 0.5830797372578366,
+        "x1": 0.8790577816004678,
+        "y1": 0.6772785043176661
+      },
+      "text": "We call the minimiser of (4.1) the optimal filter for . Regardless of any specific model the optimal filter is then given by the conditional mean 𝑋(𝑡,𝑡)̂ ∶=𝔼(𝑋(𝑡)|G𝑡).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.1209522977576788,
+        "y0": 0.647236574849446,
+        "x1": 0.597531229211324,
+        "y1": 0.6701053581821853
+      },
+      "text": "4.1 Discrete-time linear filtering problems",
+      "html": null,
+      "level": 2,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1209522977576788,
+        "y0": 0.6535081780280083,
+        "x1": 0.8670146285084568,
+        "y1": 0.7446744824145672
+      },
+      "text": "Let 𝐼=ℕ. For Gaussian state space models, the optimal filter can be computed recursively:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1209522977576788,
+        "y0": 0.6825012768889047,
+        "x1": 0.8790409826702237,
+        "y1": 0.7924087469859482
+      },
+      "text": "Proposition 4.1 (Kálmán filter). Suppose that 𝑋 is a linear Gaussian state space model as in Definition 3.1 and set 𝐶(𝑡) ∶=𝐵(𝑡)𝐵(𝑡)⊤. Let 𝑋(0,−1)̂ ∶=𝔼(𝑋(0)), Σ(0,−1)̂ ∶= Cov(𝑋(0)) and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2079640368501334,
+        "y0": 0.7311537136680564,
+        "x1": 0.52796517917739,
+        "y1": 0.8253512929242538
+      },
+      "text": "𝑋(𝑡+̂ 1,𝑡 𝑎(𝑡+ 1) +𝐴(𝑡+ 1)𝑋(𝑡,𝑡),̂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21204113722038181,
+        "y0": 0.7552138640439963,
+        "x1": 0.7920342832568422,
+        "y1": 0.8738623810711613
+      },
+      "text": "𝑋(𝑡,𝑡̂ 𝑋(𝑡,𝑡−̂ 1) + Σ̂∶,o(𝑡,𝑡− 1)Σ̂o(𝑡,𝑡− 1)+(𝑋o(𝑡) − 𝑋̂o(𝑡,𝑡− 1)), Σ(𝑡+̂ 1,𝑡 𝐴(𝑡+ 1)Σ(𝑡,𝑡)𝐴(𝑡+̂ 1)⊤ +𝐶(𝑡+ 1),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24332074533493708,
+        "y0": 0.8037249521909038,
+        "x1": 0.7092239566184426,
+        "y1": 0.8979154046253073
+      },
+      "text": "Σ(𝑡,𝑡)̂ ∶= Σ(𝑡,𝑡−̂ 1) − Σ̂∶,o(𝑡,𝑡− 1)Σ̂o(𝑡,𝑡− 1)+Σ̂o,∶(𝑡,𝑡− 1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4906614746772926,
+        "y0": 0.8985021796196653,
+        "x1": 0.5093385253227075,
+        "y1": 0.9181270712325839
+      },
+      "text": "16",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [
+    {
+      "html": "<table><tr><td></td></tr></table>",
+      "box": {
+        "page": 0,
+        "x0": 0.8645435058695464,
+        "y0": 0.280510518001164,
+        "x1": 0.8779305733810872,
+        "y1": 0.29009609331385344
+      },
+      "n_rows": 1,
+      "n_cols": 1
+    }
+  ],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      595.276,
+      841.89
+    ]
+  ],
+  "seconds": 0.8992979999748059,
+  "model_load_seconds": null,
+  "peak_rss_mb": 229.69140625,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "opendataloader_version": "2.5.0",
+    "table_method": "cluster",
+    "include_header_footer": true,
+    "reading_order": "xycut",
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "F:\\vnpt\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe"
+  }
+}

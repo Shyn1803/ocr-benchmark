@@ -140,20 +140,30 @@ class Aggregate:
     applicable: bool
     """False = engine này không có năng lực để metric chạm tới. Ô trong bảng phải in
     ``N/A``, và **không** được bỏ dòng đi — bỏ đi là làm engine yếu trông mạnh."""
+    n_thieu_nang_luc: int = 0
+    """Số tài liệu N/A vì ``MISSING_CAPABILITY`` — engine không hứa làm việc này."""
+    n_chua_nhan: int = 0
+    """Số tài liệu N/A vì bộ mẫu chưa có nhãn hợp loại (``NO_GROUND_TRUTH`` hoặc
+    ``WRONG_GT_KIND``). Engine **có** năng lực; cái thiếu là nhãn để đối chiếu.
+    Gộp hai trạng thái này vào ``N/A`` là đổ lỗi cho engine vì bộ mẫu thiếu."""
 
     def cell(self) -> str:
         """Một ô trong bảng xếp hạng, dạng đọc được."""
         if not self.applicable:
             return "N/A"
-        # applicable=True ⇒ denom>0 ⇒ penalized_mean khác None (xem aggregate()).
+        if self.n_scored == 0 and self.n_chua_nhan > 0:
+            # Engine chạy được, bộ mẫu chưa có nhãn hợp loại. Đây là thiếu sót của
+            # **bộ mẫu**, không phải của engine. Nhánh này đứng trước khẳng định dưới
+            # vì nó là trường hợp duy nhất `applicable` bật mà mẫu số vẫn rỗng.
+            return f"chưa có nhãn ({self.n_chua_nhan} tài liệu)"
+        # Còn lại: applicable=True ⇒ denom>0 ⇒ penalized_mean khác None.
         assert self.penalized_mean is not None
         if self.n_scored == 0:
-            # denom>0 mà không chấm được cái nào ⇒ denom toàn tài liệu HỎNG, và
-            # `penalized_mean` bằng 0.0 vì mẫu số toàn số 0. In "0.000" ở đây là nói
-            # engine **đo được và tệ nhất**, trong khi sự thật là nó **chưa từng
-            # được đo** — sai theo đúng hướng gây hiểu nhầm nặng nhất. Tiêu chí
-            # `n_scored == 0` giống hệt `_doc_cham_duoc` của `do_phan_tan()` và
-            # `kiem_sabotage()` trong `discrimination.py`.
+            # denom toàn tài liệu HỎNG, và `penalized_mean` bằng 0.0 vì mẫu
+            # số toàn số 0. In "0.000" ở đây là nói engine **đo được và tệ nhất**,
+            # trong khi sự thật là nó **chưa từng được đo** — sai theo đúng hướng gây
+            # hiểu nhầm nặng nhất. Tiêu chí `n_scored == 0` giống hệt `_doc_cham_duoc`
+            # của `do_phan_tan()` và `kiem_sabotage()` trong `discrimination.py`.
             return f"— ({self.n_failed} hỏng, 0 chấm được)"
         return f"{self.penalized_mean:.3f} (fail {self.fail_rate:.0%})"
 
@@ -192,10 +202,30 @@ def aggregate(
         if r.value is None and r.na_reason is not NAReason.ENGINE_FAILED
     ]
 
+    thieu_nang_luc = [r for r in na_other if r.na_reason is NAReason.MISSING_CAPABILITY]
+    chua_nhan = [r for r in na_other if r.na_reason is not NAReason.MISSING_CAPABILITY]
+
     # Mẫu số của trung bình có phạt = chấm được + hỏng. Tài liệu N/A vì thiếu năng
     # lực KHÔNG vào mẫu số: engine không hứa làm việc đó thì không phạt nó ở đây,
     # đã có cột applicable/N-A nói thay.
     denom = len(scored) + len(failed)
+
+    # `applicable` suy từ các tài liệu **không hỏng**, không từ `denom > 0`.
+    #
+    # Một tài liệu hỏng ở cấp engine sinh `ENGINE_FAILED` cho **mọi** metric, kể cả
+    # metric engine không có năng lực chạm tới. Lấy `denom > 0` thì 10 tài liệu hỏng
+    # đủ bật `applicable` cho cả 14 metric, và bảng in "— (10 hỏng, 0 chấm được)" ở
+    # mọi ô — che mất 194 tài liệu chạy tốt và vu cho engine những năng lực nó chưa
+    # bao giờ khai. Đã đọc nhầm `sovereign_light` là "hỏng toàn tập" vì đúng chỗ này
+    # (2026-08-09).
+    khong_hong = len(scored) + len(na_other)
+    kha_dung = (
+        # Không tài liệu nào chạy được ⇒ chưa biết năng lực; vẫn phải hiện dòng để
+        # người đọc thấy engine hỏng, chứ N/A ở đây là giấu lỗi.
+        denom > 0
+        if khong_hong == 0
+        else bool(scored or chua_nhan)
+    )
     return Aggregate(
         metric=names.pop(),
         engine=engines.pop(),
@@ -206,5 +236,7 @@ def aggregate(
         mean=(sum(scored) / len(scored)) if scored else None,
         penalized_mean=(sum(scored) / denom) if denom else None,
         fail_rate=(len(failed) / denom) if denom else 0.0,
-        applicable=denom > 0,
+        applicable=kha_dung,
+        n_thieu_nang_luc=len(thieu_nang_luc),
+        n_chua_nhan=len(chua_nhan),
     )

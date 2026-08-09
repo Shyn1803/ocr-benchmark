@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "engine": "sovereign_light",
+  "engine_version": "9d9a363",
+  "doc_id": "2503.07509_pg2",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "Fig. 1: The architecture of the implemented AE-NOMA for two-users. Each FCNN[ℓ] represents a fully connected layer with\nℓnodes. The main structure which consists five hidden layers each with 32 neurons is replicated at Tx, Rx1 and Rx2. The\nTx, however, has a side block (Sub-Network 2) which is used to adjust power allocation for each symbol.\nII. SYSTEM MODEL\nConsider a downlink NOMA system involving a base station\n(BS) communicating with two users. All nodes are equipped\nwith single antennas. The user with weaker (stronger) channel\nis referred to as the weak (strong) user. The channels between\nthe BS and the weak and strong users are respectively denoted\nby h1 and h2 satisfying |h1|2 ≤|h2|2. Both channel gains are\nknown at the BS, but each user only knows its own channel\ngain. All channel gains are complex-valued and independently\ndrawn from a continuous distribution.\nIn a NOMA system, the BS employs superposition coding to\nconcurrently transmit messages to both users. The transmitted\nsignal x is defined by x =\n√\nαPs1+\n√\n¯αPs2, where s1 and s2\nare independent and identically distributed complex Gaussian\nsignals with zero mean and unit variance, CN(0, 1). Here, P\nrepresents the BS’s transmit power budget, α ∈[0, 1] is the\nfraction of power allocated to the weak user, and ¯α ≜1 −α.\nThe received signals at the users are expressed as\nyk = hkx + nk,\nk ∈{1, 2}\n(1)\nwhere the noises n1 and n2 are independent and identically\ndistributed circularly-symmetric complex Gaussian random\nvariables with zero mean and unit variance, CN(0, 1).\nThe weak user decodes its message by treating the interfer-\ning signal from the other user as noise. In contrast, the strong\nuser first decodes the weak user’s message, treating its own\ninterfering signal as noise, and then applies SIC to decode its\nown message. The combined use of superposition coding and\nSIC decoding with Gaussian codebooks results in achieving\nthe capacity region of this channel.\nIII. NETWORK STRUCTURE\nA. Autoencoder’s Structure\nAn autoencoder consists of two parts, an encoder and a\ndecoder. The AE processes a binary input vector s ∈[0, 1]d\nby first mapping it to a hidden representation u ∈[0, 1]d′\nthrough a deterministic mapping u = fθ(s) = σ(Ws + b),\nwhere θ = {W, b}, W is a d′×d weight matrix, and b is a bias\nvector. Here, σ(x) =\n1\n1+ex is the sigmoid function and σ(x) =\n[σ(x1), . . . , σ(xd)]T . The resulting latent representation u is\nthen transformed back to a reconstructed vector ˆs ∈[0, 1]d in\nthe input space, given by ˆs = gθ′(u) = σ(W ′u + b′) with\nθ′ = {W ′, b′}. For each training sample s(i), the AE maps it\nto a corresponding u(i) and a reconstruction ˆs(i).\nThe proposed AE-NOMA network, illustrated in Fig. 1,\nconsists of one transmitter (Tx) encoder and two decoders\neach at one of the receivers, i.e., Rx1 and Rx2. Each encoder\nand decoder, include a fully connected neural network (FCNN)\ncomposed of a sequence of fully connected layers and some\nresidual connections. As seen in Fig. 1, the encoder (Tx)\ncomprises a main block and a secondary network, referred\nto as Sub-Network 1 and Sub-Network 2, respectively.\nThis main block, replicated at Tx, Rx1 and Rx2, consists\nof an input layer, five hidden layers, and an output layer. The\nhidden layers contain 32 neurons each, while the final layer\n(output layer) has two neurons representing the in-phase (I)\nand quadrature-phase (Q) components of the symbol designed\nby the autoencoder for transmission. In addition to the main\nblock, the Tx has a side block (Sub-network 2) which helps\nto better adjust the I and Q components under a given average\npower constraint, thereby optimizing the use of the I/Q plane\nin a way similar to a quadrature amplitude modulation (QAM).\nIn the main block, we have also implemented residual\nconnections to enhance learning capacity and improves perfor-\nmance without the need for additional parameters or a wider\nnetwork. These shortcuts also play a crucial role in preserving\ngradients within the network. We have used the activation\nfunction exponential linear unit which provides a smooth, non-\nzero output for negative inputs, and can help improve learning\nstability and performance.",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.011165600037202239,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "F:\\vnpt\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1403
+  }
+}

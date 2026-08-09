@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "engine": "sovereign_light",
+  "engine_version": "9d9a363",
+  "doc_id": "2503.05276_pg14",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "Hasturk: CRL for DIRP\n14\nTo address these issues, we introduce Constrained Reinforcement Learning (CRL), a reinforce-\nment learning algorithm specifically designed for constrained MDPs. This algorithm, operating\nonline, learns the values of post-decision states, Vt(s), while also enabling constrained action selec-\ntion within the feasible mixed-integer space using solvers like Gurobi. Similar to Eq. (10), which\ndefines the Bellman equation for the pre-decision state x, we now formulate the Bellman function\nfor the post-decision state s as follows:\nVt(s) =\nX\nϕt∈Φt\nP{Ot = ϕt}\n\u0012\ncs(ϕt) +\nmin\nat∈At(x){cx(at) + Vt+1(s′)}\n\u0013\n.\n(11)\nAs values of pre- and post-decision states, V (x) and V (s), there also exist traditionally adapted\nQ-values, Q(x,a), which represent the expected total cost when taking action a in state x and\nfollowing the optimal policy thereafter. In our context, this is given by:\nQ(x,a) = cx(a) +\nX\nϕ∈Φ\nP{O = ϕ}(cs(ϕ) + V (x′))\n(12)\nNote that t is omitted in Eq. (12) since, in the infinite-horizon setting, Qt(x,at), Vt(x), and Vt(s)\nconverge to Q(x,a), V (x), and V (s).\nQ-learning is effective in traditional RL problems because immediate action costs are often\nuncertain or challenging to estimate. However, as in most operations research problems, our costs\nare explicitly defined, such as cx(a), including the selling profit and transportation costs. Instead\nof following the conventional approach of policy improvement through Q-learning, we leverage\nthis structure by separating the Q-value into its easily calculable immediate costs of cx(a), and\npredicting only V (s), given as:\nQ(x,a) = cx(a) + V (s).\n(13)\nThis separated approach reduces unnecessary computational overhead in estimating current\naction costs, and helps the model to solely focus learning V (s). Moreover, as demonstrated in\nprevious research (Sun et al. 2022), learning post-decision state values is generally a more effec-\ntive approach compared to learning of the action values. Consequently, our CRL holds significant\npotential for broader application in other constrained MDPs commonly encountered in operations\nresearch.\nThe proposed algorithm is detailed in Algorithm 1. It focuses on learning an approximation to\nV (s) ≈ˆvw(s) := w⊺ψ(s), using a differentiable value function parameterization with features, ψw(s).\nThe estimated value for the post-decision state is calculated as a weighted linear combination\nof these features. The algorithm iteratively refines the feature weights, w, to improve the action\nselection process.",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.011978499998804182,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "F:\\vnpt\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 250
+  }
+}

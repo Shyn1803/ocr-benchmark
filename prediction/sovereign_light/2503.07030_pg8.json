@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "engine": "sovereign_light",
+  "engine_version": "9d9a363",
+  "doc_id": "2503.07030_pg8",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "values for the sensitivity and the mismatch, this is a conser-\nvative estimate, as also indicated in Fig. 4c where the actual\ndecrease is 6.1%.\nV. DISCUSSION\nThe paper provides formulas for analysis of sensitivity of\nOFO. The results are validated in a synthetic case study,\nshowing that the formulas can be used instead of finite\ndifferences to compute the sensitivities in both unconstrained\nand constrained optimization problems. The synthetic case\nstudy also indicated that the sensitivities of OFO depend\non how long the OFO controller has been running. If the\ntime was insufficient, the sensitivities of OFO increase as\nthe optimum is not reached. Conversely, if OFO reaches\nthe optimum, then it becomes less sensitive to changes in\nparameters. These results suggest that future work could\nfocus on analysis of sensitivity with respect to time.\nThe second numerical case study presents an application\nof sensitivity analysis with respect to the model mismatch\nin a gas lift optimization problem. The case study further\ndemonstrated that the sensitivity of OFO depends on how\nlong the controller was running. In particular, the sensitivities\nto the model mismatch in a single time step decrease with\ntime, which suggests that iterative algorithms with accuracy\nimproving with iterations may be used for gradient estima-\ntion while preserving the optimum.\nThe results for the case with coupling constraints empha-\nsize the dependence on time in OFO. The formulas in Section\nIII were derived by setting a constant final time TF and\ntreating OFO as a system of equations parametrised by p:\nΦTF =Φ(uTF , yTF , p)\ny0 =h(u0)\nu1 =u0 + αbσα(u0, y0, p)\n...\nyk =h(uk)\nuk+1 =uk + αbσα(uk, yk, p)\n...\nyTF −1 =h(uTF −1)\nuTF =uTF −1 + αbσα(uTF −1, yTF −1, p)\n(32)\nwhere bσα(uk, yk, p) is the solution to (9) at iteration k. This\nassumption is equivalent to discretizing a continuous gradient\nflow algorithm with a constant time step [6]. However, (32)\ncan be equivalently summarised as a nonlinear equation:\nF(ΦTF , u, y, p) = 0\n(33)\ntreating all arguments as independent variables, with no\nexplicit dependence on time. A natural extension to the\nsensitivity analysis will now be to consider the impact of\ntime, both as time step and the final time.\nVI. CONCLUSIONS AND FUTURE WORKS\nThe objective of the paper is to facilitate the analysis of\nOnline Feedback Optimization controllers with respect to\ntheir parameters. The importance of analysing the impact of\nthe parameters of an optimization-based controller has been\nshown and used for traditional controllers, such as Model\nPredictive Control, but the analysis for Online Feedback Op-\ntimization remains under-explored. This paper addresses this\ngap by providing closed-form expressions for the sensitivity\nof Online Feedback Optimization to its parameters.\nIn the future, the sensitivities can be used for tuning\nof the parameters of the controller, as well as checking\nrobustness to model mismatch. Future work will also include\nthe analysis of sensitivity with respect to time.\nREFERENCES\n[1] B. Amos, I. Jimenez, J. Sacks, B. Boots, and J. Z. Kolter. Differen-\ntiable MPC for end-to-end planning and control. Advances in neural\ninformation processing systems, 31, 2018.\n[2] B. Amos and J. Zico Kolter. OptNet: Differentiable optimization as\na layer in neural networks.\nIn Doina Precup and Yee Whye Teh,\neditors, Proceedings of the 34th International Conference on Machine\nLearning, volume 70 of Proceedings of Machine Learning Research,\npages 136–145. PMLR, 06–11 Aug 2017.\n[3] J. R. Andersen, L. Imsland, and A. Pavlov. Data-driven derivative-\nfree trust-region model-based method for resource allocation problems.\nComputers & Chemical Engineering, 176:108282, August 2023.\n[4] J. C. G. Boot. On sensitivity analysis in convex quadratic programming\nproblems. Operations Research, 11(5):771–786, October 1963.\n[5] M. Colombino, J. W. Simpson-Porco, and A. Bernstein.\nTowards\nrobustness guarantees for feedback-based optimization. In 2019 IEEE\n58th Conference on Decision and Control (CDC) Palais des Congr`es et\ndes Expositions Nice Acropolis Nice, France, December 11-13, 2019.\nIEEE, 2019.\n[6] V. H¨aberle, A. Hauswirth, L. Ortmann, S. Bolognani, and F. D¨orfler.\nNon-convex feedback optimization with input and output constraints.\nIEEE Control Systems Letters, 5(1):343–348, 2020.\n[7] A. Hauswirth, S. Bolognani, G. Hug, and F. D¨orfler. Optimization\nalgorithms as robust feedback controllers. Annual Reviews in Control,\n57:100941, 2024.\n[8] Z. He, S. Bolognani, J. He, F. D¨orfler, and X. Guan.\nModel-free\nnonlinear feedback optimization.\nIEEE Transactions on Automatic\nControl, pages 1–16, 2023.\n[9] J. R. Magnus.\nMatrix Differential Calculus with Applications in\nStatistics and Econometrics. Wiley, February 2019.\n[10] P. Mestres, A. Allibhoy, and J. Cort´es.\nRegularity properties of\noptimization-based controllers. November 2023.\n[11] J. Nocedal and S. J. Wright. Numerical Optimization. Springer-Verlag\nNew York, first edition, 1999.\n[12] L. Ortmann, F. B¨ohm, F. Klein-Helmkamp, A. Ulbig, S. Bolognani,\nand F. D¨orfler. Tuning and testing an online feedback optimization\ncontroller to provide curative distribution grid flexibility.\nElectric\nPower Systems Research, 234:110660, 2024.\n[13] L. Ortmann, A. Hauswirth, I. Caduff, F. D¨orfler, and S. Bolognani.\nExperimental validation of feedback optimization in power distribution\ngrids. Electric Power Systems Research, 189:106782, 2020.\n[14] A. Rohatgi.\nWebplotdigitizer, v. 4.1, 2018.\nautomeris.io/\nWebPlotDigitizer, accessed: 8 Nov 2024.\n[15] S. Surjanovic and D. Bingham. Virtual library of simulation experi-\nments: Test functions and datasets. Retrieved November 8, 2024, from\nhttps://www.sfu.ca/˜ssurjano/stybtang.html.\n[16] M. Thombre, Z. J. Yu, J. J¨aschke, and L. T. Biegler. Sensitivity-assisted\nmultistage nonlinear model predictive control: Robustness, stability\nand computational efficiency. Computers & Chemical Engineering,\n148:107269, 2021.\n[17] P.J. Werbos. Backpropagation through time: what it does and how to\ndo it. Proceedings of the IEEE, 78(10):1550–1560, 1990.\n[18] M. Zagorowska, L. Ortmann, A. Rupenyan, M. Mercang¨oz, and\nL. Imsland.\nTuning of online feedback optimization for setpoint\ntracking in centrifugal compressors. IFAC-PapersOnLine, 58(14):881–\n886, 2024.",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.013845899957232177,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "F:\\vnpt\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1403
+  }
+}

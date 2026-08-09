@@ -1,0 +1,1666 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.04690_pg4",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "# 2 Methods\n\n## 2.1 Video Pre-processing\n\nAn unprocessed video of a plume that is recorded with ideal background conditions. 1 All frames are con- verted to gray scale, that is *n × d* arrays taking on values between 0 and 1 (or 0 to 255). Two main steps are used in pre-processing prior to applying our model: background subtraction and Gaussian blurring.\n\nBackground subtraction. A fixed background subtraction method is applied to isolate the plume, where the first *k*fixed subtractionframes of video (where no plumes are have formed) are used to create an average background image. The average image is subtracted against the remaining frames to create the isolated plume frames. Once the plume dynamics have been isolated from background across selected frames, Gaus- sian blurring is applied.\n\nGaussian Blurring. Two separately tuned Gaussian filters are applied—a temporal and spatial filter, respecitvely. First, a Gaussian filter is applied across the time series of frames to add a time blur, reducing the high resolution of the plume dynamics. Second, a Gaussian filter is applied to each frame independently to coarse grain the image, adding spatial blur.\n\n## 2.2 Coarse-graining for Centerline and Edge modeling\n\nWe denote the output of data pre-processing as *Z* = [*z*(*t₀*)*,..., z*(*tK*)], where background subtraction and Gaussian filters have been applied. We extract a time series of second-order polynomial coefficients that model the center path of the plume for each frame. Additionally, we learn the parameters of a growing sinusoidal function that best characterizes the spread, or edge-model, of the plume. We theorize there exists a connection between the Kevin Helmholtz shear velocity and the sinusoidal frequency.\n\nEach frame *z*(*ti*) is converted to a reduced order model describing the center and edge paths in a three step procedure: (i) contour detection, (ii) a concentric circle search, and (iii) regression. For each array, *z*(*ti*), image recognition techniques are used to identify the plume contour and subsequently search along concentric circles, centered at the leak source, to identify the path of highest density, where we denote raw pixel value as a proxy for plume density, and the edge paths, as seen in Fig. 2.\n\nFigure 2: The plume point reduction step converts a frame of video into a scatter of edge and center points:\n\n(a) the raw frame image, (b) background subtraction, (c) contour selection, and finally (d) Along various ranges from origin, identify the max intensity (center) and intersection (edge) points with contours. (e) displays the final points on the original frame.\n(i) Contour Detection. We apply a binary threshold to identify the contours outlining the plume for each array *z*(*ti*). Hyperpameter selection for the thresholding is done by using opencv’s Otsu’s binarization. Optimal global threshold selection is performed by inspecting the image histogram for each array *z*(*ti*). The *n* largest contours, by area, are then selected for remainder of the pipeline. We denote the identified plume at time *tk*as *ψk*. (ii) Concentric Circle Search. A search is performed along a set of *ℓ* concentric circles, centered at the plume leak source, with incrementally growing radii of *ri*= *r · i* for *i* = 1*,...,ℓ* where *r* is some fixed A solid black background is used when filming plume dynamics.\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.0853747635176687,
+        "x1": 0.13082117816202002,
+        "y1": 0.10348865239307137
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1571928784738179,
+        "y0": 0.0853747635176687,
+        "x1": 0.2580616770226971,
+        "y1": 0.10348865239307137
+      },
+      "text": "Methods",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.11846060704703287,
+        "x1": 0.14569880915623085,
+        "y1": 0.133555556788589
+      },
+      "text": "2.1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16767528010349647,
+        "y0": 0.11846060704703287,
+        "x1": 0.3713434506085963,
+        "y1": 0.133555556788589
+      },
+      "text": "Video Pre-processing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.14419492206188167,
+        "x1": 0.7266842212552339,
+        "y1": 0.15677396215573702
+      },
+      "text": "An unprocessed video of a plume that is recorded with ideal background conditions.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.727249993218316,
+        "y0": 0.14340427728614424,
+        "x1": 0.7337337818021089,
+        "y1": 0.15220958054667777
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7441519444284875,
+        "y0": 0.14419492206188167,
+        "x1": 0.8822446336933211,
+        "y1": 0.15677396215573702
+      },
+      "text": "All frames are con-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.15929087364312378,
+        "x1": 0.31587348888122957,
+        "y1": 0.17186991373697913
+      },
+      "text": "verted to gray scale, that is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3220326791401782,
+        "y0": 0.15929087364312378,
+        "x1": 0.3608783647125843,
+        "y1": 0.17186991373697913
+      },
+      "text": "n × d",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36684642118566174,
+        "y0": 0.15929087364312378,
+        "x1": 0.7593761269563164,
+        "y1": 0.17186991373697913
+      },
+      "text": "arrays taking on values between 0 and 1 (or 0 to 255).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7682155035679636,
+        "y0": 0.15929087364312378,
+        "x1": 0.8819714714499081,
+        "y1": 0.17186991373697913
+      },
+      "text": "Two main steps",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764708375619128,
+        "y0": 0.1743855921909062,
+        "x1": 0.853756399715648,
+        "y1": 0.18696463228476168
+      },
+      "text": "are used in pre-processing prior to applying our model: background subtraction and Gaussian blurring.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764708375619128,
+        "y0": 0.20457495222188005,
+        "x1": 0.8818343667423024,
+        "y1": 0.2171539923157355
+      },
+      "text": "Background subtraction. A fixed background subtraction method is applied to isolate the plume, where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764708375619128,
+        "y0": 0.2196696707696626,
+        "x1": 0.1745738983154297,
+        "y1": 0.23224871086351795
+      },
+      "text": "the first",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18087747361924914,
+        "y0": 0.2196696707696626,
+        "x1": 0.18934242398131126,
+        "y1": 0.23224871086351795
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18935132494159773,
+        "y0": 0.22533102770044344,
+        "x1": 0.28560613495072507,
+        "y1": 0.23413633096097697
+      },
+      "text": "fixed subtraction",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29268955405241526,
+        "y0": 0.2196696707696626,
+        "x1": 0.8818830103656046,
+        "y1": 0.23224871086351795
+      },
+      "text": "frames of video (where no plumes are have formed) are used to create an average",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764707128986035,
+        "y0": 0.23476438931744503,
+        "x1": 0.2530049342735141,
+        "y1": 0.2473434294113005
+      },
+      "text": "background image.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26493725745506536,
+        "y0": 0.23476438931744503,
+        "x1": 0.881723042407067,
+        "y1": 0.2473434294113005
+      },
+      "text": "The average image is subtracted against the remaining frames to create the isolated",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764707128986035,
+        "y0": 0.24986034089868714,
+        "x1": 0.8816742865867864,
+        "y1": 0.2624393809925426
+      },
+      "text": "plume frames. Once the plume dynamics have been isolated from background across selected frames, Gaus-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764707128986035,
+        "y0": 0.2649550594464697,
+        "x1": 0.2859368916430505,
+        "y1": 0.27753409954032515
+      },
+      "text": "sian blurring is applied.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764707128986035,
+        "y0": 0.2951444194774435,
+        "x1": 0.19127590204376022,
+        "y1": 0.3077234595712989
+      },
+      "text": "Gaussian",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19975712096769047,
+        "y0": 0.2951444194774435,
+        "x1": 0.27418360990636487,
+        "y1": 0.3077234595712989
+      },
+      "text": "Blurring.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28737909653607535,
+        "y0": 0.2951444194774435,
+        "x1": 0.8818142959494996,
+        "y1": 0.3077234595712989
+      },
+      "text": "Two separately tuned Gaussian filters are applied—a temporal and spatial filter,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764707128986035,
+        "y0": 0.31023913802522607,
+        "x1": 0.8815605936486737,
+        "y1": 0.3228181781190814
+      },
+      "text": "respecitvely. First, a Gaussian filter is applied across the time series of frames to add a time blur, reducing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764707128986035,
+        "y0": 0.3253338565730085,
+        "x1": 0.8815928066478056,
+        "y1": 0.33791289666686397
+      },
+      "text": "the high resolution of the plume dynamics. Second, a Gaussian filter is applied to each frame independently",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764707128986035,
+        "y0": 0.3404298081542506,
+        "x1": 0.4468524533938738,
+        "y1": 0.3530088482481061
+      },
+      "text": "to coarse grain the image, adding spatial blur.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764707128986035,
+        "y0": 0.3730729998964252,
+        "x1": 0.14569882162256179,
+        "y1": 0.3881679496379814
+      },
+      "text": "2.2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1676752925698274,
+        "y0": 0.3730729998964252,
+        "x1": 0.6512553395788654,
+        "y1": 0.3881679496379814
+      },
+      "text": "Coarse-graining for Centerline and Edge modeling",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764707128986035,
+        "y0": 0.39880735344356966,
+        "x1": 0.45891497493569366,
+        "y1": 0.411386393537425
+      },
+      "text": "We denote the output of data pre-processing as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4650588191412633,
+        "y0": 0.39880735344356966,
+        "x1": 0.4776260276245915,
+        "y1": 0.411386393537425
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4840000127655229,
+        "y0": 0.39880735344356966,
+        "x1": 0.5063833099564695,
+        "y1": 0.411386393537425
+      },
+      "text": "= [",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5064101375006382,
+        "y0": 0.39880735344356966,
+        "x1": 0.5154448365853503,
+        "y1": 0.411386393537425
+      },
+      "text": "z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.51613237966899,
+        "y0": 0.39880735344356966,
+        "x1": 0.5224485210343903,
+        "y1": 0.411386393537425
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.522462433459712,
+        "y0": 0.39880735344356966,
+        "x1": 0.5348252938463797,
+        "y1": 0.411386393537425
+      },
+      "text": "t₀",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.535643783270144,
+        "y0": 0.39880735344356966,
+        "x1": 0.5419599246355443,
+        "y1": 0.411386393537425
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.541973837060866,
+        "y0": 0.39880735344356966,
+        "x1": 0.5871833851134854,
+        "y1": 0.411386393537425
+      },
+      "text": ",..., z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5878709281971252,
+        "y0": 0.39880735344356966,
+        "x1": 0.5941870695625255,
+        "y1": 0.411386393537425
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5942026275435305,
+        "y0": 0.39880735344356966,
+        "x1": 0.6000792559455422,
+        "y1": 0.411386393537425
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.600080053790722,
+        "y0": 0.4044687103743505,
+        "x1": 0.6110079397563062,
+        "y1": 0.41327401363488403
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6126307069865706,
+        "y0": 0.39880735344356966,
+        "x1": 0.8820930431091708,
+        "y1": 0.411386393537425
+      },
+      "text": ")], where background subtraction and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.41390330502481176,
+        "x1": 0.3702445684694776,
+        "y1": 0.4264823451186671
+      },
+      "text": "Gaussian filters have been applied.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3816396925184462,
+        "y0": 0.41390330502481176,
+        "x1": 0.8816416871313956,
+        "y1": 0.4264823451186671
+      },
+      "text": "We extract a time series of second-order polynomial coefficients that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.4289979850402986,
+        "x1": 0.4963398353726256,
+        "y1": 0.4415770251341541
+      },
+      "text": "model the center path of the plume for each frame.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.508386150684232,
+        "y0": 0.4289979850402986,
+        "x1": 0.8817068860421773,
+        "y1": 0.4415770251341541
+      },
+      "text": "Additionally, we learn the parameters of a growing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.4440926650557855,
+        "x1": 0.8815603817210478,
+        "y1": 0.45667170514964095
+      },
+      "text": "sinusoidal function that best characterizes the spread, or edge-model, of the plume. We theorize there exists",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.45918734507127246,
+        "x1": 0.7373305177376941,
+        "y1": 0.4717663851651278
+      },
+      "text": "a connection between the Kevin Helmholtz shear velocity and the sinusoidal frequency.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.48913052226557874,
+        "x1": 0.19995245590708613,
+        "y1": 0.5017095623594342
+      },
+      "text": "Each frame",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2070359498067619,
+        "y0": 0.48913052226557874,
+        "x1": 0.21607066135780484,
+        "y1": 0.5017095623594342
+      },
+      "text": "z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21675817950878268,
+        "y0": 0.48913052226557874,
+        "x1": 0.22307434580684488,
+        "y1": 0.5017095623594342
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2230898788551879,
+        "y0": 0.48913052226557874,
+        "x1": 0.22896650725719975,
+        "y1": 0.5017095623594342
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22896733003504136,
+        "y0": 0.4947918791963597,
+        "x1": 0.23357094658745658,
+        "y1": 0.5035971824568932
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23438726686963848,
+        "y0": 0.48913052226557874,
+        "x1": 0.8817609400531046,
+        "y1": 0.5017095623594342
+      },
+      "text": ") is converted to a reduced order model describing the center and edge paths in a three",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764707128986035,
+        "y0": 0.5042264738468208,
+        "x1": 0.22806588964524613,
+        "y1": 0.5168055139406763
+      },
+      "text": "step procedure:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2380773257585912,
+        "y0": 0.5042264738468208,
+        "x1": 0.7612766689724393,
+        "y1": 0.5168055139406763
+      },
+      "text": "(i) contour detection, (ii) a concentric circle search, and (iii) regression.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7726717182234222,
+        "y0": 0.5042264738468208,
+        "x1": 0.881527769799326,
+        "y1": 0.5168055139406763
+      },
+      "text": "For each array,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764707128986035,
+        "y0": 0.5193211538623077,
+        "x1": 0.12668178284090328,
+        "y1": 0.5319001939561632
+      },
+      "text": "z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12736928852555018,
+        "y0": 0.5193211538623077,
+        "x1": 0.13368544235728144,
+        "y1": 0.5319001939561632
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13369935478260314,
+        "y0": 0.5193211538623077,
+        "x1": 0.139575983184615,
+        "y1": 0.5319001939561632
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13957843905180886,
+        "y0": 0.5249812392273334,
+        "x1": 0.14418205560422412,
+        "y1": 0.5337865424878669
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.144998375886406,
+        "y0": 0.5193211538623077,
+        "x1": 0.881628485286937,
+        "y1": 0.5319001939561632
+      },
+      "text": "), image recognition techniques are used to identify the plume contour and subsequently search along",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764707128986035,
+        "y0": 0.5344158338777947,
+        "x1": 0.8815604939180262,
+        "y1": 0.5469948739716501
+      },
+      "text": "concentric circles, centered at the leak source, to identify the path of highest density, where we denote raw",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764707128986035,
+        "y0": 0.5495105138932816,
+        "x1": 0.6785967583749809,
+        "y1": 0.562089553987137
+      },
+      "text": "pixel value as a proxy for plume density, and the edge paths, as seen in Fig. 2.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.5795078470249369,
+        "x1": 0.8823411729600694,
+        "y1": 0.6736717224121094
+      },
+      "text": "[Image: Im5]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.6842378763237384,
+        "x1": 0.881625306372549,
+        "y1": 0.6968169164175939
+      },
+      "text": "Figure 2: The plume point reduction step converts a frame of video into a scatter of edge and center points:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.6993325756053732,
+        "x1": 0.8816256055644914,
+        "y1": 0.7119116156992287
+      },
+      "text": "(a) the raw frame image, (b) background subtraction, (c) contour selection, and finally (d) Along various",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.714427274887008,
+        "x1": 0.8493772020526961,
+        "y1": 0.7270063149808633
+      },
+      "text": "ranges from origin, identify the max intensity (center) and intersection (edge) points with contours.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8616676081239788,
+        "y0": 0.714427274887008,
+        "x1": 0.8815276700686785,
+        "y1": 0.7270063149808633
+      },
+      "text": "(e)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.7295232264682501,
+        "x1": 0.4464128780988307,
+        "y1": 0.7421022665621054
+      },
+      "text": "displays the final points on the original frame.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1307598064148348,
+        "y0": 0.7739424091396909,
+        "x1": 0.14790133557288476,
+        "y1": 0.7865214492335464
+      },
+      "text": "(i)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15608333762175117,
+        "y0": 0.7739424091396909,
+        "x1": 0.22354250639871834,
+        "y1": 0.7865214492335464
+      },
+      "text": "Contour",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23270745370902268,
+        "y0": 0.7739424091396909,
+        "x1": 0.31721047794117646,
+        "y1": 0.7865214492335464
+      },
+      "text": "Detection.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33219770045062297,
+        "y0": 0.7739424091396909,
+        "x1": 0.8818012312346813,
+        "y1": 0.7865214492335464
+      },
+      "text": "We apply a binary threshold to identify the contours outlining the plume",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15608332515542023,
+        "y0": 0.789038360720933,
+        "x1": 0.2576302173090916,
+        "y1": 0.8016174008147885
+      },
+      "text": "for each array",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26459966921338846,
+        "y0": 0.789038360720933,
+        "x1": 0.2736343682981005,
+        "y1": 0.8016174008147885
+      },
+      "text": "z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27432188644907834,
+        "y0": 0.789038360720933,
+        "x1": 0.28063805274714054,
+        "y1": 0.8016174008147885
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28065358579548355,
+        "y0": 0.789038360720933,
+        "x1": 0.2865302141974954,
+        "y1": 0.8016174008147885
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.286531036975337,
+        "y0": 0.7946984653521065,
+        "x1": 0.29113465352775225,
+        "y1": 0.8035037686126401
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2919509738099341,
+        "y0": 0.789038360720933,
+        "x1": 0.3027763366699219,
+        "y1": 0.8016174008147885
+      },
+      "text": ").",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3143831140854779,
+        "y0": 0.789038360720933,
+        "x1": 0.8822694666245404,
+        "y1": 0.8016174008147885
+      },
+      "text": "Hyperpameter selection for the thresholding is done by using opencv’s Otsu’s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15608330022275838,
+        "y0": 0.8041330600025678,
+        "x1": 0.24555136487374898,
+        "y1": 0.8167121000964233
+      },
+      "text": "binarization.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25593721477034825,
+        "y0": 0.8041330600025678,
+        "x1": 0.8816438562729779,
+        "y1": 0.8167121000964233
+      },
+      "text": "Optimal global threshold selection is performed by inspecting the image histogram for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15608330022275838,
+        "y0": 0.8192277592842026,
+        "x1": 0.23002140818078534,
+        "y1": 0.8318067993780579
+      },
+      "text": "each array",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.235707476248149,
+        "y0": 0.8192277592842026,
+        "x1": 0.24474217533286102,
+        "y1": 0.8318067993780579
+      },
+      "text": "z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24542969348383883,
+        "y0": 0.8192277592842026,
+        "x1": 0.25174585978190106,
+        "y1": 0.8318067993780579
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25175974727456085,
+        "y0": 0.8192277592842026,
+        "x1": 0.2576363756765727,
+        "y1": 0.8318067993780579
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2576388440100975,
+        "y0": 0.824887863915376,
+        "x1": 0.26224246056251277,
+        "y1": 0.8336931671759095
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26305878084469464,
+        "y0": 0.8192277592842026,
+        "x1": 0.3097299812665952,
+        "y1": 0.8318067993780579
+      },
+      "text": "). The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31540844487208947,
+        "y0": 0.8192277592842026,
+        "x1": 0.3251756904951108,
+        "y1": 0.8318067993780579
+      },
+      "text": "n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3308071311003242,
+        "y0": 0.8192277592842026,
+        "x1": 0.8817942251566968,
+        "y1": 0.8318067993780579
+      },
+      "text": "largest contours, by area, are then selected for remainder of the pipeline. We",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1560832752900965,
+        "y0": 0.8343224585658372,
+        "x1": 0.4076877668792126,
+        "y1": 0.8469014986596927
+      },
+      "text": "denote the identified plume at time",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4133790209402446,
+        "y0": 0.8343224585658372,
+        "x1": 0.4192556742749183,
+        "y1": 0.8469014986596927
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41925811767578125,
+        "y0": 0.839983825129692,
+        "x1": 0.42617493673087725,
+        "y1": 0.8487891283902255
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4326943790211397,
+        "y0": 0.8343224585658372,
+        "x1": 0.44724757375280844,
+        "y1": 0.8469014986596927
+      },
+      "text": "as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4526812983494179,
+        "y0": 0.8343224585658372,
+        "x1": 0.4650205724379596,
+        "y1": 0.8469014986596927
+      },
+      "text": "ψ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46562738356247446,
+        "y0": 0.8411706872660705,
+        "x1": 0.47254420261757046,
+        "y1": 0.849975990526604
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4736372006484886,
+        "y0": 0.8343224585658372,
+        "x1": 0.47814642214307596,
+        "y1": 0.8469014986596927
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1262385050455729,
+        "y0": 0.8593578158002911,
+        "x1": 0.14788925569821026,
+        "y1": 0.8719368558941465
+      },
+      "text": "(ii)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1560832752900965,
+        "y0": 0.8593578158002911,
+        "x1": 0.627301908006855,
+        "y1": 0.8719368558941465
+      },
+      "text": "Concentric Circle Search. A search is performed along a set of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6327662748448989,
+        "y0": 0.8593578158002911,
+        "x1": 0.6395382351345487,
+        "y1": 0.8719368558941465
+      },
+      "text": "ℓ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6448299931544884,
+        "y0": 0.8593578158002911,
+        "x1": 0.8820766872829862,
+        "y1": 0.8719368558941465
+      },
+      "text": "concentric circles, centered at the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15608325035743464,
+        "y0": 0.8744525150819258,
+        "x1": 0.5459432664260365,
+        "y1": 0.8870315551757812
+      },
+      "text": "plume leak source, with incrementally growing radii of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5520995894288705,
+        "y0": 0.8744525150819258,
+        "x1": 0.559441310907501,
+        "y1": 0.8870315551757812
+      },
+      "text": "r",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5594443526922488,
+        "y0": 0.8801126197130993,
+        "x1": 0.564047969244664,
+        "y1": 0.8889179229736328
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5699508766722835,
+        "y0": 0.8744525150819258,
+        "x1": 0.582599465363945,
+        "y1": 0.8870315551757812
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.587697596331827,
+        "y0": 0.8744525150819258,
+        "x1": 0.6133023430319393,
+        "y1": 0.8870315551757812
+      },
+      "text": "r · i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6190750022339665,
+        "y0": 0.8744525150819258,
+        "x1": 0.6385444192325368,
+        "y1": 0.8870315551757812
+      },
+      "text": "for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6443282482670802,
+        "y0": 0.8744525150819258,
+        "x1": 0.6499281241223703,
+        "y1": 0.8870315551757812
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6550227146522671,
+        "y0": 0.8744525150819258,
+        "x1": 0.6808896532245711,
+        "y1": 0.8870315551757812
+      },
+      "text": "= 1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6809099484113307,
+        "y0": 0.8744525150819258,
+        "x1": 0.7237881928487541,
+        "y1": 0.8870315551757812
+      },
+      "text": ",...,ℓ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7296321594637204,
+        "y0": 0.8744525150819258,
+        "x1": 0.7712406831629136,
+        "y1": 0.8870315551757812
+      },
+      "text": "where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7770439098083896,
+        "y0": 0.8744525150819258,
+        "x1": 0.78438563128702,
+        "y1": 0.8870315551757812
+      },
+      "text": "r",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7906043856751686,
+        "y0": 0.8744525150819258,
+        "x1": 0.8822700650084252,
+        "y1": 0.8870315551757812
+      },
+      "text": "is some fixed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1357712465174058,
+        "y0": 0.897991662073617,
+        "x1": 0.1417390785965265,
+        "y1": 0.9055391369443951
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14255392785165824,
+        "y0": 0.8990276516085923,
+        "x1": 0.5301195905099507,
+        "y1": 0.9090909090909091
+      },
+      "text": "A solid black background is used when filming plume dynamics.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49592974295024,
+        "y0": 0.9342492433509442,
+        "x1": 0.5040691101473141,
+        "y1": 0.9468282834447995
+      },
+      "text": "4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.027595699997618794,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

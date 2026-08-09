@@ -1,0 +1,3718 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.05941_pg1",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "## Choosing Augmentation Parameters in OSQP- A New Approach based on Conjugate Directions\n\n### Avinash Kumar (Email: avishimpu@gmail.com)\n\n**Abstract— This work proposes a new method to select the augmentation parameters in the operator splitting quadratic**\n\n**program (OSQP) algorithm so as to reduce the computation time of overall algorithm. The selection is based upon the**\n\n**information of conjugate directions of the coefficient matrix of a linear system of equations present in the algorithm. This**\n\n**selection makes it possible to cache these conjugate directions, instead of computing them at each iteration, resulting in faster**\n\n**computation of the solution of the linear system thus reducing the overall computation time. This reduction is demonstrated**\n\n**by a numerical example.** **Notation**:Throughout this manuscript, scalars and scalar- valued functions are denoted by small ordinary alphabets, vectors are denoted by bold ordinary alphabets, and matrices are denoted by capital alphabets. X ≻ 0 means that the matrix X is symmetric positive definite. diag(•) represents a diagonal matrix. A ‘T ’ in the superscript represents the transpose. ‘ k ’ in the superscript of a quantity denotes the value of the quantity at the k th iteration.\n\nI. INTRODUCTION\nThe analysis of convex optimization problems is of great importance in applied mathematics. Convex optimization problems arise in numerous fields including-machine learn- ing, control engineering (model predictive control), Lasso and Hubber fitting and so on [1]. With the advent of big data and consequently higher dimensional data availability, the size of the convex optimization problems that are required to be solved continues to grow in size. Therefore, to handle real-time optimization-based tasks, it becomes necessary to develop algorithms that can work efficiently and effectively with the high-dimensional data. Furthermore, study of the solution algorithms for convex optimization problems turns out fruitful for the analysis of non-convex problems. In this work, we consider the convex optimization problem, called quadratic program, of the form as stated below. () 1T T minimize x P x + q x 2 (1) subject to l ≤ Ax ≤ u\n\nwhere x ∈ R n is the decision variable, P ∈ R n×n is a positive semi-definite matrix, q ∈ R n, A ∈ R m×n, and l ∈ R m and u ∈ R m define the lower and upper limits on the variable Ax. This formulation allows handling equality constraints by setting li= ui. There exist a plethora of algorithms to solve the optimization problem and can\n\nAcknowledgement: The author is thankful to Prof. Hoai Nam Nguyen (T´el´ecom SudParis) for the fruitful discussions while working at T´el´ecom SudParis, Institut Polytechnique de Paris.\n\nbe broadly classified into three categories: (1) active-set methods [2], [3], (2) interior-point methods [4], and (3) first- order methods [5]. The major drawback of active set methods is that their worst-case complexity grows exponentially with the number of constraints [6] while the interior point methods are not scalable for very large scale problems because each iteration requires heavy computational tasks to be performed [7]. In recent years, the alternating direction method of multi- pliers (ADMM), which is an operator splitting based first- order method, has received a lot of attention by the re- searchers. This is because this method seems to be very well suited for the large scale problems because of the decomposability (inherited from the dual ascent algorithm) and superior convergence properties (inherited from the method of multipliers) [8]. Moreover, the steps involved in the ADMM algorithm are computationally cheap and simple to implement [1]. However, the optimal selection of the parameters, inherited from the augmented Lagrangian, involved in the ADMM algorithm is still an open problem [8]. Operator Splitting Quadratic Program (OSQP), proposed in [1], is one of the most popular general-purpose solvers for the convex quadratic programs. The algorithm is based on a novel splitting technique and subsequent usage of the auxiliary variables leading to a quasi-definite linear system which is always solvable. One of the most computationally expensive step in the OSQP algorithm involves the solution of a linear system-a common trait of the algorithms derived from ADMM. It is this linear system which we propose to solve in a more efficient manner. To do so we use the information about the conjugate directions of the coefficient\n\ngrave importance in the study of convex optimization. To the best of author’s knowledge, this line of research, where the in- formation of the conjugate directions is exploited to improve the characteristics of the algorithm, remains unexplored in the literature and the author believes that it holds promise. The information about the conjugate directions allows us to compute offline a set of parameters and cache them thus avoiding their computation at each iteration of the algorithm leading to reduction in the computation time of the overall algorithm which is demonstrated by a numerical example. The rest of the paper is organised as follows. Section II presents a review of the OSQP solver as reported in [1] followed by the background of conjugate direction and conjugate gradient methods. In Section III, we present the method to choose augmentation parameters by utilising the information of the conjugate directions of a specific coef-\n\nmatrix. The information about the conjugate directions is of\n\n# arXiv:2503.05941v1 [math.OC] 7 Mar 2025\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25411765403996883,
+        "y0": 0.08714624005134664,
+        "x1": 0.7503921159731797,
+        "y1": 0.1072727550159801
+      },
+      "text": "Choosing Augmentation Parameters in OSQP-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23686308019301472,
+        "y0": 0.11229765656018498,
+        "x1": 0.7621571659262664,
+        "y1": 0.13242417152481845
+      },
+      "text": "A New Approach based on Conjugate Directions",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3233334909077563,
+        "y0": 0.15813248566906857,
+        "x1": 0.676863028333078,
+        "y1": 0.1719694811888416
+      },
+      "text": "Avinash Kumar (Email: avishimpu@gmail.com)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10450996448791106,
+        "y0": 0.20292115091073393,
+        "x1": 0.48823677013122957,
+        "y1": 0.21424233793008207
+      },
+      "text": "Abstract— This work proposes a new method to select the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117668201720792,
+        "y0": 0.2016631701979974,
+        "x1": 0.527229907465916,
+        "y1": 0.2142422608654908
+      },
+      "text": "be",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5362766240936478,
+        "y0": 0.2016631701979974,
+        "x1": 0.5863768135020936,
+        "y1": 0.2142422608654908
+      },
+      "text": "broadly",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5951001535054126,
+        "y0": 0.2016631701979974,
+        "x1": 0.6555925257065717,
+        "y1": 0.2142422608654908
+      },
+      "text": "classified",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6647080066157323,
+        "y0": 0.2016631701979974,
+        "x1": 0.6901023715150123,
+        "y1": 0.2142422608654908
+      },
+      "text": "into",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6992177526935254,
+        "y0": 0.2016631701979974,
+        "x1": 0.7319357878242443,
+        "y1": 0.2142422608654908
+      },
+      "text": "three",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7407861846724367,
+        "y0": 0.2016631701979974,
+        "x1": 0.81137478896995,
+        "y1": 0.2142422608654908
+      },
+      "text": "categories:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8201982086780024,
+        "y0": 0.2016631701979974,
+        "x1": 0.8409824745327819,
+        "y1": 0.2142422608654908
+      },
+      "text": "(1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8500018150977839,
+        "y0": 0.2016631701979974,
+        "x1": 0.9119627709482231,
+        "y1": 0.2142422608654908
+      },
+      "text": "active-set",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823512582217946,
+        "y0": 0.21549662797137947,
+        "x1": 0.17442032558466095,
+        "y1": 0.22681781499072762
+      },
+      "text": "augmentation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18176434086818322,
+        "y0": 0.21549662797137947,
+        "x1": 0.253149867836946,
+        "y1": 0.22681781499072762
+      },
+      "text": "parameters",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2605876797944113,
+        "y0": 0.21549662797137947,
+        "x1": 0.36121036803800294,
+        "y1": 0.22681781499072762
+      },
+      "text": "in the operator",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.368626887502234,
+        "y0": 0.21549662797137947,
+        "x1": 0.48843124489379086,
+        "y1": 0.22681781499072762
+      },
+      "text": "splitting quadratic",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117665209801369,
+        "y0": 0.2166633304923472,
+        "x1": 0.9145116868361928,
+        "y1": 0.22924242115984061
+      },
+      "text": "methods [2], [3], (2) interior-point methods [4], and (3) first-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823514452167586,
+        "y0": 0.22807256741957227,
+        "x1": 0.4882344763263378,
+        "y1": 0.23939375443892041
+      },
+      "text": "program (OSQP) algorithm so as to reduce the computation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117666207107843,
+        "y0": 0.23181484564386234,
+        "x1": 0.9121594397850286,
+        "y1": 0.24439393631135575
+      },
+      "text": "order methods [5]. The major drawback of active set methods",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823514452167586,
+        "y0": 0.24064850686776518,
+        "x1": 0.1159166572919858,
+        "y1": 0.2519696938871133
+      },
+      "text": "time",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12450967427172692,
+        "y0": 0.24064850686776518,
+        "x1": 0.13664335363051472,
+        "y1": 0.2519696938871133
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14509791953890933,
+        "y0": 0.24064850686776518,
+        "x1": 0.1876019995196972,
+        "y1": 0.2519696938871133
+      },
+      "text": "overall",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1964702356874553,
+        "y0": 0.24064850686776518,
+        "x1": 0.26189769171421823,
+        "y1": 0.2519696938871133
+      },
+      "text": "algorithm.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2705881704691968,
+        "y0": 0.24064850686776518,
+        "x1": 0.2951324313294654,
+        "y1": 0.2519696938871133
+      },
+      "text": "The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30352962718290444,
+        "y0": 0.24064850686776518,
+        "x1": 0.3571658414952895,
+        "y1": 0.2519696938871133
+      },
+      "text": "selection",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3656863542943219,
+        "y0": 0.24064850686776518,
+        "x1": 0.37550321591445823,
+        "y1": 0.2519696938871133
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38411787444469975,
+        "y0": 0.24064850686776518,
+        "x1": 0.4199109046287786,
+        "y1": 0.2519696938871133
+      },
+      "text": "based",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4284314922257966,
+        "y0": 0.24064850686776518,
+        "x1": 0.4603029138901654,
+        "y1": 0.2519696938871133
+      },
+      "text": "upon",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4686276304955576,
+        "y0": 0.24064850686776518,
+        "x1": 0.4882354736328125,
+        "y1": 0.2519696938871133
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823514452167586,
+        "y0": 0.2532244463159581,
+        "x1": 0.16265550002553106,
+        "y1": 0.26454563333530623
+      },
+      "text": "information",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17039220473345587,
+        "y0": 0.2532244463159581,
+        "x1": 0.18252587162591274,
+        "y1": 0.26454563333530623
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1901959936603222,
+        "y0": 0.2532244463159581,
+        "x1": 0.25121082979090076,
+        "y1": 0.26454563333530623
+      },
+      "text": "conjugate",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2588234695733762,
+        "y0": 0.2532244463159581,
+        "x1": 0.32060112049377043,
+        "y1": 0.26454563333530623
+      },
+      "text": "directions",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3282354267594082,
+        "y0": 0.2532244463159581,
+        "x1": 0.340369106118196,
+        "y1": 0.26454563333530623
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34803926555159825,
+        "y0": 0.2532244463159581,
+        "x1": 0.3676815656275531,
+        "y1": 0.26454563333530623
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3750983842837265,
+        "y0": 0.2532244463159581,
+        "x1": 0.4386047163819955,
+        "y1": 0.26454563333530623
+      },
+      "text": "coefficient",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4462752498053258,
+        "y0": 0.2532244463159581,
+        "x1": 0.48843124489379086,
+        "y1": 0.26454563333530623
+      },
+      "text": "matrix",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117666207107843,
+        "y0": 0.24681446648607352,
+        "x1": 0.9117666007646548,
+        "y1": 0.25939355715356693
+      },
+      "text": "is that their worst-case complexity grows exponentially with",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823511958901399,
+        "y0": 0.2658003857641509,
+        "x1": 0.48842959933810765,
+        "y1": 0.277121572783499
+      },
+      "text": "of a linear system of equations present in the algorithm. This",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117666207107843,
+        "y0": 0.26196598163758866,
+        "x1": 0.9121588414011438,
+        "y1": 0.27454507230508207
+      },
+      "text": "the number of constraints [6] while the interior point methods",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823514452167586,
+        "y0": 0.2783758628247964,
+        "x1": 0.4903918496923509,
+        "y1": 0.28969704984414457
+      },
+      "text": "selection makes it possible to cache these conjugate directions,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511766670576108,
+        "y0": 0.2771174967891038,
+        "x1": 0.9119624717562806,
+        "y1": 0.2896965874565972
+      },
+      "text": "are not scalable for very large scale problems because each",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823496999304278,
+        "y0": 0.29095180227298933,
+        "x1": 0.4884294497421364,
+        "y1": 0.3022729892923375
+      },
+      "text": "instead of computing them at each iteration, resulting in faster",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511766670576108,
+        "y0": 0.292117117631315,
+        "x1": 0.912355011584712,
+        "y1": 0.3046962082988084
+      },
+      "text": "iteration requires heavy computational tasks to be performed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823496999304278,
+        "y0": 0.30352727933363477,
+        "x1": 0.48843109529781964,
+        "y1": 0.3148484663529829
+      },
+      "text": "computation of the solution of the linear system thus reducing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117667204414318,
+        "y0": 0.3072686327828301,
+        "x1": 0.5349041309232027,
+        "y1": 0.31984772345032353
+      },
+      "text": "[7].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823499492570466,
+        "y0": 0.3161032187818277,
+        "x1": 0.4882349749795752,
+        "y1": 0.3274244058011758
+      },
+      "text": "the overall computation time. This reduction is demonstrated",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823496999304278,
+        "y0": 0.3286791582300206,
+        "x1": 0.24666590472452002,
+        "y1": 0.34000034524936873
+      },
+      "text": "by a numerical example.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5280415154750051,
+        "y0": 0.32242014793434526,
+        "x1": 0.9146401399101307,
+        "y1": 0.33499923860183867
+      },
+      "text": "In recent years, the alternating direction method of multi-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10450974009395425,
+        "y0": 0.3427241631228515,
+        "x1": 0.1654901442184947,
+        "y1": 0.3553032537903449
+      },
+      "text": "Notation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16548996968986163,
+        "y0": 0.3427241631228515,
+        "x1": 0.49098001118578943,
+        "y1": 0.3553032537903449
+      },
+      "text": ":Throughout this manuscript, scalars and scalar-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117667204414318,
+        "y0": 0.33742030822869507,
+        "x1": 0.9145118862974877,
+        "y1": 0.3499993988961885
+      },
+      "text": "pliers (ADMM), which is an operator splitting based first-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08784307218065449,
+        "y0": 0.3578756782743666,
+        "x1": 0.490588512295991,
+        "y1": 0.37045476894186
+      },
+      "text": "valued functions are denoted by small ordinary alphabets,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117667204414318,
+        "y0": 0.3525718233802102,
+        "x1": 0.5464032740374796,
+        "y1": 0.3651509140477036
+      },
+      "text": "order",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5550999360926011,
+        "y0": 0.3525718233802102,
+        "x1": 0.608385322919858,
+        "y1": 0.3651509140477036
+      },
+      "text": "method,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6170606426164216,
+        "y0": 0.3525718233802102,
+        "x1": 0.6388833039726307,
+        "y1": 0.3651509140477036
+      },
+      "text": "has",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6476487303091809,
+        "y0": 0.3525718233802102,
+        "x1": 0.7024547601836959,
+        "y1": 0.3651509140477036
+      },
+      "text": "received",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7111783993789573,
+        "y0": 0.3525718233802102,
+        "x1": 0.7184062284581801,
+        "y1": 0.3651509140477036
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7274531944125306,
+        "y0": 0.3525718233802102,
+        "x1": 0.7447237999610652,
+        "y1": 0.3651509140477036
+      },
+      "text": "lot",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7537278318716809,
+        "y0": 0.3525718233802102,
+        "x1": 0.7673839992947049,
+        "y1": 0.3651509140477036
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7762768315333947,
+        "y0": 0.3525718233802102,
+        "x1": 0.8334359063042535,
+        "y1": 0.3651509140477036
+      },
+      "text": "attention",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8421591964422488,
+        "y0": 0.3525718233802102,
+        "x1": 0.8585338717192607,
+        "y1": 0.3651509140477036
+      },
+      "text": "by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8674534816367954,
+        "y0": 0.3525718233802102,
+        "x1": 0.887426438674428,
+        "y1": 0.3651509140477036
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8964734046287786,
+        "y0": 0.3525718233802102,
+        "x1": 0.9147087545955882,
+        "y1": 0.3651509140477036
+      },
+      "text": "re-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08784307218065449,
+        "y0": 0.37287580003642073,
+        "x1": 0.48843128852594914,
+        "y1": 0.38545489070391414
+      },
+      "text": "vectors are denoted by bold ordinary alphabets, and matrices",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117667204414318,
+        "y0": 0.36772333853172534,
+        "x1": 0.5766207626442504,
+        "y1": 0.38030242919921875
+      },
+      "text": "searchers.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5849042406269148,
+        "y0": 0.36772333853172534,
+        "x1": 0.6139818079331342,
+        "y1": 0.38030242919921875
+      },
+      "text": "This",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6221591725068933,
+        "y0": 0.36772333853172534,
+        "x1": 0.6330014895769506,
+        "y1": 0.38030242919921875
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6413751240649255,
+        "y0": 0.36772333853172534,
+        "x1": 0.6931126912434896,
+        "y1": 0.38030242919921875
+      },
+      "text": "because",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7013750263288909,
+        "y0": 0.36772333853172534,
+        "x1": 0.7249624214920343,
+        "y1": 0.38030242919921875
+      },
+      "text": "this",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7333360061146854,
+        "y0": 0.36772333853172534,
+        "x1": 0.830452763177211,
+        "y1": 0.38030242919921875
+      },
+      "text": "method seems",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.838825998742596,
+        "y0": 0.36772333853172534,
+        "x1": 0.8514752356834661,
+        "y1": 0.38030242919921875
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8598061355890012,
+        "y0": 0.36772333853172534,
+        "x1": 0.8752692727481618,
+        "y1": 0.38030242919921875
+      },
+      "text": "be",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8837275286905126,
+        "y0": 0.36772333853172534,
+        "x1": 0.9127470527599061,
+        "y1": 0.38030242919921875
+      },
+      "text": "very",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823521931966145,
+        "y0": 0.3880273151879359,
+        "x1": 0.3380391488667407,
+        "y1": 0.4006064058554293
+      },
+      "text": "are denoted by capital alphabets. X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3478432449640012,
+        "y0": 0.3880273151879359,
+        "x1": 0.36058834798974926,
+        "y1": 0.4006064058554293
+      },
+      "text": "≻",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3692159465714997,
+        "y0": 0.3880273151879359,
+        "x1": 0.48843224220026554,
+        "y1": 0.4006064058554293
+      },
+      "text": "0 means that the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5111782098907272,
+        "y0": 0.38272346029377946,
+        "x1": 0.5392331391378166,
+        "y1": 0.39530255096127287
+      },
+      "text": "well",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.548629112492979,
+        "y0": 0.38272346029377946,
+        "x1": 0.5875528372970282,
+        "y1": 0.39530255096127287
+      },
+      "text": "suited",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.596864288928462,
+        "y0": 0.38272346029377946,
+        "x1": 0.6160106284945619,
+        "y1": 0.39530255096127287
+      },
+      "text": "for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6252957013697406,
+        "y0": 0.38272346029377946,
+        "x1": 0.6452686085420496,
+        "y1": 0.39530255096127287
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6545115452186734,
+        "y0": 0.38272346029377946,
+        "x1": 0.6870332107045292,
+        "y1": 0.39530255096127287
+      },
+      "text": "large",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6960799771975847,
+        "y0": 0.38272346029377946,
+        "x1": 0.7286018920100592,
+        "y1": 0.39530255096127287
+      },
+      "text": "scale",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7380408991396038,
+        "y0": 0.38272346029377946,
+        "x1": 0.7990793465009702,
+        "y1": 0.39530255096127287
+      },
+      "text": "problems",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8080407435597937,
+        "y0": 0.38272346029377946,
+        "x1": 0.8597785101996528,
+        "y1": 0.39530255096127287
+      },
+      "text": "because",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8690212474149817,
+        "y0": 0.38272346029377946,
+        "x1": 0.8826774647033292,
+        "y1": 0.39530255096127287
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8919621885212419,
+        "y0": 0.38272346029377946,
+        "x1": 0.9119621725643382,
+        "y1": 0.39530255096127287
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823586756887,
+        "y0": 0.403178830339451,
+        "x1": 0.4884309457018485,
+        "y1": 0.4157579210069444
+      },
+      "text": "matrix X is symmetric positive definite. diag(•) represents",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117667204414318,
+        "y0": 0.3978749754452946,
+        "x1": 0.9133352641186683,
+        "y1": 0.410454066112788
+      },
+      "text": "decomposability (inherited from the dual ascent algorithm)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823651581807854,
+        "y0": 0.4181784511816622,
+        "x1": 0.4884333392373877,
+        "y1": 0.4307575418491556
+      },
+      "text": "a diagonal matrix. A ‘T ’ in the superscript represents the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511766670576108,
+        "y0": 0.4128745962875058,
+        "x1": 0.5353963016684539,
+        "y1": 0.4254536869549992
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5456885044870813,
+        "y0": 0.4128745962875058,
+        "x1": 0.599344639996298,
+        "y1": 0.4254536869549992
+      },
+      "text": "superior",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6094139946831597,
+        "y0": 0.4128745962875058,
+        "x1": 0.6913480073018791,
+        "y1": 0.4254536869549992
+      },
+      "text": "convergence",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7007871640273948,
+        "y0": 0.4128745962875058,
+        "x1": 0.7663353814019097,
+        "y1": 0.4254536869549992
+      },
+      "text": "properties",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7762774299172794,
+        "y0": 0.4128745962875058,
+        "x1": 0.8399070789611417,
+        "y1": 0.4254536869549992
+      },
+      "text": "(inherited",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8498068416819853,
+        "y0": 0.4128745962875058,
+        "x1": 0.8816874385659211,
+        "y1": 0.4254536869549992
+      },
+      "text": "from",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8919637842116013,
+        "y0": 0.4128745962875058,
+        "x1": 0.9119637682546977,
+        "y1": 0.4254536869549992
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823718899994894,
+        "y0": 0.43332996633317733,
+        "x1": 0.16686490626116984,
+        "y1": 0.44590905700067074
+      },
+      "text": "transpose. ‘",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16686448240591809,
+        "y0": 0.43255822887324324,
+        "x1": 0.17372722251742495,
+        "y1": 0.4413635947487571
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17470762464735243,
+        "y0": 0.43332996633317733,
+        "x1": 0.4884340373519199,
+        "y1": 0.44590905700067074
+      },
+      "text": "’ in the superscript of a quantity denotes the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511766670576108,
+        "y0": 0.4280261114390209,
+        "x1": 0.56088650771995,
+        "y1": 0.4406052021065143
+      },
+      "text": "method",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5696097978579453,
+        "y0": 0.4280261114390209,
+        "x1": 0.5832659154156454,
+        "y1": 0.4406052021065143
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5921588473849826,
+        "y0": 0.4280261114390209,
+        "x1": 0.6683640822865604,
+        "y1": 0.4406052021065143
+      },
+      "text": "multipliers)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6772570641212214,
+        "y0": 0.4280261114390209,
+        "x1": 0.7003465041615604,
+        "y1": 0.4406052021065143
+      },
+      "text": "[8].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7094140146292892,
+        "y0": 0.4280261114390209,
+        "x1": 0.777208764568653,
+        "y1": 0.4406052021065143
+      },
+      "text": "Moreover,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7854922425513174,
+        "y0": 0.4280261114390209,
+        "x1": 0.8054651497236265,
+        "y1": 0.4406052021065143
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8145121655433006,
+        "y0": 0.4280261114390209,
+        "x1": 0.847119100732741,
+        "y1": 0.4406052021065143
+      },
+      "text": "steps",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8560804977915646,
+        "y0": 0.4280261114390209,
+        "x1": 0.9123547123927697,
+        "y1": 0.4406052021065143
+      },
+      "text": "involved",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0878452039232441,
+        "y0": 0.44848148148469247,
+        "x1": 0.2837275399102105,
+        "y1": 0.4610605721521859
+      },
+      "text": "value of the quantity at the k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28431564530515985,
+        "y0": 0.44755835063529736,
+        "x1": 0.29313916474385976,
+        "y1": 0.4563637165108112
+      },
+      "text": "th",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2996100132761438,
+        "y0": 0.44848148148469247,
+        "x1": 0.35823749716764963,
+        "y1": 0.4610605721521859
+      },
+      "text": "iteration.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511766670576108,
+        "y0": 0.44317762659053606,
+        "x1": 0.5244159075169782,
+        "y1": 0.45575671725802946
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5337272095524408,
+        "y0": 0.44317762659053606,
+        "x1": 0.5537001167247498,
+        "y1": 0.45575671725802946
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5627470826791003,
+        "y0": 0.44317762659053606,
+        "x1": 0.6152582106247447,
+        "y1": 0.45575671725802946
+      },
+      "text": "ADMM",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6245118184806475,
+        "y0": 0.44317762659053606,
+        "x1": 0.6881571751014859,
+        "y1": 0.45575671725802946
+      },
+      "text": "algorithm",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6968649571238,
+        "y0": 0.44317762659053606,
+        "x1": 0.7168378642961091,
+        "y1": 0.45575671725802946
+      },
+      "text": "are",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7260808009727329,
+        "y0": 0.44317762659053606,
+        "x1": 0.8324556039049734,
+        "y1": 0.45575671725802946
+      },
+      "text": "computationally",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8409828734553717,
+        "y0": 0.44317762659053606,
+        "x1": 0.8791224660437091,
+        "y1": 0.45575671725802946
+      },
+      "text": "cheap",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8882378472222222,
+        "y0": 0.44317762659053606,
+        "x1": 0.9119634690627553,
+        "y1": 0.45575671725802946
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511766670576108,
+        "y0": 0.4581777483525903,
+        "x1": 0.9119630701401654,
+        "y1": 0.4707568390200837
+      },
+      "text": "simple to implement [1]. However, the optimal selection of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22470773435106464,
+        "y0": 0.4740876561463482,
+        "x1": 0.23505169737572765,
+        "y1": 0.4866667468138416
+      },
+      "text": "I.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24392303765988818,
+        "y0": 0.4740876561463482,
+        "x1": 0.24941323473562602,
+        "y1": 0.4866667468138416
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25019726722069036,
+        "y0": 0.4766034766881153,
+        "x1": 0.35156868330014296,
+        "y1": 0.4866667468138416
+      },
+      "text": "NTRODUCTION",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511766670576108,
+        "y0": 0.4733292635041054,
+        "x1": 0.9145115871055454,
+        "y1": 0.48590835417159883
+      },
+      "text": "the parameters, inherited from the augmented Lagrangian,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10451197156719133,
+        "y0": 0.4946941113231158,
+        "x1": 0.4884341246162365,
+        "y1": 0.5072732019906092
+      },
+      "text": "The analysis of convex optimization problems is of great",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511766670576108,
+        "y0": 0.48848077865562056,
+        "x1": 0.9121587416704964,
+        "y1": 0.501059869323114
+      },
+      "text": "involved in the ADMM algorithm is still an open problem",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511766670576108,
+        "y0": 0.5034809004176747,
+        "x1": 0.9123549118540646,
+        "y1": 0.5160599910851681
+      },
+      "text": "[8]. Operator Splitting Quadratic Program (OSQP), proposed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823720146627988,
+        "y0": 0.5098456264746309,
+        "x1": 0.16193556941412632,
+        "y1": 0.5224247171421244
+      },
+      "text": "importance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17098203671523948,
+        "y0": 0.5098456264746309,
+        "x1": 0.18363124872344772,
+        "y1": 0.5224247171421244
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19333510305367263,
+        "y0": 0.5098456264746309,
+        "x1": 0.24147450066859427,
+        "y1": 0.5224247171421244
+      },
+      "text": "applied",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25078632628995606,
+        "y0": 0.5098456264746309,
+        "x1": 0.3374050364774816,
+        "y1": 0.5224247171421244
+      },
+      "text": "mathematics.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34686478758169936,
+        "y0": 0.5098456264746309,
+        "x1": 0.39676853254729627,
+        "y1": 0.5224247171421244
+      },
+      "text": "Convex",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4058842877157373,
+        "y0": 0.5098456264746309,
+        "x1": 0.48862940969030844,
+        "y1": 0.5224247171421244
+      },
+      "text": "optimization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117666207107843,
+        "y0": 0.5186324155691898,
+        "x1": 0.9119633693321079,
+        "y1": 0.5312115062366832
+      },
+      "text": "in [1], is one of the most popular general-purpose solvers",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823720146627988,
+        "y0": 0.5249971416261461,
+        "x1": 0.4911097233591516,
+        "y1": 0.5375762322936395
+      },
+      "text": "problems arise in numerous fields including - machine learn-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117666207107843,
+        "y0": 0.5336325373312439,
+        "x1": 0.9119635687934028,
+        "y1": 0.5462116279987373
+      },
+      "text": "for the convex quadratic programs. The algorithm is based",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823720146627988,
+        "y0": 0.5399967624683573,
+        "x1": 0.4882372313854741,
+        "y1": 0.5525758531358507
+      },
+      "text": "ing, control engineering (model predictive control), Lasso",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117666207107843,
+        "y0": 0.5487840524827592,
+        "x1": 0.9119622722949857,
+        "y1": 0.5613631431502526
+      },
+      "text": "on a novel splitting technique and subsequent usage of the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0882372139326108,
+        "y0": 0.5551482776198724,
+        "x1": 0.4884328904494741,
+        "y1": 0.5677273682873658
+      },
+      "text": "and Hubber fitting and so on [1]. With the advent of big",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0882372139326108,
+        "y0": 0.5701478984620836,
+        "x1": 0.4905900643541922,
+        "y1": 0.582726989129577
+      },
+      "text": "data and consequently higher dimensional data availability,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117666207107843,
+        "y0": 0.5639355676342743,
+        "x1": 0.9117667004953023,
+        "y1": 0.5765146583017677
+      },
+      "text": "auxiliary variables leading to a quasi-definite linear system",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5111784093520221,
+        "y0": 0.5789356893963284,
+        "x1": 0.9129435221354166,
+        "y1": 0.5915147800638219
+      },
+      "text": "which is always solvable. One of the most computationally",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823723886527267,
+        "y0": 0.5852994136135987,
+        "x1": 0.48863105524599165,
+        "y1": 0.5978785042810921
+      },
+      "text": "the size of the convex optimization problems that are required",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117669199027267,
+        "y0": 0.5940872045478436,
+        "x1": 0.9119623720256331,
+        "y1": 0.606666295215337
+      },
+      "text": "expensive step in the OSQP algorithm involves the solution",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823723886527267,
+        "y0": 0.6004509287651139,
+        "x1": 0.4886303072661356,
+        "y1": 0.6130300194326073
+      },
+      "text": "to be solved continues to grow in size. Therefore, to handle",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823723886527267,
+        "y0": 0.615450549607325,
+        "x1": 0.48823726878446694,
+        "y1": 0.6280296402748184
+      },
+      "text": "real-time optimization-based tasks, it becomes necessary to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117669199027267,
+        "y0": 0.6092387196993587,
+        "x1": 0.9121595395156761,
+        "y1": 0.6218178103668521
+      },
+      "text": "of a linear system-a common trait of the algorithms derived",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117669199027267,
+        "y0": 0.6242383405415699,
+        "x1": 0.6083858215730954,
+        "y1": 0.6368174312090633
+      },
+      "text": "from ADMM.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6166689504984937,
+        "y0": 0.6242383405415699,
+        "x1": 0.6266846999623417,
+        "y1": 0.6368174312090633
+      },
+      "text": "It",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.634904549791922,
+        "y0": 0.6242383405415699,
+        "x1": 0.6457468668619791,
+        "y1": 0.6368174312090633
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.654120501349954,
+        "y0": 0.6242383405415699,
+        "x1": 0.6777078466477737,
+        "y1": 0.6368174312090633
+      },
+      "text": "this",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6858848621642667,
+        "y0": 0.6242383405415699,
+        "x1": 0.7763929180070466,
+        "y1": 0.6368174312090633
+      },
+      "text": "linear system",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7849045298457925,
+        "y0": 0.6242383405415699,
+        "x1": 0.851936390197355,
+        "y1": 0.6368174312090633
+      },
+      "text": "which we",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.860198974609375,
+        "y0": 0.6242383405415699,
+        "x1": 0.9121599384382659,
+        "y1": 0.6368174312090633
+      },
+      "text": "propose",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823723886527267,
+        "y0": 0.6306020647588402,
+        "x1": 0.4892159256280637,
+        "y1": 0.6431811554263336
+      },
+      "text": "develop algorithms that can work efficiently and effectively",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117669199027267,
+        "y0": 0.639389855693085,
+        "x1": 0.9119643666385825,
+        "y1": 0.6519689463605784
+      },
+      "text": "to solve in a more efficient manner. To do so we use the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08764733208550347,
+        "y0": 0.6457535799103553,
+        "x1": 0.4884320926042943,
+        "y1": 0.6583326705778487
+      },
+      "text": "with the high-dimensional data. Furthermore, study of the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117669199027267,
+        "y0": 0.6543899774551392,
+        "x1": 0.9121595395156761,
+        "y1": 0.6669690681226326
+      },
+      "text": "information about the conjugate directions of the coefficient",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823582393671173,
+        "y0": 0.6607537016724095,
+        "x1": 0.4884318993761649,
+        "y1": 0.673332792339903
+      },
+      "text": "solution algorithms for convex optimization problems turns",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "arXiv:2503.05941v1  [math.OC]  7 Mar 2025",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823581770354626,
+        "y0": 0.6759052168239247,
+        "x1": 0.4407841800864226,
+        "y1": 0.6884843074914181
+      },
+      "text": "out fruitful for the analysis of non-convex problems.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117672689599928,
+        "y0": 0.6695414926066543,
+        "x1": 0.9119633693321079,
+        "y1": 0.6821205832741477
+      },
+      "text": "matrix. The information about the conjugate directions is of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117673188253166,
+        "y0": 0.6846930077581694,
+        "x1": 0.9119368409798816,
+        "y1": 0.6972720984256628
+      },
+      "text": "grave importance in the study of convex optimization. To the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10451058780445772,
+        "y0": 0.6912081253649008,
+        "x1": 0.4907851375006383,
+        "y1": 0.7037872160323942
+      },
+      "text": "In this work, we consider the convex optimization problem,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117673188253166,
+        "y0": 0.6996931295202236,
+        "x1": 0.9147084554036459,
+        "y1": 0.712272220187717
+      },
+      "text": "best of author’s knowledge, this line of research, where the in-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823581770354626,
+        "y0": 0.706359640516416,
+        "x1": 0.45196154226664625,
+        "y1": 0.7189387311839094
+      },
+      "text": "called quadratic program, of the form as stated below.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2547065635132634,
+        "y0": 0.7192384438081221,
+        "x1": 0.2666673348620047,
+        "y1": 0.7318175344756155
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27862730836556626,
+        "y0": 0.7192389639941128,
+        "x1": 0.2905880797143076,
+        "y1": 0.7318180546616063
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117673188253166,
+        "y0": 0.7148446446717387,
+        "x1": 0.9123555102379494,
+        "y1": 0.7274237353392321
+      },
+      "text": "formation of the conjugate directions is exploited to improve",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26862798952588846,
+        "y0": 0.7283293490458016,
+        "x1": 0.2768632726731643,
+        "y1": 0.740908439713295
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3031371122871349,
+        "y0": 0.7354366761265378,
+        "x1": 0.3107841840756485,
+        "y1": 0.7442420420020517
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36588284860249437,
+        "y0": 0.7354366761265378,
+        "x1": 0.37352992039100796,
+        "y1": 0.7442420420020517
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117673188253166,
+        "y0": 0.7299961598232538,
+        "x1": 0.9117673986098346,
+        "y1": 0.7425752504907472
+      },
+      "text": "the characteristics of the algorithm, remains unexplored in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19039251290115655,
+        "y0": 0.7369654575983684,
+        "x1": 0.25215722377004185,
+        "y1": 0.7495445482658618
+      },
+      "text": "minimize",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29333319071850744,
+        "y0": 0.7369659777843591,
+        "x1": 0.3031371122871349,
+        "y1": 0.7495450684518525
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31352951947380514,
+        "y0": 0.7369659777843591,
+        "x1": 0.36588284860249437,
+        "y1": 0.7495450684518525
+      },
+      "text": "P x + q",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3760793099995532,
+        "y0": 0.7369659777843591,
+        "x1": 0.38588323156818066,
+        "y1": 0.7495450684518525
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2686274410073274,
+        "y0": 0.7456027221198034,
+        "x1": 0.2768627241546032,
+        "y1": 0.7581818127872968
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4703930624170241,
+        "y0": 0.7463603055838383,
+        "x1": 0.4896087646484375,
+        "y1": 0.7589393962513317
+      },
+      "text": "(1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117673188253166,
+        "y0": 0.7449962815853081,
+        "x1": 0.9149046255872141,
+        "y1": 0.7575753722528015
+      },
+      "text": "the literature and the author believes that it holds promise.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2125498952429279,
+        "y0": 0.7631783617867364,
+        "x1": 0.36392266765918607,
+        "y1": 0.7757574524542298
+      },
+      "text": "subject to l ≤ Ax ≤ u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5111791074665544,
+        "y0": 0.7601477967368232,
+        "x1": 0.9116715574576184,
+        "y1": 0.7727268874043166
+      },
+      "text": "The information about the conjugate directions allows us to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511767618017259,
+        "y0": 0.7751479184988773,
+        "x1": 0.9119639677159926,
+        "y1": 0.7877270091663707
+      },
+      "text": "compute offline a set of parameters and cache them thus",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08764795540205014,
+        "y0": 0.787420782175931,
+        "x1": 0.14509926590265013,
+        "y1": 0.7999998728434244
+      },
+      "text": "where x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.153922797807681,
+        "y0": 0.787420782175931,
+        "x1": 0.16470710903990501,
+        "y1": 0.7999998728434244
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1733347325543173,
+        "y0": 0.787420782175931,
+        "x1": 0.18509943345013788,
+        "y1": 0.7999998728434244
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18509943345013788,
+        "y0": 0.7864976320603881,
+        "x1": 0.19313864614449294,
+        "y1": 0.795302997935902
+      },
+      "text": "n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20196201598722172,
+        "y0": 0.787420782175931,
+        "x1": 0.38509927388110193,
+        "y1": 0.7999998728434244
+      },
+      "text": "is the decision variable, P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3960798176285488,
+        "y0": 0.787420782175931,
+        "x1": 0.40686414132710375,
+        "y1": 0.7999998728434244
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4154917399088542,
+        "y0": 0.787420782175931,
+        "x1": 0.4272564657373366,
+        "y1": 0.7999998728434244
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4272570641212214,
+        "y0": 0.7864976320603881,
+        "x1": 0.4535312029271344,
+        "y1": 0.795302997935902
+      },
+      "text": "n×n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4621586519129136,
+        "y0": 0.787420782175931,
+        "x1": 0.4882369695925245,
+        "y1": 0.7999998728434244
+      },
+      "text": "is a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511767618017259,
+        "y0": 0.7902994336503925,
+        "x1": 0.9121598387076184,
+        "y1": 0.8028785243178859
+      },
+      "text": "avoiding their computation at each iteration of the algorithm",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823708926930147,
+        "y0": 0.8024209039379853,
+        "x1": 0.30549197726779515,
+        "y1": 0.8149999946054787
+      },
+      "text": "positive semi-definite matrix, q",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3149040571225235,
+        "y0": 0.8024209039379853,
+        "x1": 0.3256883808210784,
+        "y1": 0.8149999946054787
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3351004606758068,
+        "y0": 0.8024209039379853,
+        "x1": 0.3468651865042892,
+        "y1": 0.8149999946054787
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3468645382550807,
+        "y0": 0.8016491664780511,
+        "x1": 0.35490375094943577,
+        "y1": 0.8104545323535649
+      },
+      "text": "n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35588400348339205,
+        "y0": 0.8024209039379853,
+        "x1": 0.3600016575233609,
+        "y1": 0.8149999946054787
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3682372149299173,
+        "y0": 0.8024209039379853,
+        "x1": 0.3803940816642412,
+        "y1": 0.8149999946054787
+      },
+      "text": "A",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3898058373943653,
+        "y0": 0.8024209039379853,
+        "x1": 0.4005901610929202,
+        "y1": 0.8149999946054787
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4100022409476486,
+        "y0": 0.8024209039379853,
+        "x1": 0.42176694184346913,
+        "y1": 0.8149999946054787
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4217662935942606,
+        "y0": 0.8016491664780511,
+        "x1": 0.451570099475337,
+        "y1": 0.8104545323535649
+      },
+      "text": "m×n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45235438128702,
+        "y0": 0.8024209039379853,
+        "x1": 0.45642408981821897,
+        "y1": 0.8149999946054787
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4647076176662071,
+        "y0": 0.8024209039379853,
+        "x1": 0.488433089910769,
+        "y1": 0.8149999946054787
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511767618017259,
+        "y0": 0.8054509488019076,
+        "x1": 0.9121591405930862,
+        "y1": 0.818030039469401
+      },
+      "text": "leading to reduction in the computation time of the overall",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823674021203534,
+        "y0": 0.8175724190895004,
+        "x1": 0.12941348007301878,
+        "y1": 0.8301515097569938
+      },
+      "text": "l ∈ R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12941320581373825,
+        "y0": 0.8168006816295662,
+        "x1": 0.14098183625663807,
+        "y1": 0.8256060475050802
+      },
+      "text": "m",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1480406592873966,
+        "y0": 0.8175724190895004,
+        "x1": 0.22196192523233252,
+        "y1": 0.8301515097569938
+      },
+      "text": "and u ∈ R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22196192523233252,
+        "y0": 0.8168006816295662,
+        "x1": 0.2335305806078942,
+        "y1": 0.8256060475050802
+      },
+      "text": "m",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24039347031537225,
+        "y0": 0.8175724190895004,
+        "x1": 0.4884326411228554,
+        "y1": 0.8301515097569938
+      },
+      "text": "define the lower and upper limits on",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511767618017259,
+        "y0": 0.8204505696441188,
+        "x1": 0.9013746672985601,
+        "y1": 0.8330296603116122
+      },
+      "text": "algorithm which is demonstrated by a numerical example.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823676514469721,
+        "y0": 0.8325720399317116,
+        "x1": 0.4890218497880923,
+        "y1": 0.845151130599205
+      },
+      "text": "the variable Ax. This formulation allows handling equality",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5280424130508323,
+        "y0": 0.8356020847956339,
+        "x1": 0.5535054923662173,
+        "y1": 0.8481811754631274
+      },
+      "text": "The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5619641970964818,
+        "y0": 0.8356020847956339,
+        "x1": 0.585509306465099,
+        "y1": 0.8481811754631274
+      },
+      "text": "rest",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5939252766129238,
+        "y0": 0.8356020847956339,
+        "x1": 0.607581394170624,
+        "y1": 0.8481811754631274
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6158858155892566,
+        "y0": 0.8356020847956339,
+        "x1": 0.6358587227615655,
+        "y1": 0.8481811754631274
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6443172280305351,
+        "y0": 0.8356020847956339,
+        "x1": 0.6807185154335171,
+        "y1": 0.8481811754631274
+      },
+      "text": "paper",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6890233357747396,
+        "y0": 0.8356020847956339,
+        "x1": 0.6998656029794731,
+        "y1": 0.8481811754631274
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7084351583243975,
+        "y0": 0.8356020847956339,
+        "x1": 0.7933953977098652,
+        "y1": 0.8481811754631274
+      },
+      "text": "organised as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8019651525160846,
+        "y0": 0.8356020847956339,
+        "x1": 0.8546621285232843,
+        "y1": 0.8481811754631274
+      },
+      "text": "follows.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8629453571793301,
+        "y0": 0.8356020847956339,
+        "x1": 0.9119650647531148,
+        "y1": 0.8481811754631274
+      },
+      "text": "Section",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0882368399426828,
+        "y0": 0.8477235550832267,
+        "x1": 0.23490334803762,
+        "y1": 0.8603026457507201
+      },
+      "text": "constraints by setting",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2431388057135289,
+        "y0": 0.8477235550832267,
+        "x1": 0.248432932336346,
+        "y1": 0.8603026457507201
+      },
+      "text": "l",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24843265807706547,
+        "y0": 0.8533157537681888,
+        "x1": 0.2529424530228758,
+        "y1": 0.8621211196437026
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2629425946403952,
+        "y0": 0.8477235550832267,
+        "x1": 0.27568769766614326,
+        "y1": 0.8603026457507201
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2847071379617928,
+        "y0": 0.8477235550832267,
+        "x1": 0.29509929582184435,
+        "y1": 0.8603026457507201
+      },
+      "text": "u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29509954514846304,
+        "y0": 0.8533157537681888,
+        "x1": 0.29960934009427337,
+        "y1": 0.8621211196437026
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30058999155081956,
+        "y0": 0.8477235550832267,
+        "x1": 0.4048760358025046,
+        "y1": 0.8603026457507201
+      },
+      "text": ". There exist a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.413138545416539,
+        "y0": 0.8477235550832267,
+        "x1": 0.4884328405841503,
+        "y1": 0.8603026457507201
+      },
+      "text": "plethora of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511767618017259,
+        "y0": 0.8507535999471492,
+        "x1": 0.5226786993687449,
+        "y1": 0.8633326906146426
+      },
+      "text": "II",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5315714318767871,
+        "y0": 0.8507535999471492,
+        "x1": 0.5851588031045751,
+        "y1": 0.8633326906146426
+      },
+      "text": "presents",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5939246283637153,
+        "y0": 0.8507535999471492,
+        "x1": 0.6011524075776143,
+        "y1": 0.8633326906146426
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6101994233972886,
+        "y0": 0.8507535999471492,
+        "x1": 0.653913809583078,
+        "y1": 0.8633326906146426
+      },
+      "text": "review",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.662748748180913,
+        "y0": 0.8507535999471492,
+        "x1": 0.6764049156039369,
+        "y1": 0.8633326906146426
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6852977478426266,
+        "y0": 0.8507535999471492,
+        "x1": 0.7052706550149357,
+        "y1": 0.8633326906146426
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7141211017284518,
+        "y0": 0.8507535999471492,
+        "x1": 0.7557212480532578,
+        "y1": 0.8633326906146426
+      },
+      "text": "OSQP",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7647096721175449,
+        "y0": 0.8507535999471492,
+        "x1": 0.8044445561427697,
+        "y1": 0.8633326906146426
+      },
+      "text": "solver",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8133374382467831,
+        "y0": 0.8507535999471492,
+        "x1": 0.8269248413883783,
+        "y1": 0.8633326906146426
+      },
+      "text": "as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8358865376391442,
+        "y0": 0.8507535999471492,
+        "x1": 0.8904966466567096,
+        "y1": 0.8633326906146426
+      },
+      "text": "reported",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8990236170151654,
+        "y0": 0.8507535999471492,
+        "x1": 0.9117686951082516,
+        "y1": 0.8633326906146426
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823703940397774,
+        "y0": 0.8628750702347419,
+        "x1": 0.15829497692631742,
+        "y1": 0.8754541609022353
+      },
+      "text": "algorithms",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16706030353222018,
+        "y0": 0.8628750702347419,
+        "x1": 0.1797095155404284,
+        "y1": 0.8754541609022353
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1888248717862796,
+        "y0": 0.8628750702347419,
+        "x1": 0.22311174479964513,
+        "y1": 0.8754541609022353
+      },
+      "text": "solve",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23196211671517566,
+        "y0": 0.8628750702347419,
+        "x1": 0.2519349989548228,
+        "y1": 0.8754541609022353
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2609819649091733,
+        "y0": 0.8628750702347419,
+        "x1": 0.3436311460008808,
+        "y1": 0.8754541609022353
+      },
+      "text": "optimization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35235436134089054,
+        "y0": 0.8628750702347419,
+        "x1": 0.40698010313744637,
+        "y1": 0.8754541609022353
+      },
+      "text": "problem",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.415687984890408,
+        "y0": 0.8628750702347419,
+        "x1": 0.4238274268854677,
+        "y1": 0.8754541609022353
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4329431072559232,
+        "y0": 0.8628750702347419,
+        "x1": 0.45657268848294524,
+        "y1": 0.8754541609022353
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46568796993081085,
+        "y0": 0.8628750702347419,
+        "x1": 0.48843304004544524,
+        "y1": 0.8754541609022353
+      },
+      "text": "can",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511767618017259,
+        "y0": 0.8657532207893603,
+        "x1": 0.9119645660998774,
+        "y1": 0.8783323114568538
+      },
+      "text": "[1] followed by the background of conjugate direction and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511767618017259,
+        "y0": 0.8809047359408755,
+        "x1": 0.9119641671772876,
+        "y1": 0.8934838266083689
+      },
+      "text": "conjugate gradient methods. In Section III, we present the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10215847788293378,
+        "y0": 0.8909970750712385,
+        "x1": 0.19950470269895068,
+        "y1": 0.9010603451969648
+      },
+      "text": "Acknowledgement:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20686456268908932,
+        "y0": 0.8909970750712385,
+        "x1": 0.2664951997644761,
+        "y1": 0.9010603451969648
+      },
+      "text": "The author",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27333522622102224,
+        "y0": 0.8909970750712385,
+        "x1": 0.33146512897965175,
+        "y1": 0.9010603451969648
+      },
+      "text": "is thankful",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3384329602609273,
+        "y0": 0.8909970750712385,
+        "x1": 0.3484738917132608,
+        "y1": 0.9010603451969648
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3550996219410616,
+        "y0": 0.8909970750712385,
+        "x1": 0.38070833293441075,
+        "y1": 0.9010603451969648
+      },
+      "text": "Prof.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38725659738179125,
+        "y0": 0.8909970750712385,
+        "x1": 0.4880409490049275,
+        "y1": 0.9010603451969648
+      },
+      "text": "Hoai Nam Nguyen",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08784523508907144,
+        "y0": 0.902209298779266,
+        "x1": 0.4880409864039203,
+        "y1": 0.9122725689049923
+      },
+      "text": "(T´el´ecom SudParis) for the fruitful discussions while working at T´el´ecom",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511767618017259,
+        "y0": 0.8959048577029296,
+        "x1": 0.9119640674466402,
+        "y1": 0.908483948370423
+      },
+      "text": "method to choose augmentation parameters by utilising the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823741339390574,
+        "y0": 0.9135729351429024,
+        "x1": 0.308629129447189,
+        "y1": 0.9236362052686287
+      },
+      "text": "SudParis, Institut Polytechnique de Paris.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.511767618017259,
+        "y0": 0.9110563728544447,
+        "x1": 0.9147089540568831,
+        "y1": 0.9236354635219381
+      },
+      "text": "information of the conjugate directions of a specific coef-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.017875814749524484,
+        "y0": 0.22409088443023994,
+        "x1": 0.061470586490007785,
+        "y1": 0.6906565656565656
+      },
+      "text": "http://arxiv.org/abs/2503.05941v1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.38562744739008886,
+        "y0": 0.8928329583370325,
+        "x1": 0.48986272874221304,
+        "y1": 0.9044396467883178
+      },
+      "text": "https://nguyenhoainam.wp.imt.fr/",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.03294020000612363,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": "1/263 item không có bề rộng (width=0) — giữ chữ, bỏ hộp",
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

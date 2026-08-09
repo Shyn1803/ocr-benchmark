@@ -1,0 +1,417 @@
+{
+  "schema_version": 2,
+  "engine": "marker",
+  "engine_version": "1.10.2",
+  "doc_id": "0005784d0d255f6652180433936fa2998188_page_1_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "section_hierarchy",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "# **Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent**\n\n### **Zhou Yu<sup>1</sup>**\n\nCarnegie Mellon University 5000 Forbes Avenue Pittsburgh, PA 15213\n\nzhouyu@cs.cmu.edu\n\n#### **Dan Bohus**\n\nMicrosoft Research One Microsoft Way Redmond, WA 98052\n\ndbohus@microsoft.com\n\n### **Eric Horvitz**\n\nMicrosoft Research One Microsoft Way Redmond, WA 98052\n\nhorvitz@microsoft.com\n\n#### **Abstract**\n\nInspired by studies of human-human conversations, we present methods for incrementally coordinating speech production with listeners' visual foci of attention. We introduce a model that considers the demands and availability of listeners' attention at the onset and throughout the production of system utterances, and that incrementally coordinates speech synthesis with the listener's gaze. We present an implementation and deployment of the model in a physically situated dialog system and discuss lessons learned.\n\n## **1 Introduction**\n\nParticipants in a conversation coordinate with one another on producing turns, and often co-produce language by using verbal and non-verbal signals, including gaze, gestures, prosody and grammatical structures. Among these signals, patterns of attention play an important role.\n\nGoodwin (1981) highlights a variety of coordination mechanisms that speakers use to achieve *mutual orientation* at the beginning and throughout turns, such as pausing, adding phrasal breaks, lengthening spoken units, and even changing the structure of the sentence on the fly to secure the listener's attention. His work suggests that, beyond a simple errors-in-production view, \"disfluencies\" help to coordinate on turns, and generally facilitate co-production among speakers and listeners. Goodwin (1981) presents sample snippets of conversations recorded in the wild, annotated to show when the gaze of a listener turns to meet the gaze of the speaker (marked with \\*) and when mutual gaze is maintained (marked with an underline). In the examples reproduced below from Goodwin's work, pauses and repeats are used to align grammatical sentences with a listener's gaze:\n\nAnyway, Uh:, We went \\*t- I went ta bed\n\nRestarts can be used as a means of aligning the timing of a full grammatical utterance with the start of the process by which gaze is moving towards the speaker (process indicated by the broken underline), as in the following:\n\nShe- she's reaching the p- she's at the \\*point I'm\n\nWhile most work to date in spoken dialog systems has focused on the acoustic channel in physically situated multimodal systems, an opportunity arises to use vision to take the participants' attention into account when coordinating on the production of system utterances. We investigate this direction and introduce a model that incrementally coordinates language production and speech synthesis with the listeners' foci of attention. The model centers on computing whether the listener's attention matches a set of attentional demands for the utterance at hand. When attentional demands are not met, the model triggers a sequence of linguistic devices in an attempt to recover the listener's attention and to coordinate the system's speech with it. We introduce and demonstrate the promise of incremental coordination of language production with attention in situated systems.\n\nFollowing a brief review of related work, we describe the proposed approach in more detail in Section 3. In Section 4, we discuss lessons learned\n\n <sup>1</sup> Research conducted during an internship at Microsoft Research",
+  "blocks": [
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.14794921875,
+        "y0": 0.08642578125,
+        "x1": 0.8538591013658767,
+        "y1": 0.1250614695701735
+      },
+      "text": null,
+      "html": "<h1><b>Incremental</b> <b>Coordination:</b> <b>Attention-Centric Speech Production </b> <b>in a Physically Situated Conversational Agent</b></h1>",
+      "level": 1,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent"
+      ]
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.201171875,
+        "y0": 0.171875,
+        "x1": 0.27788589784763,
+        "y1": 0.18791718217118922
+      },
+      "text": null,
+      "html": "<h3><b>Zhou Yu</b><b><sup>1</sup></b></h3>",
+      "level": 3,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "Zhou Yu 1"
+      ]
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13232421875,
+        "y0": 0.1884765625,
+        "x1": 0.34324026427813026,
+        "y1": 0.24770368800044484
+      },
+      "text": null,
+      "html": "<p block-type=\"Text\">Carnegie Mellon University 5000 Forbes Avenue Pittsburgh, PA 15213</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "Zhou Yu 1"
+      ]
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14404296875,
+        "y0": 0.2522572871487619,
+        "x1": 0.3339060328950818,
+        "y1": 0.2653533464931791
+      },
+      "text": null,
+      "html": "<p block-type=\"Text\">zhouyu@cs.cmu.edu</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "Zhou Yu 1"
+      ]
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.45263671875,
+        "y0": 0.173828125,
+        "x1": 0.5428350563817377,
+        "y1": 0.18791718217118922
+      },
+      "text": null,
+      "html": "<h4><b>Dan Bohus</b></h4>",
+      "level": 4,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "Zhou Yu 1",
+        "Dan Bohus"
+      ]
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42041015625,
+        "y0": 0.1865234375,
+        "x1": 0.57373046875,
+        "y1": 0.24770368800044484
+      },
+      "text": null,
+      "html": "<p block-type=\"Text\">Microsoft Research One Microsoft Way Redmond, WA 98052</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "Zhou Yu 1",
+        "Dan Bohus"
+      ]
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38867451200549236,
+        "y0": 0.2509765625,
+        "x1": 0.61279296875,
+        "y1": 0.2653533464931791
+      },
+      "text": null,
+      "html": "<p block-type=\"Text\">dbohus@microsoft.com</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "Zhou Yu 1",
+        "Dan Bohus"
+      ]
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.705078125,
+        "y0": 0.171875,
+        "x1": 0.8125,
+        "y1": 0.18791718217118922
+      },
+      "text": null,
+      "html": "<h3><b>Eric Horvitz</b></h3>",
+      "level": 3,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "Eric Horvitz"
+      ]
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.68115234375,
+        "y0": 0.185546875,
+        "x1": 0.8329915296311347,
+        "y1": 0.24770368800044484
+      },
+      "text": null,
+      "html": "<p block-type=\"Text\">Microsoft Research One Microsoft Way Redmond, WA 98052</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "Eric Horvitz"
+      ]
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.63916015625,
+        "y0": 0.2522572871487619,
+        "x1": 0.87646484375,
+        "y1": 0.2653533464931791
+      },
+      "text": null,
+      "html": "<p block-type=\"Text\">horvitz@microsoft.com</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "Eric Horvitz"
+      ]
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.26171875,
+        "y0": 0.32958984375,
+        "x1": 0.33935569916795566,
+        "y1": 0.34532793617474794
+      },
+      "text": null,
+      "html": "<h4><b>Abstract</b></h4>",
+      "level": 4,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "Eric Horvitz",
+        "Abstract"
+      ]
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.146484375,
+        "y0": 0.359375,
+        "x1": 0.4609560358444316,
+        "y1": 0.5545244861752113
+      },
+      "text": null,
+      "html": "<p block-type=\"Text\">Inspired by studies of human-human conversations, we present methods for incrementally coordinating speech production  with listeners' visual foci of attention. We  introduce a model that considers the demands and availability of listeners' attention at the onset and throughout the production of system utterances, and that incrementally coordinates speech synthesis  with the listener's gaze. We present an implementation and deployment of the  model in a physically situated dialog system and discuss lessons learned.</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "Eric Horvitz",
+        "Abstract"
+      ]
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.11903355745661179,
+        "y0": 0.56884765625,
+        "x1": 0.2648858960042864,
+        "y1": 0.5850669706984912
+      },
+      "text": null,
+      "html": "<h2><b>1</b> <b>Introduction</b></h2>",
+      "level": 2,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "1 Introduction"
+      ]
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11767578125,
+        "y0": 0.59375,
+        "x1": 0.48995372593002834,
+        "y1": 0.6844888960905063
+      },
+      "text": null,
+      "html": "<p block-type=\"Text\">Participants in a conversation coordinate with one  another on producing turns, and often co-produce language by using verbal and non-verbal signals,  including gaze, gestures, prosody and grammatical structures. Among these signals, patterns of attention play an important role.</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "1 Introduction"
+      ]
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1162109375,
+        "y0": 0.68359375,
+        "x1": 0.48991506691747067,
+        "y1": 0.880859375
+      },
+      "text": null,
+      "html": "<p block-type=\"Text\" class=\"has-continuation\">Goodwin (1981) highlights a variety of coordination mechanisms that speakers use to achieve  <i>mutual orientation</i> at the beginning and throughout turns, such as pausing, adding phrasal breaks,  lengthening spoken units, and even changing the  structure of the sentence on the fly to secure the  listener's attention. His work suggests that, beyond a simple errors-in-production view, \"disfluencies\" help to coordinate on turns, and generally  facilitate co-production among speakers and listeners. Goodwin (1981) presents sample snippets  of conversations recorded in the wild, annotated  to show when the gaze of a listener turns to meet</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "1 Introduction"
+      ]
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.51123046875,
+        "y0": 0.31396484375,
+        "x1": 0.8846612712680894,
+        "y1": 0.4046075171564539
+      },
+      "text": null,
+      "html": "<p block-type=\"Text\">the gaze of the speaker (marked with *) and when  mutual gaze is maintained (marked with an underline). In the examples reproduced below from  Goodwin's work, pauses and repeats are used to  align grammatical sentences with a listener's  gaze:</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "1 Introduction"
+      ]
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.546875,
+        "y0": 0.41259765625,
+        "x1": 0.8447479145638894,
+        "y1": 0.42781731185822586
+      },
+      "text": null,
+      "html": "<p block-type=\"Text\">Anyway, Uh:, We went *t- I went ta bed</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "1 Introduction"
+      ]
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.51220703125,
+        "y0": 0.43359375,
+        "x1": 0.8844868704776636,
+        "y1": 0.5096608950432792
+      },
+      "text": null,
+      "html": "<p block-type=\"Text\">Restarts can be used as a means of aligning the  timing of a full grammatical utterance with the  start of the process by which gaze is moving towards the speaker (process indicated by the broken underline), as in the following:</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "1 Introduction"
+      ]
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.51416015625,
+        "y0": 0.517578125,
+        "x1": 0.8771809827561347,
+        "y1": 0.532752094743939
+      },
+      "text": null,
+      "html": "<p block-type=\"Text\">She- she's reaching the p- she's at the *point I'm</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "1 Introduction"
+      ]
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.51025390625,
+        "y0": 0.53955078125,
+        "x1": 0.8846684398267093,
+        "y1": 0.8245956583803659
+      },
+      "text": null,
+      "html": "<p block-type=\"Text\">While most work to date in spoken dialog systems has focused on the acoustic channel in physically situated multimodal systems, an opportunity arises to use vision to take the participants'  attention into account when coordinating on the  production of system utterances. We investigate  this direction and introduce a model that incrementally coordinates language production and  speech synthesis with the listeners' foci of attention. The model centers on computing whether the  listener's attention matches a set of attentional demands for the utterance at hand. When attentional  demands are not met, the model triggers a sequence of linguistic devices in an attempt to recover the listener's attention and to coordinate the  system's speech with it. We introduce and demonstrate the promise of incremental coordination of  language production with attention in situated  systems.</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "1 Introduction"
+      ]
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.51171875,
+        "y0": 0.82421875,
+        "x1": 0.8846508256541002,
+        "y1": 0.869720214626543
+      },
+      "text": null,
+      "html": "<p block-type=\"Text\">Following a brief review of related work, we  describe the proposed approach in more detail in  Section 3. In Section 4, we discuss lessons learned</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "1 Introduction"
+      ]
+    },
+    {
+      "block_type": "footnote",
+      "box": {
+        "page": 0,
+        "x0": 0.11767578125,
+        "y0": 0.8875889263401959,
+        "x1": 0.5546050103718803,
+        "y1": 0.9153017924208092
+      },
+      "text": null,
+      "html": "<p><b><sup> </sup></b> <sup>1</sup> Research conducted during an internship at Microsoft Research</p>",
+      "level": null,
+      "section_hierarchy": [
+        "Incremental Coordination: Attention-Centric Speech Production in a Physically Situated Conversational Agent",
+        "1 Introduction"
+      ]
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      596.0,
+      843.0
+    ]
+  ],
+  "seconds": 25.571501399972476,
+  "model_load_seconds": null,
+  "peak_rss_mb": 2994.734375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "marker_version": "1.10.2",
+    "force_ocr": false,
+    "use_llm": false,
+    "image_extraction_mode": "highres"
+  }
+}

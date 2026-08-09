@@ -1,0 +1,280 @@
+{
+  "schema_version": 2,
+  "engine": "opendataloader",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.05989_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "## Learning about passivity from data\n\nAlexandre Sanfelici Bazanella\n\n# arXiv:2503.05989v1 [eess.SY] 7 Mar 2025\n\nAbstract—This paper presents a data-driven methodology to estimate the storage function of a passive system. The methodology consists in parametrizing the storage function with a dictionary then running a linear program. Results on a benchmark are presented to illustrate its properties, including its robustness to noise. Various uses of the storage function that do not require knowledge of a model are also discussed.\n\nI. INTRODUCTION\n\nPassivity is a fundamental property of dynamical systems that plays a major role in systems and control theory at least since the 1960’s. Determining whether a system is passive or not, and to which degree, revolves arounds finding an appropriate function describing its energy dissipation properties - the storage function. Passivity concerns the input-output relation of the system, and yet a storage function can also be used as a Lyapunov function, thus allowing to study the stability of the unforced behavior of the system as well. Once a storage function is known, various tasks can be performed using its knowledge: estimate the domain of attraction, estimate the convergence rate of autonomous trajectories, design a controller to improve this convergence rate, certify a previously designed controller, etc; this is all standard theory [6], [13]. What is much less recognized in the model-based tradition of systems and control theory is that these tasks require knowledge only of the storage function and not of the model.\n\nA storage function for a given system is usually obtained analytically from its model, but knowledge of a model is by no means a guarantee that a good storage function can be found. There are no general fail-proof methods for that, except for linear systems. Known methods are either for restricted classes of systems [6], rely on nonrobust numerical procedures [8], [14], and/or are constructive design methods that actually passivate a given system through control, instead of verifying the passivity of the uncontrolled system [7], [13]. So, from an applications perspective the relationship between models and storage functions is somewhat problematic: on one hand, in a variety of applications the model serves only as a means to find a storage function, becoming superfluous once it is found; but on the other hand the knowledge of a model is often not enough to find a useful storage function. Therefore, alternative ways of finding a storage function that do not rely on an analytical model are to be welcomed, even when such a model is available.\n\nA. S. Bazanella is with the Department of Automation and Energy, Universidade Federal do Rio Grande do Sul (DELAE/UFRGS), Porto Alegre-RS, Brazil. Email: bazanella@ufrgs.br. This study was financed by Conselho Nacional de Desenvolvimento Cient´ıfico e Tecnol´ogico (CNPq)\n\nThis is what this paper is about: in it, a purely data-driven methodology to obtain a storage function is presented. The methodology consists in solving a linear optimization program (LP) formed with input/output/state data collected from the system, without the need for any priors. The LP yields the optimal parameter values of a dictionary parametrization of the storage function. A hyperparameter of the LP allows to make the solution robust to noise and to numerical errors.\n\nRecently, research on data-driven control has experimented a boost [1], [4] and a considerable amount of this work involves Lyapunov analysis. Among these works, the ones that deal with nonlinear systems usually consist of control synthesis [3] (as opposed to analysis), and rarely deal with passivity [9], [11]. Also, the vast majority of this work treats discrete-time systems, whereas this paper is devoted to continuous time systems.\n\nI start by reviewing in Section II the basic definitions of passivity. Then the proposed data-driven method for determination of passivity and identification of the storage function will be presented in Section III. Results for a classical benchmark - the pendulum - are presented in Section IV. Various uses of the storage function are discussed in Section V. Finally, lines of future and present work are outlined in Section VI.\n\nII. PASSIVITY\n\nAn overview of the theory on passivity of continuous time dynamical systems is given in this Section. The presentation follows the fundamental reference [13]. The class of systems considered are SISO (single-input-single-output) systems in the standard input-affine form:\n\n- x˙ = f(x) + g(x).u (1)\n- y = h(x) (2)\n\n\nwhere x ∈ Rn is the state, u ∈ R and y ∈ R are the input and output respectively, f(·) : Rn → Rn and g(·) : Rn → Rn are vector fields, f(0) = 0 - the origin is an equilibrium of the autonomous system - and h(·) : Rn → R is the output function.\n\nDefinition 1: Dissipativity and Passivity. Let ω(·,·) : R × R → R be an integrable function, called the supply rate. A system in the form (1)-(2) is said to be dissipative with supply rate ω(u(t),y(t)) if there exists a function S(·) : Rn → R satisfying, in some domain of the state\n\n",
+  "blocks": [
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.3128202614379085,
+        "y0": 0.08863888888888893,
+        "x1": 0.6871797385620915,
+        "y1": 0.11289141414141413
+      },
+      "text": "Learning about passivity from data",
+      "html": null,
+      "level": 2,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3894444444444444,
+        "y0": 0.13407449494949497,
+        "x1": 0.6105555555555556,
+        "y1": 0.15074747474747485
+      },
+      "text": "Alexandre Sanfelici Bazanella",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.022941176470588232,
+        "y0": 0.26310606060606057,
+        "x1": 0.05941176470588235,
+        "y1": 0.7133838383838385
+      },
+      "text": "arXiv:2503.05989v1 [eess.SY] 7 Mar 2025",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.18817550505050507,
+        "x1": 0.48823692810457514,
+        "y1": 0.2784255050505051
+      },
+      "text": "Abstract—This paper presents a data-driven methodology to estimate the storage function of a passive system. The methodology consists in parametrizing the storage function with a dictionary then running a linear program. Results on a benchmark are presented to illustrate its properties, including its robustness to noise. Various uses of the storage function that do not require knowledge of a model are also discussed.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22471568627450983,
+        "y0": 0.29498863636363637,
+        "x1": 0.35176307189542483,
+        "y1": 0.310145202020202
+      },
+      "text": "I. INTRODUCTION",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.3209444444444445,
+        "x1": 0.48823692810457514,
+        "y1": 0.5927146464646464
+      },
+      "text": "Passivity is a fundamental property of dynamical systems that plays a major role in systems and control theory at least since the 1960’s. Determining whether a system is passive or not, and to which degree, revolves arounds finding an appropriate function describing its energy dissipation properties - the storage function. Passivity concerns the input-output relation of the system, and yet a storage function can also be used as a Lyapunov function, thus allowing to study the stability of the unforced behavior of the system as well. Once a storage function is known, various tasks can be performed using its knowledge: estimate the domain of attraction, estimate the convergence rate of autonomous trajectories, design a controller to improve this convergence rate, certify a previously designed controller, etc; this is all standard theory [6], [13]. What is much less recognized in the model-based tradition of systems and control theory is that these tasks require knowledge only of the storage function and not of the model.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.5964267676767676,
+        "x1": 0.48823692810457514,
+        "y1": 0.8681969696969697
+      },
+      "text": "A storage function for a given system is usually obtained analytically from its model, but knowledge of a model is by no means a guarantee that a good storage function can be found. There are no general fail-proof methods for that, except for linear systems. Known methods are either for restricted classes of systems [6], rely on nonrobust numerical procedures [8], [14], and/or are constructive design methods that actually passivate a given system through control, instead of verifying the passivity of the uncontrolled system [7], [13]. So, from an applications perspective the relationship between models and storage functions is somewhat problematic: on one hand, in a variety of applications the model serves only as a means to find a storage function, becoming superfluous once it is found; but on the other hand the knowledge of a model is often not enough to find a useful storage function. Therefore, alternative ways of finding a storage function that do not rely on an analytical model are to be welcomed, even when such a model is available.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.8803838383838384,
+        "x1": 0.4882385620915033,
+        "y1": 0.9264734848484848
+      },
+      "text": "A. S. Bazanella is with the Department of Automation and Energy, Universidade Federal do Rio Grande do Sul (DELAE/UFRGS), Porto Alegre-RS, Brazil. Email: bazanella@ufrgs.br. This study was financed by Conselho Nacional de Desenvolvimento Cient´ıfico e Tecnol´ogico (CNPq)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117647058823529,
+        "y0": 0.18746717171717175,
+        "x1": 0.911766339869281,
+        "y1": 0.3082878787878788
+      },
+      "text": "This is what this paper is about: in it, a purely data-driven methodology to obtain a storage function is presented. The methodology consists in solving a linear optimization program (LP) formed with input/output/state data collected from the system, without the need for any priors. The LP yields the optimal parameter values of a dictionary parametrization of the storage function. A hyperparameter of the LP allows to make the solution robust to noise and to numerical errors.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117647058823529,
+        "y0": 0.31200000000000006,
+        "x1": 0.911766339869281,
+        "y1": 0.4328207070707071
+      },
+      "text": "Recently, research on data-driven control has experimented a boost [1], [4] and a considerable amount of this work involves Lyapunov analysis. Among these works, the ones that deal with nonlinear systems usually consist of control synthesis [3] (as opposed to analysis), and rarely deal with passivity [9], [11]. Also, the vast majority of this work treats discrete-time systems, whereas this paper is devoted to continuous time systems.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117647058823529,
+        "y0": 0.43653282828282824,
+        "x1": 0.911766339869281,
+        "y1": 0.5573547979797979
+      },
+      "text": "I start by reviewing in Section II the basic definitions of passivity. Then the proposed data-driven method for determination of passivity and identification of the storage function will be presented in Section III. Results for a classical benchmark - the pendulum - are presented in Section IV. Various uses of the storage function are discussed in Section V. Finally, lines of future and present work are outlined in Section VI.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6622859477124183,
+        "y0": 0.5883472222222222,
+        "x1": 0.7612549019607843,
+        "y1": 0.6035037878787879
+      },
+      "text": "II. PASSIVITY",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117647058823529,
+        "y0": 0.6237045454545455,
+        "x1": 0.911766339869281,
+        "y1": 0.6992411616161616
+      },
+      "text": "An overview of the theory on passivity of continuous time dynamical systems is given in this Section. The presentation follows the fundamental reference [13]. The class of systems considered are SISO (single-input-single-output) systems in the standard input-affine form:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.6357696078431373,
+        "y0": 0.7188055555555556,
+        "x1": 0.9117647058823529,
+        "y1": 0.7339621212121212
+      },
+      "text": "x˙ = f(x) + g(x).u (1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.6370849673202614,
+        "y0": 0.7376742424242424,
+        "x1": 0.9117647058823529,
+        "y1": 0.752830808080808
+      },
+      "text": "y = h(x) (2)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117647058823529,
+        "y0": 0.7723952020202021,
+        "x1": 0.9117712418300654,
+        "y1": 0.8479318181818182
+      },
+      "text": "where x ∈ Rn is the state, u ∈ R and y ∈ R are the input and output respectively, f(·) : Rn → Rn and g(·) : Rn → Rn are vector fields, f(0) = 0 - the origin is an equilibrium of the autonomous system - and h(·) : Rn → R is the output function.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117647058823529,
+        "y0": 0.851189393939394,
+        "x1": 0.911766339869281,
+        "y1": 0.9357209595959596
+      },
+      "text": "Definition 1: Dissipativity and Passivity. Let ω(·,·) : R × R → R be an integrable function, called the supply rate. A system in the form (1)-(2) is said to be dissipative with supply rate ω(u(t),y(t)) if there exists a function S(·) : Rn → R satisfying, in some domain of the state",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.8343451000400819,
+  "model_load_seconds": null,
+  "peak_rss_mb": 131.48046875,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "opendataloader_version": "2.5.0",
+    "table_method": "cluster",
+    "include_header_footer": true,
+    "reading_order": "xycut",
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "F:\\vnpt\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe"
+  }
+}

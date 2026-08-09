@@ -1,0 +1,1302 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.09021_pg3",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "with an unknown regularization functional of the inverse problem as an equivalent constrained minimization problem with an unknown feasible region depending on the undetermined regu- larization functional. The CNN in [24] is then designed to learn the a priori information of the shape of the unknown contrast by using a normalization technique in the training process and trained to act like a projector which is helpful for projecting the solution into the feasible region of the constrained optimization problem associated with the inverse problem; see [24] for details. In this paper, we propose two iterative regularization algorithms that incorporate the a priori information of the shape and location (i.e., the support) of the unknown contrast, which is learned by a deep neural network from a direct imaging method, as regularization strategies for recovering the contrast of the inhomogeneous medium from the far-field data. Precisely, we first train a deep neural network to retrieve the a priori information of the support of the unknown contrast from a direct imaging method (e.g., the one in [36]). Then, the learned a priori information is incorporated into the projected Landweber method in our first algorithm, whilst the learned a priori information is used to construct the regularization functional for the variational regularization formulation of the inverse problem which is finally solved by an iteration algorithm in our second algorithm. It is worth noting that the trained deep neural network in this paper is used to provide a good approximation of the support of the unknown contrast (which is indeed confirmed in the numerical examples), while the trained deep neural network in our previous work [24] focused on learning the a priori information of the shape of the unknown contrast. Extensive numerical experiments demonstrate that our algorithms have a satisfactory reconstruction performance, strong robustness to noise and good generalization ability. The rest of this paper is organized as follows. Section 2 presents the direct and inverse medium scattering problems considered in this paper. In Section 3, we propose a deep neural network that can retrieve the support of the unknown contrast based on the direct imaging method. In Section 4, we present two iterative reconstruction algorithms that incorporate the a priori information of the support of the unknown contrast for solving the inverse medium scat- tering problem. Numerical experiments are carried out in Section 5 to illustrate the effectiveness of our algorithms. Some conclusions and remarks are given in Section 6.\n\n# 2 Problem formulation\n\nIn this section, we introduce the direct and inverse medium scattering problems considered in this paper. Consider an inhomogeneous medium in R² characterized by the piecewise smooth refractive index n(x) > 0. Define m(x) := n(x) − 1 which is the contrast of the inhomogeneous\n\n|medium and assumed to be compactly supported in a disk with radius ρ, i.e., supp(m) ⊂ B|||:=|\n|---|---|---|---|\n||i i|ikx·d||\n|i s||i|s|\n\nρ {x ∈ R² : |x| < ρ}. Let u i = u i (x, d) := e ikx·d be an incident plane wave with the incident direction d ∈ S¹ := {x ∈ R² : |x| = 1} and the wave number k > 0. Then the total field u = u + u, which is the sum of the incident field u and the scattered field u, satisfies the reduced wave equation △u(x) + k²n(x)u(x) = 0 in R², (2.1)\n\nand the scattered field u s is assumed to satisfy the Sommerfeld radiation condition ( s ) 1 ∂u s lim r² − iku = 0, r = |x|. (2.2) r→∞ ∂r\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.09092283248901367,
+        "x1": 0.8586295134101818,
+        "y1": 0.10469694811888419
+      },
+      "text": "with an unknown regularization functional of the inverse problem as an equivalent constrained",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.10804427272141581,
+        "x1": 0.85862721960529,
+        "y1": 0.12181838835128633
+      },
+      "text": "minimization problem with an unknown feasible region depending on the undetermined regu-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.1251652505662706,
+        "x1": 0.8586280174504698,
+        "y1": 0.1389393661961411
+      },
+      "text": "larization functional. The CNN in [24] is then designed to learn the a priori information of the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.14228669079867273,
+        "x1": 0.8588258830550449,
+        "y1": 0.15606080642854325
+      },
+      "text": "shape of the unknown contrast by using a normalization technique in the training process and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.15940813103107487,
+        "x1": 0.8586280174504698,
+        "y1": 0.1731822466609454
+      },
+      "text": "trained to act like a projector which is helpful for projecting the solution into the feasible region",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.17652910887592965,
+        "x1": 0.8584316478056067,
+        "y1": 0.19030322450580017
+      },
+      "text": "of the constrained optimization problem associated with the inverse problem; see [24] for details.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14529413958780127,
+        "y0": 0.1936505491083319,
+        "x1": 0.4630126953125,
+        "y1": 0.2074246647382023
+      },
+      "text": "In this paper, we propose two iterative",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4719608281952104,
+        "y0": 0.1936505491083319,
+        "x1": 0.5785205317478553,
+        "y1": 0.2074246647382023
+      },
+      "text": "regularization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.587451211767259,
+        "y0": 0.1936505491083319,
+        "x1": 0.8586278179891749,
+        "y1": 0.2074246647382023
+      },
+      "text": "algorithms that incorporate the a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.21077152695318668,
+        "x1": 0.8588238884420956,
+        "y1": 0.2245456425830571
+      },
+      "text": "priori information of the shape and location (i.e., the support) of the unknown contrast, which",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.22789296718558882,
+        "x1": 0.8584337421492034,
+        "y1": 0.24166708281545923
+      },
+      "text": "is learned by a deep neural network from a direct imaging method, as regularization strategies",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.24501440741799096,
+        "x1": 0.7721922132703993,
+        "y1": 0.2587885230478614
+      },
+      "text": "for recovering the contrast of the inhomogeneous medium from the far-field data.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7860778609132455,
+        "y0": 0.24501440741799096,
+        "x1": 0.8584309496910744,
+        "y1": 0.2587885230478614
+      },
+      "text": "Precisely,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.2619838762764979,
+        "x1": 0.8586273193359375,
+        "y1": 0.2757579919063684
+      },
+      "text": "we first train a deep neural network to retrieve the a priori information of the support of the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.27910485412135266,
+        "x1": 0.68768310546875,
+        "y1": 0.2928789697512232
+      },
+      "text": "unknown contrast from a direct imaging method (e.g., the one in [36]).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7003925797206904,
+        "y0": 0.27910485412135266,
+        "x1": 0.8586276185278799,
+        "y1": 0.2928789697512232
+      },
+      "text": "Then, the learned a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.2962262943537548,
+        "x1": 0.8584313486136642,
+        "y1": 0.3100004099836253
+      },
+      "text": "priori information is incorporated into the projected Landweber method in our first algorithm,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.31334773458615695,
+        "x1": 0.8588236889808006,
+        "y1": 0.32712185021602747
+      },
+      "text": "whilst the learned a priori information is used to construct the regularization functional for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.3304687124310117,
+        "x1": 0.8588236889808006,
+        "y1": 0.34424282806088224
+      },
+      "text": "the variational regularization formulation of the inverse problem which is finally solved by an",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.34759019119570955,
+        "x1": 0.4690549763199551,
+        "y1": 0.3613643068255801
+      },
+      "text": "iteration algorithm in our second algorithm.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4817647497638378,
+        "y0": 0.34759019119570955,
+        "x1": 0.8588234895195057,
+        "y1": 0.3613643068255801
+      },
+      "text": "It is worth noting that the trained deep neural",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.36471116904056433,
+        "x1": 0.8590216543160233,
+        "y1": 0.37848528467043485
+      },
+      "text": "network in this paper is used to provide a good approximation of the support of the unknown",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.38183264780526205,
+        "x1": 0.8588233897888583,
+        "y1": 0.39560676343513257
+      },
+      "text": "contrast (which is indeed confirmed in the numerical examples), while the trained deep neural",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.3989541265699599,
+        "x1": 0.8586268206827001,
+        "y1": 0.4127282421998303
+      },
+      "text": "network in our previous work [24] focused on learning the a priori information of the shape of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.41607510441481466,
+        "x1": 0.8584313486136642,
+        "y1": 0.4298492200446852
+      },
+      "text": "the unknown contrast. Extensive numerical experiments demonstrate that our algorithms have",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.4331965831795124,
+        "x1": 0.8582354776220384,
+        "y1": 0.4469706988093829
+      },
+      "text": "a satisfactory reconstruction performance, strong robustness to noise and good generalization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.4501660135057237,
+        "x1": 0.1701963836071538,
+        "y1": 0.46394012913559424
+      },
+      "text": "ability.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14529395259283726,
+        "y0": 0.46728749227042155,
+        "x1": 0.5161142411574818,
+        "y1": 0.48106160790029195
+      },
+      "text": "The rest of this paper is organized as follows.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5305882871540544,
+        "y0": 0.46728749227042155,
+        "x1": 0.85862721960529,
+        "y1": 0.48106160790029195
+      },
+      "text": "Section 2 presents the direct and inverse",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764685936223447,
+        "y0": 0.48440897103511926,
+        "x1": 0.5414082645590789,
+        "y1": 0.4981830866649898
+      },
+      "text": "medium scattering problems considered in this paper.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5513723535475388,
+        "y0": 0.48440897103511926,
+        "x1": 0.8588230905969159,
+        "y1": 0.4981830866649898
+      },
+      "text": "In Section 3, we propose a deep neural",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764685936223447,
+        "y0": 0.501529948879974,
+        "x1": 0.8584310494217218,
+        "y1": 0.5153040645098446
+      },
+      "text": "network that can retrieve the support of the unknown contrast based on the direct imaging",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764685936223447,
+        "y0": 0.5186514276446719,
+        "x1": 0.8586296131408292,
+        "y1": 0.5324255432745423
+      },
+      "text": "method. In Section 4, we present two iterative reconstruction algorithms that incorporate the a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764685936223447,
+        "y0": 0.5357724054895265,
+        "x1": 0.8584317475362541,
+        "y1": 0.5495465211193971
+      },
+      "text": "priori information of the support of the unknown contrast for solving the inverse medium scat-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764685936223447,
+        "y0": 0.5528938842542244,
+        "x1": 0.8582348792381536,
+        "y1": 0.5666679998840949
+      },
+      "text": "tering problem. Numerical experiments are carried out in Section 5 to illustrate the effectiveness",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764685936223447,
+        "y0": 0.5700153630189222,
+        "x1": 0.6817642910028595,
+        "y1": 0.5837894786487926
+      },
+      "text": "of our algorithms. Some conclusions and remarks are given in Section 6.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764685936223447,
+        "y0": 0.6090087782252919,
+        "x1": 0.1308209787007251,
+        "y1": 0.6271226671006944
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15725432501898873,
+        "y0": 0.6090087782252919,
+        "x1": 0.39705746469934,
+        "y1": 0.6271226671006944
+      },
+      "text": "Problem formulation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764685936223447,
+        "y0": 0.6441058775391242,
+        "x1": 0.8588237887114482,
+        "y1": 0.6578799931689947
+      },
+      "text": "In this section, we introduce the direct and inverse medium scattering problems considered in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764685936223447,
+        "y0": 0.6612273563038219,
+        "x1": 0.20258428536209405,
+        "y1": 0.6750014719336923
+      },
+      "text": "this paper.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21294093911164727,
+        "y0": 0.6612273563038219,
+        "x1": 0.5492153791041156,
+        "y1": 0.6750014719336923
+      },
+      "text": "Consider an inhomogeneous medium in R²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5568625256906148,
+        "y0": 0.6612273563038219,
+        "x1": 0.8588235892501532,
+        "y1": 0.6750014719336923
+      },
+      "text": "characterized by the piecewise smooth",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764685936223447,
+        "y0": 0.6783483148825289,
+        "x1": 0.8586244271471609,
+        "y1": 0.6921224305123994
+      },
+      "text": "refractive index n(x) > 0. Define m(x) := n(x) − 1 which is the contrast of the inhomogeneous",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764643550698274,
+        "y0": 0.6954697743810789,
+        "x1": 0.827058754715265,
+        "y1": 0.7092438900109493
+      },
+      "text": "medium and assumed to be compactly supported in a disk with radius ρ, i.e., supp(m) ⊂ B",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8270588793785744,
+        "y0": 0.7013019383555711,
+        "x1": 0.8341177148756638,
+        "y1": 0.7113652084812974
+      },
+      "text": "ρ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8399999281939339,
+        "y0": 0.6954697743810789,
+        "x1": 0.8588234895195057,
+        "y1": 0.7092438900109493
+      },
+      "text": ":=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764700895820568,
+        "y0": 0.7125912338796287,
+        "x1": 0.1843137055440666,
+        "y1": 0.7263653495094993
+      },
+      "text": "{x ∈ R²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19294129165948606,
+        "y0": 0.7125912338796287,
+        "x1": 0.3303911296370762,
+        "y1": 0.7263653495094993
+      },
+      "text": ": |x| < ρ}. Let u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33039212694355086,
+        "y0": 0.7113018782451899,
+        "x1": 0.335097992342282,
+        "y1": 0.7213651483709163
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3439216613769531,
+        "y0": 0.7125912338796287,
+        "x1": 0.3758822921054815,
+        "y1": 0.7263653495094993
+      },
+      "text": "= u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37588201784620096,
+        "y0": 0.7113018782451899,
+        "x1": 0.3805878832449321,
+        "y1": 0.7213651483709163
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3813724642485575,
+        "y0": 0.7125912338796287,
+        "x1": 0.4654892566157322,
+        "y1": 0.7263653495094993
+      },
+      "text": "(x, d) := e",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46549030378753065,
+        "y0": 0.7113018782451899,
+        "x1": 0.4966670516269659,
+        "y1": 0.7213651483709163
+      },
+      "text": "ikx·d",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.505097931506587,
+        "y0": 0.7125912338796287,
+        "x1": 0.85862721960529,
+        "y1": 0.7263653495094993
+      },
+      "text": "be an incident plane wave with the incident",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764695909288195,
+        "y0": 0.7297121924583359,
+        "x1": 0.2484309875887204,
+        "y1": 0.7434863080882063
+      },
+      "text": "direction d ∈ S¹",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2576470468558517,
+        "y0": 0.7297121924583359,
+        "x1": 0.35196079927332263,
+        "y1": 0.7434863080882063
+      },
+      "text": ":= {x ∈ R²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36098028943429583,
+        "y0": 0.7297121924583359,
+        "x1": 0.6863099640490962,
+        "y1": 0.7434863080882063
+      },
+      "text": ": |x| = 1} and the wave number k > 0.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7001958111532374,
+        "y0": 0.7297121924583359,
+        "x1": 0.8588230905969159,
+        "y1": 0.7434863080882063
+      },
+      "text": "Then the total field",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764685936223447,
+        "y0": 0.7468336519568857,
+        "x1": 0.165882322523329,
+        "y1": 0.7606077675867562
+      },
+      "text": "u = u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16588204826404845,
+        "y0": 0.7455442963224469,
+        "x1": 0.17058793859544144,
+        "y1": 0.7556075664481732
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17607849719477633,
+        "y0": 0.7468336519568857,
+        "x1": 0.2049020380755655,
+        "y1": 0.7606077675867562
+      },
+      "text": "+ u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20490176381628497,
+        "y0": 0.7455442963224469,
+        "x1": 0.21137235055561937,
+        "y1": 0.7556075664481732
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2121564079733456,
+        "y0": 0.7468336519568857,
+        "x1": 0.5394112580741932,
+        "y1": 0.7606077675867562
+      },
+      "text": ", which is the sum of the incident field u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5394110087475745,
+        "y0": 0.7455442963224469,
+        "x1": 0.5441168990789675,
+        "y1": 0.7556075664481732
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5519601659837112,
+        "y0": 0.7468336519568857,
+        "x1": 0.7474503361321743,
+        "y1": 0.7606077675867562
+      },
+      "text": "and the scattered field u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.747449438556347,
+        "y0": 0.7455442963224469,
+        "x1": 0.7539200128293505,
+        "y1": 0.7556075664481732
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7547046935636234,
+        "y0": 0.7468336519568857,
+        "x1": 0.8586264217601103,
+        "y1": 0.7606077675867562
+      },
+      "text": ", satisfies the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1176458620557598,
+        "y0": 0.7639546105355928,
+        "x1": 0.2943125706092984,
+        "y1": 0.7777287261654633
+      },
+      "text": "reduced wave equation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3521556729584738,
+        "y0": 0.7809245610477948,
+        "x1": 0.44058626461652367,
+        "y1": 0.7946986766776654
+      },
+      "text": "△u(x) + k²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44156661688112747,
+        "y0": 0.7809245610477948,
+        "x1": 0.5432235119389552,
+        "y1": 0.7946986766776654
+      },
+      "text": "n(x)u(x) = 0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5788205215354371,
+        "y0": 0.7809245610477948,
+        "x1": 0.6184297449448529,
+        "y1": 0.7946986766776654
+      },
+      "text": "in R²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6194100972094567,
+        "y0": 0.7809245610477948,
+        "x1": 0.6243120579937704,
+        "y1": 0.7946986766776654
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8221552231732536,
+        "y0": 0.7809245610477948,
+        "x1": 0.8584297529233047,
+        "y1": 0.7946986766776654
+      },
+      "text": "(2.1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764541326784621,
+        "y0": 0.8062273324137986,
+        "x1": 0.3082336475646574,
+        "y1": 0.8200014480436691
+      },
+      "text": "and the scattered field u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3082340215545854,
+        "y0": 0.8049384776992027,
+        "x1": 0.31470459582758886,
+        "y1": 0.815001747824929
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3213716394761029,
+        "y0": 0.8062273324137986,
+        "x1": 0.7650967267603656,
+        "y1": 0.8200014480436691
+      },
+      "text": "is assumed to satisfy the Sommerfeld radiation condition",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39450980791079454,
+        "y0": 0.8245589564544986,
+        "x1": 0.4076470518423841,
+        "y1": 0.8383330720843691
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43019647535934946,
+        "y0": 0.8334214061197609,
+        "x1": 0.4366670496323529,
+        "y1": 0.8434846762454871
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49450987772224775,
+        "y0": 0.8245588408576118,
+        "x1": 0.5076470967211755,
+        "y1": 0.8383329564874822
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38274381051655687,
+        "y0": 0.8404843265360051,
+        "x1": 0.3886261734307981,
+        "y1": 0.8480317761199643
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40960823009216707,
+        "y0": 0.8347107617541997,
+        "x1": 0.43019672468596815,
+        "y1": 0.8484848773840702
+      },
+      "text": "∂u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4872552210988562,
+        "y0": 0.8420579385275793,
+        "x1": 0.4937257953718597,
+        "y1": 0.8521212086533055
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33980318455914266,
+        "y0": 0.8439547269031255,
+        "x1": 0.38862746992921515,
+        "y1": 0.857728842532996
+      },
+      "text": "lim r²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4433334948969822,
+        "y0": 0.8439529544175273,
+        "x1": 0.4872547723109426,
+        "y1": 0.8577270700473978
+      },
+      "text": "− iku",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5127454770156761,
+        "y0": 0.8439530314821185,
+        "x1": 0.5453299728094363,
+        "y1": 0.857727147111989
+      },
+      "text": "= 0,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5839216444227431,
+        "y0": 0.8439530314821185,
+        "x1": 0.6411760616925807,
+        "y1": 0.857727147111989
+      },
+      "text": "r = |x|.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.822156469806347,
+        "y0": 0.8439530314821185,
+        "x1": 0.8584310494217218,
+        "y1": 0.857727147111989
+      },
+      "text": "(2.2)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33509716956444036,
+        "y0": 0.8559989038139882,
+        "x1": 0.3696070901708665,
+        "y1": 0.8660621739397145
+      },
+      "text": "r→∞",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41411765104804943,
+        "y0": 0.8534986081749502,
+        "x1": 0.4325493207943985,
+        "y1": 0.8672727238048207
+      },
+      "text": "∂r",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4837251052357792,
+        "y0": 0.9022863609622224,
+        "x1": 0.4925486246744792,
+        "y1": 0.9160604765920928
+      },
+      "text": "3",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.026453599974047393,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

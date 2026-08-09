@@ -91,7 +91,7 @@ def test_metric_tra_diem_ngoai_khoang_thi_no():
 # --------------------------------------------------------------------------
 
 
-def _rows(values, na=(), failed=0) -> list[MetricResult]:
+def _rows(values, na=(), failed=0, chua_nhan=0) -> list[MetricResult]:
     rows = [
         MetricResult(metric="m", engine="e", doc_id=f"d{i}", value=v)
         for i, v in enumerate(values)
@@ -109,6 +109,13 @@ def _rows(values, na=(), failed=0) -> list[MetricResult]:
             value=None, na_reason=NAReason.MISSING_CAPABILITY,
         )
         for i in range(len(na))
+    ]
+    rows += [
+        MetricResult(
+            metric="m", engine="e", doc_id=f"g{i}",
+            value=None, na_reason=NAReason.NO_GROUND_TRUTH,
+        )
+        for i in range(chua_nhan)
     ]
     return rows
 
@@ -165,6 +172,40 @@ def test_hong_het_thi_o_khong_in_0_000():
     o = agg.cell()
     assert "0.000" not in o
     assert o == "— (10 hỏng, 0 chấm được)"
+
+
+def test_vai_tai_lieu_hong_khong_bat_applicable_cho_metric_thieu_nang_luc():
+    """Ca hồi quy. Tài liệu hỏng ở cấp engine sinh `ENGINE_FAILED` cho **mọi** metric,
+    kể cả metric engine không có năng lực chạm tới. Lấy `denom > 0` làm `applicable`
+    thì 10 tài liệu hỏng bật sáng cả 14 metric, bảng in "— (10 hỏng, 0 chấm được)" ở
+    mọi ô, và 194 tài liệu chạy tốt biến mất khỏi báo cáo.
+
+    Đúng: 194 tài liệu N/A vì thiếu năng lực ⇒ metric này **không áp dụng**, bất kể
+    có bao nhiêu tài liệu hỏng bên cạnh.
+    """
+    agg = aggregate(_rows([], na=tuple(range(194)), failed=10))
+    assert agg.n_thieu_nang_luc == 194
+    assert agg.applicable is False
+    assert agg.cell() == "N/A"
+
+
+def test_thieu_nhan_khac_thieu_nang_luc():
+    """Engine **có** năng lực, bộ mẫu chưa có nhãn hợp loại. In `N/A` ở đây là đổ lỗi
+    cho engine vì thiếu sót của bộ mẫu — hai chuyện khác hẳn nhau khi quyết định phải
+    đi bổ sung nhãn hay đi đổi engine."""
+    agg = aggregate(_rows([], chua_nhan=204))
+    assert agg.n_chua_nhan == 204
+    assert agg.n_thieu_nang_luc == 0
+    assert agg.applicable is True
+    assert agg.penalized_mean is None      # mẫu số rỗng — vẫn không được khẳng định
+    assert agg.cell() == "chưa có nhãn (204 tài liệu)"
+
+
+def test_thieu_nhan_van_uu_tien_hon_bao_hong():
+    """Vừa thiếu nhãn vừa có tài liệu hỏng: nói "chưa có nhãn" mới đúng nguyên nhân
+    gốc — chấm được hay không là do nhãn, không phải do 10 tài liệu hỏng kia."""
+    agg = aggregate(_rows([], chua_nhan=194, failed=10))
+    assert agg.cell() == "chưa có nhãn (194 tài liệu)"
 
 
 def test_diem_thap_that_van_in_binh_thuong():

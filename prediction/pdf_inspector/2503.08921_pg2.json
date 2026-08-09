@@ -1,0 +1,1288 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.08921_pg2",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "processes (Mariet and Sra,2015), robustness of neural networks (Awasthi et al.,2024b). We refer to (Le Thi and Pham Dinh,2018) for a recent survey on the history, development, and applications of DC programming.\n\n## 1.1Motivation\n\nFW experienced a surge in popularity in the early 2010s for solving large-scale convex optimization problems in machine learning. However, machine learning underwent a paradigm shift with the rise of deep neural networks, moving toward nonconvex optimization. While FW offered desirable properties, such as structured updates (*e.g.*, sparse or binary-valued solutions) that made it attractive for scalable optimization, it struggled to perform effectively in practical nonconvex settings, leading to a decline in interest.\n\nWhile a precise technical understanding of which methods are effective for different types of nonconvex optimization problems remains incomplete, our goal in this paper is to develop a flexible projection- free algorithmic framework that preserves the scalability advantages of FW while leveraging the DC structure of the problem. Since DC decompositions are not unique, carefully selecting a decomposition allows us to derive algorithms tailored to address practical limitations in specific problem settings, ultimately leading to improved computational efficiency and better local solutions.\n\n## 1.2Summary of Contributions\n\nWith this background, let us summarize the key contributions of this paper.\n\n1. We design and investigate the convergence behavior of a general projection-free algorithmic framework, which we call *Frank-Wolfe for Difference of Convex problems* (Dc-Fw). This framework builds on the general template of DC Algorithm (DCA) (Tao et al.,1986) and employs FW to solve its subproblems. We show that Dc-Fw finds an *ϵ*-suboptimal first-order stationary point in *O*(*ϵ* *−*2 ) FW steps, matching the complexity of standard FW for smooth nonconvex minimization (Lacoste-Julien,2016). DC decomposition for any given function *ϕ* is not unique, and applying Dc-Fw to different decompositions of the same objective function yields different algorithms. We focus on the general template of *L*-smooth nonconvex minimization over a convex and compact set and examine two natural DC decompositions in detail.\n2. The first setting leads to a new nonconvex variant of the conditional gradient sliding algo- rithm (Lan and Zhou,2016), which reduces gradient computations by reusing the same gradient over multiple FW steps. As a result, the algorithm gradient complexity improves from *O*(*ϵ*\n*−*2 ) to *O*(*ϵ* *−*1 ), making it effective for problems where gradient computation is expensive, such as backpropagation in deep learning. Moreover, when the problem domain is strongly convex, the linear minimization oracle complexity also improves, from *O*(*ϵ* *−*2 ) to *O*(*ϵ* *−*3/2 ). The second setting yields an algorithm that follows an inexact proximal point method.\n\n3. Finally, we evaluate the empirical performance of the proposed framework against the standard FW algorithm through numerical experiments on quadratic assignment problems and neural network training for image classification tasks, including convolutional neural networks and transfer learning settings.\n# 2Related Work\n\nIn this section, we present related work and relevant background on DC programming and projection- free methods.\n\n## 2.1DC Algorithm\n\nMany problems in nonconvex optimization can be formulated as a DC program. A widely used approach for solving these problems is the DC Algorithm (DCA), a general framework originally\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13186437320085911,
+        "y0": 0.07247618232110531,
+        "x1": 0.8676522572835287,
+        "y1": 0.08530680338541663
+      },
+      "text": "processes (Mariet and Sra,2015), robustness of neural networks (Awasthi et al.,2024b). We refer to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13181535558762894,
+        "y0": 0.08782248183934371,
+        "x1": 0.8676518583609387,
+        "y1": 0.10040152193319918
+      },
+      "text": "(Le Thi and Pham Dinh,2018) for a recent survey on the history, development, and applications of DC",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13186437320085911,
+        "y0": 0.10291720038712626,
+        "x1": 0.23652050541896447,
+        "y1": 0.11549624048098173
+      },
+      "text": "programming.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.13570303868765787,
+        "x1": 0.27577628341375615,
+        "y1": 0.150797988429214
+      },
+      "text": "1.1Motivation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.16121607597428134,
+        "x1": 0.8676516464333129,
+        "y1": 0.17403411865234375
+      },
+      "text": "FW experienced a surge in popularity in the early 2010s for solving large-scale convex optimization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13186437320085911,
+        "y0": 0.17654972004167957,
+        "x1": 0.8676410874510123,
+        "y1": 0.18912876013553503
+      },
+      "text": "problems in machine learning. However, machine learning underwent a paradigm shift with the rise of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.19164567162292168,
+        "x1": 0.8696793699576184,
+        "y1": 0.20422471171677714
+      },
+      "text": "deep neural networks, moving toward nonconvex optimization. While FW offered desirable properties,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.20674039017070422,
+        "x1": 0.3374878627802032,
+        "y1": 0.2193194302645597
+      },
+      "text": "such as structured updates (",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3374950932521446,
+        "y0": 0.20674039017070422,
+        "x1": 0.3600836859809028,
+        "y1": 0.2193194302645597
+      },
+      "text": "e.g.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36008333692363664,
+        "y0": 0.20674039017070422,
+        "x1": 0.8676516464333129,
+        "y1": 0.2193194302645597
+      },
+      "text": ", sparse or binary-valued solutions) that made it attractive for scalable",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.22183510871848677,
+        "x1": 0.8676425709443933,
+        "y1": 0.23441414881234213
+      },
+      "text": "optimization, it struggled to perform effectively in practical nonconvex settings, leading to a decline in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.2369298272662692,
+        "x1": 0.19009369494868258,
+        "y1": 0.24950886736012468
+      },
+      "text": "interest.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13153921389112286,
+        "y0": 0.25961286491817903,
+        "x1": 0.8680655036876405,
+        "y1": 0.2721919050120344
+      },
+      "text": "While a precise technical understanding of which methods are effective for different types of nonconvex",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.27452013107261275,
+        "x1": 0.8703666138493158,
+        "y1": 0.2872878565932765
+      },
+      "text": "optimization problems remains incomplete, our goal in this paper is to develop a flexible projection-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.2896525871874106,
+        "x1": 0.8676416733685661,
+        "y1": 0.30238257514105904
+      },
+      "text": "free algorithmic framework that preserves the scalability advantages of FW while leveraging the DC",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.3048982535949861,
+        "x1": 0.8676490534364788,
+        "y1": 0.3174772936888416
+      },
+      "text": "structure of the problem. Since DC decompositions are not unique, carefully selecting a decomposition",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.31974131410772155,
+        "x1": 0.8696849548738766,
+        "y1": 0.3325719351720329
+      },
+      "text": "allows us to derive algorithms tailored to address practical limitations in specific problem settings,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.33508761362595996,
+        "x1": 0.7327134874131944,
+        "y1": 0.3476666537198153
+      },
+      "text": "ultimately leading to improved computational efficiency and better local solutions.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.36787345192649146,
+        "x1": 0.41990287631165746,
+        "y1": 0.3829684016680477
+      },
+      "text": "1.2Summary of Contributions",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13153921389112286,
+        "y0": 0.393625491797322,
+        "x1": 0.6811426449445338,
+        "y1": 0.40620453189117744
+      },
+      "text": "With this background, let us summarize the key contributions of this paper.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15270098517922795,
+        "y0": 0.41630856798152727,
+        "x1": 0.8676414739072712,
+        "y1": 0.42888760807538273
+      },
+      "text": "1. We design and investigate the convergence behavior of a general projection-free algorithmic",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305064980500665,
+        "y0": 0.4313416625514175,
+        "x1": 0.3615359636693219,
+        "y1": 0.4439835981889204
+      },
+      "text": "framework, which we call",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36629411285998775,
+        "y0": 0.4313416625514175,
+        "x1": 0.6777423534517973,
+        "y1": 0.4439835981889204
+      },
+      "text": "Frank-Wolfe for Difference of Convex problems",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6824967128778595,
+        "y0": 0.4313416625514175,
+        "x1": 0.8681037254582823,
+        "y1": 0.4439835981889204
+      },
+      "text": "(Dc-Fw). This framework",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305064980500665,
+        "y0": 0.44624765714009607,
+        "x1": 0.86764319426094,
+        "y1": 0.4590782782044074
+      },
+      "text": "builds on the general template of DC Algorithm (DCA) (Tao et al.,1986) and employs FW to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305064980500665,
+        "y0": 0.46159395665833447,
+        "x1": 0.5527070986679177,
+        "y1": 0.4741729967521898
+      },
+      "text": "solve its subproblems. We show that Dc-Fw finds an",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5576454112732333,
+        "y0": 0.46159395665833447,
+        "x1": 0.5652313232421875,
+        "y1": 0.4741729967521898
+      },
+      "text": "ϵ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5654346241670496,
+        "y0": 0.46159395665833447,
+        "x1": 0.8676518458946079,
+        "y1": 0.4741729967521898
+      },
+      "text": "-suboptimal first-order stationary point in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17325326508166744,
+        "y0": 0.4761602276503437,
+        "x1": 0.1867554857839946,
+        "y1": 0.4892676767676768
+      },
+      "text": "O",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18761111240760953,
+        "y0": 0.4761602276503437,
+        "x1": 0.1941925996269276,
+        "y1": 0.4892676767676768
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1945947759291705,
+        "y0": 0.47668863667382133,
+        "x1": 0.2021806754317938,
+        "y1": 0.4892676767676768
+      },
+      "text": "ϵ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20253921957576976,
+        "y0": 0.47474040768363257,
+        "x1": 0.21255592894709968,
+        "y1": 0.4847020235928622
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2127140518886591,
+        "y0": 0.47514192263285315,
+        "x1": 0.21889999489379086,
+        "y1": 0.4847020235928622
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21991829466975593,
+        "y0": 0.4761602276503437,
+        "x1": 0.8676540399688522,
+        "y1": 0.4892676767676768
+      },
+      "text": ") FW steps, matching the complexity of standard FW for smooth nonconvex minimization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1725130766824959,
+        "y0": 0.4916072096487488,
+        "x1": 0.6443229625427646,
+        "y1": 0.5043623567831637
+      },
+      "text": "(Lacoste-Julien,2016). DC decomposition for any given function",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6492451187831904,
+        "y0": 0.4917833166893082,
+        "x1": 0.658833322961346,
+        "y1": 0.5043623567831637
+      },
+      "text": "ϕ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6637565263735703,
+        "y0": 0.4916072096487488,
+        "x1": 0.8676468593622345,
+        "y1": 0.5043623567831637
+      },
+      "text": "is not unique, and applying",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305064980500665,
+        "y0": 0.5068780352370907,
+        "x1": 0.867641897762523,
+        "y1": 0.5194570753309462
+      },
+      "text": "Dc-Fw to different decompositions of the same objective function yields different algorithms. We",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305064980500665,
+        "y0": 0.5219739868183328,
+        "x1": 0.40700897515988815,
+        "y1": 0.5345530269121883
+      },
+      "text": "focus on the general template of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41245097740023745,
+        "y0": 0.5219739868183328,
+        "x1": 0.4215019575131485,
+        "y1": 0.5345530269121883
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42170585682189543,
+        "y0": 0.5219739868183328,
+        "x1": 0.8676460615170547,
+        "y1": 0.5345530269121883
+      },
+      "text": "-smooth nonconvex minimization over a convex and compact",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305062487234477,
+        "y0": 0.5370686668338198,
+        "x1": 0.5953379113689746,
+        "y1": 0.5496477069276752
+      },
+      "text": "set and examine two natural DC decompositions in detail.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15270094778023513,
+        "y0": 0.5597517430180251,
+        "x1": 0.8703595454396765,
+        "y1": 0.5723307831118805
+      },
+      "text": "2. The first setting leads to a new nonconvex variant of the conditional gradient sliding algo-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305064980500665,
+        "y0": 0.5748464615658075,
+        "x1": 0.8676472832174862,
+        "y1": 0.587425501659663
+      },
+      "text": "rithm (Lan and Zhou,2016), which reduces gradient computations by reusing the same gradient",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305064980500665,
+        "y0": 0.5896908321765938,
+        "x1": 0.8106403475493388,
+        "y1": 0.6025214532409051
+      },
+      "text": "over multiple FW steps. As a result, the algorithm gradient complexity improves from",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8156029196346507,
+        "y0": 0.5894140041235721,
+        "x1": 0.8291051528033089,
+        "y1": 0.6025214532409051
+      },
+      "text": "O",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8299607420279309,
+        "y0": 0.5894140041235721,
+        "x1": 0.8365422167809181,
+        "y1": 0.6025214532409051
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8369443806168301,
+        "y0": 0.5899424131470496,
+        "x1": 0.8445302925857843,
+        "y1": 0.6025214532409051
+      },
+      "text": "ϵ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8448872285730699,
+        "y0": 0.5879929125911058,
+        "x1": 0.8549039753433926,
+        "y1": 0.5979545285003354
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8550637438406352,
+        "y0": 0.5883944275403263,
+        "x1": 0.8612497367110907,
+        "y1": 0.5979545285003354
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8622663909313726,
+        "y0": 0.5894140041235721,
+        "x1": 0.8688479155496834,
+        "y1": 0.6025214532409051
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305064980500665,
+        "y0": 0.6047855507243763,
+        "x1": 0.18752963246862872,
+        "y1": 0.6176161717886877
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19272712009405,
+        "y0": 0.6045087226713546,
+        "x1": 0.20622934079637714,
+        "y1": 0.6176161717886877
+      },
+      "text": "O",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20708496741999208,
+        "y0": 0.6045087226713546,
+        "x1": 0.21366645463931014,
+        "y1": 0.6176161717886877
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21406861847522213,
+        "y0": 0.6050371316948322,
+        "x1": 0.22165453044417638,
+        "y1": 0.6176161717886877
+      },
+      "text": "ϵ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2220130621218214,
+        "y0": 0.6030876311388882,
+        "x1": 0.23202975902682035,
+        "y1": 0.6130492470481179
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23218790690104166,
+        "y0": 0.6034891460881089,
+        "x1": 0.2383738499061734,
+        "y1": 0.6130492470481179
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23939214968213848,
+        "y0": 0.6045087226713546,
+        "x1": 0.8676385817184947,
+        "y1": 0.6176161717886877
+      },
+      "text": "), making it effective for problems where gradient computation is expensive, such as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305064980500665,
+        "y0": 0.6198802307398632,
+        "x1": 0.43164650910820057,
+        "y1": 0.6327108518041746
+      },
+      "text": "backpropagation in deep learning.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44157589183134194,
+        "y0": 0.6198802307398632,
+        "x1": 0.8696853537964665,
+        "y1": 0.6327108518041746
+      },
+      "text": "Moreover, when the problem domain is strongly convex,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305064980500665,
+        "y0": 0.6351007403749408,
+        "x1": 0.6295008690528621,
+        "y1": 0.6478055703519571
+      },
+      "text": "the linear minimization oracle complexity also improves, from",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6344330232906965,
+        "y0": 0.6346981212346241,
+        "x1": 0.6479352564593546,
+        "y1": 0.6478055703519571
+      },
+      "text": "O",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6487908456839767,
+        "y0": 0.6346981212346241,
+        "x1": 0.6553723204369638,
+        "y1": 0.6478055703519571
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6557744842728758,
+        "y0": 0.6352265302581017,
+        "x1": 0.6633603962418301,
+        "y1": 0.6478055703519571
+      },
+      "text": "ϵ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6637189279194751,
+        "y0": 0.6332783012679128,
+        "x1": 0.673735624824474,
+        "y1": 0.6432399171771426
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6738937477660335,
+        "y0": 0.6336798162171335,
+        "x1": 0.6800796907711653,
+        "y1": 0.6432399171771426
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6810979905471303,
+        "y0": 0.6346981212346241,
+        "x1": 0.7069514156167024,
+        "y1": 0.6478055703519571
+      },
+      "text": ") to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7118905260671977,
+        "y0": 0.6346981212346241,
+        "x1": 0.7253927592358558,
+        "y1": 0.6478055703519571
+      },
+      "text": "O",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7262483484604779,
+        "y0": 0.6346981212346241,
+        "x1": 0.7328298232134651,
+        "y1": 0.6478055703519571
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7332319870493771,
+        "y0": 0.6352265302581017,
+        "x1": 0.7408178990183313,
+        "y1": 0.6478055703519571
+      },
+      "text": "ϵ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7411764306959763,
+        "y0": 0.6332783012679128,
+        "x1": 0.7511931276009753,
+        "y1": 0.6432399171771426
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7513512505425347,
+        "y0": 0.6342997695460464,
+        "x1": 0.7562349107530382,
+        "y1": 0.6418472444168245
+      },
+      "text": "3",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.755016301971635,
+        "y0": 0.6336798162171335,
+        "x1": 0.7625136531256382,
+        "y1": 0.6432399171771426
+      },
+      "text": "/",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7619803434883068,
+        "y0": 0.6356924423063643,
+        "x1": 0.7668640036988102,
+        "y1": 0.6432399171771426
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7678806579190921,
+        "y0": 0.6346981212346241,
+        "x1": 0.8676551370059743,
+        "y1": 0.6478055703519571
+      },
+      "text": "). The second",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305064980500665,
+        "y0": 0.6503212102735885,
+        "x1": 0.7139449026070389,
+        "y1": 0.6629002503674439
+      },
+      "text": "setting yields an algorithm that follows an inexact proximal point method.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.152700972712897,
+        "y0": 0.6730055580235491,
+        "x1": 0.16491003597483916,
+        "y1": 0.6855845981174045
+      },
+      "text": "3.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305064980500665,
+        "y0": 0.6730055580235491,
+        "x1": 0.8676537657095715,
+        "y1": 0.6855845981174045
+      },
+      "text": "Finally, we evaluate the empirical performance of the proposed framework against the standard",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305064980500665,
+        "y0": 0.6878486763347279,
+        "x1": 0.86764319426094,
+        "y1": 0.7006792973990392
+      },
+      "text": "FW algorithm through numerical experiments on quadratic assignment problems and neural",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305064980500665,
+        "y0": 0.7029433756163626,
+        "x1": 0.86764319426094,
+        "y1": 0.715773996680674
+      },
+      "text": "network training for image classification tasks, including convolutional neural networks and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17305064980500665,
+        "y0": 0.7182896558684533,
+        "x1": 0.3580913169711244,
+        "y1": 0.7308686959623086
+      },
+      "text": "transfer learning settings.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.7544416839426213,
+        "x1": 0.3145403394512102,
+        "y1": 0.772555572818024
+      },
+      "text": "2Related Work",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.7896027817870631,
+        "x1": 0.8703711017284518,
+        "y1": 0.8021818218809186
+      },
+      "text": "In this section, we present related work and relevant background on DC programming and projection-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.8046974810686979,
+        "x1": 0.23121383766722836,
+        "y1": 0.8172765211625532
+      },
+      "text": "free methods.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.8374833386353773,
+        "x1": 0.3061135983934589,
+        "y1": 0.8525782883769334
+      },
+      "text": "2.1DC Algorithm",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.86298376863653,
+        "x1": 0.7451192319782731,
+        "y1": 0.8758143897008415
+      },
+      "text": "Many problems in nonconvex optimization can be formulated as a DC program.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7559618981055964,
+        "y0": 0.86298376863653,
+        "x1": 0.8676426706750409,
+        "y1": 0.8758143897008415
+      },
+      "text": "A widely used",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.8780784679181648,
+        "x1": 0.8682735667509192,
+        "y1": 0.8909090889824761
+      },
+      "text": "approach for solving these problems is the DC Algorithm (DCA), a general framework originally",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49592974295024,
+        "y0": 0.9160674232425112,
+        "x1": 0.5040691101473141,
+        "y1": 0.9286464633363666
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.02615330001572147,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

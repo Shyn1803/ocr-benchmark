@@ -1,0 +1,1050 @@
+{
+  "schema_version": 2,
+  "engine": "opendataloader",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.07453_pg68",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "# J Guarantee for UncertainStateAction\n\nIn this section, we present the main guarantee of UncertainStateAction (Algorithm 6) as a standalone algorithm; see Lemma J.1. Then, in Lemma J.2, we provide its guarantee when used as a subroutine within MTSS (Algorithm 4). For a discussion of the motivation for these results, we refer back to Section I.1.3.\n\nLemma J.1. Consider a call to UncertainStateActionh(C0:h−1, π1:h,Σh;a,N,N) (Algorithm 6) for some given h,C0:h−1, π1:h,Σh, a ∈ A, N, and N such that σmin(Σh) ≥ λ, for some λ ∈ (0,1). Then, for any δ′ ∈ (0,1) and ζ ∈ (0,1/2), with probability at least 1 − δ′, the output (ˆxh,aˆh) of UncertainStateAction satisfies:\n\n- • For all ℓ ∈ [0..h − 1] and (xℓ,aℓ) ∈ Cℓ,\n\nP π\n\nℓ+1:h ∥φh(xh,ah)∥2Σ−1\n\nh\n\n> 2 ζ ∨ ∥φh(ˆxh,aˆh)∥2Σ−1\n\nh\n\n| xℓ = xℓ,aℓ = aℓ ≤ max h∈[H]\n\n4log 16H|C\n\nh| λδ′ζ\n\nN\n\n, (90)\n\nwhere φh(·,·) := ϕh(·,·) − ϕh(·,a).\n\n- • Furthermore, there exists Xh,span ⊆ X such that for all ℓ ∈ [0..h − 1] and (xℓ,aℓ) ∈ Cℓ, P π\n\n\n[xh ∈ Xh,span | xℓ = xℓ,aℓ = aℓ] ≥ 1 − maxh∈[H] N4 log 32HN|C\n\nℓ+1:h−1\n\nh| λδ′ζ and\n\n> 2 ζ ∨ ∥φh(ˆxh,aˆh)∥2Σ−1\n\nh,ref(·|xh) ∥φh(xh,a)∥2Σ−1\n\n∀xh ∈ Xh,span, Pa∼π\n\nh\n\nh\n\n4log 16H|C\n\nh| λδ′ζ\n\n. (91)\n\n≤ max\n\nN\n\nh∈[H]\n\nProof of Lemma J.1. Fix δ′ ∈ (0,1) and ζ ∈ (0,1/2), and let Γ := {ζ,2ζ,...,⌈ζλ4 ⌉ζ}. Further, for ℓ ∈ [0..h − 1] and (xℓ,aℓ) ∈ Cℓ, let Dℓ(xℓ,aℓ) be the dataset in Algorithm 6 when the algorithm returns. Note that Dℓ(xℓ,aℓ) consists of N i.i.d. pairs sampled from P π\n\n[(xh,ah) = · | xℓ = xℓ,aℓ = aℓ]. Thus, by Freedman’s inequality (Lemma C.2) and the union bound over ℓ ∈ [0..h − 1], (xℓ,aℓ) ∈ Cℓ, and γ ∈ Γ, there is an event E of probability at least 1 − δ′/2 under which,\n\nℓ+1:h\n\nℓ+1:h ∥φh(xh,ah)∥2Σ−1\n\n∀ℓ ∈ [0..h − 1],∀(xℓ,aℓ) ∈ Cℓ,∀γ ∈ Γ, P π\n\n≥ γ | xℓ = xℓ,aℓ = aℓ ≤\n\nh\n\n4log(2H|Cℓ||Γ|/δ′) N\n\n2 N\n\nI ∥φh(x,a)∥2Σ−1\n\n> γ +\n\n,\n\nh\n\n(x,a)∈Dℓ(xℓ,aℓ)\n\n4log 16H|C\n\nℓ| λδ′ζ\n\n2 N\n\nI ∥φh(x,a)∥2Σ−1\n\n, (92)\n\n≤\n\n> γ +\n\nN\n\nh\n\n(x,a)∈Dℓ(xℓ,aℓ)\n\nwhere the last step follows by the facts that |Γ| ≤ ⌈ζλ4 ⌉, λ ∈ (0,1), and ζ ∈ (0,1/2). Now, since σmin(Σh) ≥ λ and sup(x,a)∈X×A ∥ϕh(·,·)∥ ≤ 1 (Assumption H.1), we have that sup(x,a)∈X×A ∥φh(x,a)∥2Σ−1\n\n≤ λ4. Therefore, by the definition of Γ, we have that for all ℓ ∈ [0..h−1] and (xℓ,aℓ) ∈ Cℓ, there exists γℓ(xℓ,aℓ) ∈ Γ such that\n\nh\n\n∥φh(x,a)∥2Σ−1\n\n≤ γℓ(xℓ,aℓ), ≤ max\n\nmax\n\n(x,a)∈Dℓ(xℓ,aℓ)\n\nh\n\n∥φh(x,a)∥2Σ−1\n\n+ ζ,\n\n(x,a)∈Dℓ(xℓ,aℓ)\n\nh\n\n∥φh(x,a)∥2Σ−1\n\n≤ 2 ζ ∨ max\n\n,\n\n(x,a)∈Dℓ(xℓ,aℓ)\n\nh\n\n≤ 2 ζ ∨ ∥φh(ˆxh,aˆh)∥2Σ−1\n\n, (93) where the last inequality follows by the fact that\n\nh\n\n≤ ∥φh(ˆxh,aˆh)∥2Σ−1\n\n∥φh(x,a)∥2Σ−1\n\nmax\n\nmax\n\nℓ∈[0..h−1]\n\n(x,a)∈Dℓ(xℓ,aℓ)\n\nh\n\nh\n\n## 68\n\n",
+  "blocks": [
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.08691414141414144,
+        "x1": 0.557468954248366,
+        "y1": 0.1092121212121212
+      },
+      "text": "J Guarantee for UncertainStateAction",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.11925000000000008,
+        "x1": 0.8823480392156862,
+        "y1": 0.16526515151515153
+      },
+      "text": "In this section, we present the main guarantee of UncertainStateAction (Algorithm 6) as a standalone algorithm; see Lemma J.1. Then, in Lemma J.2, we provide its guarantee when used as a subroutine within MTSS (Algorithm 4). For a discussion of the motivation for these results, we refer back to Section I.1.3.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11653267973856209,
+        "y0": 0.17205681818181817,
+        "x1": 0.8823529411764706,
+        "y1": 0.23319191919191917
+      },
+      "text": "Lemma J.1. Consider a call to UncertainStateActionh(C0:h−1, π1:h,Σh;a,N,N) (Algorithm 6) for some given h,C0:h−1, π1:h,Σh, a ∈ A, N, and N such that σmin(Σh) ≥ λ, for some λ ∈ (0,1). Then, for any δ′ ∈ (0,1) and ζ ∈ (0,1/2), with probability at least 1 − δ′, the output (ˆxh,aˆh) of UncertainStateAction satisfies:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.240010101010101,
+        "x1": 0.40992810457516343,
+        "y1": 0.26387247474747466
+      },
+      "text": "• For all ℓ ∈ [0..h − 1] and (xℓ,aℓ) ∈ Cℓ, P π ℓ+1:h ∥φh(xh,ah)∥2Σ−1 h > 2 ζ ∨ ∥φh(ˆxh,aˆh)∥2Σ−1 h | xℓ = xℓ,aℓ = aℓ ≤ max h∈[H] 4log 16H|C h| λδ′ζ N , (90) where φh(·,·) := ϕh(·,·) − ϕh(·,a).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.3426136363636364,
+        "x1": 0.7970081699346405,
+        "y1": 0.36647601010101016
+      },
+      "text": "• Furthermore, there exists Xh,span ⊆ X such that for all ℓ ∈ [0..h − 1] and (xℓ,aℓ) ∈ Cℓ, P π",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1339232026143791,
+        "y0": 0.34465151515151526,
+        "x1": 0.8823529411764706,
+        "y1": 0.3848484848484849
+      },
+      "text": "[xh ∈ Xh,span | xℓ = xℓ,aℓ = aℓ] ≥ 1 − maxh∈[H] N4 log 32HN|C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7970098039215686,
+        "y0": 0.3527866161616162,
+        "x1": 0.8401470588235294,
+        "y1": 0.3636982323232323
+      },
+      "text": "ℓ+1:h−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49269607843137253,
+        "y0": 0.35978535353535357,
+        "x1": 0.568016339869281,
+        "y1": 0.38053156565656565
+      },
+      "text": "h| λδ′ζ and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4775849673202614,
+        "y0": 0.4084103535353536,
+        "x1": 0.6554411764705882,
+        "y1": 0.43228282828282827
+      },
+      "text": "> 2 ζ ∨ ∥φh(ˆxh,aˆh)∥2Σ−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29694281045751636,
+        "y0": 0.4084103535353536,
+        "x1": 0.47143464052287576,
+        "y1": 0.43228282828282827
+      },
+      "text": "h,ref(·|xh) ∥φh(xh,a)∥2Σ−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14372385620915032,
+        "y0": 0.4086338383838384,
+        "x1": 0.29694117647058826,
+        "y1": 0.43228282828282827
+      },
+      "text": "∀xh ∈ Xh,span, Pa∼π",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6410849673202614,
+        "y0": 0.4236287878787879,
+        "x1": 0.6478218954248366,
+        "y1": 0.42991792929292927
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45707843137254905,
+        "y0": 0.4236287878787879,
+        "x1": 0.4638153594771242,
+        "y1": 0.42991792929292927
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7361486928104576,
+        "y0": 0.3941376262626263,
+        "x1": 0.8178611111111111,
+        "y1": 0.41027020202020203
+      },
+      "text": "4log 16H|C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7932875816993464,
+        "y0": 0.3941376262626263,
+        "x1": 0.8292761437908497,
+        "y1": 0.41488383838383847
+      },
+      "text": "h| λδ′ζ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8429052287581699,
+        "y0": 0.4084204545454545,
+        "x1": 0.8842581699346406,
+        "y1": 0.4242449494949495
+      },
+      "text": ". (91)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.679001633986928,
+        "y0": 0.41045833333333337,
+        "x1": 0.7289803921568628,
+        "y1": 0.43228282828282827
+      },
+      "text": "≤ max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7811225490196079,
+        "y0": 0.42050126262626264,
+        "x1": 0.794202614379085,
+        "y1": 0.43308080808080807
+      },
+      "text": "N",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6961846405228758,
+        "y0": 0.4220214646464646,
+        "x1": 0.7314803921568628,
+        "y1": 0.4372815656565656
+      },
+      "text": "h∈[H]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.45256691919191916,
+        "x1": 0.8855016339869282,
+        "y1": 0.5082916666666667
+      },
+      "text": "Proof of Lemma J.1. Fix δ′ ∈ (0,1) and ζ ∈ (0,1/2), and let Γ := {ζ,2ζ,...,⌈ζλ4 ⌉ζ}. Further, for ℓ ∈ [0..h − 1] and (xℓ,aℓ) ∈ Cℓ, let Dℓ(xℓ,aℓ) be the dataset in Algorithm 6 when the algorithm returns. Note that Dℓ(xℓ,aℓ) consists of N i.i.d. pairs sampled from P π",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.48442929292929293,
+        "x1": 0.8829558823529412,
+        "y1": 0.5384810606060606
+      },
+      "text": "[(xh,ah) = · | xℓ = xℓ,aℓ = aℓ]. Thus, by Freedman’s inequality (Lemma C.2) and the union bound over ℓ ∈ [0..h − 1], (xℓ,aℓ) ∈ Cℓ, and γ ∈ Γ, there is an event E of probability at least 1 − δ′/2 under which,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.558109477124183,
+        "y0": 0.49485984848484843,
+        "x1": 0.586890522875817,
+        "y1": 0.5011489898989899
+      },
+      "text": "ℓ+1:h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4311633986928105,
+        "y0": 0.5460568181818182,
+        "x1": 0.588782679738562,
+        "y1": 0.569929292929293
+      },
+      "text": "ℓ+1:h ∥φh(xh,ah)∥2Σ−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1309934640522876,
+        "y0": 0.546280303030303,
+        "x1": 0.4311617647058823,
+        "y1": 0.569929292929293
+      },
+      "text": "∀ℓ ∈ [0..h − 1],∀(xℓ,aℓ) ∈ Cℓ,∀γ ∈ Γ, P π",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4181241830065359,
+        "y0": 0.5481047979797979,
+        "x1": 0.7488349673202614,
+        "y1": 0.6011035353535354
+      },
+      "text": "≥ γ | xℓ = xℓ,aℓ = aℓ ≤",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5744248366013072,
+        "y0": 0.5612752525252525,
+        "x1": 0.5811617647058823,
+        "y1": 0.567564393939394
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7344771241830066,
+        "y0": 0.5690669191919192,
+        "x1": 0.8656650326797386,
+        "y1": 0.6008017676767676
+      },
+      "text": "4log(2H|Cℓ||Γ|/δ′) N",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4372614379084967,
+        "y0": 0.5710845959595959,
+        "x1": 0.45034150326797384,
+        "y1": 0.6008017676767676
+      },
+      "text": "2 N",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5523954248366013,
+        "y0": 0.5772310606060606,
+        "x1": 0.669109477124183,
+        "y1": 0.601104797979798
+      },
+      "text": "I ∥φh(x,a)∥2Σ−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6752598039215687,
+        "y0": 0.579594696969697,
+        "x1": 0.7289068627450981,
+        "y1": 0.5921742424242424
+      },
+      "text": "> γ +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8676192810457516,
+        "y0": 0.579594696969697,
+        "x1": 0.8721421568627451,
+        "y1": 0.5921742424242424
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6547532679738562,
+        "y0": 0.592449494949495,
+        "x1": 0.6614901960784314,
+        "y1": 0.5987386363636364
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45678267973856207,
+        "y0": 0.5977613636363637,
+        "x1": 0.5496813725490196,
+        "y1": 0.6130214646464647
+      },
+      "text": "(x,a)∈Dℓ(xℓ,aℓ)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7344771241830066,
+        "y0": 0.6146174242424243,
+        "x1": 0.81618954248366,
+        "y1": 0.6307499999999999
+      },
+      "text": "4log 16H|C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7906797385620915,
+        "y0": 0.6146174242424243,
+        "x1": 0.8257303921568627,
+        "y1": 0.6353636363636364
+      },
+      "text": "ℓ| λδ′ζ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4372614379084967,
+        "y0": 0.6227424242424242,
+        "x1": 0.45034150326797384,
+        "y1": 0.6524608585858587
+      },
+      "text": "2 N",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5523954248366013,
+        "y0": 0.6288888888888888,
+        "x1": 0.669109477124183,
+        "y1": 0.6527626262626263
+      },
+      "text": "I ∥φh(x,a)∥2Σ−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.839359477124183,
+        "y0": 0.6289002525252525,
+        "x1": 0.8842581699346406,
+        "y1": 0.6447247474747475
+      },
+      "text": ", (92)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4181241830065359,
+        "y0": 0.6309381313131313,
+        "x1": 0.43078594771241835,
+        "y1": 0.6527626262626263
+      },
+      "text": "≤",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6752598039215687,
+        "y0": 0.6312525252525252,
+        "x1": 0.7289068627450981,
+        "y1": 0.6438320707070707
+      },
+      "text": "> γ +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7785147058823529,
+        "y0": 0.6398813131313131,
+        "x1": 0.7915947712418301,
+        "y1": 0.6524608585858587
+      },
+      "text": "N",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6547532679738562,
+        "y0": 0.6441085858585859,
+        "x1": 0.6614901960784314,
+        "y1": 0.6503977272727273
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45678267973856207,
+        "y0": 0.6494191919191918,
+        "x1": 0.5496813725490196,
+        "y1": 0.6646792929292928
+      },
+      "text": "(x,a)∈Dℓ(xℓ,aℓ)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.6724431818181817,
+        "x1": 0.8823513071895426,
+        "y1": 0.714239898989899
+      },
+      "text": "where the last step follows by the facts that |Γ| ≤ ⌈ζλ4 ⌉, λ ∈ (0,1), and ζ ∈ (0,1/2). Now, since σmin(Σh) ≥ λ and sup(x,a)∈X×A ∥ϕh(·,·)∥ ≤ 1 (Assumption H.1), we have that sup(x,a)∈X×A ∥φh(x,a)∥2Σ−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.6903775252525253,
+        "x1": 0.8846209150326798,
+        "y1": 0.7336994949494949
+      },
+      "text": "≤ λ4. Therefore, by the definition of Γ, we have that for all ℓ ∈ [0..h−1] and (xℓ,aℓ) ∈ Cℓ, there exists γℓ(xℓ,aℓ) ∈ Γ such that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7522630718954249,
+        "y0": 0.7062146464646465,
+        "x1": 0.759,
+        "y1": 0.7125037878787879
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.356468954248366,
+        "y0": 0.7375012626262627,
+        "x1": 0.45328758169934635,
+        "y1": 0.7613737373737374
+      },
+      "text": "∥φh(x,a)∥2Σ−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.459437908496732,
+        "y0": 0.7395492424242425,
+        "x1": 0.5461650326797386,
+        "y1": 0.7894343434343434
+      },
+      "text": "≤ γℓ(xℓ,aℓ), ≤ max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2921584967320261,
+        "y0": 0.7398636363636364,
+        "x1": 0.3224542483660131,
+        "y1": 0.7524431818181818
+      },
+      "text": "max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2608562091503268,
+        "y0": 0.7511123737373737,
+        "x1": 0.3537565359477124,
+        "y1": 0.7663724747474747
+      },
+      "text": "(x,a)∈Dℓ(xℓ,aℓ)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4389297385620915,
+        "y0": 0.752719696969697,
+        "x1": 0.44566666666666666,
+        "y1": 0.7590088383838384
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.572233660130719,
+        "y0": 0.765560606060606,
+        "x1": 0.6690522875816993,
+        "y1": 0.7894343434343434
+      },
+      "text": "∥φh(x,a)∥2Σ−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.674297385620915,
+        "y0": 0.7679242424242424,
+        "x1": 0.7034248366013072,
+        "y1": 0.7805037878787879
+      },
+      "text": "+ ζ,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4766209150326797,
+        "y0": 0.7791717171717172,
+        "x1": 0.5695196078431373,
+        "y1": 0.7944318181818182
+      },
+      "text": "(x,a)∈Dℓ(xℓ,aℓ)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6546944444444445,
+        "y0": 0.7807790404040404,
+        "x1": 0.6614313725490196,
+        "y1": 0.7870681818181818
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6214803921568628,
+        "y0": 0.8009924242424242,
+        "x1": 0.718297385620915,
+        "y1": 0.824864898989899
+      },
+      "text": "∥φh(x,a)∥2Σ−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.459437908496732,
+        "y0": 0.803040404040404,
+        "x1": 0.5874640522875817,
+        "y1": 0.824864898989899
+      },
+      "text": "≤ 2 ζ ∨ max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7346225490196079,
+        "y0": 0.8033547979797979,
+        "x1": 0.7391454248366014,
+        "y1": 0.8159343434343435
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5258660130718954,
+        "y0": 0.8146035353535354,
+        "x1": 0.6187663398692811,
+        "y1": 0.8298636363636364
+      },
+      "text": "(x,a)∈Dℓ(xℓ,aℓ)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7039411764705883,
+        "y0": 0.8162108585858585,
+        "x1": 0.7106781045751634,
+        "y1": 0.8225
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.459437908496732,
+        "y0": 0.8326489898989899,
+        "x1": 0.6372941176470588,
+        "y1": 0.8565227272727273
+      },
+      "text": "≤ 2 ζ ∨ ∥φh(ˆxh,aˆh)∥2Σ−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706209150326796,
+        "y0": 0.8326603535353536,
+        "x1": 0.8842581699346406,
+        "y1": 0.8791616161616161
+      },
+      "text": ", (93) where the last inequality follows by the fact that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6229362745098039,
+        "y0": 0.8478686868686869,
+        "x1": 0.6296732026143791,
+        "y1": 0.8541578282828283
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5644460784313725,
+        "y0": 0.891,
+        "x1": 0.6953186274509804,
+        "y1": 0.9148737373737373
+      },
+      "text": "≤ ∥φh(ˆxh,aˆh)∥2Σ−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46147875816993467,
+        "y0": 0.891,
+        "x1": 0.558297385620915,
+        "y1": 0.9148737373737373
+      },
+      "text": "∥φh(x,a)∥2Σ−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31795424836601305,
+        "y0": 0.8933636363636364,
+        "x1": 0.34825,
+        "y1": 0.9059431818181818
+      },
+      "text": "max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39716666666666667,
+        "y0": 0.8933636363636364,
+        "x1": 0.4274624183006536,
+        "y1": 0.9059431818181818
+      },
+      "text": "max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3030539215686274,
+        "y0": 0.9046123737373737,
+        "x1": 0.3631535947712418,
+        "y1": 0.9198724747474747
+      },
+      "text": "ℓ∈[0..h−1]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3658660130718954,
+        "y0": 0.9046123737373737,
+        "x1": 0.45876470588235296,
+        "y1": 0.9198724747474747
+      },
+      "text": "(x,a)∈Dℓ(xℓ,aℓ)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6809607843137254,
+        "y0": 0.906219696969697,
+        "x1": 0.6876977124183006,
+        "y1": 0.9125088383838383
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5439395424836602,
+        "y0": 0.906219696969697,
+        "x1": 0.5506764705882353,
+        "y1": 0.9125088383838383
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.4918627450980392,
+        "y0": 0.9350416666666667,
+        "x1": 0.5081388888888889,
+        "y1": 0.9508661616161617
+      },
+      "text": "68",
+      "html": null,
+      "level": 2,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.978277700021863,
+  "model_load_seconds": null,
+  "peak_rss_mb": 191.4453125,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "opendataloader_version": "2.5.0",
+    "table_method": "cluster",
+    "include_header_footer": true,
+    "reading_order": "xycut",
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "F:\\vnpt\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe"
+  }
+}

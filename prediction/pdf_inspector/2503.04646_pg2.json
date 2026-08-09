@@ -1,0 +1,1722 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.04646_pg2",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "regularization) that make the computation of the Wasserstein distance more efficient and scalable.\n\nDRO frameworks are explicitly designed for optimizing in the presence of uncertainties. For this reason, it is natural to draw a connection to inverse problems, where the mea- surement process *H* : *X→Y* is often imperfect and the observation *y* = *Hx* is corrupted by different types of noise. Despite this analogy, the relation between DRO approaches, inverse problems reconstruction, and regularization is currently substantially unexplored. In this paper, we aim to make a first step to bridge this gap by designing a general DRO framework that is flexible to be used in inverse problems. In particular, given an in-sample estimation of the data acquisition process *µ* *∗* *∈ P*(*X×Y*) (often given as an empirical estimation) we define a *perturbation-aware* DRO framework, where the ambiguity set is constrained to all possible perturbations of *µ* *∗* that belong to a given class *K⊂P*(*X × Y*). This framework builds on Bayesian variants of DRO [15,24]. It allows-by making suitable choices of *K*- to enforce the desired robustness in the reconstruction and is ultimately linked to specific choices for Tikhonov-type regularization. For example, by choosing *K⊂P*(*X*), one could enforce robustness to perturbations of the input, while by choosing *K ⊂{µ ∈ P*(*X×Y*) : *µ* *∗* *X* *∈ P*(*X*) is the *X*-marginal of *µ}*, one instead enforces robust- ness with respect to perturbations in the conditional distribution of *Y |X*, thus mimicking the uncertainty of the data acquisition process. Moreover, by further specifying *K* one can recover robustness to prescribed distributions (e.g. Gaussian, Poisson) and impose desired anisotropies.\n\nIn practice, we define the *perturbation-aware* DRO as a min-max problem where the am- biguity set includes all perturbations of *µ* *∗* in *K* that additionally belong to the entropy- regularized Wasserstein ball. To implement an efficient numerical method to compute re- constructions of inverse problems we derive a (weak) dual formulation for the *perturbation-* *aware* DRO. Although this provides only an upper bound for the problem, we believe that under suitable assumptions a strong duality result should hold. However, we leave this proof up to future research. This allows us to rely on a biased stochastic mirror descent approach [17], where we follow [22] which was designed for entropy-regularized Wasserstein DRO with no perturbation constraints. To showcase the effectiveness of our framework for inverse problems, we present several examples. First, we set *K* as the family of multi- variate Gaussian perturbations in *Y |X* with varying (scalar) variance. Subsequently, we consider the case where the Gaussian perturbations can have an arbitrary covariance ma- trix, allowing for anisotropic perturbations and robustness. Finally, we apply our method to solve image deconvolution problems with Gaussian and Poisson noise.\n\nMain contributions. The main contributions of this paper can be summarized as follows:\n\n1.We introduce a *perturbation-aware* DRO framework, where perturbations of an in- sample estimated distribution are constrained to be in a set *K⊂P*(*X×Y*).\n2.We show how this framework naturally applies to inverse problems and is amenable to different kinds of robustness, resulting in a flexible inverse that can be applied to measurements corrupted by any type of noise.\n3.We derive a weak duality formula for the problem, enabling the design of efficient numerical schemes. Under suitable assumptions, we believe strong duality will hold.\n4.We demonstrate the effectiveness of our method for matrix inversion tasks and decon- volution problems, by enforcing robustness in the reconstruction through different\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.10107010323225729,
+        "x1": 0.8564572747655868,
+        "y1": 0.11402797133718479
+      },
+      "text": "regularization) that make the computation of the Wasserstein distance more efficient and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.11716366798592903,
+        "x1": 0.21007663879913346,
+        "y1": 0.13012153609085653
+      },
+      "text": "scalable.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.14130455884978899,
+        "x1": 0.8564024711265762,
+        "y1": 0.15426242695471648
+      },
+      "text": "DRO frameworks are explicitly designed for optimizing in the presence of uncertainties.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.15739812360346073,
+        "x1": 0.8564939814124825,
+        "y1": 0.17035599170838822
+      },
+      "text": "For this reason, it is natural to draw a connection to inverse problems, where the mea-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.17349168835713258,
+        "x1": 0.27949599564031014,
+        "y1": 0.18644955646206007
+      },
+      "text": "surement process",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2856691718683854,
+        "y0": 0.17349168835713258,
+        "x1": 0.30089817522998263,
+        "y1": 0.18644955646206007
+      },
+      "text": "H",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30748258381570326,
+        "y0": 0.17349168835713258,
+        "x1": 0.312558918269569,
+        "y1": 0.18644955646206007
+      },
+      "text": ":",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3176644232291382,
+        "y0": 0.17349168835713258,
+        "x1": 0.3734205125739468,
+        "y1": 0.18644955646206007
+      },
+      "text": "X→Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38354644612363903,
+        "y0": 0.17349168835713258,
+        "x1": 0.6876317682496229,
+        "y1": 0.18644955646206007
+      },
+      "text": "is often imperfect and the observation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6939839662807148,
+        "y0": 0.17349168835713258,
+        "x1": 0.7029637655408479,
+        "y1": 0.18644955646206007
+      },
+      "text": "y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7087166096489539,
+        "y0": 0.17349168835713258,
+        "x1": 0.7229560202660983,
+        "y1": 0.18644955646206007
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7280622429534,
+        "y0": 0.17349168835713258,
+        "x1": 0.7552398750747553,
+        "y1": 0.18644955646206007
+      },
+      "text": "Hx",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7613006243801458,
+        "y0": 0.17349168835713258,
+        "x1": 0.8570362759807268,
+        "y1": 0.18644955646206007
+      },
+      "text": "is corrupted",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.18958525311080432,
+        "x1": 0.3576935343315932,
+        "y1": 0.20254312121573181
+      },
+      "text": "by different types of noise.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36812109296090967,
+        "y0": 0.18958525311080432,
+        "x1": 0.8564389470752722,
+        "y1": 0.20254312121573181
+      },
+      "text": "Despite this analogy, the relation between DRO approaches,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.20567881786447617,
+        "x1": 0.8563106532430703,
+        "y1": 0.21863668596940367
+      },
+      "text": "inverse problems reconstruction, and regularization is currently substantially unexplored.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.2217723826181479,
+        "x1": 0.8565305342605783,
+        "y1": 0.2347302507230754
+      },
+      "text": "In this paper, we aim to make a first step to bridge this gap by designing a general DRO",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.23786710733630445,
+        "x1": 0.8564023173277764,
+        "y1": 0.25082497544123195
+      },
+      "text": "framework that is flexible to be used in inverse problems. In particular, given an in-sample",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.2539606720899762,
+        "x1": 0.48339239628314223,
+        "y1": 0.2669185401949037
+      },
+      "text": "estimation of the data acquisition process",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49123603254257275,
+        "y0": 0.2539606720899762,
+        "x1": 0.5022683793191363,
+        "y1": 0.2669185401949037
+      },
+      "text": "µ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5022796578977914,
+        "y0": 0.2527491305321272,
+        "x1": 0.5093891612193073,
+        "y1": 0.26221604417404587
+      },
+      "text": "∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5176473365105798,
+        "y0": 0.2539606720899762,
+        "x1": 0.5490472583502758,
+        "y1": 0.2669185401949037
+      },
+      "text": "∈ P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5515929360852676,
+        "y0": 0.2539606720899762,
+        "x1": 0.5587034647321159,
+        "y1": 0.2669185401949037
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5587190496771666,
+        "y0": 0.2539606720899762,
+        "x1": 0.6102300614481245,
+        "y1": 0.2669185401949037
+      },
+      "text": "X×Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6143134195839409,
+        "y0": 0.2539606720899762,
+        "x1": 0.8569146211300515,
+        "y1": 0.2669185401949037
+      },
+      "text": ") (often given as an empirical",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285647663003695,
+        "y0": 0.27005423684364804,
+        "x1": 0.33165219337660706,
+        "y1": 0.28301210494857554
+      },
+      "text": "estimation) we define a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33895207397919463,
+        "y0": 0.27005423684364804,
+        "x1": 0.48801671606427105,
+        "y1": 0.28301210494857554
+      },
+      "text": "perturbation-aware",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49662011839492315,
+        "y0": 0.27005423684364804,
+        "x1": 0.8568017328109672,
+        "y1": 0.28301210494857554
+      },
+      "text": "DRO framework, where the ambiguity set is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285647663003695,
+        "y0": 0.2861478015973198,
+        "x1": 0.4818164199811569,
+        "y1": 0.2991056697022473
+      },
+      "text": "constrained to all possible perturbations of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4873067808041984,
+        "y0": 0.2861478015973198,
+        "x1": 0.49833912758076193,
+        "y1": 0.2991056697022473
+      },
+      "text": "µ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4983487143726188,
+        "y0": 0.2849362600394708,
+        "x1": 0.5054582176941348,
+        "y1": 0.29440317368138946
+      },
+      "text": "∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5114350953873446,
+        "y0": 0.2861478015973198,
+        "x1": 0.7270052863346163,
+        "y1": 0.2991056697022473
+      },
+      "text": "that belong to a given class",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7323359527371548,
+        "y0": 0.2861478015973198,
+        "x1": 0.7854115596989096,
+        "y1": 0.2991056697022473
+      },
+      "text": "K⊂P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7879572374339016,
+        "y0": 0.2861478015973198,
+        "x1": 0.7950677660807498,
+        "y1": 0.2991056697022473
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7950833510258005,
+        "y0": 0.2861478015973198,
+        "x1": 0.8408424414814515,
+        "y1": 0.2991056697022473
+      },
+      "text": "X × Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8449241078304697,
+        "y0": 0.2861478015973198,
+        "x1": 0.8571109709311837,
+        "y1": 0.2991056697022473
+      },
+      "text": ").",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285647663003695,
+        "y0": 0.30224136635099164,
+        "x1": 0.8564939814124825,
+        "y1": 0.31519923445591913
+      },
+      "text": "This framework builds on Bayesian variants of DRO [15,24]. It allows - by making suitable",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285647663003695,
+        "y0": 0.31833609106914806,
+        "x1": 0.22055921894909358,
+        "y1": 0.33129395917407556
+      },
+      "text": "choices of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22805224521114997,
+        "y0": 0.31833609106914806,
+        "x1": 0.24361112136527585,
+        "y1": 0.33129395917407556
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2523485337168573,
+        "y0": 0.31833609106914806,
+        "x1": 0.8565056957544038,
+        "y1": 0.33129395917407556
+      },
+      "text": "- to enforce the desired robustness in the reconstruction and is ultimately",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1428564638134703,
+        "y0": 0.3344296558228199,
+        "x1": 0.6274174746440819,
+        "y1": 0.3473875239277474
+      },
+      "text": "linked to specific choices for Tikhonov-type regularization.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6439842840495418,
+        "y0": 0.3344296558228199,
+        "x1": 0.7503490732397662,
+        "y1": 0.3473875239277474
+      },
+      "text": "For example,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7599702647615088,
+        "y0": 0.3344296558228199,
+        "x1": 0.8564756280890347,
+        "y1": 0.3473875239277474
+      },
+      "text": "by choosing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1428564638134703,
+        "y0": 0.35052322057649166,
+        "x1": 0.19593207077522523,
+        "y1": 0.36348108868141915
+      },
+      "text": "K⊂P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19847771006051712,
+        "y0": 0.35052322057649166,
+        "x1": 0.20558823870736537,
+        "y1": 0.36348108868141915
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20560548980608104,
+        "y0": 0.35052322057649166,
+        "x1": 0.22077951009673455,
+        "y1": 0.36348108868141915
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2222246805194539,
+        "y0": 0.35052322057649166,
+        "x1": 0.8564917513298848,
+        "y1": 0.36348108868141915
+      },
+      "text": "), one could enforce robustness to perturbations of the input, while by choosing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285645099690367,
+        "y0": 0.3666167853301635,
+        "x1": 0.24177804473622058,
+        "y1": 0.379574653435091
+      },
+      "text": "K ⊂{µ ∈ P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2443236712049458,
+        "y0": 0.3666167853301635,
+        "x1": 0.2514341998517941,
+        "y1": 0.379574653435091
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25144978479684477,
+        "y0": 0.3666167853301635,
+        "x1": 0.3017462730785804,
+        "y1": 0.379574653435091
+      },
+      "text": "X×Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3058296055812635,
+        "y0": 0.3666167853301635,
+        "x1": 0.3239174979337316,
+        "y1": 0.379574653435091
+      },
+      "text": ") :",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32984872301652146,
+        "y0": 0.3666167853301635,
+        "x1": 0.3408810441599517,
+        "y1": 0.379574653435091
+      },
+      "text": "µ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34089065658494183,
+        "y0": 0.36540524377231454,
+        "x1": 0.34800015990645783,
+        "y1": 0.3748721574142332
+      },
+      "text": "∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34089065658494183,
+        "y0": 0.3739479472152376,
+        "x1": 0.35257918594103305,
+        "y1": 0.38341486085715626
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3603740679809135,
+        "y0": 0.36661685782794373,
+        "x1": 0.39025876404456195,
+        "y1": 0.3795747259328712
+      },
+      "text": "∈ P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39280272435962216,
+        "y0": 0.36661685782794373,
+        "x1": 0.39991325300647046,
+        "y1": 0.3795747259328712
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3999305041051861,
+        "y0": 0.36661685782794373,
+        "x1": 0.4151045243958396,
+        "y1": 0.3795747259328712
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41655136097222395,
+        "y0": 0.36661685782794373,
+        "x1": 0.4736005906261077,
+        "y1": 0.3795747259328712
+      },
+      "text": ") is the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4797758175048476,
+        "y0": 0.36661685782794373,
+        "x1": 0.4949498634286344,
+        "y1": 0.3795747259328712
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49639670000501873,
+        "y0": 0.36661685782794373,
+        "x1": 0.593598464298231,
+        "y1": 0.3795747259328712
+      },
+      "text": "-marginal of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5997873792701569,
+        "y0": 0.36661685782794373,
+        "x1": 0.6199923890018559,
+        "y1": 0.3795747259328712
+      },
+      "text": "µ}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6199914662090569,
+        "y0": 0.36661685782794373,
+        "x1": 0.8569115451540547,
+        "y1": 0.3795747259328712
+      },
+      "text": ", one instead enforces robust-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285647663003695,
+        "y0": 0.3827104225816156,
+        "x1": 0.681222972260189,
+        "y1": 0.3956682906865431
+      },
+      "text": "ness with respect to perturbations in the conditional distribution of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6875113950556129,
+        "y0": 0.3827104225816156,
+        "x1": 0.7224880105181778,
+        "y1": 0.3956682906865431
+      },
+      "text": "Y |X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7239348470945621,
+        "y0": 0.3827104225816156,
+        "x1": 0.8570007997242298,
+        "y1": 0.3956682906865431
+      },
+      "text": ", thus mimicking",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285647663003695,
+        "y0": 0.398805147299772,
+        "x1": 0.5288411720269779,
+        "y1": 0.4117630154046995
+      },
+      "text": "the uncertainty of the data acquisition process.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5411380012695792,
+        "y0": 0.398805147299772,
+        "x1": 0.7970988842977355,
+        "y1": 0.4117630154046995
+      },
+      "text": "Moreover, by further specifying",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8052903621761429,
+        "y0": 0.398805147299772,
+        "x1": 0.8208492126971355,
+        "y1": 0.4117630154046995
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8296538351242481,
+        "y0": 0.398805147299772,
+        "x1": 0.8571247102906363,
+        "y1": 0.4117630154046995
+      },
+      "text": "one",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.41489871205344386,
+        "x1": 0.5904535864390531,
+        "y1": 0.42785658015837136
+      },
+      "text": "can recover robustness to prescribed distributions (e.g.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6032818930676432,
+        "y0": 0.41489871205344386,
+        "x1": 0.8564389727084055,
+        "y1": 0.42785658015837136
+      },
+      "text": "Gaussian, Poisson) and impose",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.4309922768071156,
+        "x1": 0.304950978670897,
+        "y1": 0.4439501449120431
+      },
+      "text": "desired anisotropies.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.45513320391986567,
+        "x1": 0.34547004148338334,
+        "y1": 0.46809107202479316
+      },
+      "text": "In practice, we define the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3518082438236896,
+        "y0": 0.45513320391986567,
+        "x1": 0.5008729115418993,
+        "y1": 0.46809107202479316
+      },
+      "text": "perturbation-aware",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5084935395415583,
+        "y0": 0.45513320391986567,
+        "x1": 0.8568913975112753,
+        "y1": 0.46809107202479316
+      },
+      "text": "DRO as a min-max problem where the am-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.4712267686735374,
+        "x1": 0.45938522388800535,
+        "y1": 0.484184636778465
+      },
+      "text": "biguity set includes all perturbations of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4660342536027931,
+        "y0": 0.4712267686735374,
+        "x1": 0.4770666003793566,
+        "y1": 0.484184636778465
+      },
+      "text": "µ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4770761871712135,
+        "y0": 0.4700151908667983,
+        "x1": 0.48418569049272947,
+        "y1": 0.479482104508717
+      },
+      "text": "∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4913099072327637,
+        "y0": 0.4712267686735374,
+        "x1": 0.5065572639178088,
+        "y1": 0.484184636778465
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5128646039656133,
+        "y0": 0.4712267686735374,
+        "x1": 0.5284234544866059,
+        "y1": 0.484184636778465
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5360219354590875,
+        "y0": 0.4712267686735374,
+        "x1": 0.8568023480061665,
+        "y1": 0.484184636778465
+      },
+      "text": "that additionally belong to the entropy-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285639973063705,
+        "y0": 0.48732033342720926,
+        "x1": 0.8564755511896347,
+        "y1": 0.5002782015321368
+      },
+      "text": "regularized Wasserstein ball. To implement an efficient numerical method to compute re-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285639973063705,
+        "y0": 0.5034138981808811,
+        "x1": 0.7487729175058476,
+        "y1": 0.5163717662858085
+      },
+      "text": "constructions of inverse problems we derive a (weak) dual formulation for the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7541090437657806,
+        "y0": 0.5034138981808811,
+        "x1": 0.8570651901550972,
+        "y1": 0.5163717662858085
+      },
+      "text": "perturbation-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.5195086228990375,
+        "x1": 0.18896494669266337,
+        "y1": 0.532466491003965
+      },
+      "text": "aware",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19555130339651536,
+        "y0": 0.5195086228990375,
+        "x1": 0.8564828822657605,
+        "y1": 0.532466491003965
+      },
+      "text": "DRO. Although this provides only an upper bound for the problem, we believe that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.5356021876527093,
+        "x1": 0.6595248325133531,
+        "y1": 0.5485600557576369
+      },
+      "text": "under suitable assumptions a strong duality result should hold.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6715467720343694,
+        "y0": 0.5356021876527093,
+        "x1": 0.8564390239746721,
+        "y1": 0.5485600557576369
+      },
+      "text": "However, we leave this",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.5516957524063811,
+        "x1": 0.36599528594948766,
+        "y1": 0.5646536205113086
+      },
+      "text": "proof up to future research.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3757447713034322,
+        "y0": 0.5516957524063811,
+        "x1": 0.8564756280890347,
+        "y1": 0.5646536205113086
+      },
+      "text": "This allows us to rely on a biased stochastic mirror descent",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.567789317160053,
+        "x1": 0.8564756280890347,
+        "y1": 0.5807471852649804
+      },
+      "text": "approach [17], where we follow [22] which was designed for entropy-regularized Wasserstein",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.5838828819137247,
+        "x1": 0.4614011160238066,
+        "y1": 0.5968407500186522
+      },
+      "text": "DRO with no perturbation constraints.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47289157815883415,
+        "y0": 0.5838828819137247,
+        "x1": 0.8565123347359304,
+        "y1": 0.5968407500186522
+      },
+      "text": "To showcase the effectiveness of our framework",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.5999764466673965,
+        "x1": 0.6494636738915279,
+        "y1": 0.6129343147723241
+      },
+      "text": "for inverse problems, we present several examples. First, we set",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6559091765278575,
+        "y0": 0.5999764466673965,
+        "x1": 0.6714680270488501,
+        "y1": 0.6129343147723241
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6786851895302558,
+        "y0": 0.5999764466673965,
+        "x1": 0.8569616835628033,
+        "y1": 0.6129343147723241
+      },
+      "text": "as the family of multi-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.616071171385553,
+        "x1": 0.413899741497274,
+        "y1": 0.6290290394904805
+      },
+      "text": "variate Gaussian perturbations in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.420952646860448,
+        "y0": 0.616071171385553,
+        "x1": 0.4559292623230128,
+        "y1": 0.6290290394904805
+      },
+      "text": "Y |X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46413765806940294,
+        "y0": 0.616071171385553,
+        "x1": 0.7099275701326465,
+        "y1": 0.6290290394904805
+      },
+      "text": "with varying (scalar) variance.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7200252816025676,
+        "y0": 0.616071171385553,
+        "x1": 0.8567015072597365,
+        "y1": 0.6290290394904805
+      },
+      "text": "Subsequently, we",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.6321647361392249,
+        "x1": 0.8564938788799492,
+        "y1": 0.6451226042441522
+      },
+      "text": "consider the case where the Gaussian perturbations can have an arbitrary covariance ma-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.6482583008928966,
+        "x1": 0.856402368594043,
+        "y1": 0.6612161689978241
+      },
+      "text": "trix, allowing for anisotropic perturbations and robustness. Finally, we apply our method",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.6643518656465683,
+        "x1": 0.7248390815051023,
+        "y1": 0.677309733751496
+      },
+      "text": "to solve image deconvolution problems with Gaussian and Poisson noise.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642536377036,
+        "y0": 0.7045863393885452,
+        "x1": 0.8566698759732356,
+        "y1": 0.7175442074934726
+      },
+      "text": "Main contributions. The main contributions of this paper can be summarized as follows:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16525613115265414,
+        "y0": 0.7287272665012952,
+        "x1": 0.3118284508697174,
+        "y1": 0.7416851346062227
+      },
+      "text": "1.We introduce a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3185900613059898,
+        "y0": 0.7287272665012952,
+        "x1": 0.4676547290241995,
+        "y1": 0.7416851346062227
+      },
+      "text": "perturbation-aware",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47576592392908923,
+        "y0": 0.7287272665012952,
+        "x1": 0.8568026556037662,
+        "y1": 0.7416851346062227
+      },
+      "text": "DRO framework, where perturbations of an in-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18867221631029663,
+        "y0": 0.7448208131305218,
+        "x1": 0.6678820029654574,
+        "y1": 0.7577786812354494
+      },
+      "text": "sample estimated distribution are constrained to be in a set",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6744670523795108,
+        "y0": 0.7448208131305218,
+        "x1": 0.7275426593412657,
+        "y1": 0.7577786812354494
+      },
+      "text": "K⊂P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7300883370762575,
+        "y0": 0.7448208131305218,
+        "x1": 0.7371988657231058,
+        "y1": 0.7577786812354494
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7372144506681565,
+        "y0": 0.7448208131305218,
+        "x1": 0.7868641380971548,
+        "y1": 0.7577786812354494
+      },
+      "text": "X×Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7909458044461729,
+        "y0": 0.7448208131305218,
+        "x1": 0.803132667546887,
+        "y1": 0.7577786812354494
+      },
+      "text": ").",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16525619523548743,
+        "y0": 0.7689617402432719,
+        "x1": 0.8565358146860396,
+        "y1": 0.7819196083481994
+      },
+      "text": "2.We show how this framework naturally applies to inverse problems and is amenable",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18867222912686327,
+        "y0": 0.7850552868724987,
+        "x1": 0.8564210423316572,
+        "y1": 0.7980131549774262
+      },
+      "text": "to different kinds of robustness, resulting in a flexible inverse that can be applied to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18867222912686327,
+        "y0": 0.8011488335017254,
+        "x1": 0.5578519961264883,
+        "y1": 0.8141067016066529
+      },
+      "text": "measurements corrupted by any type of noise.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16525619523548743,
+        "y0": 0.8252897606144753,
+        "x1": 0.8564992105716771,
+        "y1": 0.838247628719403
+      },
+      "text": "3.We derive a weak duality formula for the problem, enabling the design of efficient",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18867222912686327,
+        "y0": 0.8413833072437021,
+        "x1": 0.8564393956551051,
+        "y1": 0.8543411753486296
+      },
+      "text": "numerical schemes. Under suitable assumptions, we believe strong duality will hold.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16525619523548743,
+        "y0": 0.8655242252942297,
+        "x1": 0.8564808572482292,
+        "y1": 0.8784820933991572
+      },
+      "text": "4.We demonstrate the effectiveness of our method for matrix inversion tasks and decon-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18867222912686327,
+        "y0": 0.8816177809856789,
+        "x1": 0.8564394469213716,
+        "y1": 0.8945756490906064
+      },
+      "text": "volution problems, by enforcing robustness in the reconstruction through different",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49541736051388874,
+        "y0": 0.9215327343543527,
+        "x1": 0.5045804366771675,
+        "y1": 0.9344906024592802
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      595.276,
+      841.89
+    ]
+  ],
+  "seconds": 0.029375399986747652,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

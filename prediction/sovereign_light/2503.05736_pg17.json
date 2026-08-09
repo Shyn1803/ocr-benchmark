@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "engine": "sovereign_light",
+  "engine_version": "9d9a363",
+  "doc_id": "2503.05736_pg17",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "additional bisection refinements: we found that quadratic interpolation produces better results in our numerical\ncase studies.\nWe refer to Figure 2 for a practical implementation of the algorithm described above: the colored disks in the\ncenter panel correspond to the parameter values at which the pattern statistics was computed for predictor-\ncorrector step as outlined above.\n4\nAssessing dependence on algorithmic parameters\nWe now outline the parameters that enter the algorithm and discuss how they affect accuracy and computational\nefficiency. The implementation of the continuation algorithm described above requires the following choices:\n1. Feature function: We choose a feature function f that can differentiate between the patterns we want to\ndistinguish.\n2. Spatial discretization: We choose the number K of Fourier modes so that we can resolve the nonlinearity\nand the expected patterns at the expected wavelength. Alternatively, and this is how our numerical compu-\ntations were conducted, we can use finite differences to solve the PDE model for a sufficiently small spatial\nstepsize that resolves the patterns we are interested in and use the resulting grid also for α-shapes.\n3. Initial data: We choose two fixed functions Ub(x) and Ur(x) to construct the initial data in (2.11). The\ndeterministic part Ub is selected to ensure that we reach the patterns we are interested in: for domain-filling\npatterns, Ub is typically an unstable homogeneous rest state.\nThe function Ur that will be used for the\nrandomized part is given by Ur(x) = P\n|k|≤K akek(x) for a fixed nonzero choice of coefficients (ak)|k|≤K (we\nset Ur = 0 for deterministic initial data).\n4. Randomization: We select N samples of the random variables (bk(ω))|k|≤K from a uniform distribution\nand form the ensemble of N randomized functions U ω\nr (x) := P\n|k|≤K akbk(ω)ek(x). The resulting N functions\nU0(x) = Ub(x) + U ω\nr (x) are then used as initial data in the numerical solver. The number N of samples that\nare used to calculate the empirical measure µN,ω\nf\n(or the empirical feature mean EN,ω\nf\nif applicable) can be\nadjusted using, for instance, a small-sample paired t-test (which tests the null hypothesis that the mean of\nthe difference of feature samples is zero) to ensure that there is a statistically significant difference between\nthe two empirical measures in the argument of the bifurcation function g.\n5. Integration time: The integration time T > 0 is chosen so that we reach the relevant pattern regime from\nthe initial data Ub + U ω\nr within the time interval [0, T]. It is possible to adapt T during continuation, for\ninstance by choosing shorter or longer values and comparing the resulting feature values.\n6. Sublevel sets: We evaluate the feature function on the sublevel sets U −1\nj\n((−∞, c]) of the jth component of\nthe solution U to (2.1). We choose the index 1 ≤j ≤d and the threshold c ∈R so that the corresponding\nsublevel sets best reflect the patterns we are interested in.\n7. Alpha-shapes: The evaluation of the feature functions we consider require the computation of the α-shapes\nof the sublevel sets. We need to pick the radius α of the α-shape and the number M 2 of lattice points on which\nwe evaluate the solution to approximate the sublevel set. We usually choose M := K and set α = 10/M. We\nnote that we can adapt M and α by comparing the resulting pattern statistics using the Wasserstein metric\nto ensure that they do not change upon increasing M or varying α.\n8. Predictor-corrector steps: We need to choose the arclength stepsize s and the parameter offset h. We\nnormally pick h := s and note that the stepsize s can be adapted based on the successive changes of the angle\nof the secants, which are indicative of the curvature of the curve Γ.\nOur algorithm is robust with respect to these choices, and we never had to adjust them during continuation.\nGenerally, increasing the number K of Fourier modes (or mesh points when using finite differences) for the PDE\nsolver, the number M of lattice points on which we evaluate patterns and their features, and the ensemble size\nN of randomized initial data will provide smoother and more accurate continuation curves. The algorithm is\n17",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.011615400027949363,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "F:\\vnpt\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 250
+  }
+}

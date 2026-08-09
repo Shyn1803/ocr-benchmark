@@ -1,0 +1,6006 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.04667_pg3",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "head *pϕt*(*zt|z*), and the corresponding prediction variable *Y*ˆ*t* is non-parametric mapping of *Zt*. Then, define information flow (Shwartz-Ziv and Tishby 2017; Goldfeld et al. 2019) in neural networks as a Markov chain shared by all tasks, i.e., *Yt→X→Z→Zt→ Y*ˆ*t*for task *t*.\n\n# Methodology\n\nTo ensure sufficiency for target tasks and mitigate the nega- tive effects of redundant features, we propose a principled multi-task representation learning framework (InfoMTL) that extracts noise-invariant sufficient representations for all tasks. It contains two learning principles: shared information maximization (SIMax) and task-specific information mini- mization (TIMin), which constrain the amount of shared and\n\n|L = E|{E|[− log q|(y |z)]||\n|---|---|---|---|---|\n|SIMax|z∼p (z|x)|t∼T|ϕ t||\n|||||+|\n|θ|||z ∈B|′|\n|ϕ t||||t|\n||+ θ|+|||\n\ntask-specific information in the multi-task learning process.\n\n## Shared Information Maximization Principle\n\nIn the MTL paradigm, the mutual information between the input *X* and the shared representations *Z* is typically re- duced implicitly (Figure 1(a)) or explicitly (Figure 1(b)) un- der the information bottleneck (IB) theory (Shwartz-Ziv and Tishby 2017; Kawaguchi et al. 2023). However, directly re- ducing redundancy for one task is prone to losing necessary information for others. As a result, the learned shared repre- sentations *Z* usually suffer from task-specific insufficiency. To alleviate the insufficiency issue, a shared information maximization (SIMax) principle is proposed to learn more sufficient shared representations for all target tasks. The SIMax principle simultaneously maximizes the mutual in- formation between the input *X* and the shared representa- tions *Z* for all tasks, as well as the mutual information be- tween the shared representations *Z* and the target task *Yt*for each task *t*. It can be formulated as the maximization of the following Lagrangian,\n\nX *|T |* max [*I*(*Yt*; *Z*)] + *αI*(*X*; *Z*)*,* (1) *t*=1\n\nsubject to the Markov constraint, i.e., *Yt→ X → Z →* ˆ *Zt→ Yt*. *α* is a parameter that balances the trade-off be- tween the informativeness of *Z* for *X* and *Yt*. In Equation (1), the second term promotes the task- agnostic shared representations *Z* preserves as much infor- mation as possible about the input *X*. It ensures the suffi- ciency of the shared representations *Z* for all potential tar- gets *Y*. The first term encourages the shared representations *Z* to capture the necessary information relevant to the tar- get *Yt*for each task *t*. As shown in Figure 1(b) and (c), unlike IB-based MTL methods (Qian, Chen, and Gechter 2020; de Freitas et al. 2022) that explicitly minimize input- representation information, our InfoMTL with SIMax han- dles the information in an opposite manner to avoid the in- sufficiency issue arising from representation compression in the multi-task paradigm.\n\n**Implementation of SIMax** The implementation of SIMax P*|T |* contains two terms, i.e., maximizing*t*=1[*I*(*Yt*; *Z*)] and *I*(*X*; *Z*). Firstly, we maximize the lower bound of *I*(*Yt*; *Z*)\n\nby estimating the conditional entropy of the target *Yt*given the shared representations *Z*. Following Kolchinsky, Tracey, and Wolpert (2019) and Hu et al. (2024a), we use cross- entropy (CE) as the estimator for each classification task *t*. Secondly, to maximize *I*(*X*; *Z*), we use the InfoNCE esti- mator (Gutmann and Hyvarinen 2010; van den Oord, Li, and ¨ Vinyals 2018) to optimize the lower bound of *I*(*X*; *Z*) dur- ing the multi-task encoding process. According to the infor- mation flow of *Z←X→Z* *′*, the Markov chain rule states that *I*(*X*; *Z*) *≥ I*(*Z*; *Z* *′* ). For the InfoNCE estimation of maximizing *I*(*Z*; *Z* *′* ), the selection of positive and negative samples as well as the implementation of noise-contrastive loss are consistent with Hu et al. (2024b). The optimization objective of SIMax for MTL can be:\n\n*θ t* <u>exp(sim(z,z)/τ)</u> *− α*log P *′* + exp(sim(*z,z*)*/τ*) *},*\n\n(2)\nwhere *p* (*z|x*) is a shared encoder with parameters *θ*. *qt*(*y |z*) is a task-specific decoder with parameters *ϕ* for task *t*, and its output distribution is adapted for task predic- tion by a non-parametric function (e.g., Softmax operation for classification). *z* refers to the positive key of *z*, gener- ated by dropout in *p* (*z|x*). *B* represents the set of positive keys in the current batch *B*. sim(*·*) is a pairwise similarity function, i.e., cosine similarity. *τ >* 0 is a scalar tempera- ture parameter that controls the sharpness of the probability distribution, which is applied during the Softmax operation.\n\n## Task-specific Information Minimization Principle\n\nIn multi-task scenarios, redundant information often differs across tasks, such that information beneficial for one task may become redundant for another. Directly applying the IB principle (Tishby, Pereira, and Bialek 1999; Tishby and Za- slavsky 2015) to compress the task-specific redundancy for one task can result in the loss of necessary information for other tasks. Consequently, both the shared representations *Z* and the task-specific output representations *Zt*for a given task *t* often contain redundant features that are irrelevant to the specific task. To better alleviate the redundancy issue, a task-specific information minimization (TIMin) principle is designed to mitigate the negative effect of potential redundant features in the inputs for the target task. It can compress task-irrelevant redundant information and preserve necessary information relevant to the target for multi-task prediction. The TIMin principle minimizes the mutual information between the in- put *X* and the task-specific output representations *Zt*, while maximizing the mutual information between the output rep- resentations *Zt*and the corresponding target task *Yt*for each task *t*. The principle can be formulated as the maximization of the following Lagrangian, X *|T |* max [*I*(*Yt*; *Zt*) *− βI*(*X*; *Zt*)]*,* (3) *t*=1 subject to *Yt→X→Z→Zt→ Y*ˆ*t*for each task *t*. *β* is a trade-off parameter of the compression of *Zt*from the input *X* and the informativeness of *Zt*for *Yt*.\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.0681823395719432,
+        "x1": 0.11896958693959354,
+        "y1": 0.08076137966579866
+      },
+      "text": "head",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12241993075102763,
+        "y0": 0.0681823395719432,
+        "x1": 0.13060814103269888,
+        "y1": 0.08076137966579866
+      },
+      "text": "p",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13060947493010877,
+        "y0": 0.07384246346926449,
+        "x1": 0.1384265126745685,
+        "y1": 0.08264776672979801
+      },
+      "text": "ϕ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13843627381168938,
+        "y0": 0.07761578668247571,
+        "x1": 0.14301874746684157,
+        "y1": 0.08390530672940344
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14465359457178054,
+        "y0": 0.0681823395719432,
+        "x1": 0.1509697484035118,
+        "y1": 0.08076137966579866
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1509836608288335,
+        "y0": 0.0681823395719432,
+        "x1": 0.15855327930325777,
+        "y1": 0.08076137966579866
+      },
+      "text": "z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1585539275524663,
+        "y0": 0.07384246346926449,
+        "x1": 0.1634652131523182,
+        "y1": 0.08264776672979801
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16428595898198148,
+        "y0": 0.0681823395719432,
+        "x1": 0.17637681649401296,
+        "y1": 0.08076137966579866
+      },
+      "text": "|z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17709314433577794,
+        "y0": 0.0681823395719432,
+        "x1": 0.45931721356959127,
+        "y1": 0.08076137966579866
+      },
+      "text": "), and the corresponding prediction variable",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4627581827001634,
+        "y0": 0.0681823395719432,
+        "x1": 0.47219988255718953,
+        "y1": 0.08076137966579866
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46522387336282167,
+        "y0": 0.06500180682750667,
+        "x1": 0.4733632405598958,
+        "y1": 0.07758084692136202
+      },
+      "text": "ˆ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.472209157507404,
+        "y0": 0.07384246346926449,
+        "x1": 0.47712044310725593,
+        "y1": 0.08264776672979801
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.522058773664088,
+        "y0": 0.06818203131357825,
+        "x1": 0.8517362307878881,
+        "y1": 0.08076107140743372
+      },
+      "text": "by estimating the conditional entropy of the target",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8564002342473448,
+        "y0": 0.06818203131357825,
+        "x1": 0.8658419341043709,
+        "y1": 0.08076107140743372
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8658512090545853,
+        "y0": 0.07384215521089954,
+        "x1": 0.870762544519761,
+        "y1": 0.08264745847143307
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.876245037402982,
+        "y0": 0.06818203131357825,
+        "x1": 0.9117653042662377,
+        "y1": 0.08076107140743372
+      },
+      "text": "given",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.08201951812012032,
+        "x1": 0.2835478439829708,
+        "y1": 0.09459855821397567
+      },
+      "text": "is non-parametric mapping of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28837580462686374,
+        "y0": 0.08201951812012032,
+        "x1": 0.2994779200335733,
+        "y1": 0.09459855821397567
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2994885413475286,
+        "y0": 0.0876796420174416,
+        "x1": 0.3043998269473805,
+        "y1": 0.09648494527797502
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3052205603107128,
+        "y0": 0.08201951812012032,
+        "x1": 0.4779381845511642,
+        "y1": 0.09459855821397567
+      },
+      "text": ". Then, define information",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.522058773664088,
+        "y0": 0.08201913279716411,
+        "x1": 0.6901532341452206,
+        "y1": 0.09459817289101957
+      },
+      "text": "the shared representations",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6937368555006638,
+        "y0": 0.08201913279716411,
+        "x1": 0.7048389709073734,
+        "y1": 0.09459817289101957
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7060130000893586,
+        "y0": 0.08201913279716411,
+        "x1": 0.9117602180032169,
+        "y1": 0.09459817289101957
+      },
+      "text": ". Following Kolchinsky, Tracey,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0882352691849852,
+        "y0": 0.0958553865702465,
+        "x1": 0.47794870613447205,
+        "y1": 0.10843442666410197
+      },
+      "text": "flow (Shwartz-Ziv and Tishby 2017; Goldfeld et al. 2019) in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.0958550012472904,
+        "x1": 0.911772185680913,
+        "y1": 0.10843404134114587
+      },
+      "text": "and Wolpert (2019) and Hu et al. (2024a), we use cross-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0882352691849852,
+        "y0": 0.10969248805383236,
+        "x1": 0.47794875599979575,
+        "y1": 0.12227152814768782
+      },
+      "text": "neural networks as a Markov chain shared by all tasks, i.e.,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.10969210273087626,
+        "x1": 0.8968771142897263,
+        "y1": 0.12227114282473173
+      },
+      "text": "entropy (CE) as the estimator for each classification task",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9018168729894301,
+        "y0": 0.10969210273087626,
+        "x1": 0.907693501391442,
+        "y1": 0.12227114282473173
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9076942992366217,
+        "y0": 0.10969210273087626,
+        "x1": 0.9117640077678206,
+        "y1": 0.12227114282473173
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0882352691849852,
+        "y0": 0.1255889866087172,
+        "x1": 0.09767695034251493,
+        "y1": 0.13816802670257256
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09768625022539126,
+        "y0": 0.13125034353949805,
+        "x1": 0.10259753582524318,
+        "y1": 0.14005564680003157
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1079395144593482,
+        "y0": 0.1255889866087172,
+        "x1": 0.21752857382780585,
+        "y1": 0.13816802670257256
+      },
+      "text": "→X→Z→Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21753919514176112,
+        "y0": 0.13125034353949805,
+        "x1": 0.22245048074161305,
+        "y1": 0.14005564680003157
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2277924531425526,
+        "y0": 0.1255889866087172,
+        "x1": 0.25803479961320464,
+        "y1": 0.13816802670257256
+      },
+      "text": "→ Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25105716979581544,
+        "y0": 0.12240968689774023,
+        "x1": 0.2591965369928896,
+        "y1": 0.1349887269915957
+      },
+      "text": "ˆ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25804247887305964,
+        "y0": 0.13125034353949805,
+        "x1": 0.2629537644729116,
+        "y1": 0.14005564680003157
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2678447548860039,
+        "y0": 0.1255889866087172,
+        "x1": 0.3171205707624847,
+        "y1": 0.13816802670257256
+      },
+      "text": "for task",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3211895313138276,
+        "y0": 0.1255889866087172,
+        "x1": 0.32706615971583947,
+        "y1": 0.13816802670257256
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32706862804936426,
+        "y0": 0.1255889866087172,
+        "x1": 0.33113831164790136,
+        "y1": 0.13816802670257256
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.12352920421446212,
+        "x1": 0.6729139440199908,
+        "y1": 0.13610824430831758
+      },
+      "text": "Secondly, to maximize",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6780962476543352,
+        "y0": 0.12352920421446212,
+        "x1": 0.685242646659901,
+        "y1": 0.13610824430831758
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6865292717428768,
+        "y0": 0.12352920421446212,
+        "x1": 0.6928454131082772,
+        "y1": 0.13610824430831758
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6928593255335989,
+        "y0": 0.12352920421446212,
+        "x1": 0.7063381220001022,
+        "y1": 0.13610824430831758
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7076240489685458,
+        "y0": 0.12352920421446212,
+        "x1": 0.7121332704631331,
+        "y1": 0.13610824430831758
+      },
+      "text": ";",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7148593578463286,
+        "y0": 0.12352920421446212,
+        "x1": 0.7259614732530382,
+        "y1": 0.13610824430831758
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7271355024350235,
+        "y0": 0.12352920421446212,
+        "x1": 0.9117668002259498,
+        "y1": 0.13610824430831758
+      },
+      "text": "), we use the InfoNCE esti-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.13736630569804797,
+        "x1": 0.911758323120915,
+        "y1": 0.14994534579190344
+      },
+      "text": "mator (Gutmann and Hyvarinen 2010; van den Oord, Li, and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6885685141569649,
+        "y0": 0.13730318979783496,
+        "x1": 0.6939893236347273,
+        "y1": 0.1498822298916903
+      },
+      "text": "¨",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22828429976319956,
+        "y0": 0.15284705884528882,
+        "x1": 0.33789316813151044,
+        "y1": 0.16794200858684505
+      },
+      "text": "Methodology",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.15120340718163383,
+        "x1": 0.8207739537058313,
+        "y1": 0.1637824472754893
+      },
+      "text": "Vinyals 2018) to optimize the lower bound of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8251894283917994,
+        "y0": 0.15120340718163383,
+        "x1": 0.8323358273973652,
+        "y1": 0.1637824472754893
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8336224524803411,
+        "y0": 0.15120340718163383,
+        "x1": 0.8399385938457414,
+        "y1": 0.1637824472754893
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8399525561363869,
+        "y0": 0.15120340718163383,
+        "x1": 0.8534313526028902,
+        "y1": 0.1637824472754893
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8547172795713337,
+        "y0": 0.15120340718163383,
+        "x1": 0.8592265010659211,
+        "y1": 0.1637824472754893
+      },
+      "text": ";",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8619525385837928,
+        "y0": 0.15120340718163383,
+        "x1": 0.8730546539905024,
+        "y1": 0.1637824472754893
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8742286831724877,
+        "y0": 0.15120340718163383,
+        "x1": 0.9117653042662377,
+        "y1": 0.1637824472754893
+      },
+      "text": ") dur-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.1650405086652197,
+        "x1": 0.911772185680913,
+        "y1": 0.17761954875907515
+      },
+      "text": "ing the multi-task encoding process. According to the infor-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823528165131612,
+        "y0": 0.1737505799592144,
+        "x1": 0.47794874353346484,
+        "y1": 0.18632962005306974
+      },
+      "text": "To ensure sufficiency for target tasks and mitigate the nega-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.17887761014880554,
+        "x1": 0.6179731780407476,
+        "y1": 0.191456650242661
+      },
+      "text": "mation flow of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6222613465552237,
+        "y0": 0.17887761014880554,
+        "x1": 0.7127131044475081,
+        "y1": 0.191456650242661
+      },
+      "text": "Z←X→Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7138887791851767,
+        "y0": 0.1780856552750173,
+        "x1": 0.7176377539541207,
+        "y1": 0.18689095853555082
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7184557945899714,
+        "y0": 0.17887761014880554,
+        "x1": 0.9117661021114175,
+        "y1": 0.191456650242661
+      },
+      "text": ", the Markov chain rule states",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823528165131612,
+        "y0": 0.18758768144280025,
+        "x1": 0.47794879339878854,
+        "y1": 0.2001667215366556
+      },
+      "text": "tive effects of redundant features, we propose a principled",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.1927147116323914,
+        "x1": 0.5464768752553104,
+        "y1": 0.20529375172624686
+      },
+      "text": "that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5524982626921211,
+        "y0": 0.1927147116323914,
+        "x1": 0.5596446616976869,
+        "y1": 0.20529375172624686
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5609312867806628,
+        "y0": 0.1927147116323914,
+        "x1": 0.5672474281460631,
+        "y1": 0.20529375172624686
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.567262986127068,
+        "y0": 0.1927147116323914,
+        "x1": 0.5807417825935712,
+        "y1": 0.20529375172624686
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5820260640063317,
+        "y0": 0.1927147116323914,
+        "x1": 0.5865352855009192,
+        "y1": 0.20529375172624686
+      },
+      "text": ";",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5892613728841146,
+        "y0": 0.1927147116323914,
+        "x1": 0.6003634882908241,
+        "y1": 0.20529375172624686
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6015391630284926,
+        "y0": 0.1927147116323914,
+        "x1": 0.607855304393893,
+        "y1": 0.20529375172624686
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.616006489672692,
+        "y0": 0.1927147116323914,
+        "x1": 0.6286550783643535,
+        "y1": 0.20529375172624686
+      },
+      "text": "≥",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6368055156632966,
+        "y0": 0.1927147116323914,
+        "x1": 0.6439519146688624,
+        "y1": 0.20529375172624686
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6452385397518382,
+        "y0": 0.1927147116323914,
+        "x1": 0.6515546811172386,
+        "y1": 0.20529375172624686
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6515685935425602,
+        "y0": 0.1927147116323914,
+        "x1": 0.6626707089492698,
+        "y1": 0.20529375172624686
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6638463836869383,
+        "y0": 0.1927147116323914,
+        "x1": 0.6683556051815257,
+        "y1": 0.20529375172624686
+      },
+      "text": ";",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6710816925647212,
+        "y0": 0.1927147116323914,
+        "x1": 0.6821838079714307,
+        "y1": 0.20529375172624686
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.683357837153416,
+        "y0": 0.19192275675860315,
+        "x1": 0.6871068119223601,
+        "y1": 0.20072806001913668
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6879248525582108,
+        "y0": 0.1927147116323914,
+        "x1": 0.9117570266224979,
+        "y1": 0.20529375172624686
+      },
+      "text": "). For the InfoNCE estimation of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823528165131612,
+        "y0": 0.2014247829263861,
+        "x1": 0.1542619194080627,
+        "y1": 0.21400382302024146
+      },
+      "text": "multi-task",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16300360985051573,
+        "y0": 0.2014247829263861,
+        "x1": 0.25522276934455423,
+        "y1": 0.21400382302024146
+      },
+      "text": "representation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2639481787588082,
+        "y0": 0.2014247829263861,
+        "x1": 0.3172936782338261,
+        "y1": 0.21400382302024146
+      },
+      "text": "learning",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32603539360894096,
+        "y0": 0.2014247829263861,
+        "x1": 0.39688055499706393,
+        "y1": 0.21400382302024146
+      },
+      "text": "framework",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40562224543951697,
+        "y0": 0.2014247829263861,
+        "x1": 0.47794875599979575,
+        "y1": 0.21400382302024146
+      },
+      "text": "(InfoMTL)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220588235294118,
+        "y0": 0.20655181311597726,
+        "x1": 0.5998387554891749,
+        "y1": 0.21913085320983272
+      },
+      "text": "maximizing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6041944416519863,
+        "y0": 0.20655181311597726,
+        "x1": 0.6113408406575521,
+        "y1": 0.21913085320983272
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.612627465740528,
+        "y0": 0.20655181311597726,
+        "x1": 0.6189436071059283,
+        "y1": 0.21913085320983272
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6189591650869332,
+        "y0": 0.20655181311597726,
+        "x1": 0.6300612804936427,
+        "y1": 0.21913085320983272
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.631235309675628,
+        "y0": 0.20655181311597726,
+        "x1": 0.6357445311702155,
+        "y1": 0.21913085320983272
+      },
+      "text": ";",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6384706185534109,
+        "y0": 0.20655181311597726,
+        "x1": 0.6495727339601205,
+        "y1": 0.21913085320983272
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.650748408697789,
+        "y0": 0.205759858242189,
+        "x1": 0.654497383466733,
+        "y1": 0.21456516150272253
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6553154241025837,
+        "y0": 0.20655181311597726,
+        "x1": 0.9117684956469567,
+        "y1": 0.21913085320983272
+      },
+      "text": "), the selection of positive and negative",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823528165131612,
+        "y0": 0.21526188440997196,
+        "x1": 0.47794874353346484,
+        "y1": 0.2278409245038273
+      },
+      "text": "that extracts noise-invariant sufficient representations for all",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220588733947354,
+        "y0": 0.2203889145995631,
+        "x1": 0.9117722854115604,
+        "y1": 0.23296795469341858
+      },
+      "text": "samples as well as the implementation of noise-contrastive",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823528165131612,
+        "y0": 0.22909775286009815,
+        "x1": 0.47794874353346484,
+        "y1": 0.2416767929539536
+      },
+      "text": "tasks. It contains two learning principles: shared information",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220588733947354,
+        "y0": 0.2342247830496894,
+        "x1": 0.9117722854115604,
+        "y1": 0.24680382314354488
+      },
+      "text": "loss are consistent with Hu et al. (2024b). The optimization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823528165131612,
+        "y0": 0.242934854343684,
+        "x1": 0.47794874353346484,
+        "y1": 0.25551389443753947
+      },
+      "text": "maximization (SIMax) and task-specific information mini-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220588733947354,
+        "y0": 0.24806188453327527,
+        "x1": 0.7592078314887153,
+        "y1": 0.26064092462713073
+      },
+      "text": "objective of SIMax for MTL can be:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823528165131612,
+        "y0": 0.25677195582726986,
+        "x1": 0.47794879339878854,
+        "y1": 0.2693509959211253
+      },
+      "text": "mization (TIMin), which constrain the amount of shared and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823528165131612,
+        "y0": 0.2706090573108557,
+        "x1": 0.47571851692947686,
+        "y1": 0.2831880974047112
+      },
+      "text": "task-specific information in the multi-task learning process.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220588235294118,
+        "y0": 0.26499870931259306,
+        "x1": 0.5331511653326695,
+        "y1": 0.2774390018347538
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5331620858385672,
+        "y0": 0.2705964006558813,
+        "x1": 0.5638374378478604,
+        "y1": 0.2793045814591225
+      },
+      "text": "SIMax",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5691156823650684,
+        "y0": 0.26499870931259306,
+        "x1": 0.5968312282188266,
+        "y1": 0.2774390018347538
+      },
+      "text": "= E",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5968407524956597,
+        "y0": 0.27097725386571403,
+        "x1": 0.620142269757838,
+        "y1": 0.2796854346689551
+      },
+      "text": "z∼p",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6201526417451746,
+        "y0": 0.2747851736617811,
+        "x1": 0.6256022235147314,
+        "y1": 0.2810053199228614
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6266875921511182,
+        "y0": 0.27097725386571403,
+        "x1": 0.6317137674568525,
+        "y1": 0.2796854346689551
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6317197014303768,
+        "y0": 0.27097725386571403,
+        "x1": 0.6494469237483405,
+        "y1": 0.2796854346689551
+      },
+      "text": "z|x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6494565477558211,
+        "y0": 0.27097725386571403,
+        "x1": 0.6544827230615553,
+        "y1": 0.2796854346689551
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.655291787939134,
+        "y0": 0.26499870931259306,
+        "x1": 0.6633413975534875,
+        "y1": 0.2774390018347538
+      },
+      "text": "{",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6633425444559334,
+        "y0": 0.26499870931259306,
+        "x1": 0.6740646362304688,
+        "y1": 0.2774390018347538
+      },
+      "text": "E",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6740741106419782,
+        "y0": 0.2705964006558813,
+        "x1": 0.6965963824901705,
+        "y1": 0.2793045814591225
+      },
+      "text": "t∼T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7018250608755872,
+        "y0": 0.26499870931259306,
+        "x1": 0.7062845167770885,
+        "y1": 0.2774390018347538
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.706298080145144,
+        "y0": 0.26499870931259306,
+        "x1": 0.7188071456609988,
+        "y1": 0.2774390018347538
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7215026656007455,
+        "y0": 0.26499870931259306,
+        "x1": 0.7420613407309539,
+        "y1": 0.2774390018347538
+      },
+      "text": "log",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7449810053008834,
+        "y0": 0.26499870931259306,
+        "x1": 0.7521612628612643,
+        "y1": 0.2774390018347538
+      },
+      "text": "q",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7521671968347886,
+        "y0": 0.2705964006558813,
+        "x1": 0.7598980174345129,
+        "y1": 0.2793045814591225
+      },
+      "text": "ϕ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7599076913073172,
+        "y0": 0.27432810357122706,
+        "x1": 0.7644396015242034,
+        "y1": 0.2805482498323074
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7660547892252604,
+        "y0": 0.26499870931259306,
+        "x1": 0.7723012687334048,
+        "y1": 0.2774390018347538
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7723166272531148,
+        "y0": 0.26499870931259306,
+        "x1": 0.7802052217371324,
+        "y1": 0.2774390018347538
+      },
+      "text": "y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7802090115017362,
+        "y0": 0.2705964006558813,
+        "x1": 0.7850661433600132,
+        "y1": 0.2793045814591225
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7858778012344261,
+        "y0": 0.26499870931259306,
+        "x1": 0.7978353064044629,
+        "y1": 0.2774390018347538
+      },
+      "text": "|z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7985453387491064,
+        "y0": 0.26499870931259306,
+        "x1": 0.8092513240240757,
+        "y1": 0.2774390018347538
+      },
+      "text": ")]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7473694047117545,
+        "y0": 0.2843035435435748,
+        "x1": 0.8077361162971047,
+        "y1": 0.2967438360657355
+      },
+      "text": "exp(sim(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8077498791264552,
+        "y0": 0.2843035435435748,
+        "x1": 0.830578573388991,
+        "y1": 0.2967438360657355
+      },
+      "text": "z,z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8312961353975183,
+        "y0": 0.283520286733454,
+        "x1": 0.8411794425615298,
+        "y1": 0.29222846753669507
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8419840694252961,
+        "y0": 0.2843035435435748,
+        "x1": 0.8482305987987643,
+        "y1": 0.2967438360657355
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8482442618974673,
+        "y0": 0.2843035435435748,
+        "x1": 0.8633292204414318,
+        "y1": 0.2967438360657355
+      },
+      "text": "/τ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8651553883272058,
+        "y0": 0.2843035435435748,
+        "x1": 0.871401917700674,
+        "y1": 0.2967438360657355
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823528165131612,
+        "y0": 0.2966715735618515,
+        "x1": 0.42367228339700136,
+        "y1": 0.3104456891917219
+      },
+      "text": "Shared Information Maximization Principle",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6669201819725286,
+        "y0": 0.29271853451776986,
+        "x1": 0.6933058695076337,
+        "y1": 0.3051588270399306
+      },
+      "text": "− α",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6960609286439186,
+        "y0": 0.29271853451776986,
+        "x1": 0.7166196037741268,
+        "y1": 0.3051588270399306
+      },
+      "text": "log",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7214704027362898,
+        "y0": 0.29192184077368843,
+        "x1": 0.7384550805185356,
+        "y1": 0.30436213329584916
+      },
+      "text": "P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7450763976651859,
+        "y0": 0.308717252630176,
+        "x1": 0.7486262601964614,
+        "y1": 0.31493739889125627
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7668741263595282,
+        "y0": 0.308717252630176,
+        "x1": 0.775141049054713,
+        "y1": 0.31493739889125627
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7794415343041513,
+        "y0": 0.3012521278978598,
+        "x1": 0.839808345620149,
+        "y1": 0.31369242042002055
+      },
+      "text": "exp(sim(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8398221084494996,
+        "y0": 0.3012521278978598,
+        "x1": 0.8626507528467116,
+        "y1": 0.31369242042002055
+      },
+      "text": "z,z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.863366619434232,
+        "y0": 0.30139048653419576,
+        "x1": 0.8670742059844772,
+        "y1": 0.31009866733743685
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.867883220996732,
+        "y0": 0.3012521278978598,
+        "x1": 0.8741297503702001,
+        "y1": 0.31369242042002055
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8741451088899101,
+        "y0": 0.3012521278978598,
+        "x1": 0.8892300674338746,
+        "y1": 0.31369242042002055
+      },
+      "text": "/τ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8910546396292892,
+        "y0": 0.3012521278978598,
+        "x1": 0.8973011690027574,
+        "y1": 0.31369242042002055
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8992475123187296,
+        "y0": 0.29271853451776986,
+        "x1": 0.9117562287773182,
+        "y1": 0.3051588270399306
+      },
+      "text": "},",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7384638568155126,
+        "y0": 0.30871663189897636,
+        "x1": 0.7665834613874847,
+        "y1": 0.31742481270221745
+      },
+      "text": "z ∈B",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823528165131612,
+        "y0": 0.3162542605640912,
+        "x1": 0.47794879339878854,
+        "y1": 0.3288333006579467
+      },
+      "text": "In the MTL paradigm, the mutual information between the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8927842682483149,
+        "y0": 0.31534143048103414,
+        "x1": 0.9117653042662377,
+        "y1": 0.3279204705748895
+      },
+      "text": "(2)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823528165131612,
+        "y0": 0.3300913620476771,
+        "x1": 0.1217044007544424,
+        "y1": 0.34267040214153255
+      },
+      "text": "input",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1282434525832631,
+        "y0": 0.3300913620476771,
+        "x1": 0.14172226151609732,
+        "y1": 0.34267040214153255
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14954737744300195,
+        "y0": 0.3300913620476771,
+        "x1": 0.3536016177507787,
+        "y1": 0.34267040214153255
+      },
+      "text": "and the shared representations",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3601437736960018,
+        "y0": 0.3300913620476771,
+        "x1": 0.3712458891027114,
+        "y1": 0.34267040214153255
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3789607777315028,
+        "y0": 0.3300913620476771,
+        "x1": 0.4779355915543301,
+        "y1": 0.34267040214153255
+      },
+      "text": "is typically re-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.522058773664088,
+        "y0": 0.32917853196462,
+        "x1": 0.5618277655707465,
+        "y1": 0.34175757205847535
+      },
+      "text": "where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5712009504729626,
+        "y0": 0.32917853196462,
+        "x1": 0.5793891856872958,
+        "y1": 0.34175757205847535
+      },
+      "text": "p",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.579392127741396,
+        "y0": 0.3348386558619413,
+        "x1": 0.5855910855960222,
+        "y1": 0.3436439591224747
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5867564880770016,
+        "y0": 0.32917853196462,
+        "x1": 0.5930726294424019,
+        "y1": 0.34175757205847535
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5930881874234069,
+        "y0": 0.32917853196462,
+        "x1": 0.6151905932457619,
+        "y1": 0.34175757205847535
+      },
+      "text": "z|x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6151993196774153,
+        "y0": 0.32917853196462,
+        "x1": 0.6215154610428155,
+        "y1": 0.34175757205847535
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6309052012325113,
+        "y0": 0.32917853196462,
+        "x1": 0.6417631261488971,
+        "y1": 0.34175757205847535
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6511397018931271,
+        "y0": 0.32917853196462,
+        "x1": 0.6583674811070261,
+        "y1": 0.34175757205847535
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6677440568512562,
+        "y0": 0.32917853196462,
+        "x1": 0.7102316064772263,
+        "y1": 0.34175757205847535
+      },
+      "text": "shared",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7195918762605954,
+        "y0": 0.32917853196462,
+        "x1": 0.7711141748366013,
+        "y1": 0.34175757205847535
+      },
+      "text": "encoder",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7804907007155075,
+        "y0": 0.32917853196462,
+        "x1": 0.8094343297621783,
+        "y1": 0.34175757205847535
+      },
+      "text": "with",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8188109055064083,
+        "y0": 0.32917853196462,
+        "x1": 0.8902258779488358,
+        "y1": 0.34175757205847535
+      },
+      "text": "parameters",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8996012569252961,
+        "y0": 0.32917853196462,
+        "x1": 0.9072360369115094,
+        "y1": 0.34175757205847535
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9076943989672692,
+        "y0": 0.32917853196462,
+        "x1": 0.9117641074984681,
+        "y1": 0.34175757205847535
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.34392846353126294,
+        "x1": 0.47794875599979575,
+        "y1": 0.3565075036251184
+      },
+      "text": "duced implicitly (Figure 1(a)) or explicitly (Figure 1(b)) un-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.522058773664088,
+        "y0": 0.34301563344820585,
+        "x1": 0.5293191149343852,
+        "y1": 0.3555946735420612
+      },
+      "text": "q",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5293250987732333,
+        "y0": 0.34867571881323145,
+        "x1": 0.537142136517693,
+        "y1": 0.357481022073765
+      },
+      "text": "ϕ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5371535058115043,
+        "y0": 0.3524503521244935,
+        "x1": 0.5417359794666564,
+        "y1": 0.3587398721714212
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5433691685495813,
+        "y0": 0.34301563344820585,
+        "x1": 0.5496853099149817,
+        "y1": 0.3555946735420612
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5496992223403033,
+        "y0": 0.34301563344820585,
+        "x1": 0.5576758291207108,
+        "y1": 0.3555946735420612
+      },
+      "text": "y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5576812644409977,
+        "y0": 0.34867571881323145,
+        "x1": 0.5625925500408496,
+        "y1": 0.357481022073765
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5634116378484988,
+        "y0": 0.34301563344820585,
+        "x1": 0.5755041284498825,
+        "y1": 0.3555946735420612
+      },
+      "text": "|z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5762204936906403,
+        "y0": 0.34301563344820585,
+        "x1": 0.8664806091707516,
+        "y1": 0.3555946735420612
+      },
+      "text": ") is a task-specific decoder with parameters",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8719198189529718,
+        "y0": 0.34301563344820585,
+        "x1": 0.8816056594349979,
+        "y1": 0.3555946735420612
+      },
+      "text": "ϕ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8816191230724061,
+        "y0": 0.34867571881323145,
+        "x1": 0.8865304585375817,
+        "y1": 0.357481022073765
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8927841685176675,
+        "y0": 0.34301563344820585,
+        "x1": 0.9117652045355903,
+        "y1": 0.3555946735420612
+      },
+      "text": "for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.3577655650148488,
+        "x1": 0.47794875599979575,
+        "y1": 0.37034460510870426
+      },
+      "text": "der the information bottleneck (IB) theory (Shwartz-Ziv and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.3568527349317917,
+        "x1": 0.5482837452607996,
+        "y1": 0.36943177502564706
+      },
+      "text": "task",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5528332080716402,
+        "y0": 0.3568527349317917,
+        "x1": 0.5587098364736519,
+        "y1": 0.36943177502564706
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5587106343188317,
+        "y0": 0.3568527349317917,
+        "x1": 0.9117643069597631,
+        "y1": 0.36943177502564706
+      },
+      "text": ", and its output distribution is adapted for task predic-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.37160266649843465,
+        "x1": 0.47794875599979575,
+        "y1": 0.3841817065922901
+      },
+      "text": "Tishby 2017; Kawaguchi et al. 2023). However, directly re-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.37068983641537756,
+        "x1": 0.911772185680913,
+        "y1": 0.3832688765092329
+      },
+      "text": "tion by a non-parametric function (e.g., Softmax operation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.3854397679820205,
+        "x1": 0.4779488557304432,
+        "y1": 0.398018808075876
+      },
+      "text": "ducing redundancy for one task is prone to losing necessary",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.3845269378989634,
+        "x1": 0.640177358988843,
+        "y1": 0.39710597799281877
+      },
+      "text": "for classification).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6448087006612541,
+        "y0": 0.3845269378989634,
+        "x1": 0.6523783066693474,
+        "y1": 0.39710597799281877
+      },
+      "text": "z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6530946719101052,
+        "y0": 0.38373502155747075,
+        "x1": 0.663088181439568,
+        "y1": 0.39254032481800427
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6685374640171824,
+        "y0": 0.3845269378989634,
+        "x1": 0.8488898183785233,
+        "y1": 0.39710597799281877
+      },
+      "text": "refers to the positive key of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8535228056066176,
+        "y0": 0.3845269378989634,
+        "x1": 0.8610924614800347,
+        "y1": 0.39710597799281877
+      },
+      "text": "z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.861808726990145,
+        "y0": 0.3845269378989634,
+        "x1": 0.9117681964550143,
+        "y1": 0.39710597799281877
+      },
+      "text": ", gener-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.39927686946560637,
+        "x1": 0.47794875599979575,
+        "y1": 0.41185590955946183
+      },
+      "text": "information for others. As a result, the learned shared repre-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.3983640393825493,
+        "x1": 0.640209921045241,
+        "y1": 0.4109430794764046
+      },
+      "text": "ated by dropout in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6440341924530228,
+        "y0": 0.3983640393825493,
+        "x1": 0.652222427667356,
+        "y1": 0.4109430794764046
+      },
+      "text": "p",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6522237241657731,
+        "y0": 0.404024124747575,
+        "x1": 0.6584226820203993,
+        "y1": 0.4128294280081084
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6595897300570619,
+        "y0": 0.3983640393825493,
+        "x1": 0.6659058714224622,
+        "y1": 0.4109430794764046
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6659197838477839,
+        "y0": 0.3983640393825493,
+        "x1": 0.6880238352258221,
+        "y1": 0.4109430794764046
+      },
+      "text": "z|x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6880325616574755,
+        "y0": 0.3983640393825493,
+        "x1": 0.6984323239793965,
+        "y1": 0.4109430794764046
+      },
+      "text": ").",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7022498635684743,
+        "y0": 0.3983640393825493,
+        "x1": 0.7129287221073325,
+        "y1": 0.4109430794764046
+      },
+      "text": "B",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7134361516416462,
+        "y0": 0.3975721230410566,
+        "x1": 0.7234296611711091,
+        "y1": 0.40637742630159013
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7280619502846711,
+        "y0": 0.3983640393825493,
+        "x1": 0.9117676978017769,
+        "y1": 0.4109430794764046
+      },
+      "text": "represents the set of positive",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.41311273791573266,
+        "x1": 0.15335033142488766,
+        "y1": 0.425691778009588
+      },
+      "text": "sentations",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15741994022543915,
+        "y0": 0.41311273791573266,
+        "x1": 0.1685220556321487,
+        "y1": 0.425691778009588
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.173766341863894,
+        "y0": 0.41311273791573266,
+        "x1": 0.4741093753989226,
+        "y1": 0.425691778009588
+      },
+      "text": "usually suffer from task-specific insufficiency.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.41220114086613513,
+        "x1": 0.6873043284696692,
+        "y1": 0.4247801809599905
+      },
+      "text": "keys in the current batch",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6927808873793658,
+        "y0": 0.41220114086613513,
+        "x1": 0.703459745918224,
+        "y1": 0.4247801809599905
+      },
+      "text": "B",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.703968821008221,
+        "y0": 0.41220114086613513,
+        "x1": 0.7433503094841453,
+        "y1": 0.4247801809599905
+      },
+      "text": ". sim(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7433658674651501,
+        "y0": 0.41220114086613513,
+        "x1": 0.7478750889597375,
+        "y1": 0.4247801809599905
+      },
+      "text": "·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7478871065027574,
+        "y0": 0.41220114086613513,
+        "x1": 0.9117688945695466,
+        "y1": 0.4247801809599905
+      },
+      "text": ") is a pairwise similarity",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10451470792683121,
+        "y0": 0.4272086993612424,
+        "x1": 0.47794946034749347,
+        "y1": 0.43978773945509786
+      },
+      "text": "To alleviate the insufficiency issue, a shared information",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.4260370093162613,
+        "x1": 0.7274477590922437,
+        "y1": 0.4386160494101168
+      },
+      "text": "function, i.e., cosine similarity.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7328152126736112,
+        "y0": 0.4260370093162613,
+        "x1": 0.7613355848524306,
+        "y1": 0.4386160494101168
+      },
+      "text": "τ >",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7682711034039267,
+        "y0": 0.4260370093162613,
+        "x1": 0.9117603177338643,
+        "y1": 0.4386160494101168
+      },
+      "text": "0 is a scalar tempera-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.44104580084482825,
+        "x1": 0.4779488058651195,
+        "y1": 0.4536248409386837
+      },
+      "text": "maximization (SIMax) principle is proposed to learn more",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.4398741107998472,
+        "x1": 0.9117722854115604,
+        "y1": 0.45245315089370264
+      },
+      "text": "ture parameter that controls the sharpness of the probability",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.4548829023284141,
+        "x1": 0.47794875599979575,
+        "y1": 0.46746194242226957
+      },
+      "text": "sufficient shared representations for all target tasks. The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.45371121228343314,
+        "x1": 0.9110559201708027,
+        "y1": 0.4662902523772885
+      },
+      "text": "distribution, which is applied during the Softmax operation.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.46872000381199996,
+        "x1": 0.47794875599979575,
+        "y1": 0.48129904390585543
+      },
+      "text": "SIMax principle simultaneously maximizes the mutual in-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.4825571052955858,
+        "x1": 0.2768898010253906,
+        "y1": 0.4951361453894413
+      },
+      "text": "formation between the input",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2825114430944904,
+        "y0": 0.4825571052955858,
+        "x1": 0.2959902644936555,
+        "y1": 0.4951361453894413
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3028921488842933,
+        "y0": 0.4825571052955858,
+        "x1": 0.47793763603260314,
+        "y1": 0.4951361453894413
+      },
+      "text": "and the shared representa-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.4779302664477416,
+        "x1": 0.8977809731477226,
+        "y1": 0.491704382077612
+      },
+      "text": "Task-specific Information Minimization Principle",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.4963942067791717,
+        "x1": 0.11989748088362949,
+        "y1": 0.5089732468730271
+      },
+      "text": "tions",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1249836566401463,
+        "y0": 0.4963942067791717,
+        "x1": 0.13608577204685585,
+        "y1": 0.5089732468730271
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14234803392996195,
+        "y0": 0.4963942067791717,
+        "x1": 0.4779346316468482,
+        "y1": 0.5089732468730271
+      },
+      "text": "for all tasks, as well as the mutual information be-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.4956215571875524,
+        "x1": 0.911772185680913,
+        "y1": 0.5082005972814079
+      },
+      "text": "In multi-task scenarios, redundant information often differs",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0882352878844816,
+        "y0": 0.5102313082627576,
+        "x1": 0.29915914971844043,
+        "y1": 0.522810348356613
+      },
+      "text": "tween the shared representations",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30286437389897364,
+        "y0": 0.5102313082627576,
+        "x1": 0.3139664893056832,
+        "y1": 0.522810348356613
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.318848030239928,
+        "y0": 0.5102313082627576,
+        "x1": 0.4363643671172896,
+        "y1": 0.522810348356613
+      },
+      "text": "and the target task",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.440071903802211,
+        "y0": 0.5102313082627576,
+        "x1": 0.44951360365923715,
+        "y1": 0.522810348356613
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4495228786094516,
+        "y0": 0.5158913936277832,
+        "x1": 0.4544341642093035,
+        "y1": 0.5246966968883168
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45896078870187396,
+        "y0": 0.5102313082627576,
+        "x1": 0.4779418247197968,
+        "y1": 0.522810348356613
+      },
+      "text": "for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.5094586586711383,
+        "x1": 0.9117722854115604,
+        "y1": 0.5220376987649937
+      },
+      "text": "across tasks, such that information beneficial for one task",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.5240684097463435,
+        "x1": 0.14864576252457362,
+        "y1": 0.5366474498401989
+      },
+      "text": "each task",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15299835703731363,
+        "y0": 0.5240684097463435,
+        "x1": 0.15887498543932546,
+        "y1": 0.5366474498401989
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15887580821716707,
+        "y0": 0.5240684097463435,
+        "x1": 0.4779394810495813,
+        "y1": 0.5366474498401989
+      },
+      "text": ". It can be formulated as the maximization of the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.5232957601547241,
+        "x1": 0.911772185680913,
+        "y1": 0.5358748002485796
+      },
+      "text": "may become redundant for another. Directly applying the IB",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0882352878844816,
+        "y0": 0.5379055112299294,
+        "x1": 0.23340925204208474,
+        "y1": 0.5504845513237847
+      },
+      "text": "following Lagrangian,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.53713286163831,
+        "x1": 0.9117722854115604,
+        "y1": 0.5497119017321654
+      },
+      "text": "principle (Tishby, Pereira, and Bialek 1999; Tishby and Za-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.5509699631218958,
+        "x1": 0.911772185680913,
+        "y1": 0.5635490032157513
+      },
+      "text": "slavsky 2015) to compress the task-specific redundancy for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21028920092613868,
+        "y0": 0.5639282200071547,
+        "x1": 0.23379573946684792,
+        "y1": 0.5765072601010102
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21345913955588747,
+        "y0": 0.562844652720172,
+        "x1": 0.23062926647709867,
+        "y1": 0.5716499559807056
+      },
+      "text": "|T |",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.5648070646054817,
+        "x1": 0.9117722854115604,
+        "y1": 0.5773861046993372
+      },
+      "text": "one task can result in the loss of necessary information for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1772794037862541,
+        "y0": 0.5758790114913324,
+        "x1": 0.20755790261661305,
+        "y1": 0.5884580515851878
+      },
+      "text": "max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23380227182425706,
+        "y0": 0.5758789729590368,
+        "x1": 0.23831149331884446,
+        "y1": 0.5884580130528922
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23832515641754748,
+        "y0": 0.5758789729590368,
+        "x1": 0.2454715304904514,
+        "y1": 0.5884580130528922
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24675815557342728,
+        "y0": 0.5758789729590368,
+        "x1": 0.2530743218714895,
+        "y1": 0.5884580130528922
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25308820936414933,
+        "y0": 0.5758789729590368,
+        "x1": 0.2625298842885136,
+        "y1": 0.5884580130528922
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2625391841713899,
+        "y0": 0.5815390583240625,
+        "x1": 0.2674504697712418,
+        "y1": 0.590344361584596
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26827120313457414,
+        "y0": 0.5758789729590368,
+        "x1": 0.2727804246291616,
+        "y1": 0.5884580130528922
+      },
+      "text": ";",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27550648707969516,
+        "y0": 0.5758789729590368,
+        "x1": 0.28660860248640474,
+        "y1": 0.5884580130528922
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28778263166839,
+        "y0": 0.5758789729590368,
+        "x1": 0.31487049775965076,
+        "y1": 0.5884580130528922
+      },
+      "text": ")] +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31853101144429125,
+        "y0": 0.5758789729590368,
+        "x1": 0.3361446405547896,
+        "y1": 0.5884580130528922
+      },
+      "text": "αI",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33743951834884345,
+        "y0": 0.5758789729590368,
+        "x1": 0.34375568464690565,
+        "y1": 0.5884580130528922
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34376957213956544,
+        "y0": 0.5758789729590368,
+        "x1": 0.3572483935387306,
+        "y1": 0.5884580130528922
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35853265001882917,
+        "y0": 0.5758789729590368,
+        "x1": 0.36304187151341655,
+        "y1": 0.5884580130528922
+      },
+      "text": ";",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3657679339639502,
+        "y0": 0.5758789729590368,
+        "x1": 0.3768700493706597,
+        "y1": 0.5884580130528922
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3780457241083282,
+        "y0": 0.5758789729590368,
+        "x1": 0.3843618904063904,
+        "y1": 0.5884580130528922
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38437577789905025,
+        "y0": 0.5758789729590368,
+        "x1": 0.3888849993936377,
+        "y1": 0.5884580130528922
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45896073883655025,
+        "y0": 0.5758789729590368,
+        "x1": 0.47794177485447303,
+        "y1": 0.5884580130528922
+      },
+      "text": "(1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.5786441660890675,
+        "x1": 0.911772185680913,
+        "y1": 0.591223206182923
+      },
+      "text": "other tasks. Consequently, both the shared representations",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21134639565461602,
+        "y0": 0.5943421071225947,
+        "x1": 0.21625768125446793,
+        "y1": 0.6031474103831281
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21626306670943116,
+        "y0": 0.5943421071225947,
+        "x1": 0.23274038975534875,
+        "y1": 0.6031474103831281
+      },
+      "text": "=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.5924812675726534,
+        "x1": 0.5331608392054739,
+        "y1": 0.6050603076665089
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5381044874004289,
+        "y0": 0.5924812675726534,
+        "x1": 0.8181154338362949,
+        "y1": 0.6050603076665089
+      },
+      "text": "and the task-specific output representations",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8218839059468188,
+        "y0": 0.5924812675726534,
+        "x1": 0.8329860213535284,
+        "y1": 0.6050603076665089
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8329966426674836,
+        "y0": 0.5981413529376791,
+        "x1": 0.8379079781326593,
+        "y1": 0.6069466561982126
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8424982806436376,
+        "y0": 0.5924812675726534,
+        "x1": 0.9117644066904106,
+        "y1": 0.6050603076665089
+      },
+      "text": "for a given",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823524425232332,
+        "y0": 0.6110027017015399,
+        "x1": 0.34031183579388785,
+        "y1": 0.6235817417953954
+      },
+      "text": "subject to the Markov constraint, i.e.,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3463251201155918,
+        "y0": 0.6110027017015399,
+        "x1": 0.35576679503995606,
+        "y1": 0.6235817417953954
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3557760949228324,
+        "y0": 0.6166640586323209,
+        "x1": 0.36068738052268434,
+        "y1": 0.6254693618928544
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36961758682151247,
+        "y0": 0.6110027017015399,
+        "x1": 0.4074869342878753,
+        "y1": 0.6235817417953954
+      },
+      "text": "→ X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4168839298821742,
+        "y0": 0.6110027017015399,
+        "x1": 0.4523765713560815,
+        "y1": 0.6235817417953954
+      },
+      "text": "→ Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4616616940965839,
+        "y0": 0.6110027017015399,
+        "x1": 0.4779404284907322,
+        "y1": 0.6235817417953954
+      },
+      "text": "→",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.6063183690562393,
+        "x1": 0.5482837951261234,
+        "y1": 0.6188974091500947
+      },
+      "text": "task",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5528479183421415,
+        "y0": 0.6063183690562393,
+        "x1": 0.5587245467441534,
+        "y1": 0.6188974091500947
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5632907144384447,
+        "y0": 0.6063183690562393,
+        "x1": 0.9117699916066687,
+        "y1": 0.6188974091500947
+      },
+      "text": "often contain redundant features that are irrelevant to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13879567813249974,
+        "y0": 0.6237198620131521,
+        "x1": 0.14693505779590482,
+        "y1": 0.6362989021070076
+      },
+      "text": "ˆ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.6201554705398251,
+        "x1": 0.6301170797909007,
+        "y1": 0.6327345106336806
+      },
+      "text": "the specific task.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823521931966145,
+        "y0": 0.6268991617241291,
+        "x1": 0.09933733472637102,
+        "y1": 0.6394782018179845
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09934796227349176,
+        "y0": 0.6325592470891548,
+        "x1": 0.10425924787334367,
+        "y1": 0.6413645503496883
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1125652836818321,
+        "y0": 0.6268991617241291,
+        "x1": 0.145773295483558,
+        "y1": 0.6394782018179845
+      },
+      "text": "→ Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14578259536643434,
+        "y0": 0.6325592470891548,
+        "x1": 0.15069388096628625,
+        "y1": 0.6413645503496883
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1515129937065972,
+        "y0": 0.6268991617241291,
+        "x1": 0.15558267730513428,
+        "y1": 0.6394782018179845
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16125318739149305,
+        "y0": 0.6268991617241291,
+        "x1": 0.17165531831629136,
+        "y1": 0.6394782018179845
+      },
+      "text": "α",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1773986068426394,
+        "y0": 0.6268991617241291,
+        "x1": 0.47793703764871837,
+        "y1": 0.6394782018179845
+      },
+      "text": "is a parameter that balances the trade-off be-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5383381064421211,
+        "y0": 0.6339913389899514,
+        "x1": 0.9117728837954453,
+        "y1": 0.6465703790838069
+      },
+      "text": "To better alleviate the redundancy issue, a task-specific",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823520685333053,
+        "y0": 0.6407362632077149,
+        "x1": 0.27610836153716045,
+        "y1": 0.6533153033015704
+      },
+      "text": "tween the informativeness of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2801763995800143,
+        "y0": 0.6407362632077149,
+        "x1": 0.29127851498672386,
+        "y1": 0.6533153033015704
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29652280121846913,
+        "y0": 0.6407362632077149,
+        "x1": 0.31550383723639197,
+        "y1": 0.6533153033015704
+      },
+      "text": "for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31957344603694343,
+        "y0": 0.6407362632077149,
+        "x1": 0.33305226743610855,
+        "y1": 0.6533153033015704
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3384084265216503,
+        "y0": 0.6407362632077149,
+        "x1": 0.3619149650623596,
+        "y1": 0.6533153033015704
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36598360148909825,
+        "y0": 0.6407362632077149,
+        "x1": 0.3754252764134625,
+        "y1": 0.6533153033015704
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37543457629633886,
+        "y0": 0.6463963485727406,
+        "x1": 0.3803458618961908,
+        "y1": 0.6552016518332742
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38116659525952307,
+        "y0": 0.6407362632077149,
+        "x1": 0.38523627885806017,
+        "y1": 0.6533153033015704
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.6478284404735373,
+        "x1": 0.9117720859502655,
+        "y1": 0.6604074805673927
+      },
+      "text": "information minimization (TIMin) principle is designed to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10451462689568014,
+        "y0": 0.6548322246532248,
+        "x1": 0.11807482850317862,
+        "y1": 0.6674112647470802
+      },
+      "text": "In",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12694675470489303,
+        "y0": 0.6548322246532248,
+        "x1": 0.18572935715220332,
+        "y1": 0.6674112647470802
+      },
+      "text": "Equation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1946012708875868,
+        "y0": 0.6548322246532248,
+        "x1": 0.21765199050404668,
+        "y1": 0.6674112647470802
+      },
+      "text": "(1),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22652390423943014,
+        "y0": 0.6548322246532248,
+        "x1": 0.24641652824052798,
+        "y1": 0.6674112647470802
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2552884669085733,
+        "y0": 0.6548322246532248,
+        "x1": 0.3004945742538552,
+        "y1": 0.6674112647470802
+      },
+      "text": "second",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30936651292190054,
+        "y0": 0.6548322246532248,
+        "x1": 0.33920547385620914,
+        "y1": 0.6674112647470802
+      },
+      "text": "term",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3480774125242545,
+        "y0": 0.6548322246532248,
+        "x1": 0.4086669473087086,
+        "y1": 0.6674112647470802
+      },
+      "text": "promotes",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4175388610440921,
+        "y0": 0.6548322246532248,
+        "x1": 0.43743148504518997,
+        "y1": 0.6674112647470802
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4463034237132353,
+        "y0": 0.6548322246532248,
+        "x1": 0.4779493543836806,
+        "y1": 0.6674112647470802
+      },
+      "text": "task-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.6616655419571231,
+        "x1": 0.911772185680913,
+        "y1": 0.6742445820509786
+      },
+      "text": "mitigate the negative effect of potential redundant features in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.088235213086496,
+        "y0": 0.6686693454029584,
+        "x1": 0.2933638516594382,
+        "y1": 0.6812483854968139
+      },
+      "text": "agnostic shared representations",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29828913071576285,
+        "y0": 0.6686693454029584,
+        "x1": 0.30939124612247243,
+        "y1": 0.6812483854968139
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31548521253797746,
+        "y0": 0.6686693454029584,
+        "x1": 0.47794721017476,
+        "y1": 0.6812483854968139
+      },
+      "text": "preserves as much infor-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.6755026627068568,
+        "x1": 0.9117720859502655,
+        "y1": 0.6880817028007122
+      },
+      "text": "the inputs for the target task. It can compress task-irrelevant",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823521931966145,
+        "y0": 0.6825064661526921,
+        "x1": 0.31820524128433925,
+        "y1": 0.6950855062465475
+      },
+      "text": "mation as possible about the input",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3238593955445134,
+        "y0": 0.6825064661526921,
+        "x1": 0.3373382169436785,
+        "y1": 0.6950855062465475
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3386240940467984,
+        "y0": 0.6825064661526921,
+        "x1": 0.4779376858979269,
+        "y1": 0.6950855062465475
+      },
+      "text": ". It ensures the suffi-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.6893397834565904,
+        "x1": 0.9117720859502655,
+        "y1": 0.7019188235504459
+      },
+      "text": "redundant information and preserve necessary information",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823519438699959,
+        "y0": 0.6963435869024257,
+        "x1": 0.3254980947457108,
+        "y1": 0.7089226269962812
+      },
+      "text": "ciency of the shared representations",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3306306078543071,
+        "y0": 0.6963435869024257,
+        "x1": 0.34173272326101667,
+        "y1": 0.7089226269962812
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34804073657864837,
+        "y0": 0.6963435869024257,
+        "x1": 0.4779452155618107,
+        "y1": 0.7089226269962812
+      },
+      "text": "for all potential tar-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.7031769042063241,
+        "x1": 0.9117720859502655,
+        "y1": 0.7157559443001795
+      },
+      "text": "relevant to the target for multi-task prediction. The TIMin",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823516945433772,
+        "y0": 0.7101807076521593,
+        "x1": 0.11446025324802772,
+        "y1": 0.7227597477460148
+      },
+      "text": "gets",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11842307545780356,
+        "y0": 0.7101807076521593,
+        "x1": 0.12786475038216785,
+        "y1": 0.7227597477460148
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13149170470393562,
+        "y0": 0.7101807076521593,
+        "x1": 0.47793622733720764,
+        "y1": 0.7227597477460148
+      },
+      "text": ". The first term encourages the shared representations",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.7170140249560577,
+        "x1": 0.9117720859502655,
+        "y1": 0.7295930650499132
+      },
+      "text": "principle minimizes the mutual information between the in-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823516945433772,
+        "y0": 0.7240165761022856,
+        "x1": 0.09933728486104729,
+        "y1": 0.7365956161961411
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1061093573476754,
+        "y0": 0.7240165761022856,
+        "x1": 0.47794879339878854,
+        "y1": 0.7365956161961411
+      },
+      "text": "to capture the necessary information relevant to the tar-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.7308511457057915,
+        "x1": 0.5428629357830371,
+        "y1": 0.7434301857996468
+      },
+      "text": "put",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5468772938048917,
+        "y0": 0.7308511457057915,
+        "x1": 0.560356090271395,
+        "y1": 0.7434301857996468
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5656567243189593,
+        "y0": 0.7308511457057915,
+        "x1": 0.8466443828507966,
+        "y1": 0.7434301857996468
+      },
+      "text": "and the task-specific output representations",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8506649241727942,
+        "y0": 0.7308511457057915,
+        "x1": 0.8617670395795036,
+        "y1": 0.7434301857996468
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8617777107587827,
+        "y0": 0.7365112503369649,
+        "x1": 0.8666890462239584,
+        "y1": 0.7453165535974984
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8675097297219669,
+        "y0": 0.7308511457057915,
+        "x1": 0.9117716870276756,
+        "y1": 0.7434301857996468
+      },
+      "text": ", while",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823517568750319,
+        "y0": 0.7378536968520193,
+        "x1": 0.10812781838809743,
+        "y1": 0.7504327369458748
+      },
+      "text": "get",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11492309071659262,
+        "y0": 0.7378536968520193,
+        "x1": 0.1243647656409569,
+        "y1": 0.7504327369458748
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12437406552383323,
+        "y0": 0.7435150537828003,
+        "x1": 0.12928535112368514,
+        "y1": 0.7523203570433337
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13690020991306678,
+        "y0": 0.7378536968520193,
+        "x1": 0.2255217608283548,
+        "y1": 0.7504327369458748
+      },
+      "text": "for each task",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23231197182649102,
+        "y0": 0.7378536968520193,
+        "x1": 0.23818860022850286,
+        "y1": 0.7504327369458748
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23819106856202768,
+        "y0": 0.7378536968520193,
+        "x1": 0.47794461717792586,
+        "y1": 0.7504327369458748
+      },
+      "text": ". As shown in Figure 1(b) and (c),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.7446882664555251,
+        "x1": 0.9117722854115604,
+        "y1": 0.7572673065493805
+      },
+      "text": "maximizing the mutual information between the output rep-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823518192066866,
+        "y0": 0.7516908176017529,
+        "x1": 0.4779486438028174,
+        "y1": 0.7642698576956084
+      },
+      "text": "unlike IB-based MTL methods (Qian, Chen, and Gechter",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.7585253872052587,
+        "x1": 0.5998223497976665,
+        "y1": 0.7711044272991142
+      },
+      "text": "resentations",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6033316219554228,
+        "y0": 0.7585253872052587,
+        "x1": 0.6144337373621324,
+        "y1": 0.7711044272991142
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6144443586760876,
+        "y0": 0.7641854918364323,
+        "x1": 0.6193556442759396,
+        "y1": 0.7729907950969658
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6236845527599061,
+        "y0": 0.7585253872052587,
+        "x1": 0.8372455671721813,
+        "y1": 0.7711044272991142
+      },
+      "text": "and the corresponding target task",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8407596762663399,
+        "y0": 0.7585253872052587,
+        "x1": 0.850201376123366,
+        "y1": 0.7711044272991142
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8502106510735805,
+        "y0": 0.7641854918364323,
+        "x1": 0.8551219865387562,
+        "y1": 0.7729907950969658
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8594508950227226,
+        "y0": 0.7585253872052587,
+        "x1": 0.9117707894518484,
+        "y1": 0.7711044272991142
+      },
+      "text": "for each",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823518192066866,
+        "y0": 0.7655279383514867,
+        "x1": 0.4779486438028174,
+        "y1": 0.778106978445342
+      },
+      "text": "2020; de Freitas et al. 2022) that explicitly minimize input-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.7723625079549924,
+        "x1": 0.5482837951261234,
+        "y1": 0.7849415480488479
+      },
+      "text": "task",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.552503149493847,
+        "y0": 0.7723625079549924,
+        "x1": 0.5583797778958589,
+        "y1": 0.7849415480488479
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5583805757410386,
+        "y0": 0.7723625079549924,
+        "x1": 0.9117598190806271,
+        "y1": 0.7849415480488479
+      },
+      "text": ". The principle can be formulated as the maximization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823518192066866,
+        "y0": 0.7793650591012203,
+        "x1": 0.4779486438028174,
+        "y1": 0.7919440991950757
+      },
+      "text": "representation information, our InfoMTL with SIMax han-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.7861983764051187,
+        "x1": 0.708824855829376,
+        "y1": 0.7987774164989742
+      },
+      "text": "of the following Lagrangian,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823518192066866,
+        "y0": 0.793202179850954,
+        "x1": 0.4779486936681411,
+        "y1": 0.8057812199448094
+      },
+      "text": "dles the information in an opposite manner to avoid the in-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6454557032366983,
+        "y0": 0.8058703451445608,
+        "x1": 0.6671977822297539,
+        "y1": 0.817191557450728
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6482612759459252,
+        "y0": 0.8053663041856554,
+        "x1": 0.664394453460095,
+        "y1": 0.8129137790564335
+      },
+      "text": "|T |",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823518192066866,
+        "y0": 0.8070393006006876,
+        "x1": 0.4779486438028174,
+        "y1": 0.8196183406945431
+      },
+      "text": "sufficiency issue arising from representation compression in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823518192066866,
+        "y0": 0.8208764213504214,
+        "x1": 0.24784841101154004,
+        "y1": 0.8334554614442767
+      },
+      "text": "the multi-task paradigm.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6149214202282476,
+        "y0": 0.8166254024312953,
+        "x1": 0.6429194531409569,
+        "y1": 0.8279466147374626
+      },
+      "text": "max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6672057108162275,
+        "y0": 0.8166254024312953,
+        "x1": 0.6713812335643893,
+        "y1": 0.8279466147374626
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6713887133629494,
+        "y0": 0.8166254024312953,
+        "x1": 0.6779669967352175,
+        "y1": 0.8279466147374626
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6791174894844005,
+        "y0": 0.8166254024312953,
+        "x1": 0.6849632512510212,
+        "y1": 0.8279466147374626
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6849737229690053,
+        "y0": 0.8166254024312953,
+        "x1": 0.6937056896733302,
+        "y1": 0.8279466147374626
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6937122718960631,
+        "y0": 0.8216567183985855,
+        "x1": 0.6983615152196947,
+        "y1": 0.8292041932693636
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.699184492522595,
+        "y0": 0.8166254024312953,
+        "x1": 0.7033600152707568,
+        "y1": 0.8279466147374626
+      },
+      "text": ";",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7058773165434794,
+        "y0": 0.8166254024312953,
+        "x1": 0.7161183575399561,
+        "y1": 0.8279466147374626
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7161208009408191,
+        "y0": 0.8216567183985855,
+        "x1": 0.7207700442644506,
+        "y1": 0.8292041932693636
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.721593021567351,
+        "y0": 0.8166254024312953,
+        "x1": 0.7274387833339716,
+        "y1": 0.8279466147374626
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7307940215067147,
+        "y0": 0.8166254024312953,
+        "x1": 0.7616759156869128,
+        "y1": 0.8279466147374626
+      },
+      "text": "− βI",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7628315944297641,
+        "y0": 0.8166254024312953,
+        "x1": 0.7686773561963848,
+        "y1": 0.8279466147374626
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7686878279143688,
+        "y0": 0.8166254024312953,
+        "x1": 0.7811265334584354,
+        "y1": 0.8279466147374626
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7822727876551011,
+        "y0": 0.8166254024312953,
+        "x1": 0.7864483104032629,
+        "y1": 0.8279466147374626
+      },
+      "text": ";",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7889639661203023,
+        "y0": 0.8166254024312953,
+        "x1": 0.799205007116779,
+        "y1": 0.8279466147374626
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7992090462080015,
+        "y0": 0.8216567183985855,
+        "x1": 0.803858289531633,
+        "y1": 0.8292041932693636
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8046796212788501,
+        "y0": 0.8166254024312953,
+        "x1": 0.8147009057936325,
+        "y1": 0.8279466147374626
+      },
+      "text": ")]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8147188573101767,
+        "y0": 0.8166254024312953,
+        "x1": 0.8188943800583385,
+        "y1": 0.8279466147374626
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8946812448937909,
+        "y0": 0.8166254024312953,
+        "x1": 0.9117643069597631,
+        "y1": 0.8279466147374626
+      },
+      "text": "(3)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6464508156371273,
+        "y0": 0.833473629421658,
+        "x1": 0.6511000589607587,
+        "y1": 0.841021104292436
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.65110768835529,
+        "y0": 0.833473629421658,
+        "x1": 0.6662079555536408,
+        "y1": 0.841021104292436
+      },
+      "text": "=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823518192066866,
+        "y0": 0.8430367780454231,
+        "x1": 0.266552694482741,
+        "y1": 0.8556158181392786
+      },
+      "text": "Implementation of SIMax",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2828250461154514,
+        "y0": 0.8430367780454231,
+        "x1": 0.4779422735077104,
+        "y1": 0.8556158181392786
+      },
+      "text": "The implementation of SIMax",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220587237987643,
+        "y0": 0.8461099983465792,
+        "x1": 0.5851389068404055,
+        "y1": 0.8586890384404346
+      },
+      "text": "subject to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5894525066699857,
+        "y0": 0.8461099983465792,
+        "x1": 0.5988942065270119,
+        "y1": 0.8586890384404346
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5989034814772263,
+        "y0": 0.8517713649104339,
+        "x1": 0.6038147670770783,
+        "y1": 0.8605766681709675
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6095946567510467,
+        "y0": 0.8461099983465792,
+        "x1": 0.7213716195299734,
+        "y1": 0.8586890384404346
+      },
+      "text": "→X→Z→Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7213822408439288,
+        "y0": 0.8517713649104339,
+        "x1": 0.7262935264437806,
+        "y1": 0.8605766681709675
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7320734161177492,
+        "y0": 0.8461099983465792,
+        "x1": 0.7627537047940921,
+        "y1": 0.8586890384404346
+      },
+      "text": "→ Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.755776050044041,
+        "y0": 0.8429307082686761,
+        "x1": 0.7639154172411152,
+        "y1": 0.8555097483625316
+      },
+      "text": "ˆ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7627613341886234,
+        "y0": 0.8517713649104339,
+        "x1": 0.7676726197884753,
+        "y1": 0.8605766681709675
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7727989246642667,
+        "y0": 0.8461099983465792,
+        "x1": 0.8564392289305045,
+        "y1": 0.8586890384404346
+      },
+      "text": "for each task",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8607465955946181,
+        "y0": 0.8461099983465792,
+        "x1": 0.8666232239966299,
+        "y1": 0.8586890384404346
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8666240218418096,
+        "y0": 0.8461099983465792,
+        "x1": 0.8706937303730086,
+        "y1": 0.8586890384404346
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8749998005387051,
+        "y0": 0.8461099983465792,
+        "x1": 0.8841972600400837,
+        "y1": 0.8586890384404346
+      },
+      "text": "β",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8893723830678104,
+        "y0": 0.8461099983465792,
+        "x1": 0.9117719862196181,
+        "y1": 0.8586890384404346
+      },
+      "text": "is a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3432923859240962,
+        "y0": 0.8505127851409141,
+        "x1": 0.36046647713854424,
+        "y1": 0.8630918252347696
+      },
+      "text": "P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36047540303149256,
+        "y0": 0.8573963672223717,
+        "x1": 0.37764552995270373,
+        "y1": 0.8662016704829052
+      },
+      "text": "|T |",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823518192066866,
+        "y0": 0.8599471287293867,
+        "x1": 0.3363723131566266,
+        "y1": 0.8725261688232422
+      },
+      "text": "contains two terms, i.e., maximizing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36047540303149256,
+        "y0": 0.8674948534580192,
+        "x1": 0.3653866886313445,
+        "y1": 0.8763001567185527
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36539369470932903,
+        "y0": 0.8674948534580192,
+        "x1": 0.3818710177552466,
+        "y1": 0.8763001567185527
+      },
+      "text": "=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3826894573136872,
+        "y0": 0.8599471287293867,
+        "x1": 0.38719867880827463,
+        "y1": 0.8725261688232422
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3872106963512944,
+        "y0": 0.8599471287293867,
+        "x1": 0.3943570704241983,
+        "y1": 0.8725261688232422
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3956436955071742,
+        "y0": 0.8599471287293867,
+        "x1": 0.4019598618052364,
+        "y1": 0.8725261688232422
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40197539485357947,
+        "y0": 0.8599471287293867,
+        "x1": 0.41141706977794373,
+        "y1": 0.8725261688232422
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4114263696608201,
+        "y0": 0.8656072333605602,
+        "x1": 0.41633765526067196,
+        "y1": 0.8744125366210938
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41715676800098295,
+        "y0": 0.8599471287293867,
+        "x1": 0.4216659645629085,
+        "y1": 0.8725261688232422
+      },
+      "text": ";",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42439205194610397,
+        "y0": 0.8599471287293867,
+        "x1": 0.43549416735281354,
+        "y1": 0.8725261688232422
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43666984209048204,
+        "y0": 0.8599471287293867,
+        "x1": 0.4779410767399408,
+        "y1": 0.8725261688232422
+      },
+      "text": ")] and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586240681169,
+        "y0": 0.8599471190963128,
+        "x1": 0.7934906404781965,
+        "y1": 0.8725261591901683
+      },
+      "text": "trade-off parameter of the compression of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7976011388442096,
+        "y0": 0.8599471190963128,
+        "x1": 0.8087032542509192,
+        "y1": 0.8725261591901683
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8087138755648744,
+        "y0": 0.8656072237274863,
+        "x1": 0.8136251611647263,
+        "y1": 0.8744125269880199
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8185488632301879,
+        "y0": 0.8599471190963128,
+        "x1": 0.9117610158483966,
+        "y1": 0.8725261591901683
+      },
+      "text": "from the input",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823521931966145,
+        "y0": 0.8737842494791204,
+        "x1": 0.09538159339256536,
+        "y1": 0.8863632895729758
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09666822470870673,
+        "y0": 0.8737842494791204,
+        "x1": 0.10298438477360346,
+        "y1": 0.8863632895729758
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10299992405511195,
+        "y0": 0.8737842494791204,
+        "x1": 0.11647873922111163,
+        "y1": 0.8863632895729758
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11776299570121017,
+        "y0": 0.8737842494791204,
+        "x1": 0.12227221719579759,
+        "y1": 0.8863632895729758
+      },
+      "text": ";",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12499829211266213,
+        "y0": 0.8737842494791204,
+        "x1": 0.1361004075193717,
+        "y1": 0.8863632895729758
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13727443670135697,
+        "y0": 0.8737842494791204,
+        "x1": 0.4177892223682279,
+        "y1": 0.8863632895729758
+      },
+      "text": "). Firstly, we maximize the lower bound of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.422151902142693,
+        "y0": 0.8737842494791204,
+        "x1": 0.4292983011482588,
+        "y1": 0.8863632895729758
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4305849262312347,
+        "y0": 0.8737842494791204,
+        "x1": 0.436901067596635,
+        "y1": 0.8863632895729758
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4369166255776399,
+        "y0": 0.8737842494791204,
+        "x1": 0.4463583254346661,
+        "y1": 0.8863632895729758
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4463676003848805,
+        "y0": 0.8794443541102939,
+        "x1": 0.4512788859847324,
+        "y1": 0.8882496573708274
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45209797379238154,
+        "y0": 0.8737842494791204,
+        "x1": 0.45660719528696897,
+        "y1": 0.8863632895729758
+      },
+      "text": ";",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45933328267016443,
+        "y0": 0.8737842494791204,
+        "x1": 0.47043539807687396,
+        "y1": 0.8863632895729758
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4716110728145425,
+        "y0": 0.8737842494791204,
+        "x1": 0.4779272141799428,
+        "y1": 0.8863632895729758
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5220586739334405,
+        "y0": 0.8737842398460465,
+        "x1": 0.5355374703999438,
+        "y1": 0.8863632799399019
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5408920088624642,
+        "y0": 0.8737842398460465,
+        "x1": 0.71339800466899,
+        "y1": 0.8863632799399019
+      },
+      "text": "and the informativeness of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7174671646816279,
+        "y0": 0.8737842398460465,
+        "x1": 0.7285692800883374,
+        "y1": 0.8863632799399019
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7285799014022927,
+        "y0": 0.87944434447722,
+        "x1": 0.7334911870021447,
+        "y1": 0.8882496477377535
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7383805318595538,
+        "y0": 0.8737842398460465,
+        "x1": 0.7573615678774765,
+        "y1": 0.8863632799399019
+      },
+      "text": "for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.761431176678028,
+        "y0": 0.8737842398460465,
+        "x1": 0.7708728765350541,
+        "y1": 0.8863632799399019
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7708821514852686,
+        "y0": 0.87944434447722,
+        "x1": 0.7757934370851205,
+        "y1": 0.8882496477377535
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7766141704484528,
+        "y0": 0.8737842398460465,
+        "x1": 0.7806838789796517,
+        "y1": 0.8863632799399019
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.03646110004046932,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

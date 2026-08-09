@@ -1,0 +1,3178 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.04047_pg8",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "<u>Published in Transactions on Machine Learning Research (02/2025)</u>\n\nThe efficiency of simulated annealing around *Tc*has been reported in numerous studies. Kirkpatrick et al. (1983) demonstrated that during phase transition, the search becomes more efficient. Strobl & Barker (2016) showed that when using simulated annealing to solve phylogeny reconstruction, the search is constrained to a small valley of the search space when the temperature is below *Tc*. The search efficiency around *Tc*can also be seen in Figure 2 of (Cai & Ma, 2010b).\n\nWhile some algorithms (Basu & Frazer, 1990; Cai & Ma, 2010a) have used critical temperature *Tc*to design the initial and final temperatures, its use for reheating is less common. Abramson et al. (1999) proposes a reheating strategy tied to function cost that implicitly involves *Tc*. However, this method lacks theoretical support and is sensitive to hyperparameters. Instead, our approach directly reheats to the critical temperature, which injects just the right amount of stochastic energy back into the system, enabling it to escape “wandering in contours” without incurring excessive randomness of a high-temperature regime.\n\n## 5.2.2 Specific Heat\n\nDetermining the critical temperature in simulated annealing requires identifying the phase transition point during optimization, which is characterized by peaks in *specific heat* (Kirkpatrick et al., 1983; Strobl & Barker, 2016). In statistical physics, the system’s energy at temperature *T*, denoted as *E*(*T*), adheres to the Boltzmann distribution. Thus, the expected energy of a system can be seen as a function of the temperature, E[*E*(*T*)]. The specific heat at temperature *T*, denoted as *CT*, is traditionally defined in thermodynamics as the rate of change of the expected energy E[*E*(*T*)] to temperature (Aarts et al., 1987), given by *CT*= <u>∂E[</u> *∂T* <u>E(T)]</u>. Integrating over the Boltzmann distribution allows deriving specific heat in terms of energy variance:\n\n<u>σ²(E(T))</u> *CT*= 2\n\n(9)\n*T* where *σ²*(*E*(*T*)) is the variance of the system energy at *T*.\n\n## 5.2.3 Determination of Critical Temperature\n\nTo determine the critical temperature based on specific heat, we first denote *T* (*t*) as the temperature at step *t*, *C*(*t*) as the specific heat at temperature *T* (*t*), and *xt*as the solution sampled at step *t*, then by selecting an appropriate sample size *M*, we define the approximation of *C*(*t*) as :\n\n<u>σ²({f(x), ··· ,f(x)})</u> *C* ˆ(*t*) = 2 *, t ≥ M* (10) <u>t−M+1 t</u> *T* (*t*) where *σ²*(*{f*(*xt−M*+1)*, ··· ,f*(*x*)*}*) represents the variance in objective values over the *M* most recent steps.\n\n|t|||\n|---|---|---|\n|c|∗|∗|\n|||t≥M|\n\nThe critical temperature *T* can be determined as *T* (*t*), where *t* = arg max*C*ˆ(*t*). However, SA with\n\ngradient-based discrete samplers convergences rapidly in the initial stage, resulting in an *abnormal* initial peak in specific heat (due to the high variance). As the annealing progresses, the specific heat quickly decreases, eventually stabilizing at a level more typical of a critical temperature. This behavior is shown in\n\nFigure 4a&4b.\n\nTo address the abnormal peak, we introduce a “skip step” threshold, denoted as *t*skip, ensuring that the initial transient behavior is excluded from the analysis. Thus, the critical temperature is identified as *T* (*t*˜ *∗* ), where\n\n*t* ˜ *∗* = arg max*C*ˆ(*t*)*.* (11) *t≥t*skip\n\nOur method diverges from traditional SA reheat strategies (Abramson et al., 1999) by accounting for inhomogeneous chains and addressing gradient-based methods’ unique abnormal peaks.\n\n## 5.3 Reheated Gradient-based Discrete Sampling for Combinatorial Optimization\n\nCombining results in Section 5.1 and 5.2, we obtain the ***Re**heated **S**ampling for **C**ombinatorial **O**ptimization* algorithm (ReSCO), which is summarized in Algorithm 1. ReSCO is compatible with any gradient-based\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.03207881161660864,
+        "x1": 0.601354112812117,
+        "y1": 0.04465785171046399
+      },
+      "text": "Published in Transactions on Machine Learning Research (02/2025)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045562145757,
+        "y0": 0.10312131920246159,
+        "x1": 0.4411579331541373,
+        "y1": 0.115939361880524
+      },
+      "text": "The efficiency of simulated annealing around",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44686929540696485,
+        "y0": 0.10336032178666854,
+        "x1": 0.4563760695114634,
+        "y1": 0.115939361880524
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4563823525422539,
+        "y0": 0.1090216787174495,
+        "x1": 0.4621938568314696,
+        "y1": 0.11782698197798291
+      },
+      "text": "c",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4684231826682496,
+        "y0": 0.10312131920246159,
+        "x1": 0.8850321052900327,
+        "y1": 0.115939361880524
+      },
+      "text": "has been reported in numerous studies. Kirkpatrick et al.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11574182946697559,
+        "y0": 0.11845635043250191,
+        "x1": 0.8835253996007583,
+        "y1": 0.13103539052635738
+      },
+      "text": "(1983) demonstrated that during phase transition, the search becomes more efficient. Strobl & Barker (2016)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.1335509919156932,
+        "x1": 0.8815971823299632,
+        "y1": 0.14613003200954866
+      },
+      "text": "showed that when using simulated annealing to solve phylogeny reconstruction, the search is constrained to a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.14864571046347574,
+        "x1": 0.5633226781109579,
+        "y1": 0.1612247505573311
+      },
+      "text": "small valley of the search space when the temperature is below",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5691699358372907,
+        "y0": 0.14864571046347574,
+        "x1": 0.5786767099417892,
+        "y1": 0.1612247505573311
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5786829929725796,
+        "y0": 0.15430583436079703,
+        "x1": 0.5844944972617954,
+        "y1": 0.16311113762133045
+      },
+      "text": "c",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5853153802210989,
+        "y0": 0.14864571046347574,
+        "x1": 0.7984526391122856,
+        "y1": 0.1612247505573311
+      },
+      "text": ". The search efficiency around",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8040522656409569,
+        "y0": 0.14864571046347574,
+        "x1": 0.8135590397454555,
+        "y1": 0.1612247505573311
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8135653227762459,
+        "y0": 0.15430583436079703,
+        "x1": 0.8193768270654616,
+        "y1": 0.16311113762133045
+      },
+      "text": "c",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8256094938789318,
+        "y0": 0.14864571046347574,
+        "x1": 0.8823080623851103,
+        "y1": 0.1612247505573311
+      },
+      "text": "can also",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.16374042901125818,
+        "x1": 0.4171111162971048,
+        "y1": 0.17631946910511365
+      },
+      "text": "be seen in Figure 2 of (Cai & Ma, 2010b).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11681698817832797,
+        "y0": 0.1863830848173662,
+        "x1": 0.791028727113811,
+        "y1": 0.19896212491122156
+      },
+      "text": "While some algorithms (Basu & Frazer, 1990; Cai & Ma, 2010a) have used critical temperature",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7970506755355137,
+        "y0": 0.1863830848173662,
+        "x1": 0.8065574496400123,
+        "y1": 0.19896212491122156
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8065637326708027,
+        "y0": 0.1920432087146875,
+        "x1": 0.8123752369600183,
+        "y1": 0.2008485119752209
+      },
+      "text": "c",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8186307420917586,
+        "y0": 0.1863830848173662,
+        "x1": 0.882288814370149,
+        "y1": 0.19896212491122156
+      },
+      "text": "to design",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.2013394338916047,
+        "x1": 0.881619322533701,
+        "y1": 0.2140568434590041
+      },
+      "text": "the initial and final temperatures, its use for reheating is less common. Abramson et al. (1999) proposes a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.21643407537479598,
+        "x1": 0.5695460201088899,
+        "y1": 0.2291514849421954
+      },
+      "text": "reheating strategy tied to function cost that implicitly involves",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5755098130967882,
+        "y0": 0.21657244484833993,
+        "x1": 0.5850165872012868,
+        "y1": 0.2291514849421954
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5850212745417177,
+        "y0": 0.2222338017791209,
+        "x1": 0.5908327788309334,
+        "y1": 0.2310391050396543
+      },
+      "text": "c",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5916536119249132,
+        "y0": 0.21643407537479598,
+        "x1": 0.8820354985255822,
+        "y1": 0.2291514849421954
+      },
+      "text": ". However, this method lacks theoretical",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.23166716339612248,
+        "x1": 0.8837509653926675,
+        "y1": 0.24424620348997794
+      },
+      "text": "support and is sensitive to hyperparameters. Instead, our approach directly reheats to the critical temperature,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045562145757,
+        "y0": 0.24676311497736458,
+        "x1": 0.8815530141194662,
+        "y1": 0.25934215507122005
+      },
+      "text": "which injects just the right amount of stochastic energy back into the system, enabling it to escape “wandering",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.26185783352514713,
+        "x1": 0.7097218332726971,
+        "y1": 0.2744368736190025
+      },
+      "text": "in contours” without incurring excessive randomness of a high-temperature regime.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.2917871005607374,
+        "x1": 0.15443704642501532,
+        "y1": 0.3043661406545928
+      },
+      "text": "5.2.2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17234368417777268,
+        "y0": 0.2917871005607374,
+        "x1": 0.2721487556407654,
+        "y1": 0.3043661406545928
+      },
+      "text": "Specific Heat",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.31707521881720035,
+        "x1": 0.8818951775045956,
+        "y1": 0.3297171544547033
+      },
+      "text": "Determining the critical temperature in simulated annealing requires identifying the phase transition point",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.3319812519381745,
+        "x1": 0.5269604352564593,
+        "y1": 0.34481187300248584
+      },
+      "text": "during optimization, which is characterized by peaks in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5339182934729881,
+        "y0": 0.3319812519381745,
+        "x1": 0.6209582160500919,
+        "y1": 0.34481187300248584
+      },
+      "text": "specific heat",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6286454044915493,
+        "y0": 0.3319812519381745,
+        "x1": 0.8820607303793914,
+        "y1": 0.34481187300248584
+      },
+      "text": "(Kirkpatrick et al., 1983; Strobl &",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.34732751292411723,
+        "x1": 0.6268445183249081,
+        "y1": 0.3599065530179727
+      },
+      "text": "Barker, 2016). In statistical physics, the system’s energy at temperature",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6328512952218648,
+        "y0": 0.34732751292411723,
+        "x1": 0.6423580693263634,
+        "y1": 0.3599065530179727
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6446241989634396,
+        "y0": 0.34732751292411723,
+        "x1": 0.7295332266614328,
+        "y1": 0.3599065530179727
+      },
+      "text": ", denoted as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7350506751365911,
+        "y0": 0.34732751292411723,
+        "x1": 0.7470643785264757,
+        "y1": 0.3599065530179727
+      },
+      "text": "E",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7480065339530995,
+        "y0": 0.34732751292411723,
+        "x1": 0.75423426409952,
+        "y1": 0.3599065530179727
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7542483759861366,
+        "y0": 0.34732751292411723,
+        "x1": 0.7637551500906352,
+        "y1": 0.3599065530179727
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7660228754180709,
+        "y0": 0.34732751292411723,
+        "x1": 0.8822452320772058,
+        "y1": 0.3599065530179727
+      },
+      "text": "), adheres to the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.3624222314718998,
+        "x1": 0.8838465073529411,
+        "y1": 0.37500127156575525
+      },
+      "text": "Boltzmann distribution. Thus, the expected energy of a system can be seen as a function of the temperature,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.37751691148738664,
+        "x1": 0.1330001930785335,
+        "y1": 0.3900959515812421
+      },
+      "text": "E[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309314204197303,
+        "y0": 0.37751691148738664,
+        "x1": 0.1451068703645195,
+        "y1": 0.3900959515812421
+      },
+      "text": "E",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1460490257911433,
+        "y0": 0.37751691148738664,
+        "x1": 0.15235255122963898,
+        "y1": 0.3900959515812421
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15236764795639934,
+        "y0": 0.37751691148738664,
+        "x1": 0.1618744469935598,
+        "y1": 0.3900959515812421
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16414052676531224,
+        "y0": 0.37751691148738664,
+        "x1": 0.4195749993417777,
+        "y1": 0.3900959515812421
+      },
+      "text": ")]. The specific heat at temperature",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4252581627540339,
+        "y0": 0.37751691148738664,
+        "x1": 0.43476493685853246,
+        "y1": 0.3900959515812421
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43703266218596815,
+        "y0": 0.37751691148738664,
+        "x1": 0.5228125877629698,
+        "y1": 0.3900959515812421
+      },
+      "text": ", denoted as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5283235537460427,
+        "y0": 0.37751691148738664,
+        "x1": 0.5399466121897978,
+        "y1": 0.3900959515812421
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5399591782513786,
+        "y0": 0.3831782684181676,
+        "x1": 0.5476394852781608,
+        "y1": 0.3919835716787011
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5502140319425296,
+        "y0": 0.37751691148738664,
+        "x1": 0.8819939108455882,
+        "y1": 0.3900959515812421
+      },
+      "text": ", is traditionally defined in thermodynamics as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.3946242488995947,
+        "x1": 0.42232752781288296,
+        "y1": 0.40720328899345015
+      },
+      "text": "the rate of change of the expected energy E[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4224199282577614,
+        "y0": 0.3946242488995947,
+        "x1": 0.43443363164764603,
+        "y1": 0.40720328899345015
+      },
+      "text": "E",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43537583693959353,
+        "y0": 0.3946242488995947,
+        "x1": 0.4415656694399765,
+        "y1": 0.40720328899345015
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44158008051853553,
+        "y0": 0.3946242488995947,
+        "x1": 0.4510868546230341,
+        "y1": 0.40720328899345015
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4533545799504698,
+        "y0": 0.3946242488995947,
+        "x1": 0.7763961093877655,
+        "y1": 0.40720328899345015
+      },
+      "text": ")] to temperature (Aarts et al., 1987), given by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.781411763110192,
+        "y0": 0.3946242488995947,
+        "x1": 0.7930347716886234,
+        "y1": 0.40720328899345015
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7930457420598448,
+        "y0": 0.40028560583037565,
+        "x1": 0.8007260490866268,
+        "y1": 0.40909090909090906
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8078235302096098,
+        "y0": 0.3946242488995947,
+        "x1": 0.8202191521139706,
+        "y1": 0.40720328899345015
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.826707528307547,
+        "y0": 0.39229697470713143,
+        "x1": 0.8336585549747243,
+        "y1": 0.40110227796766496
+      },
+      "text": "∂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8343595118304483,
+        "y0": 0.39229697470713143,
+        "x1": 0.8456366046581393,
+        "y1": 0.40110227796766496
+      },
+      "text": "E[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8443693273207721,
+        "y0": 0.4027363754282094,
+        "x1": 0.8597071030560661,
+        "y1": 0.4115416786887429
+      },
+      "text": "∂T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8456421895743975,
+        "y0": 0.39229697470713143,
+        "x1": 0.8551912993387459,
+        "y1": 0.40110227796766496
+      },
+      "text": "E",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8558251873340482,
+        "y0": 0.39229697470713143,
+        "x1": 0.8609073613983353,
+        "y1": 0.40110227796766496
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8609117495468239,
+        "y0": 0.39229697470713143,
+        "x1": 0.8685920067082823,
+        "y1": 0.40110227796766496
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8703529507506127,
+        "y0": 0.39229697470713143,
+        "x1": 0.8791157840903289,
+        "y1": 0.40110227796766496
+      },
+      "text": ")]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8810800789228452,
+        "y0": 0.3946242488995947,
+        "x1": 0.8854991439121221,
+        "y1": 0.40720328899345015
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.4097202004808368,
+        "x1": 0.8376728132659313,
+        "y1": 0.42229924057469226
+      },
+      "text": "Integrating over the Boltzmann distribution allows deriving specific heat in terms of energy variance:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48817648295483557,
+        "y0": 0.4313843671721641,
+        "x1": 0.5045475180632149,
+        "y1": 0.44396340726601957
+      },
+      "text": "σ²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5053660074869791,
+        "y0": 0.4313843671721641,
+        "x1": 0.5116821488523795,
+        "y1": 0.44396340726601957
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5116960612777012,
+        "y0": 0.4313843671721641,
+        "x1": 0.5237097646675858,
+        "y1": 0.44396340726601957
+      },
+      "text": "E",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5246519200942096,
+        "y0": 0.4313843671721641,
+        "x1": 0.5309680614596098,
+        "y1": 0.44396340726601957
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5309819738849316,
+        "y0": 0.4313843671721641,
+        "x1": 0.5404887479894301,
+        "y1": 0.44396340726601957
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5427564733168658,
+        "y0": 0.4313843671721641,
+        "x1": 0.5553888059129902,
+        "y1": 0.44396340726601957
+      },
+      "text": "))",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44262909733392053,
+        "y0": 0.43989445585193054,
+        "x1": 0.45425215577767564,
+        "y1": 0.452473495945786
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4542630762835733,
+        "y0": 0.44555454121695626,
+        "x1": 0.4619433833103554,
+        "y1": 0.4543598444774898
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4690408644333384,
+        "y0": 0.43989445585193054,
+        "x1": 0.481689453125,
+        "y1": 0.452473495945786
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5240326426387613,
+        "y0": 0.44866313416548453,
+        "x1": 0.5305164312225541,
+        "y1": 0.45746843742601795
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8634558783637153,
+        "y0": 0.43989445585193054,
+        "x1": 0.8842275781569138,
+        "y1": 0.452473495945786
+      },
+      "text": "(9)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5122597887625102,
+        "y0": 0.44852322400218314,
+        "x1": 0.5217665628670087,
+        "y1": 0.4611022640960385
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706044315512663,
+        "y0": 0.467742940392157,
+        "x1": 0.15866895438798892,
+        "y1": 0.4803219804860125
+      },
+      "text": "where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16413396947524128,
+        "y0": 0.467742940392157,
+        "x1": 0.18050340889326108,
+        "y1": 0.4803219804860125
+      },
+      "text": "σ²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18132188585069445,
+        "y0": 0.467742940392157,
+        "x1": 0.1876380396824257,
+        "y1": 0.4803219804860125
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18765358519709968,
+        "y0": 0.467742940392157,
+        "x1": 0.19966731351964614,
+        "y1": 0.4803219804860125
+      },
+      "text": "E",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20060783585691763,
+        "y0": 0.467742940392157,
+        "x1": 0.2069239896886489,
+        "y1": 0.4803219804860125
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20693953520332287,
+        "y0": 0.467742940392157,
+        "x1": 0.21644632177415238,
+        "y1": 0.4803219804860125
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21871240154590482,
+        "y0": 0.467742940392157,
+        "x1": 0.5118139927683313,
+        "y1": 0.4803219804860125
+      },
+      "text": ")) is the variance of the system energy at",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5175212286656199,
+        "y0": 0.467742940392157,
+        "x1": 0.5270280027701184,
+        "y1": 0.4803219804860125
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5292957280975541,
+        "y0": 0.467742940392157,
+        "x1": 0.5338049495921415,
+        "y1": 0.4803219804860125
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764703389086754,
+        "y0": 0.4976722459600429,
+        "x1": 0.15443702149235344,
+        "y1": 0.5102512860538984
+      },
+      "text": "5.2.3",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1723436592451108,
+        "y0": 0.4976722459600429,
+        "x1": 0.46010325313393585,
+        "y1": 0.5102512860538984
+      },
+      "text": "Determination of Critical Temperature",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045562145757,
+        "y0": 0.5230219881943983,
+        "x1": 0.6537374982646867,
+        "y1": 0.5356010282882536
+      },
+      "text": "To determine the critical temperature based on specific heat, we first denote",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6597238677779055,
+        "y0": 0.5230219881943983,
+        "x1": 0.669230641882404,
+        "y1": 0.5356010282882536
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6714983672098397,
+        "y0": 0.5230219881943983,
+        "x1": 0.6777134814293556,
+        "y1": 0.5356010282882536
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6777271445280586,
+        "y0": 0.5230219881943983,
+        "x1": 0.6836037729300705,
+        "y1": 0.5356010282882536
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6836062163309334,
+        "y0": 0.5230219881943983,
+        "x1": 0.8821534798815359,
+        "y1": 0.5356010282882536
+      },
+      "text": ") as the temperature at step",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.5381179397756404,
+        "x1": 0.12352368722554126,
+        "y1": 0.5506969798694957
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12352614309273514,
+        "y0": 0.5380550442319928,
+        "x1": 0.12805790371365017,
+        "y1": 0.5506969798694957
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13348529541414547,
+        "y0": 0.5381179397756404,
+        "x1": 0.14510832892523873,
+        "y1": 0.5506969798694957
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14628431532118055,
+        "y0": 0.5380550442319928,
+        "x1": 0.1526320588354971,
+        "y1": 0.5506969798694957
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15264705583160998,
+        "y0": 0.5381179397756404,
+        "x1": 0.15852368423362184,
+        "y1": 0.5506969798694957
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15852450701146345,
+        "y0": 0.5380550442319928,
+        "x1": 0.41915494632097633,
+        "y1": 0.5506969798694957
+      },
+      "text": ") as the specific heat at temperature",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4248137131235958,
+        "y0": 0.5381179397756404,
+        "x1": 0.43432048722809435,
+        "y1": 0.5506969798694957
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43658821255553004,
+        "y0": 0.5380550442319928,
+        "x1": 0.4429359685361775,
+        "y1": 0.5506969798694957
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4429509779986213,
+        "y0": 0.5381179397756404,
+        "x1": 0.4488276064006332,
+        "y1": 0.5506969798694957
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44882845411113664,
+        "y0": 0.5380550442319928,
+        "x1": 0.49147796630859375,
+        "y1": 0.5506969798694957
+      },
+      "text": "), and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4969215642393025,
+        "y0": 0.5381179397756404,
+        "x1": 0.5062167597751991,
+        "y1": 0.5506969798694957
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5062254862068525,
+        "y0": 0.543778025140666,
+        "x1": 0.5111367718067045,
+        "y1": 0.5525833284011995
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5173692890242034,
+        "y0": 0.5380550442319928,
+        "x1": 0.7399818570006127,
+        "y1": 0.5506969798694957
+      },
+      "text": "as the solution sampled at step",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7456192814446743,
+        "y0": 0.5381179397756404,
+        "x1": 0.751495909846686,
+        "y1": 0.5506969798694957
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.751498353247549,
+        "y0": 0.5380550442319928,
+        "x1": 0.8821831996144812,
+        "y1": 0.5506969798694957
+      },
+      "text": ", then by selecting",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.5532126197911272,
+        "x1": 0.3076527414758221,
+        "y1": 0.5657916598849826
+      },
+      "text": "an appropriate sample size",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3132630890490962,
+        "y0": 0.5532126197911272,
+        "x1": 0.32905349232792075,
+        "y1": 0.5657916598849826
+      },
+      "text": "M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33083171470492495,
+        "y0": 0.5532126197911272,
+        "x1": 0.5612738116893893,
+        "y1": 0.5657916598849826
+      },
+      "text": ", we define the approximation of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.566918317009421,
+        "y0": 0.5532126197911272,
+        "x1": 0.5785413754531761,
+        "y1": 0.5657916598849826
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.579717349382787,
+        "y0": 0.5532126197911272,
+        "x1": 0.5860334907481873,
+        "y1": 0.5657916598849826
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5860490487291922,
+        "y0": 0.5532126197911272,
+        "x1": 0.591925677131204,
+        "y1": 0.5657916598849826
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.591928120532067,
+        "y0": 0.5532126197911272,
+        "x1": 0.6281679440167994,
+        "y1": 0.5657916598849826
+      },
+      "text": ") as :",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39211604797762206,
+        "y0": 0.5873515401223693,
+        "x1": 0.40848548739564183,
+        "y1": 0.5999305802162247
+      },
+      "text": "σ²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4093039518867443,
+        "y0": 0.5873515401223693,
+        "x1": 0.4156201181848065,
+        "y1": 0.5999305802162247
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4156356512331495,
+        "y0": 0.5873515401223693,
+        "x1": 0.4317348205965329,
+        "y1": 0.5999305802162247
+      },
+      "text": "{f",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43349676194533804,
+        "y0": 0.5873515401223693,
+        "x1": 0.43981290331073836,
+        "y1": 0.5999305802162247
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43982846129174324,
+        "y0": 0.5873515401223693,
+        "x1": 0.4491236568276399,
+        "y1": 0.5999305802162247
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4951552347420088,
+        "y0": 0.5873515401223693,
+        "x1": 0.5014713761074091,
+        "y1": 0.5999305802162247
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.501486934088414,
+        "y0": 0.5873515401223693,
+        "x1": 0.5483269784964767,
+        "y1": 0.5999305802162247
+      },
+      "text": ", ··· ,f",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5500963996438419,
+        "y0": 0.5873515401223693,
+        "x1": 0.5564125410092422,
+        "y1": 0.5999305802162247
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5564280989902471,
+        "y0": 0.5873515401223693,
+        "x1": 0.5657232945261438,
+        "y1": 0.5999305802162247
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5714623943652982,
+        "y0": 0.5873515401223693,
+        "x1": 0.5777785357306985,
+        "y1": 0.5999305802162247
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5777940937117034,
+        "y0": 0.5873515401223693,
+        "x1": 0.5859334609087776,
+        "y1": 0.5999305802162247
+      },
+      "text": "}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5859329622555403,
+        "y0": 0.5873515401223693,
+        "x1": 0.5922491036209405,
+        "y1": 0.5999305802162247
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3371176875494664,
+        "y0": 0.5958616288021357,
+        "x1": 0.34874072106055964,
+        "y1": 0.6084406688959911
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34080395667381536,
+        "y0": 0.5926823290911587,
+        "x1": 0.3562328612882327,
+        "y1": 0.6052613691850142
+      },
+      "text": "ˆ(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3562483943365758,
+        "y0": 0.5958616288021357,
+        "x1": 0.3621250227385876,
+        "y1": 0.6084406688959911
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36212584551642923,
+        "y0": 0.5958616288021357,
+        "x1": 0.38561610302893945,
+        "y1": 0.6084406688959911
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5036960177951388,
+        "y0": 0.6046303071156897,
+        "x1": 0.5101798063789318,
+        "y1": 0.6134356103762232
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5942172380833844,
+        "y0": 0.5958616288021357,
+        "x1": 0.5987264595779718,
+        "y1": 0.6084406688959911
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6177237516914318,
+        "y0": 0.5958616288021357,
+        "x1": 0.6611040402082057,
+        "y1": 0.6084406688959911
+      },
+      "text": "t ≥ M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8553169599545547,
+        "y0": 0.5958616288021357,
+        "x1": 0.8842280768101511,
+        "y1": 0.6084406688959911
+      },
+      "text": "(10)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4491323832592933,
+        "y0": 0.5930128970531502,
+        "x1": 0.4766331591637306,
+        "y1": 0.6018182003136837
+      },
+      "text": "t−M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4778594970703125,
+        "y0": 0.5930128970531502,
+        "x1": 0.4943367951835682,
+        "y1": 0.6018182003136837
+      },
+      "text": "+1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.565730375402114,
+        "y0": 0.5930128970531502,
+        "x1": 0.5706416610019659,
+        "y1": 0.6018182003136837
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4733823389788858,
+        "y0": 0.6044903969523883,
+        "x1": 0.4828891130833844,
+        "y1": 0.6170694370462437
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48515519285513686,
+        "y0": 0.6044903969523883,
+        "x1": 0.4914713342205372,
+        "y1": 0.6170694370462437
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49148689220154207,
+        "y0": 0.6044903969523883,
+        "x1": 0.49736352060355393,
+        "y1": 0.6170694370462437
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49736431844873363,
+        "y0": 0.6044903969523883,
+        "x1": 0.503680459814134,
+        "y1": 0.6170694370462437
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045562145757,
+        "y0": 0.6237656383803396,
+        "x1": 0.1584193161110473,
+        "y1": 0.6363446784741951
+      },
+      "text": "where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.163887260786069,
+        "y0": 0.6237656383803396,
+        "x1": 0.1802567002040888,
+        "y1": 0.6363446784741951
+      },
+      "text": "σ²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18107516469519122,
+        "y0": 0.6237656383803396,
+        "x1": 0.1873534208808849,
+        "y1": 0.6363446784741951
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18736764496447994,
+        "y0": 0.6237656383803396,
+        "x1": 0.20346848481620838,
+        "y1": 0.6363446784741951
+      },
+      "text": "{f",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20523038876602073,
+        "y0": 0.6237656383803396,
+        "x1": 0.21150865741804534,
+        "y1": 0.6363446784741951
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21152286903530942,
+        "y0": 0.6237656383803396,
+        "x1": 0.2208180396385442,
+        "y1": 0.6363446784741951
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22082679100285948,
+        "y0": 0.6294257237453653,
+        "x1": 0.24832756690729677,
+        "y1": 0.6382310270058988
+      },
+      "text": "t−M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24955392974654053,
+        "y0": 0.6294257237453653,
+        "x1": 0.26603125279245815,
+        "y1": 0.6382310270058988
+      },
+      "text": "+1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26684966741823685,
+        "y0": 0.6237656383803396,
+        "x1": 0.2731279360702614,
+        "y1": 0.6363446784741951
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27314379324320875,
+        "y0": 0.6237656383803396,
+        "x1": 0.3199838127186096,
+        "y1": 0.6363446784741951
+      },
+      "text": ", ··· ,f",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32175325879863664,
+        "y0": 0.6237656383803396,
+        "x1": 0.3280315274506613,
+        "y1": 0.6363446784741951
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3280457640005872,
+        "y0": 0.6237656383803396,
+        "x1": 0.337340934603822,
+        "y1": 0.6363446784741951
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33734968596813725,
+        "y0": 0.6294257237453653,
+        "x1": 0.3422609715679892,
+        "y1": 0.6382310270058988
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3430817049313215,
+        "y0": 0.6237656383803396,
+        "x1": 0.3493599735833461,
+        "y1": 0.6363446784741951
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3493741852006102,
+        "y0": 0.6237656383803396,
+        "x1": 0.35751355239768434,
+        "y1": 0.6363446784741951
+      },
+      "text": "}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3575146993001302,
+        "y0": 0.6237656383803396,
+        "x1": 0.7290880789164624,
+        "y1": 0.6363446784741951
+      },
+      "text": ") represents the variance in objective values over the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7349281061708538,
+        "y0": 0.6237656383803396,
+        "x1": 0.7507185094496783,
+        "y1": 0.6363446784741951
+      },
+      "text": "M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7579264921300551,
+        "y0": 0.6237656383803396,
+        "x1": 0.8853686962252348,
+        "y1": 0.6363446784741951
+      },
+      "text": "most recent steps.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045562145757,
+        "y0": 0.6386087759576662,
+        "x1": 0.2990605472739226,
+        "y1": 0.6514393970219776
+      },
+      "text": "The critical temperature",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30658332974303004,
+        "y0": 0.6388603569281222,
+        "x1": 0.31609012878019044,
+        "y1": 0.6514393970219776
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3160964118109809,
+        "y0": 0.6445204422931479,
+        "x1": 0.3219079161001966,
+        "y1": 0.6533257455536814
+      },
+      "text": "c",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3300490285836014,
+        "y0": 0.6386087759576662,
+        "x1": 0.48991553612004696,
+        "y1": 0.6514393970219776
+      },
+      "text": "can be determined as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49737419178283293,
+        "y0": 0.6388603569281222,
+        "x1": 0.5068809658873314,
+        "y1": 0.6514393970219776
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509147045659084,
+        "y0": 0.6386087759576662,
+        "x1": 0.5155895457548254,
+        "y1": 0.6514393970219776
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5156045552172692,
+        "y0": 0.6388603569281222,
+        "x1": 0.5214811836192811,
+        "y1": 0.6514393970219776
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.521483627020144,
+        "y0": 0.6380697121523847,
+        "x1": 0.5281497730928308,
+        "y1": 0.6468750154129183
+      },
+      "text": "∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5289673150754443,
+        "y0": 0.6386087759576662,
+        "x1": 0.5902523464626737,
+        "y1": 0.6514393970219776
+      },
+      "text": "), where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5976340100656148,
+        "y0": 0.6388603569281222,
+        "x1": 0.6035106384676266,
+        "y1": 0.6514393970219776
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6035114363128063,
+        "y0": 0.6380697121523847,
+        "x1": 0.6101775823854932,
+        "y1": 0.6468750154129183
+      },
+      "text": "∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6186764785666871,
+        "y0": 0.6386087759576662,
+        "x1": 0.695108999613843,
+        "y1": 0.6514393970219776
+      },
+      "text": "= arg max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6981175740559896,
+        "y0": 0.6388603569281222,
+        "x1": 0.7097406324997447,
+        "y1": 0.6514393970219776
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7018038681130004,
+        "y0": 0.6356810572171452,
+        "x1": 0.7173591563904208,
+        "y1": 0.6482600973110006
+      },
+      "text": "ˆ(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7173741658528646,
+        "y0": 0.6388603569281222,
+        "x1": 0.7232507942548765,
+        "y1": 0.6514393970219776
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7232532875210631,
+        "y0": 0.6386087759576662,
+        "x1": 0.8822382509318831,
+        "y1": 0.6514393970219776
+      },
+      "text": "). However, SA with",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.652975443921058,
+        "y0": 0.6532123648759091,
+        "x1": 0.6804762198254953,
+        "y1": 0.6620176681364425
+      },
+      "text": "t≥M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.6620014628978691,
+        "x1": 0.7598528394512102,
+        "y1": 0.6748320839621804
+      },
+      "text": "gradient-based discrete samplers convergences rapidly in the initial stage, resulting in an",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7659755033605239,
+        "y0": 0.6620014628978691,
+        "x1": 0.8331898209316279,
+        "y1": 0.6748320839621804
+      },
+      "text": "abnormal",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.839919944214665,
+        "y0": 0.6620014628978691,
+        "x1": 0.8822776445376328,
+        "y1": 0.6748320839621804
+      },
+      "text": "initial",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.677096142913356,
+        "x1": 0.8821770163143382,
+        "y1": 0.6899267639776673
+      },
+      "text": "peak in specific heat (due to the high variance). As the annealing progresses, the specific heat quickly",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.6924298435750633,
+        "x1": 0.8815257751863766,
+        "y1": 0.7050214632593019
+      },
+      "text": "decreases, eventually stabilizing at a level more typical of a critical temperature. This behavior is shown in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.7075371224470812,
+        "x1": 0.21956836476045496,
+        "y1": 0.7201161625409367
+      },
+      "text": "Figure 4a&4b.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045562145757,
+        "y0": 0.730179797519337,
+        "x1": 0.6723269917606528,
+        "y1": 0.7427588376131924
+      },
+      "text": "To address the abnormal peak, we introduce a “skip step” threshold, denoted as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6777745165856056,
+        "y0": 0.730179797519337,
+        "x1": 0.6836511449876175,
+        "y1": 0.7427588376131924
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6836519428327972,
+        "y0": 0.735841154450118,
+        "x1": 0.7065105064242494,
+        "y1": 0.7446464577106514
+      },
+      "text": "skip",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7073382209329044,
+        "y0": 0.730179797519337,
+        "x1": 0.882121266882404,
+        "y1": 0.7427588376131924
+      },
+      "text": ", ensuring that the initial",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.7452744968009717,
+        "x1": 0.7870064529718137,
+        "y1": 0.7578535368948272
+      },
+      "text": "transient behavior is excluded from the analysis. Thus, the critical temperature is identified as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7932075051700368,
+        "y0": 0.7452744968009717,
+        "x1": 0.8027142792745353,
+        "y1": 0.7578535368948272
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.804982004601971,
+        "y0": 0.7452744968009717,
+        "x1": 0.8112412994983149,
+        "y1": 0.7578535368948272
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8112565582873774,
+        "y0": 0.7452744968009717,
+        "x1": 0.8171331866893893,
+        "y1": 0.7578535368948272
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8114820492813011,
+        "y0": 0.7429537929669775,
+        "x1": 0.8196214164783752,
+        "y1": 0.755532833060833
+      },
+      "text": "˜",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8171339845345691,
+        "y0": 0.7444838327590866,
+        "x1": 0.8238001306072559,
+        "y1": 0.75328913601962
+      },
+      "text": "∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8246176227245455,
+        "y0": 0.7452744968009717,
+        "x1": 0.8820152532041462,
+        "y1": 0.7578535368948272
+      },
+      "text": "), where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43511274749157475,
+        "y0": 0.7830118711548623,
+        "x1": 0.4409893758935866,
+        "y1": 0.7955909112487176
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43533823848549835,
+        "y0": 0.780691167320868,
+        "x1": 0.4434776056825725,
+        "y1": 0.7932702074147234
+      },
+      "text": "˜",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4409918192944495,
+        "y0": 0.7815924178470265,
+        "x1": 0.4476579653671364,
+        "y1": 0.79039772110756
+      },
+      "text": "∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45299674638735704,
+        "y0": 0.7830118711548623,
+        "x1": 0.5260069604013481,
+        "y1": 0.7955909112487176
+      },
+      "text": "= arg max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.52902615615745,
+        "y0": 0.78301189042101,
+        "x1": 0.5406492146012051,
+        "y1": 0.7955909305148654
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5327124502144608,
+        "y0": 0.7798325907100331,
+        "x1": 0.5481413298962163,
+        "y1": 0.7924116308038884
+      },
+      "text": "ˆ(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.548155242321538,
+        "y0": 0.78301189042101,
+        "x1": 0.5540318707235499,
+        "y1": 0.7955909305148654
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5540343141244128,
+        "y0": 0.78301189042101,
+        "x1": 0.5603504554898131,
+        "y1": 0.7955909305148654
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.560366013470818,
+        "y0": 0.78301189042101,
+        "x1": 0.5648752349654055,
+        "y1": 0.7955909305148654
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8553169599545547,
+        "y0": 0.78301189042101,
+        "x1": 0.8842280768101511,
+        "y1": 0.7955909305148654
+      },
+      "text": "(11)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47800001755259397,
+        "y0": 0.797363898368797,
+        "x1": 0.4980027940538194,
+        "y1": 0.8061692016293305
+      },
+      "text": "t≥t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4980098250644659,
+        "y0": 0.8011801850916159,
+        "x1": 0.5176664364883323,
+        "y1": 0.8074697051385437
+      },
+      "text": "skip",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.8199926024735575,
+        "x1": 0.8819779539419934,
+        "y1": 0.832823223537869
+      },
+      "text": "Our method diverges from traditional SA reheat strategies (Abramson et al., 1999) by accounting for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.8353388923587222,
+        "x1": 0.7400653315525428,
+        "y1": 0.8479179324525775
+      },
+      "text": "inhomogeneous chains and addressing gradient-based methods’ unique abnormal peaks.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.866893181897173,
+        "x1": 0.1405187120624617,
+        "y1": 0.8794722219910285
+      },
+      "text": "5.3",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15842534981521905,
+        "y0": 0.866893181897173,
+        "x1": 0.7245517556184258,
+        "y1": 0.8794722219910285
+      },
+      "text": "Reheated Gradient-based Discrete Sampling for Combinatorial Optimization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.8938691893009224,
+        "x1": 0.5090584349788092,
+        "y1": 0.9064482293947779
+      },
+      "text": "Combining results in Section 5.1 and 5.2, we obtain the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5148562263039982,
+        "y0": 0.8938691893009224,
+        "x1": 0.5362415687710631,
+        "y1": 0.9064482293947779
+      },
+      "text": "Re",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5362565283681832,
+        "y0": 0.8938691893009224,
+        "x1": 0.5793325386795343,
+        "y1": 0.9064482293947779
+      },
+      "text": "heated",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5851699230717677,
+        "y0": 0.8938691893009224,
+        "x1": 0.5956135668785744,
+        "y1": 0.9064482293947779
+      },
+      "text": "S",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5956127690333947,
+        "y0": 0.8938691893009224,
+        "x1": 0.6763019437104268,
+        "y1": 0.9064482293947779
+      },
+      "text": "ampling for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6821911880393433,
+        "y0": 0.8938691893009224,
+        "x1": 0.695462644489762,
+        "y1": 0.9064482293947779
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6954738641876022,
+        "y0": 0.8938691893009224,
+        "x1": 0.7838913163328483,
+        "y1": 0.9064482293947779
+      },
+      "text": "ombinatorial",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7897794137593188,
+        "y0": 0.8938691893009224,
+        "x1": 0.8035168117947049,
+        "y1": 0.9064482293947779
+      },
+      "text": "O",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8035163630067913,
+        "y0": 0.8938691893009224,
+        "x1": 0.8822774450763379,
+        "y1": 0.9064482293947779
+      },
+      "text": "ptimization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.9087123076121012,
+        "x1": 0.8816457511552798,
+        "y1": 0.9215429286764125
+      },
+      "text": "algorithm (ReSCO), which is summarized in Algorithm 1. ReSCO is compatible with any gradient-based",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49592974295024,
+        "y0": 0.9467012629364476,
+        "x1": 0.5040691101473141,
+        "y1": 0.959280303030303
+      },
+      "text": "8",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.03877350001130253,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

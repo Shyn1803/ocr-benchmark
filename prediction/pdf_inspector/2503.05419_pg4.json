@@ -1,0 +1,2072 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.05419_pg4",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "*1.4. Objective of the Study* The current paper aims to explore the potential of *φ*ML (by integrating physical knowledge and constraints into artifi- cial neural networks) to enable efficient prediction of the fatigue lifetime of high-strength concrete, explicitly considering the effects of loading sequence in non-uniform loading scenarios. An efficient surrogate model is developed by train- ing a physics-based machine learning framework using fatigue simulations generated from a representative macro-scale anisotropic continuum damage model. The resulting surrogate model offers two key applications: •As an advanced tool for estimating cumulative fatigue damage under variable amplitude loading scenarios. It can be directly integrated into digital twin models for real-time assessment in engineering structures, eliminating the need for computationally expensive nonlinear fatigue simulations. •Integration with finite element simulations to efficiently model fatigue behavior over the lifetime of a structure. By accounting for the number of cycles and corresponding stress amplitudes at each material point, it enables precise evaluation of stiffness degradation after individual or multiple load cycles. In this work, we focus on the first approach, developing a surrogate model for fatigue damage estimation within digital twin frameworks, offering an efficient and practical alternative to nonlinear fatigue simulations. The structure of this paper is organized as follows: Section2provides a summary of the anisotropic continuum damage fatigue model used to generate the training data for the physics-based machine learning framework, along with details on its calibration and validation. Section3describes the development of the *φ*ML model, including the data generation process, the chosen architecture, the integration of physical constraints, the customized loss function, and the training procedure. In Section4, the results obtained using the *φ*ML model are presented and discussed. Comparative analyses are performed between purely data-driven models and those incorporating physical constraints, considering both large and small datasets. Section5extends the developed *φ*ML framework to accommodate arbitrary loading scenarios through a proposed algorithm. This section also includes experimental validation studies of fatigue lifetime predictions under more complex loading conditions.\n## 2. Anisotropic continuum damage model\n\nThe fatigue damage modeling approach developed by [77–79] is selected for this study due to its computational efficiency. Its incremental formulation ensures compatibility with a wide range of fatigue loading histories, making it adaptable to complex scenarios. The model employs a stress-driven formulation that simplifies the problem to a uniaxial stress state, allowing efficient simulation of compressive loading cycles on cylindrical solids under the assumption of uni- form stress distribution. This computational efficiency is critical for conducting the large number of fatigue simulations needed to train the machine learning model. Furthermore, the model effectively captures the nonlinear progression of fatigue damage and incorporates the influence of loading sequence [80]. This is achieved by replacing the conventional yield limit with an irreversibility condition, ensuring accurate representation of loading and unloading behavior. It is important to highlight that the model used in this study primarily serves as a demonstrative example to showcase the potential of physics-based machine learning. Specifically, it illustrates how advanced fatigue damage modeling know- ledge can be effectively transferred into ML frameworks for efficient lifetime prediction. While this model was chosen for its simplicity and adaptability, other advanced fatigue modeling approaches [8,19,21,29], could equally serve as the foundation for similar applications.\n\n*2.1. Model formulation* The model is based on the anisotropic damage framework, defined by the following free energy potential\n12 *φ*(*ε*, *ω*) = *λ* [tr(*ε*)] + *µ* tr(*ε · ε*) + *g* tr(*ε · ω*) +*α* tr(*ε*) tr(*ε · ω*) + 2 *β* tr(*ε · ε · ω*), (1) 2\n\nwhere *λ*, *µ* are the Lam´e constants and *α*, *β*, *g* are anisotropic material parameters. The thermodynamic conjugate forces, namely the stress tensor and the energy release rate tensor, are obtained by taking the partial derivatives of the free energy potential with respect to the associated state variables: the strain tensor *ε* and the second order damage tensor *ω*. Thus, the stress tensor is determined by\n\n<u>∂φ(ε, ω)</u> *σ* = = *λ* tr(*ε*)*I* + 2*µε*+ *gω* + *α* tr(*ε · ω*)*I* + tr(*ε*)*ω* + 2*β*(*ε · ω* +*ω · ε*). (2) *∂ ε*\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767320421006945,
+        "y0": 0.06968790232533151,
+        "x1": 0.2747046776067198,
+        "y1": 0.0817639129330413
+      },
+      "text": "1.4. Objective of the Study",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1220915052625868,
+        "y0": 0.08855662803457243,
+        "x1": 0.45496318542879394,
+        "y1": 0.10063263864228222
+      },
+      "text": "The current paper aims to explore the potential of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4583218643088746,
+        "y0": 0.08855662803457243,
+        "x1": 0.47002705094081904,
+        "y1": 0.10063263864228222
+      },
+      "text": "φ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4708382101619945,
+        "y0": 0.08855662803457243,
+        "x1": 0.9104632209329044,
+        "y1": 0.10063263864228222
+      },
+      "text": "ML (by integrating physical knowledge and constraints into artifi-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767317927740758,
+        "y0": 0.10365134658235498,
+        "x1": 0.910473966910169,
+        "y1": 0.11572735719006466
+      },
+      "text": "cial neural networks) to enable efficient prediction of the fatigue lifetime of high-strength concrete, explicitly considering",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767317927740758,
+        "y0": 0.11874606513013741,
+        "x1": 0.5498161315917969,
+        "y1": 0.1308220757378472
+      },
+      "text": "the effects of loading sequence in non-uniform loading scenarios.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5585364048777063,
+        "y0": 0.11874606513013741,
+        "x1": 0.9104737923815359,
+        "y1": 0.1308220757378472
+      },
+      "text": "An efficient surrogate model is developed by train-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767317927740758,
+        "y0": 0.13384201671137952,
+        "x1": 0.910473966910169,
+        "y1": 0.14591802731908932
+      },
+      "text": "ing a physics-based machine learning framework using fatigue simulations generated from a representative macro-scale",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767317927740758,
+        "y0": 0.14893673525916207,
+        "x1": 0.7638854731142132,
+        "y1": 0.16101274586687186
+      },
+      "text": "anisotropic continuum damage model. The resulting surrogate model offers two key applications:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12100977679483252,
+        "y0": 0.1740945481290721,
+        "x1": 0.9104626225490197,
+        "y1": 0.1861705587367819
+      },
+      "text": "•As an advanced tool for estimating cumulative fatigue damage under variable amplitude loading scenarios. It can",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13836925481659135,
+        "y0": 0.18918926667685465,
+        "x1": 0.9104597428265739,
+        "y1": 0.20126527728456445
+      },
+      "text": "be directly integrated into digital twin models for real-time assessment in engineering structures, eliminating the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13836925481659135,
+        "y0": 0.2042839852246371,
+        "x1": 0.5894807429095499,
+        "y1": 0.21635999583234689
+      },
+      "text": "need for computationally expensive nonlinear fatigue simulations.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12100977679483252,
+        "y0": 0.22944310819259794,
+        "x1": 0.9104625228183721,
+        "y1": 0.24151911880030774
+      },
+      "text": "•Integration with finite element simulations to efficiently model fatigue behavior over the lifetime of a structure. By",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13836925481659135,
+        "y0": 0.2445378267403805,
+        "x1": 0.9104597428265739,
+        "y1": 0.2566138373480903
+      },
+      "text": "accounting for the number of cycles and corresponding stress amplitudes at each material point, it enables precise",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13836925481659135,
+        "y0": 0.25963254528816304,
+        "x1": 0.6451312919068181,
+        "y1": 0.27170855589587284
+      },
+      "text": "evaluation of stiffness degradation after individual or multiple load cycles.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767317927740758,
+        "y0": 0.2847903581580731,
+        "x1": 0.9104740666408165,
+        "y1": 0.2968663687657829
+      },
+      "text": "In this work, we focus on the first approach, developing a surrogate model for fatigue damage estimation within digital",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767317927740758,
+        "y0": 0.2998863097393152,
+        "x1": 0.7519459194607205,
+        "y1": 0.311962320347025
+      },
+      "text": "twin frameworks, offering an efficient and practical alternative to nonlinear fatigue simulations.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12209148032992494,
+        "y0": 0.3149810282870976,
+        "x1": 0.48068646200342113,
+        "y1": 0.3270570388948074
+      },
+      "text": "The structure of this paper is organized as follows:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48987564386106003,
+        "y0": 0.3149810282870976,
+        "x1": 0.9104660133910335,
+        "y1": 0.3270570388948074
+      },
+      "text": "Section2provides a summary of the anisotropic continuum",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767317927740758,
+        "y0": 0.33007574683488017,
+        "x1": 0.910473966910169,
+        "y1": 0.34215175744258997
+      },
+      "text": "damage fatigue model used to generate the training data for the physics-based machine learning framework, along",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767317927740758,
+        "y0": 0.34517042685036703,
+        "x1": 0.6948418461419399,
+        "y1": 0.3572464374580768
+      },
+      "text": "with details on its calibration and validation. Section3describes the development of the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6986633500242545,
+        "y0": 0.34517042685036703,
+        "x1": 0.7103685366561989,
+        "y1": 0.3572464374580768
+      },
+      "text": "φ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7111813414330576,
+        "y0": 0.34517042685036703,
+        "x1": 0.9104668112362132,
+        "y1": 0.3572464374580768
+      },
+      "text": "ML model, including the data",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.360265106865854,
+        "x1": 0.9104738921121834,
+        "y1": 0.3723411174735638
+      },
+      "text": "generation process, the chosen architecture, the integration of physical constraints, the customized loss function, and the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.37535978688134086,
+        "x1": 0.5299844180836397,
+        "y1": 0.38743579748905066
+      },
+      "text": "training procedure. In Section4, the results obtained using the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5345963621451184,
+        "y0": 0.37535978688134086,
+        "x1": 0.5463015487770629,
+        "y1": 0.38743579748905066
+      },
+      "text": "φ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5471143535539216,
+        "y0": 0.37535978688134086,
+        "x1": 0.9104602290134803,
+        "y1": 0.38743579748905066
+      },
+      "text": "ML model are presented and discussed. Comparative",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.39045573846258297,
+        "x1": 0.9104739918428308,
+        "y1": 0.40253174907029277
+      },
+      "text": "analyses are performed between purely data-driven models and those incorporating physical constraints, considering",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.40555041847806983,
+        "x1": 0.3084762672972835,
+        "y1": 0.4176264290857796
+      },
+      "text": "both large and small datasets.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.319446962643293,
+        "y0": 0.40555041847806983,
+        "x1": 0.5466279671862234,
+        "y1": 0.4176264290857796
+      },
+      "text": "Section5extends the developed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5527172711939593,
+        "y0": 0.40555041847806983,
+        "x1": 0.5644224578259038,
+        "y1": 0.4176264290857796
+      },
+      "text": "φ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5652352626027625,
+        "y0": 0.40555041847806983,
+        "x1": 0.9104686063878676,
+        "y1": 0.4176264290857796
+      },
+      "text": "ML framework to accommodate arbitrary loading",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.4206450984935568,
+        "x1": 0.37723850424772776,
+        "y1": 0.4327211091012666
+      },
+      "text": "scenarios through a proposed algorithm.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38572438557942706,
+        "y0": 0.4206450984935568,
+        "x1": 0.9104739918428308,
+        "y1": 0.4327211091012666
+      },
+      "text": "This section also includes experimental validation studies of fatigue lifetime",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.43573977850904366,
+        "x1": 0.4536270939446742,
+        "y1": 0.44781578911675346
+      },
+      "text": "predictions under more complex loading conditions.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.4734771528629341,
+        "x1": 0.3964919046638838,
+        "y1": 0.4855531634706439
+      },
+      "text": "2. Anisotropic continuum damage model",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12209145539726307,
+        "y0": 0.4998938158305004,
+        "x1": 0.9104590322457108,
+        "y1": 0.5119698264382102
+      },
+      "text": "The fatigue damage modeling approach developed by [77–79] is selected for this study due to its computational",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.5149884958459874,
+        "x1": 0.16418496923508988,
+        "y1": 0.5270645064536972
+      },
+      "text": "efficiency.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17288964714100158,
+        "y0": 0.5149884958459874,
+        "x1": 0.9104737799152051,
+        "y1": 0.5270645064536972
+      },
+      "text": "Its incremental formulation ensures compatibility with a wide range of fatigue loading histories, making it",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.5300831758614742,
+        "x1": 0.9104739918428308,
+        "y1": 0.542159186469184
+      },
+      "text": "adaptable to complex scenarios. The model employs a stress-driven formulation that simplifies the problem to a uniaxial",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.5451778558769611,
+        "x1": 0.9104738921121834,
+        "y1": 0.5572538664846709
+      },
+      "text": "stress state, allowing efficient simulation of compressive loading cycles on cylindrical solids under the assumption of uni-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.5602725358924481,
+        "x1": 0.9104739918428308,
+        "y1": 0.5723485465001579
+      },
+      "text": "form stress distribution. This computational efficiency is critical for conducting the large number of fatigue simulations",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.5753672159079349,
+        "x1": 0.9104739918428308,
+        "y1": 0.5874432265156447
+      },
+      "text": "needed to train the machine learning model. Furthermore, the model effectively captures the nonlinear progression of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.590463167489177,
+        "x1": 0.9104610268586601,
+        "y1": 0.6025391780968868
+      },
+      "text": "fatigue damage and incorporates the influence of loading sequence [80]. This is achieved by replacing the conventional",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.6055578475046639,
+        "x1": 0.8752646851383783,
+        "y1": 0.6176338581123737
+      },
+      "text": "yield limit with an irreversibility condition, ensuring accurate representation of loading and unloading behavior.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8841568691278595,
+        "y0": 0.6055578475046639,
+        "x1": 0.9104739918428308,
+        "y1": 0.6176338581123737
+      },
+      "text": "It is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.6206525275201509,
+        "x1": 0.9104739918428308,
+        "y1": 0.6327285381278607
+      },
+      "text": "important to highlight that the model used in this study primarily serves as a demonstrative example to showcase the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.6357472075356377,
+        "x1": 0.4040714089387383,
+        "y1": 0.6478232181433475
+      },
+      "text": "potential of physics-based machine learning.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41232287338356566,
+        "y0": 0.6357472075356377,
+        "x1": 0.9104738671795215,
+        "y1": 0.6478232181433475
+      },
+      "text": "Specifically, it illustrates how advanced fatigue damage modeling know-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.6508418875511246,
+        "x1": 0.9104738921121834,
+        "y1": 0.6629178981588344
+      },
+      "text": "ledge can be effectively transferred into ML frameworks for efficient lifetime prediction. While this model was chosen",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.6659365868327594,
+        "x1": 0.9104683071959252,
+        "y1": 0.6780125974404692
+      },
+      "text": "for its simplicity and adaptability, other advanced fatigue modeling approaches [8,19,21,29], could equally serve as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.6810325384140015,
+        "x1": 0.36387674169602735,
+        "y1": 0.6931085490217113
+      },
+      "text": "the foundation for similar applications.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767315434474572,
+        "y0": 0.7112219369772709,
+        "x1": 0.25470107832765265,
+        "y1": 0.7232979475849807
+      },
+      "text": "2.1. Model formulation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12209145539726307,
+        "y0": 0.7300906241542161,
+        "x1": 0.8383282430810866,
+        "y1": 0.7421666347619259
+      },
+      "text": "The model is based on the anisotropic damage framework, defined by the following free energy potential",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29574176065282887,
+        "y0": 0.7549466906171857,
+        "x1": 0.304430818246081,
+        "y1": 0.7670227012248955
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3649934756210427,
+        "y0": 0.761938249824023,
+        "x1": 0.371075773550794,
+        "y1": 0.7703914064349551
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22199994754167943,
+        "y0": 0.7634479554012569,
+        "x1": 0.23370515910628575,
+        "y1": 0.7755239660089666
+      },
+      "text": "φ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23451791401782068,
+        "y0": 0.7634479554012569,
+        "x1": 0.24065962648080066,
+        "y1": 0.7755239660089666
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24066007526871425,
+        "y0": 0.7629449259151112,
+        "x1": 0.24925526139003779,
+        "y1": 0.7755239660089666
+      },
+      "text": "ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24926792718226615,
+        "y0": 0.7634479554012569,
+        "x1": 0.2536124435125613,
+        "y1": 0.7755239660089666
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25579243080288755,
+        "y0": 0.7629449259151112,
+        "x1": 0.2674643073985779,
+        "y1": 0.7755239660089666
+      },
+      "text": "ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2680816401064006,
+        "y0": 0.7634479554012569,
+        "x1": 0.29013243531869126,
+        "y1": 0.7755239660089666
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30638399311140474,
+        "y0": 0.7634479746674047,
+        "x1": 0.3165420582091886,
+        "y1": 0.7755239852751145
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.320191177667356,
+        "y0": 0.7634479746674047,
+        "x1": 0.34388356426962063,
+        "y1": 0.7755239852751145
+      },
+      "text": "[tr(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.343882367501851,
+        "y0": 0.762944945181259,
+        "x1": 0.3524775536231745,
+        "y1": 0.7755239852751145
+      },
+      "text": "ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3524918400384242,
+        "y0": 0.7634479746674047,
+        "x1": 0.3649628084469465,
+        "y1": 0.7755239852751145
+      },
+      "text": ")]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37479739718967015,
+        "y0": 0.7634479746674047,
+        "x1": 0.38620568568410435,
+        "y1": 0.7755239852751145
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3891274695302926,
+        "y0": 0.7634479746674047,
+        "x1": 0.399269901849086,
+        "y1": 0.7755239852751145
+      },
+      "text": "µ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40290361292221966,
+        "y0": 0.7634479746674047,
+        "x1": 0.4202348796370762,
+        "y1": 0.7755239852751145
+      },
+      "text": "tr(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42023368286930657,
+        "y0": 0.762944945181259,
+        "x1": 0.44764260684742646,
+        "y1": 0.7755239852751145
+      },
+      "text": "ε · ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44765691819533804,
+        "y0": 0.7634479746674047,
+        "x1": 0.46809806075750615,
+        "y1": 0.7755239852751145
+      },
+      "text": ") +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47220756181704454,
+        "y0": 0.7634479746674047,
+        "x1": 0.4797245100432751,
+        "y1": 0.7755239852751145
+      },
+      "text": "g",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48452943290760314,
+        "y0": 0.7634479746674047,
+        "x1": 0.5018606746897978,
+        "y1": 0.7755239852751145
+      },
+      "text": "tr(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5018611234777114,
+        "y0": 0.762944945181259,
+        "x1": 0.5323467379301982,
+        "y1": 0.7755239852751145
+      },
+      "text": "ε · ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5329624250823376,
+        "y0": 0.7634479746674047,
+        "x1": 0.5534191754908343,
+        "y1": 0.7755239852751145
+      },
+      "text": ") +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5563415327882455,
+        "y0": 0.7634479746674047,
+        "x1": 0.56657773684832,
+        "y1": 0.7755239852751145
+      },
+      "text": "α",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.570210824604907,
+        "y0": 0.7634479746674047,
+        "x1": 0.5875420663871017,
+        "y1": 0.7755239852751145
+      },
+      "text": "tr(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5875425151750153,
+        "y0": 0.762944945181259,
+        "x1": 0.5961377012963388,
+        "y1": 0.7755239852751145
+      },
+      "text": "ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5961503670885672,
+        "y0": 0.7634479746674047,
+        "x1": 0.6232577554540697,
+        "y1": 0.7755239852751145
+      },
+      "text": ") tr(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6232565586863,
+        "y0": 0.762944945181259,
+        "x1": 0.6537421731387868,
+        "y1": 0.7755239852751145
+      },
+      "text": "ε · ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6543578602909262,
+        "y0": 0.7634479746674047,
+        "x1": 0.6864260006574244,
+        "y1": 0.7755239852751145
+      },
+      "text": ") + 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.690060484643076,
+        "y0": 0.7634479746674047,
+        "x1": 0.6996403114468444,
+        "y1": 0.7755239852751145
+      },
+      "text": "β",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7047728993534262,
+        "y0": 0.7634479746674047,
+        "x1": 0.7221041411356209,
+        "y1": 0.7755239852751145
+      },
+      "text": "tr(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7221045899235345,
+        "y0": 0.762944945181259,
+        "x1": 0.7714039422328176,
+        "y1": 0.7755239852751145
+      },
+      "text": "ε · ε · ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7720196293849572,
+        "y0": 0.7634479746674047,
+        "x1": 0.7861386467428768,
+        "y1": 0.7755239852751145
+      },
+      "text": "),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8887506622114992,
+        "y0": 0.7634479746674047,
+        "x1": 0.9104732937282987,
+        "y1": 0.7755239852751145
+      },
+      "text": "(1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29574183545081445,
+        "y0": 0.7723848470533737,
+        "x1": 0.30443089304406656,
+        "y1": 0.7844608576610835
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767320421006945,
+        "y0": 0.7952724719288373,
+        "x1": 0.1398525861353656,
+        "y1": 0.8073484825365471
+      },
+      "text": "where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1463120903065002,
+        "y0": 0.7952724719288373,
+        "x1": 0.15647014293795317,
+        "y1": 0.8073484825365471
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15648528953003726,
+        "y0": 0.7952724719288373,
+        "x1": 0.16082981832666335,
+        "y1": 0.8073484825365471
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1630097931506587,
+        "y0": 0.7952724719288373,
+        "x1": 0.1731522254694521,
+        "y1": 0.8073484825365471
+      },
+      "text": "µ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17961110632404004,
+        "y0": 0.7952724719288373,
+        "x1": 0.37526613123276653,
+        "y1": 0.8073484825365471
+      },
+      "text": "are the Lam´e constants and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3817189534505208,
+        "y0": 0.7952724719288373,
+        "x1": 0.3919551575105954,
+        "y1": 0.8073484825365471
+      },
+      "text": "α",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3919558805577895,
+        "y0": 0.7952724719288373,
+        "x1": 0.39630039688808466,
+        "y1": 0.8073484825365471
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.398480384178411,
+        "y0": 0.7952724719288373,
+        "x1": 0.4080602109821793,
+        "y1": 0.8073484825365471
+      },
+      "text": "β",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4095604591120302,
+        "y0": 0.7952724719288373,
+        "x1": 0.41390497544232535,
+        "y1": 0.8073484825365471
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.417256548513774,
+        "y0": 0.7952724719288373,
+        "x1": 0.42477352167266647,
+        "y1": 0.8073484825365471
+      },
+      "text": "g",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4324052598741319,
+        "y0": 0.7952724719288373,
+        "x1": 0.6861690945095487,
+        "y1": 0.8073484825365471
+      },
+      "text": "are anisotropic material parameters.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.69826502581827,
+        "y0": 0.7952724719288373,
+        "x1": 0.9104745902267157,
+        "y1": 0.8073484825365471
+      },
+      "text": "The thermodynamic conjugate",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767322914273131,
+        "y0": 0.8103671712104721,
+        "x1": 0.9104739170448453,
+        "y1": 0.8224431818181819
+      },
+      "text": "forces, namely the stress tensor and the energy release rate tensor, are obtained by taking the partial derivatives of the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767322914273131,
+        "y0": 0.8254618704921067,
+        "x1": 0.5622090109033522,
+        "y1": 0.8375378810998165
+      },
+      "text": "free energy potential with respect to the associated state variables:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5702729069329555,
+        "y0": 0.8254618704921067,
+        "x1": 0.683996262893178,
+        "y1": 0.8375378810998165
+      },
+      "text": "the strain tensor",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6894804511974061,
+        "y0": 0.8249588410059611,
+        "x1": 0.6980756373187296,
+        "y1": 0.8375378810998165
+      },
+      "text": "ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7035801208097171,
+        "y0": 0.8254618704921067,
+        "x1": 0.9104606279360703,
+        "y1": 0.8375378810998165
+      },
+      "text": "and the second order damage",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767325407539318,
+        "y0": 0.8405565697737414,
+        "x1": 0.14008705288756126,
+        "y1": 0.8526325803814512
+      },
+      "text": "tensor",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14444612989238664,
+        "y0": 0.8400535402875958,
+        "x1": 0.15611799402174606,
+        "y1": 0.8526325803814512
+      },
+      "text": "ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15673533919589971,
+        "y0": 0.8405565697737414,
+        "x1": 0.4374884312448938,
+        "y1": 0.8526325803814512
+      },
+      "text": ". Thus, the stress tensor is determined by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.254916695987477,
+        "y0": 0.8663861161530619,
+        "x1": 0.2776082356770833,
+        "y1": 0.8784621267607717
+      },
+      "text": "∂φ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27841996834948174,
+        "y0": 0.8663861161530619,
+        "x1": 0.2845616808124617,
+        "y1": 0.8784621267607717
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2845621296003753,
+        "y0": 0.8658830866669164,
+        "x1": 0.29315731572169884,
+        "y1": 0.8784621267607717
+      },
+      "text": "ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29317160213694854,
+        "y0": 0.8663861161530619,
+        "x1": 0.2975161184672437,
+        "y1": 0.8784621267607717
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29969610575756994,
+        "y0": 0.8658830866669164,
+        "x1": 0.3113679823532603,
+        "y1": 0.8784621267607717
+      },
+      "text": "ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3119836944380617,
+        "y0": 0.8663861161530619,
+        "x1": 0.3181254069010417,
+        "y1": 0.8784621267607717
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22162912406173407,
+        "y0": 0.8745345985046541,
+        "x1": 0.23278008255304075,
+        "y1": 0.8871136385985096
+      },
+      "text": "σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2370310764686734,
+        "y0": 0.8750376279907998,
+        "x1": 0.24931450139463338,
+        "y1": 0.8871136385985096
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32371241750280844,
+        "y0": 0.8750376183577259,
+        "x1": 0.3359958424287684,
+        "y1": 0.8871136289654356
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33964379005182804,
+        "y0": 0.8750376183577259,
+        "x1": 0.34980185514961193,
+        "y1": 0.8871136289654356
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3534509746077793,
+        "y0": 0.8750376183577259,
+        "x1": 0.3707822413226358,
+        "y1": 0.8871136289654356
+      },
+      "text": "tr(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37078269011054943,
+        "y0": 0.8745345888715802,
+        "x1": 0.37937787623187297,
+        "y1": 0.8871136289654356
+      },
+      "text": "ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37939054202410133,
+        "y0": 0.8750376183577259,
+        "x1": 0.3855322544870813,
+        "y1": 0.8871136289654356
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3855327032749949,
+        "y0": 0.8745345888715802,
+        "x1": 0.3938511368495966,
+        "y1": 0.8871136289654356
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39802616094452103,
+        "y0": 0.8750376183577259,
+        "x1": 0.42104529087839565,
+        "y1": 0.8871136289654356
+      },
+      "text": "+ 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42104578953163296,
+        "y0": 0.8750376183577259,
+        "x1": 0.43978313371246935,
+        "y1": 0.8871136289654356
+      },
+      "text": "µε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44270264868642767,
+        "y0": 0.8750376183577259,
+        "x1": 0.45411093718086193,
+        "y1": 0.8871136289654356
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4582059274311938,
+        "y0": 0.8750376183577259,
+        "x1": 0.47856733534071183,
+        "y1": 0.8871136289654356
+      },
+      "text": "gω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48208992153990504,
+        "y0": 0.8750376183577259,
+        "x1": 0.49349821003433925,
+        "y1": 0.8871136289654356
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4964199689478656,
+        "y0": 0.8750376183577259,
+        "x1": 0.5066561730079402,
+        "y1": 0.8871136289654356
+      },
+      "text": "α",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5160719428966248,
+        "y0": 0.8750376183577259,
+        "x1": 0.5334031846788194,
+        "y1": 0.8871136289654356
+      },
+      "text": "tr(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.533403633466733,
+        "y0": 0.8745345888715802,
+        "x1": 0.5638892479192198,
+        "y1": 0.8871136289654356
+      },
+      "text": "ε · ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5645049350713592,
+        "y0": 0.8750376183577259,
+        "x1": 0.5706466475343392,
+        "y1": 0.8871136289654356
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5706470963222529,
+        "y0": 0.8745345888715802,
+        "x1": 0.5789655298968546,
+        "y1": 0.8871136289654356
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.583140553991779,
+        "y0": 0.8750376183577259,
+        "x1": 0.6148018431819342,
+        "y1": 0.8871136289654356
+      },
+      "text": "+ tr(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6148022919698478,
+        "y0": 0.8745345888715802,
+        "x1": 0.6233974780911714,
+        "y1": 0.8871136289654356
+      },
+      "text": "ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6234101438833997,
+        "y0": 0.8750376183577259,
+        "x1": 0.6295518563463797,
+        "y1": 0.8871136289654356
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6295523051342933,
+        "y0": 0.8745345888715802,
+        "x1": 0.6412241817299836,
+        "y1": 0.8871136289654356
+      },
+      "text": "ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.651982026941636,
+        "y0": 0.8750376183577259,
+        "x1": 0.6750027525658701,
+        "y1": 0.8871136289654356
+      },
+      "text": "+ 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6750016056634243,
+        "y0": 0.8750376183577259,
+        "x1": 0.6845814324671926,
+        "y1": 0.8871136289654356
+      },
+      "text": "β",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6860816805970436,
+        "y0": 0.8750376183577259,
+        "x1": 0.6922233930600235,
+        "y1": 0.8871136289654356
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6922238418479371,
+        "y0": 0.8745345888715802,
+        "x1": 0.7227094563004238,
+        "y1": 0.8871136289654356
+      },
+      "text": "ε · ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.726232042499617,
+        "y0": 0.8750376183577259,
+        "x1": 0.7376403309940512,
+        "y1": 0.8871136289654356
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7405620899075777,
+        "y0": 0.8745345888715802,
+        "x1": 0.7716507257199755,
+        "y1": 0.8871136289654356
+      },
+      "text": "ω · ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7716633915122039,
+        "y0": 0.8750376183577259,
+        "x1": 0.786511190576491,
+        "y1": 0.8871136289654356
+      },
+      "text": ") .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.888748069214665,
+        "y0": 0.8750376183577259,
+        "x1": 0.9104707007314644,
+        "y1": 0.8871136289654356
+      },
+      "text": "(2)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.276723849228005,
+        "y0": 0.8839744907436948,
+        "x1": 0.296304341235192,
+        "y1": 0.8960505013514046
+      },
+      "text": "∂ ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4997254913928462,
+        "y0": 0.9501866102218628,
+        "x1": 0.5084145240534365,
+        "y1": 0.9622626208295726
+      },
+      "text": "4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.028242799977306277,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

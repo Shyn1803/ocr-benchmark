@@ -1,0 +1,4572 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.09398_pg1",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "# Precoder Learning by Leveraging Unitary Equivariance Property\n\n### Yilun Ge, Shuyao Liao, Shengqian Han, Chenyang Yang\n\nSchool of Electronics and Information Engineering, Beihang University, Beijing 100191, China yilunge, shuyaoliao, sqhan, cyyang Email: *{* *}*@buaa.edu.cn\n\n***Abstract*—Incorporating mathematical properties of a wireless policy to be learned into the design of deep neural networks**\n\n**(DNNs) is effective for enhancing learning efficiency. Multi-user precoding policy in multi-antenna system, which is the mapping**\n\n**from channel matrix to precoding matrix, possesses a permuta- tion equivariance property, which has been harnessed to design**\n\n**the parameter sharing structure of the weight matrix of DNNs.** **In this paper, we study a stronger property than permutation equivariance, namely unitary equivariance, for precoder learning.**\n\n**We first show that a DNN with unitary equivariance designed by further introducing parameter sharing into a permutation**\n\n**equivariant DNN is unable to learn the optimal precoder. We proceed to develop a novel non-linear weighting process satisfying**\n\n**unitary equivariance and then construct a joint unitary and permutation equivariant DNN. Simulation results demonstrate**\n\n**that the proposed DNN not only outperforms existing learning methods in learning performance and generalizability but also**\n\n**reduces training complexity.** ***Index Terms*—Precoding, deep learning, unitary equivariant, permutation equivariant**\n\nI. INTRODUCTION\nThe optimization of multi-user multi-input multi-output (MU-MIMO) precoder is a challenging problem. Various numerical algorithms have been developed, e.g., the weighted minimum mean square error (WMMSE) algorithm [1], which, however, are with high computational complexity. Deep learning offers a promising solution for optimization due to its low inference complexity. In [2], a fully-connected deep neural network (DNN) was trained to approximate the performance of WMMSE with significantly reduced infer- ence complexity. However, such DNNs often involve a large number of learnable parameters, requiring extensive training time and massive training samples. Incorporating inductive\n\n||,..., h|] ∈|\n|---|---|---|\n|k N ×1|1 K|K N ×K|\n\nbiases into DNNs architecture with mathematical properties of the policies being learned is crucial for enhancing learning efficiency [3,4]. A well-known example is convolutional neural network (CNN), which leverages the property of translational invariance and has significantly promoted the field of im- age recognition [5]. Recent studies have demonstrated the importance of inte-\n\n||max|R||\n|---|---|---|---|\n||V|k=1 k||\n|||H||\n||||max|\n|||h v||\n|k|P|h v|+δ|\n|k 2||max||\n\ngrating permutation equivariance properties to enhance learn- ing efficiency for wireless communications [6–12]. In [8], the mismatch between the inductive bias of CNNs and the permutation equivariance property of the precoding policy was identified, and an edge-updated graph neural network (GNN) was proposed to leverage the permutation equivariance\n\nproperty. In [9], the attention mechanism was introduced into GNN and a graph attention network (GAT) was used to learn the energy efficient precoder. In [10], a GNN was designed by introduce Taylor’s expansion of matrix pseudo-inverse into the model, which improves learning efficiency. In [11], a multidimensional GNN was developed for hybrid precoder learning, which is able to exploit complicated permutation equivariance properties. In this paper, we study the learning of MU-MIMO precoder by investigating a stronger property than permutation equiv- ariance, known as unitary equivariance. This property means that if the channel matrix is multiplied by a unitary matrix, then the optimal precoder will be multiplied by the same unitary matrix. The only instance of a unitary equivariant DNN design was introduced in [13]. However, it lacked a systematic analysis of how the unitary equivariance property impacts DNN design, and its performance in precoder learning is un- satisfactory, as to be demonstrated later. In this paper, we first show that a DNN with a parameter sharing structure derived from the unitary and permutation equivariance property is unable to learn the optimal precoder. To solve the problem, we then develop a non-linear weighting process that satisfies the unitary equivariance, and finally construct a joint unitary and permutation equivariant neural network (UPNN) for precoder learning. Simulation results demonstrate the advantages of the proposed UPNN in performance improvement and training complexity reduction.\n\nII. EQUIVARIANCE PROPERTY OF A PRECODING POLICY\n\nConsider a downlink MU-MIMO system where a base sta- tion (BS) equipped with *N* antennas serves *K* single-antenna users. The channel matrix is denoted as H = [h C *N ×K*, where h *∈* C *N ×*1 is the channel vector of user *k*. The precoding matrix is denoted as V = [v₁*,...,*v] *∈* C, where v*k∈* C is the precoding vector of user *k*. The precoder optimization problem that maximizes the sum rate subject to the total power constraint is X*K* *k*=1 *k*(1a) V\n\ns*.*t*.* Tr V V *≤ P,* (1b) <u>|</u> H <u>k k |</u>\n2 where *R* = log₂ 1 + *m̸*=*k|* H *k m |k* is the data rate of\n\nuser *k*, *δ* is the noise power, and *P* is the maximal transmit\n\n## arXiv:2503.09398v1 [eess.SP] 12 Mar 2025\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16531535379247728,
+        "y0": 0.05974961531282674,
+        "x1": 0.8346865161571627,
+        "y1": 0.08993938715770988
+      },
+      "text": "Precoder Learning by Leveraging Unitary",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3237990086374719,
+        "y0": 0.09497059956945553,
+        "x1": 0.6762024623895783,
+        "y1": 0.12516037141433867
+      },
+      "text": "Equivariance Property",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29034967360153696,
+        "y0": 0.15094837034591524,
+        "x1": 0.7096530191259447,
+        "y1": 0.16478536586568815
+      },
+      "text": "Yilun Ge, Shuyao Liao, Shengqian Han, Chenyang Yang",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18050653794232538,
+        "y0": 0.16795886767030965,
+        "x1": 0.8194966035730699,
+        "y1": 0.18053790776416512
+      },
+      "text": "School of Electronics and Information Engineering, Beihang University, Beijing 100191, China",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30438726088579965,
+        "y0": 0.18352576096852624,
+        "x1": 0.34780270445580574,
+        "y1": 0.1961048010623816
+      },
+      "text": "Email:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35349837159798814,
+        "y0": 0.18352576096852624,
+        "x1": 0.3616377387950623,
+        "y1": 0.1961048010623816
+      },
+      "text": "{",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3616388856975082,
+        "y0": 0.18352576096852624,
+        "x1": 0.595060011919807,
+        "y1": 0.1961048010623816
+      },
+      "text": "yilunge, shuyaoliao, sqhan, cyyang",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5950588151520374,
+        "y0": 0.18352576096852624,
+        "x1": 0.6031981823491115,
+        "y1": 0.1961048010623816
+      },
+      "text": "}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6031993292515574,
+        "y0": 0.18352576096852624,
+        "x1": 0.6956138361513226,
+        "y1": 0.1961048010623816
+      },
+      "text": "@buaa.edu.cn",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628595090379902,
+        "y0": 0.24419900142785278,
+        "x1": 0.1467585844152114,
+        "y1": 0.2555202137340199
+      },
+      "text": "Abstract",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14680065828211167,
+        "y0": 0.24419900142785278,
+        "x1": 0.4902342628030216,
+        "y1": 0.2555202137340199
+      },
+      "text": "—Incorporating mathematical properties of a wireless",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.24294248373821525,
+        "x1": 0.9199926837597018,
+        "y1": 0.2555215238320707
+      },
+      "text": "property. In [9], the attention mechanism was introduced into",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.2567785629118332,
+        "x1": 0.11745445401060815,
+        "y1": 0.2680997752180003
+      },
+      "text": "policy",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12498506533554177,
+        "y0": 0.2567785629118332,
+        "x1": 0.13718932906007456,
+        "y1": 0.2680997752180003
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1447052799798305,
+        "y0": 0.2567785629118332,
+        "x1": 0.1593562606113409,
+        "y1": 0.2680997752180003
+      },
+      "text": "be",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16688687193627452,
+        "y0": 0.2567785629118332,
+        "x1": 0.21387257295496323,
+        "y1": 0.2680997752180003
+      },
+      "text": "learned",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22138852387471916,
+        "y0": 0.2567785629118332,
+        "x1": 0.2458117117289624,
+        "y1": 0.2680997752180003
+      },
+      "text": "into",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25334229812123416,
+        "y0": 0.2567785629118332,
+        "x1": 0.27287205216152216,
+        "y1": 0.2680997752180003
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28040263855379394,
+        "y0": 0.2567785629118332,
+        "x1": 0.3202972412109375,
+        "y1": 0.2680997752180003
+      },
+      "text": "design",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3278132170633553,
+        "y0": 0.2567785629118332,
+        "x1": 0.34001748078788807,
+        "y1": 0.2680997752180003
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34754809211282167,
+        "y0": 0.2567785629118332,
+        "x1": 0.37685005337584254,
+        "y1": 0.2680997752180003
+      },
+      "text": "deep",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3843660042955985,
+        "y0": 0.2567785629118332,
+        "x1": 0.42506643058427795,
+        "y1": 0.2680997752180003
+      },
+      "text": "neural",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4325970419092116,
+        "y0": 0.2567785629118332,
+        "x1": 0.49023397607741015,
+        "y1": 0.2680997752180003
+      },
+      "text": "networks",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.2580372022859978,
+        "x1": 0.9199927834903493,
+        "y1": 0.27061624237985327
+      },
+      "text": "GNN and a graph attention network (GAT) was used to learn",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.26935812439581364,
+        "x1": 0.49023397607741015,
+        "y1": 0.28067933670198075
+      },
+      "text": "(DNNs) is effective for enhancing learning efficiency. Multi-user",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.27313192083378035,
+        "x1": 0.9199927834903493,
+        "y1": 0.2857109609276357
+      },
+      "text": "the energy efficient precoder. In [10], a GNN was designed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.28193637578174324,
+        "x1": 0.4902340758080576,
+        "y1": 0.29325758808791036
+      },
+      "text": "precoding policy in multi-antenna system, which is the mapping",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.29451593726572367,
+        "x1": 0.49023397607741015,
+        "y1": 0.3058371495718908
+      },
+      "text": "from channel matrix to precoding matrix, possesses a permuta-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.2882266393815628,
+        "x1": 0.9199926837597018,
+        "y1": 0.30080567947541825
+      },
+      "text": "by introduce Taylor’s expansion of matrix pseudo-inverse into",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.3070954987497041,
+        "x1": 0.49023397607741015,
+        "y1": 0.3184167110558712
+      },
+      "text": "tion equivariance property, which has been harnessed to design",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.30332135792934534,
+        "x1": 0.529660642536637,
+        "y1": 0.3159003980232008
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5388907139597375,
+        "y0": 0.30332135792934534,
+        "x1": 0.5836573083416309,
+        "y1": 0.3159003980232008
+      },
+      "text": "model,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5928710738038705,
+        "y0": 0.30332135792934534,
+        "x1": 0.6326563716713899,
+        "y1": 0.3159003980232008
+      },
+      "text": "which",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6418864430944904,
+        "y0": 0.30332135792934534,
+        "x1": 0.701987621830959,
+        "y1": 0.3159003980232008
+      },
+      "text": "improves",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7112176433887357,
+        "y0": 0.30332135792934534,
+        "x1": 0.7645631677964154,
+        "y1": 0.3159003980232008
+      },
+      "text": "learning",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7737932392195159,
+        "y0": 0.30332135792934534,
+        "x1": 0.8403408075469772,
+        "y1": 0.3159003980232008
+      },
+      "text": "efficiency.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8495707792394301,
+        "y0": 0.30332135792934534,
+        "x1": 0.8631309559142667,
+        "y1": 0.3159003980232008
+      },
+      "text": "In",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8723447712418301,
+        "y0": 0.30332135792934534,
+        "x1": 0.9035349328533496,
+        "y1": 0.3159003980232008
+      },
+      "text": "[11],",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9127649045458027,
+        "y0": 0.30332135792934534,
+        "x1": 0.9199926837597018,
+        "y1": 0.3159003980232008
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.3196737501356337,
+        "x1": 0.49023397607741015,
+        "y1": 0.3309949624418008
+      },
+      "text": "the parameter sharing structure of the weight matrix of DNNs.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.3184160764771279,
+        "x1": 0.6237356148514093,
+        "y1": 0.33099511657098324
+      },
+      "text": "multidimensional",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6322819329554739,
+        "y0": 0.3184160764771279,
+        "x1": 0.6675417033675449,
+        "y1": 0.33099511657098324
+      },
+      "text": "GNN",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.676071815241396,
+        "y0": 0.3184160764771279,
+        "x1": 0.7012224883035897,
+        "y1": 0.33099511657098324
+      },
+      "text": "was",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7097688562729779,
+        "y0": 0.3184160764771279,
+        "x1": 0.7760233660928564,
+        "y1": 0.33099511657098324
+      },
+      "text": "developed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7845697340622447,
+        "y0": 0.3184160764771279,
+        "x1": 0.8035507700801675,
+        "y1": 0.33099511657098324
+      },
+      "text": "for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8120808320886949,
+        "y0": 0.3184160764771279,
+        "x1": 0.8545032576018688,
+        "y1": 0.33099511657098324
+      },
+      "text": "hybrid",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8630495757059334,
+        "y0": 0.3184160764771279,
+        "x1": 0.9199926837597018,
+        "y1": 0.33099511657098324
+      },
+      "text": "precoder",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.33225331161961413,
+        "x1": 0.49023397607741015,
+        "y1": 0.34357452392578125
+      },
+      "text": "In this paper, we study a stronger property than permutation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.33351202805837,
+        "x1": 0.5671832016090942,
+        "y1": 0.34609106815222535
+      },
+      "text": "learning,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5756318834092882,
+        "y0": 0.33351202805837,
+        "x1": 0.6154171812768076,
+        "y1": 0.34609106815222535
+      },
+      "text": "which",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6238658630770016,
+        "y0": 0.33351202805837,
+        "x1": 0.6347237879933875,
+        "y1": 0.34609106815222535
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6431724199282578,
+        "y0": 0.33351202805837,
+        "x1": 0.6702928231432547,
+        "y1": 0.34609106815222535
+      },
+      "text": "able",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6787578109043096,
+        "y0": 0.33351202805837,
+        "x1": 0.6914227055568322,
+        "y1": 0.34609106815222535
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6998713873570261,
+        "y0": 0.33351202805837,
+        "x1": 0.7448496101728452,
+        "y1": 0.34609106815222535
+      },
+      "text": "exploit",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7532982421077155,
+        "y0": 0.33351202805837,
+        "x1": 0.8328687879774306,
+        "y1": 0.34609106815222535
+      },
+      "text": "complicated",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8413174697776246,
+        "y0": 0.33351202805837,
+        "x1": 0.9199926837597018,
+        "y1": 0.34609106815222535
+      },
+      "text": "permutation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.34483287310359456,
+        "x1": 0.4902340758080576,
+        "y1": 0.3561540854097617
+      },
+      "text": "equivariance, namely unitary equivariance, for precoder learning.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.34860670807385685,
+        "x1": 0.666988248139425,
+        "y1": 0.3611857481677123
+      },
+      "text": "equivariance properties.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.35741116302181974,
+        "x1": 0.49023397607741015,
+        "y1": 0.36873237532798686
+      },
+      "text": "We first show that a DNN with unitary equivariance designed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.3699907245058002,
+        "x1": 0.09547797683017706,
+        "y1": 0.3813119368119673
+      },
+      "text": "by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10308183408250995,
+        "y0": 0.3699907245058002,
+        "x1": 0.1486463858411203,
+        "y1": 0.3813119368119673
+      },
+      "text": "further",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15623558892144096,
+        "y0": 0.3699907245058002,
+        "x1": 0.22924141478694343,
+        "y1": 0.3813119368119673
+      },
+      "text": "introducing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23684527827244178,
+        "y0": 0.3699907245058002,
+        "x1": 0.30274539523654515,
+        "y1": 0.3813119368119673
+      },
+      "text": "parameter",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31033459831686583,
+        "y0": 0.3699907245058002,
+        "x1": 0.35755471622242646,
+        "y1": 0.3813119368119673
+      },
+      "text": "sharing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3651585797079248,
+        "y0": 0.3699907245058002,
+        "x1": 0.3895817675621681,
+        "y1": 0.3813119368119673
+      },
+      "text": "into",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39717097064248874,
+        "y0": 0.3699907245058002,
+        "x1": 0.404496460958244,
+        "y1": 0.3813119368119673
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41210032444374234,
+        "y0": 0.3699907245058002,
+        "x1": 0.49023397607741015,
+        "y1": 0.3813119368119673
+      },
+      "text": "permutation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5260458054885365,
+        "y0": 0.363897093618759,
+        "x1": 0.9199916864532272,
+        "y1": 0.37647613371261446
+      },
+      "text": "In this paper, we study the learning of MU-MIMO precoder",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.38256901442402536,
+        "x1": 0.4902340758080576,
+        "y1": 0.3938902267301926
+      },
+      "text": "equivariant DNN is unable to learn the optimal precoder. We",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.37899177363424585,
+        "x1": 0.9199927834903493,
+        "y1": 0.3915708137281013
+      },
+      "text": "by investigating a stronger property than permutation equiv-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.3951485759080059,
+        "x1": 0.49023402594273385,
+        "y1": 0.406469788214173
+      },
+      "text": "proceed to develop a novel non-linear weighting process satisfying",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.39408772521548796,
+        "x1": 0.9199926837597018,
+        "y1": 0.4066667653093434
+      },
+      "text": "ariance, known as unitary equivariance. This property means",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.4077281373919863,
+        "x1": 0.1264062021292892,
+        "y1": 0.41904934969815344
+      },
+      "text": "unitary",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13478656843596815,
+        "y0": 0.4077281373919863,
+        "x1": 0.21507395326701645,
+        "y1": 0.41904934969815344
+      },
+      "text": "equivariance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2234396342358558,
+        "y0": 0.4077281373919863,
+        "x1": 0.2470569984585631,
+        "y1": 0.41904934969815344
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2554373896979039,
+        "y0": 0.4077281373919863,
+        "x1": 0.2831130931579989,
+        "y1": 0.41904934969815344
+      },
+      "text": "then",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2914934594646778,
+        "y0": 0.4077281373919863,
+        "x1": 0.35008272158554177,
+        "y1": 0.41904934969815344
+      },
+      "text": "construct",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3584630878922207,
+        "y0": 0.4077281373919863,
+        "x1": 0.3657885782079759,
+        "y1": 0.41904934969815344
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3741689445146548,
+        "y0": 0.4077281373919863,
+        "x1": 0.40345624537249797,
+        "y1": 0.41904934969815344
+      },
+      "text": "joint",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4118366116791769,
+        "y0": 0.4077281373919863,
+        "x1": 0.45823629541334765,
+        "y1": 0.41904934969815344
+      },
+      "text": "unitary",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4666166617200265,
+        "y0": 0.4077281373919863,
+        "x1": 0.4902340758080576,
+        "y1": 0.41904934969815344
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.40918240523097493,
+        "x1": 0.9199927834903493,
+        "y1": 0.4217614453248303
+      },
+      "text": "that if the channel matrix is multiplied by a unitary matrix,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.4203064273102115,
+        "x1": 0.15814021989410998,
+        "y1": 0.4316276396163786
+      },
+      "text": "permutation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16549501855388965,
+        "y0": 0.4203064273102115,
+        "x1": 0.23765110190397773,
+        "y1": 0.4316276396163786
+      },
+      "text": "equivariant",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24500588809742646,
+        "y0": 0.4203064273102115,
+        "x1": 0.28040266348645576,
+        "y1": 0.4316276396163786
+      },
+      "text": "DNN.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28777213501774407,
+        "y0": 0.4203064273102115,
+        "x1": 0.3561629251716963,
+        "y1": 0.4316276396163786
+      },
+      "text": "Simulation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36351768643248317,
+        "y0": 0.4203064273102115,
+        "x1": 0.4047601986554713,
+        "y1": 0.4316276396163786
+      },
+      "text": "results",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41211498484892006,
+        "y0": 0.4203064273102115,
+        "x1": 0.49023402594273385,
+        "y1": 0.4316276396163786
+      },
+      "text": "demonstrate",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.4242770852464618,
+        "x1": 0.5378000595990349,
+        "y1": 0.43685612534031726
+      },
+      "text": "then",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5465091879850899,
+        "y0": 0.4242770852464618,
+        "x1": 0.5664018119861877,
+        "y1": 0.43685612534031726
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5751109403722426,
+        "y0": 0.4242770852464618,
+        "x1": 0.62485883126851,
+        "y1": 0.43685612534031726
+      },
+      "text": "optimal",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6335517035590278,
+        "y0": 0.4242770852464618,
+        "x1": 0.6904948116127961,
+        "y1": 0.43685612534031726
+      },
+      "text": "precoder",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6992039399988511,
+        "y0": 0.4242770852464618,
+        "x1": 0.7245336794385723,
+        "y1": 0.43685612534031726
+      },
+      "text": "will",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7332428078246273,
+        "y0": 0.4242770852464618,
+        "x1": 0.7486099542356005,
+        "y1": 0.43685612534031726
+      },
+      "text": "be",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7573190826216555,
+        "y0": 0.4242770852464618,
+        "x1": 0.8242573457605699,
+        "y1": 0.43685612534031726
+      },
+      "text": "multiplied",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8329501681857638,
+        "y0": 0.4242770852464618,
+        "x1": 0.8492289025799121,
+        "y1": 0.43685612534031726
+      },
+      "text": "by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8579380808312909,
+        "y0": 0.4242770852464618,
+        "x1": 0.8778307546977124,
+        "y1": 0.43685612534031726
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8865398332184437,
+        "y0": 0.4242770852464618,
+        "x1": 0.9199926837597018,
+        "y1": 0.43685612534031726
+      },
+      "text": "same",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.43288598879419193,
+        "x1": 0.49023397607741015,
+        "y1": 0.44420720110035905
+      },
+      "text": "that the proposed DNN not only outperforms existing learning",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.44546555027817236,
+        "x1": 0.49023402594273385,
+        "y1": 0.4567867625843395
+      },
+      "text": "methods in learning performance and generalizability but also",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.43937176526194877,
+        "x1": 0.9199926837597018,
+        "y1": 0.4519508053558041
+      },
+      "text": "unitary matrix. The only instance of a unitary equivariant DNN",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.45804384019639754,
+        "x1": 0.2602136150684232,
+        "y1": 0.46936505250256466
+      },
+      "text": "reduces training complexity.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.4544664452774356,
+        "x1": 0.9199926837597018,
+        "y1": 0.467045485371291
+      },
+      "text": "design was introduced in [13]. However, it lacked a systematic",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628595713696449,
+        "y0": 0.47071807553069756,
+        "x1": 0.17488846124387256,
+        "y1": 0.4820392878368648
+      },
+      "text": "Index Terms",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17488073211869384,
+        "y0": 0.47071807553069756,
+        "x1": 0.49022849089179943,
+        "y1": 0.4820392878368648
+      },
+      "text": "—Precoding, deep learning, unitary equivariant,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.4695611252929225,
+        "x1": 0.5622181611902574,
+        "y1": 0.48214016538677795
+      },
+      "text": "analysis",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.571138918010238,
+        "y0": 0.4695611252929225,
+        "x1": 0.5846991445503983,
+        "y1": 0.48214016538677795
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5936199013703789,
+        "y0": 0.4695611252929225,
+        "x1": 0.6212449416615604,
+        "y1": 0.48214016538677795
+      },
+      "text": "how",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.630165698481541,
+        "y0": 0.4695611252929225,
+        "x1": 0.6500583224826388,
+        "y1": 0.48214016538677795
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6589628232070823,
+        "y0": 0.4695611252929225,
+        "x1": 0.7050805185355392,
+        "y1": 0.48214016538677795
+      },
+      "text": "unitary",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7140013252208436,
+        "y0": 0.4695611252929225,
+        "x1": 0.7963555030573427,
+        "y1": 0.48214016538677795
+      },
+      "text": "equivariance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8052762598773233,
+        "y0": 0.4695611252929225,
+        "x1": 0.8604287540211397,
+        "y1": 0.48214016538677795
+      },
+      "text": "property",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8693494609757966,
+        "y0": 0.4695611252929225,
+        "x1": 0.9199926837597018,
+        "y1": 0.48214016538677795
+      },
+      "text": "impacts",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.483297637014678,
+        "x1": 0.23579045838000728,
+        "y1": 0.4946188493208452
+      },
+      "text": "permutation equivariant",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.4846570768741646,
+        "x1": 0.9199927834903493,
+        "y1": 0.49723611696802006
+      },
+      "text": "DNN design, and its performance in precoder learning is un-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.49975175688965157,
+        "x1": 0.9199926837597018,
+        "y1": 0.5123307969835069
+      },
+      "text": "satisfactory, as to be demonstrated later. In this paper, we first",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22160132414375255,
+        "y0": 0.5099287141453136,
+        "x1": 0.23190576889935663,
+        "y1": 0.522507754239169
+      },
+      "text": "I.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24085908777573528,
+        "y0": 0.5099287141453136,
+        "x1": 0.34864682465596913,
+        "y1": 0.522507754239169
+      },
+      "text": "INTRODUCTION",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.5148464369051384,
+        "x1": 0.9199926837597018,
+        "y1": 0.5274254769989939
+      },
+      "text": "show that a DNN with a parameter sharing structure derived",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628596337012996,
+        "y0": 0.5295549847862937,
+        "x1": 0.12159943424798304,
+        "y1": 0.5421340248801492
+      },
+      "text": "The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13183876735712188,
+        "y0": 0.5295549847862937,
+        "x1": 0.21414418937334048,
+        "y1": 0.5421340248801492
+      },
+      "text": "optimization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22436722898794934,
+        "y0": 0.5295549847862937,
+        "x1": 0.23792743059544783,
+        "y1": 0.5421340248801492
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2481667761709176,
+        "y0": 0.5295549847862937,
+        "x1": 0.31508875828163296,
+        "y1": 0.5421340248801492
+      },
+      "text": "multi-user",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3253117978962418,
+        "y0": 0.5295549847862937,
+        "x1": 0.3985825083614175,
+        "y1": 0.5421340248801492
+      },
+      "text": "multi-input",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40882185393688725,
+        "y0": 0.5295549847862937,
+        "x1": 0.490231931599137,
+        "y1": 0.5421340248801492
+      },
+      "text": "multi-output",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.5299411169206254,
+        "x1": 0.5414139492059845,
+        "y1": 0.5425201570144808
+      },
+      "text": "from",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5502695819131689,
+        "y0": 0.5299411169206254,
+        "x1": 0.5701622059142667,
+        "y1": 0.5425201570144808
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5790341445823121,
+        "y0": 0.5299411169206254,
+        "x1": 0.6251518897760927,
+        "y1": 0.5425201570144808
+      },
+      "text": "unitary",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6340074726179534,
+        "y0": 0.5299411169206254,
+        "x1": 0.6575139862260008,
+        "y1": 0.5425201570144808
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.666369668798509,
+        "y0": 0.5299411169206254,
+        "x1": 0.7450448827805862,
+        "y1": 0.5425201570144808
+      },
+      "text": "permutation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7539005653530944,
+        "y0": 0.5299411169206254,
+        "x1": 0.8362547431895936,
+        "y1": 0.5425201570144808
+      },
+      "text": "equivariance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8451266818576388,
+        "y0": 0.5299411169206254,
+        "x1": 0.9002791261361316,
+        "y1": 0.5425201570144808
+      },
+      "text": "property",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9091347089779922,
+        "y0": 0.5299411169206254,
+        "x1": 0.9199926837597018,
+        "y1": 0.5425201570144808
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.5446496648017807,
+        "x1": 0.16861183814753114,
+        "y1": 0.557228704895636
+      },
+      "text": "(MU-MIMO)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17903023763419756,
+        "y0": 0.5446496648017807,
+        "x1": 0.235973333221635,
+        "y1": 0.557228704895636
+      },
+      "text": "precoder",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2464080262028314,
+        "y0": 0.5446496648017807,
+        "x1": 0.25726597605187906,
+        "y1": 0.557228704895636
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2677006441004136,
+        "y0": 0.5446496648017807,
+        "x1": 0.2749284233143127,
+        "y1": 0.557228704895636
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2853630913628472,
+        "y0": 0.5446496648017807,
+        "x1": 0.36131979749093646,
+        "y1": 0.557228704895636
+      },
+      "text": "challenging",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37173818451127194,
+        "y0": 0.5446496648017807,
+        "x1": 0.43006498050066383,
+        "y1": 0.557228704895636
+      },
+      "text": "problem.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4404996984145221,
+        "y0": 0.5446496648017807,
+        "x1": 0.4902312833499285,
+        "y1": 0.557228704895636
+      },
+      "text": "Various",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.5450357969361121,
+        "x1": 0.9199926837597018,
+        "y1": 0.5576148370299676
+      },
+      "text": "unable to learn the optimal precoder. To solve the problem, we",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.5597456163830228,
+        "x1": 0.4902312397177703,
+        "y1": 0.5723246564768781
+      },
+      "text": "numerical algorithms have been developed, e.g., the weighted",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.5601317485173543,
+        "x1": 0.9199927834903493,
+        "y1": 0.5727107886112097
+      },
+      "text": "then develop a non-linear weighting process that satisfies the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.5748402963985096,
+        "x1": 0.490231289583094,
+        "y1": 0.587419336492365
+      },
+      "text": "minimum mean square error (WMMSE) algorithm [1], which,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.5752264285328412,
+        "x1": 0.9199927834903493,
+        "y1": 0.5878054686266967
+      },
+      "text": "unitary equivariance, and finally construct a joint unitary and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.5899349764139965,
+        "x1": 0.41383499569363064,
+        "y1": 0.602514016507852
+      },
+      "text": "however, are with high computational complexity.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.5903211085483282,
+        "x1": 0.9199926837597018,
+        "y1": 0.6029001486421836
+      },
+      "text": "permutation equivariant neural network (UPNN) for precoder",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628596337012996,
+        "y0": 0.6051243688120986,
+        "x1": 0.490231944065468,
+        "y1": 0.6177034089059541
+      },
+      "text": "Deep learning offers a promising solution for optimization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.605415788563815,
+        "x1": 0.9199927834903493,
+        "y1": 0.6179948286576704
+      },
+      "text": "learning. Simulation results demonstrate the advantages of the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.6202190488275856,
+        "x1": 0.490231289583094,
+        "y1": 0.632798088921441
+      },
+      "text": "due to its low inference complexity. In [2], a fully-connected",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.6205104685793019,
+        "x1": 0.5694459404041564,
+        "y1": 0.6330895086731574
+      },
+      "text": "proposed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5779271842607485,
+        "y0": 0.6205104685793019,
+        "x1": 0.6222379597183926,
+        "y1": 0.6330895086731574
+      },
+      "text": "UPNN",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6307028976141238,
+        "y0": 0.6205104685793019,
+        "x1": 0.6433677922666462,
+        "y1": 0.6330895086731574
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6518327301623774,
+        "y0": 0.6205104685793019,
+        "x1": 0.7340892716950062,
+        "y1": 0.6330895086731574
+      },
+      "text": "performance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.742570565416922,
+        "y0": 0.6205104685793019,
+        "x1": 0.8288968154807496,
+        "y1": 0.6330895086731574
+      },
+      "text": "improvement",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.837378009472018,
+        "y0": 0.6205104685793019,
+        "x1": 0.8608845230800654,
+        "y1": 0.6330895086731574
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8693494609757966,
+        "y0": 0.6205104685793019,
+        "x1": 0.9199926837597018,
+        "y1": 0.6330895086731574
+      },
+      "text": "training",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.6353150004088277,
+        "x1": 0.4902311898524465,
+        "y1": 0.6478940405026831
+      },
+      "text": "deep neural network (DNN) was trained to approximate the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.6356051485947889,
+        "x1": 0.6540303947099673,
+        "y1": 0.6481841886886442
+      },
+      "text": "complexity reduction.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.6504096804243146,
+        "x1": 0.16226312225940182,
+        "y1": 0.6629887205181699
+      },
+      "text": "performance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17131411483864378,
+        "y0": 0.6504096804243146,
+        "x1": 0.18487431644614227,
+        "y1": 0.6629887205181699
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1939252965590533,
+        "y0": 0.6504096804243146,
+        "x1": 0.2572333890628191,
+        "y1": 0.6629887205181699
+      },
+      "text": "WMMSE",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26628439410839205,
+        "y0": 0.6504096804243146,
+        "x1": 0.2952280480877247,
+        "y1": 0.6629887205181699
+      },
+      "text": "with",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30427900326797386,
+        "y0": 0.6504096804243146,
+        "x1": 0.3847774680143867,
+        "y1": 0.6629887205181699
+      },
+      "text": "significantly",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3938284481272978,
+        "y0": 0.6504096804243146,
+        "x1": 0.44535069683798,
+        "y1": 0.6629887205181699
+      },
+      "text": "reduced",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4544017018835529,
+        "y0": 0.6504096804243146,
+        "x1": 0.4902312833499285,
+        "y1": 0.6629887205181699
+      },
+      "text": "infer-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.6655043797059492,
+        "x1": 0.490231289583094,
+        "y1": 0.6780834197998047
+      },
+      "text": "ence complexity. However, such DNNs often involve a large",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5186912187563828,
+        "y0": 0.6608589454130693,
+        "x1": 0.5352304496017157,
+        "y1": 0.6734379855069248
+      },
+      "text": "II.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5441837684780944,
+        "y0": 0.6608589454130693,
+        "x1": 0.9110804539100796,
+        "y1": 0.6734379855069248
+      },
+      "text": "EQUIVARIANCE PROPERTY OF A PRECODING POLICY",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.680599078987584,
+        "x1": 0.490231289583094,
+        "y1": 0.6931781190814394
+      },
+      "text": "number of learnable parameters, requiring extensive training",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5260457057578891,
+        "y0": 0.681092523565196,
+        "x1": 0.9199916864532272,
+        "y1": 0.6936715636590515
+      },
+      "text": "Consider a downlink MU-MIMO system where a base sta-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.6956937782692187,
+        "x1": 0.10895018484078202,
+        "y1": 0.7082728183630741
+      },
+      "text": "time",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1173337425281799,
+        "y0": 0.6956937782692187,
+        "x1": 0.14084026860255822,
+        "y1": 0.7082728183630741
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14920754526175706,
+        "y0": 0.6956937782692187,
+        "x1": 0.201006558985492,
+        "y1": 0.7082728183630741
+      },
+      "text": "massive",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20939012913922078,
+        "y0": 0.6956937782692187,
+        "x1": 0.26003335192312604,
+        "y1": 0.7082728183630741
+      },
+      "text": "training",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.268416884677862,
+        "y0": 0.6956937782692187,
+        "x1": 0.3249367358637791,
+        "y1": 0.7082728183630741
+      },
+      "text": "samples.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3333040125229779,
+        "y0": 0.6956937782692187,
+        "x1": 0.42190930734272875,
+        "y1": 0.7082728183630741
+      },
+      "text": "Incorporating",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43029286503012665,
+        "y0": 0.6956937782692187,
+        "x1": 0.4902312334846048,
+        "y1": 0.7082728183630741
+      },
+      "text": "inductive",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679188048917,
+        "y0": 0.6961872228468307,
+        "x1": 0.6707159802804585,
+        "y1": 0.7087662629406861
+      },
+      "text": "tion (BS) equipped with",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6761420754825368,
+        "y0": 0.6961872228468307,
+        "x1": 0.6892139210420496,
+        "y1": 0.7087662629406861
+      },
+      "text": "N",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6964149724424274,
+        "y0": 0.6961872228468307,
+        "x1": 0.7992316351996528,
+        "y1": 0.7087662629406861
+      },
+      "text": "antennas serves",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8046486050474877,
+        "y0": 0.6961872228468307,
+        "x1": 0.818469278173509,
+        "y1": 0.7087662629406861
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8250570858226103,
+        "y0": 0.6961872228468307,
+        "x1": 0.9199947781032987,
+        "y1": 0.7087662629406861
+      },
+      "text": "single-antenna",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "arXiv:2503.09398v1  [eess.SP]  12 Mar 2025",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.7107897298504608,
+        "x1": 0.490231289583094,
+        "y1": 0.7233687699443162
+      },
+      "text": "biases into DNNs architecture with mathematical properties",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509767868939568,
+        "y0": 0.7112819221284654,
+        "x1": 0.8335344401839512,
+        "y1": 0.7238609622223209
+      },
+      "text": "users. The channel matrix is denoted as H = [h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.833548901127834,
+        "y0": 0.7169432790592463,
+        "x1": 0.8400327395769506,
+        "y1": 0.7257485823197798
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8408512290007149,
+        "y0": 0.7112819221284654,
+        "x1": 0.8742552115247141,
+        "y1": 0.7238609622223209
+      },
+      "text": ",...,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8770260281032987,
+        "y0": 0.7112819221284654,
+        "x1": 0.8874118779998978,
+        "y1": 0.7238609622223209
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8874263389437806,
+        "y0": 0.7169432790592463,
+        "x1": 0.8983542249093648,
+        "y1": 0.7257485823197798
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.899977042004953,
+        "y0": 0.7112819221284654,
+        "x1": 0.9044862634995404,
+        "y1": 0.7238609622223209
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9091420890459048,
+        "y0": 0.7112819221284654,
+        "x1": 0.9199837080014297,
+        "y1": 0.7238609622223209
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.7258844291320955,
+        "x1": 0.4902312397177703,
+        "y1": 0.7384634692259509
+      },
+      "text": "of the policies being learned is crucial for enhancing learning",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679188048917,
+        "y0": 0.7263766214101002,
+        "x1": 0.5215211756089154,
+        "y1": 0.7389556615039556
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5215244667202819,
+        "y0": 0.7255859573682149,
+        "x1": 0.5541598750095741,
+        "y1": 0.7343912606287484
+      },
+      "text": "N ×K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5557826422398386,
+        "y0": 0.7263766214101002,
+        "x1": 0.6180933534709456,
+        "y1": 0.7389556615039556
+      },
+      "text": ", where h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6181078144148284,
+        "y0": 0.732037978340881,
+        "x1": 0.6250246334699244,
+        "y1": 0.7408432816014145
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.630640516094133,
+        "y0": 0.7263766214101002,
+        "x1": 0.6414821849149817,
+        "y1": 0.7389556615039556
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6460146935157527,
+        "y0": 0.7263766214101002,
+        "x1": 0.6577679503197763,
+        "y1": 0.7389556615039556
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6577712414311427,
+        "y0": 0.7255859573682149,
+        "x1": 0.6794683917675143,
+        "y1": 0.7343912606287484
+      },
+      "text": "N ×",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.679478763754851,
+        "y0": 0.7255859573682149,
+        "x1": 0.6859625523386438,
+        "y1": 0.7343912606287484
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6908251693825317,
+        "y0": 0.7263766214101002,
+        "x1": 0.8735379487081291,
+        "y1": 0.7389556615039556
+      },
+      "text": "is the channel vector of user",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8775800318499796,
+        "y0": 0.7263766214101002,
+        "x1": 0.8860449697457108,
+        "y1": 0.7389556615039556
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8865669599545547,
+        "y0": 0.7263766214101002,
+        "x1": 0.9199872983047386,
+        "y1": 0.7389556615039556
+      },
+      "text": ". The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.7409791284137301,
+        "x1": 0.490231289583094,
+        "y1": 0.7535581685075856
+      },
+      "text": "efficiency [3,4]. A well-known example is convolutional neural",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679188048917,
+        "y0": 0.7414725729913423,
+        "x1": 0.783902037377451,
+        "y1": 0.7540516130851977
+      },
+      "text": "precoding matrix is denoted as V = [v₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7847221723568985,
+        "y0": 0.7414725729913423,
+        "x1": 0.8181262047462214,
+        "y1": 0.7540516130851977
+      },
+      "text": ",...,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8208970213248059,
+        "y0": 0.7414725729913423,
+        "x1": 0.8307619281843597,
+        "y1": 0.7540516130851977
+      },
+      "text": "v",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8307777354919833,
+        "y0": 0.7471326776225158,
+        "x1": 0.8417056214575674,
+        "y1": 0.7559379808830493
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8433284385531556,
+        "y0": 0.7414725729913423,
+        "x1": 0.8478376600477431,
+        "y1": 0.7540516130851977
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8534525952308006,
+        "y0": 0.7414725729913423,
+        "x1": 0.8642942141863256,
+        "y1": 0.7540516130851977
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8699101466758579,
+        "y0": 0.7414725729913423,
+        "x1": 0.8816634034798816,
+        "y1": 0.7540516130851977
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8816666945912479,
+        "y0": 0.7406806566498496,
+        "x1": 0.9143020530152165,
+        "y1": 0.7494859599103831
+      },
+      "text": "N ×K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9159248701108047,
+        "y0": 0.7414725729913423,
+        "x1": 0.9199945786420036,
+        "y1": 0.7540516130851977
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.7560738276953649,
+        "x1": 0.49023133944841774,
+        "y1": 0.7686528677892204
+      },
+      "text": "network (CNN), which leverages the property of translational",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.7565672722729769,
+        "x1": 0.5670904521069495,
+        "y1": 0.7691463123668324
+      },
+      "text": "where v",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5671046138588899,
+        "y0": 0.7622273769041504,
+        "x1": 0.5740214329139859,
+        "y1": 0.771032680164684
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5833235597298816,
+        "y0": 0.7565672722729769,
+        "x1": 0.5941652285507302,
+        "y1": 0.7691463123668324
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.602384031208512,
+        "y0": 0.7565672722729769,
+        "x1": 0.6141372880125358,
+        "y1": 0.7691463123668324
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6141405791239022,
+        "y0": 0.7557753559314844,
+        "x1": 0.6358393251506331,
+        "y1": 0.7645806591920179
+      },
+      "text": "N ×",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6358481014476103,
+        "y0": 0.7557753559314844,
+        "x1": 0.6423318900314032,
+        "y1": 0.7645806591920179
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6508399115668403,
+        "y0": 0.7565672722729769,
+        "x1": 0.8662404577716504,
+        "y1": 0.7691463123668324
+      },
+      "text": "is the precoding vector of user",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8739346772237541,
+        "y0": 0.7565672722729769,
+        "x1": 0.8823996151194853,
+        "y1": 0.7691463123668324
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8829232010186887,
+        "y0": 0.7565672722729769,
+        "x1": 0.9199898913015727,
+        "y1": 0.7691463123668324
+      },
+      "text": ". The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.7711685269769997,
+        "x1": 0.14674945906096815,
+        "y1": 0.783747567070855
+      },
+      "text": "invariance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1555399925880183,
+        "y0": 0.7711685269769997,
+        "x1": 0.1790465186623966,
+        "y1": 0.783747567070855
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18785332075131486,
+        "y0": 0.7711685269769997,
+        "x1": 0.20955288955588747,
+        "y1": 0.783747567070855
+      },
+      "text": "has",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21834344801559946,
+        "y0": 0.7711685269769997,
+        "x1": 0.2988418878293505,
+        "y1": 0.783747567070855
+      },
+      "text": "significantly",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3076487023845997,
+        "y0": 0.7711685269769997,
+        "x1": 0.3700451819725286,
+        "y1": 0.783747567070855
+      },
+      "text": "promoted",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37883571549957873,
+        "y0": 0.7711685269769997,
+        "x1": 0.3987283644333384,
+        "y1": 0.783747567070855
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4075188979603886,
+        "y0": 0.7711685269769997,
+        "x1": 0.43646250207439746,
+        "y1": 0.783747567070855
+      },
+      "text": "field",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4452693664949704,
+        "y0": 0.7711685269769997,
+        "x1": 0.4588295930351307,
+        "y1": 0.783747567070855
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.467620101629519,
+        "y0": 0.7711685269769997,
+        "x1": 0.4902312833499285,
+        "y1": 0.783747567070855
+      },
+      "text": "im-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.7716619715546117,
+        "x1": 0.9199926837597018,
+        "y1": 0.784241011648467
+      },
+      "text": "precoder optimization problem that maximizes the sum rate",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.7862632262586343,
+        "x1": 0.21119708017586103,
+        "y1": 0.7988422663524898
+      },
+      "text": "age recognition [5].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.7867566708362463,
+        "x1": 0.7669072369344874,
+        "y1": 0.7993357109301018
+      },
+      "text": "subject to the total power constraint is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628596337012996,
+        "y0": 0.8014538902224917,
+        "x1": 0.490231944065468,
+        "y1": 0.814032930316347
+      },
+      "text": "Recent studies have demonstrated the importance of inte-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.675493477216733,
+        "y0": 0.8030079169706865,
+        "x1": 0.6989999908247805,
+        "y1": 0.8155869570645419
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6990081687378727,
+        "y0": 0.8086326682206356,
+        "x1": 0.7099360547034569,
+        "y1": 0.8174379714811691
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.8165485895041263,
+        "x1": 0.490231289583094,
+        "y1": 0.8291276295979818
+      },
+      "text": "grating permutation equivariance properties to enhance learn-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6262058931238511,
+        "y0": 0.8149574176229611,
+        "x1": 0.6564843670215482,
+        "y1": 0.8275364577168166
+      },
+      "text": "max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6990081687378727,
+        "y0": 0.8262791302469041,
+        "x1": 0.7059249877929688,
+        "y1": 0.8350844335074377
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7062025880501941,
+        "y0": 0.8262791302469041,
+        "x1": 0.7226798861634498,
+        "y1": 0.8350844335074377
+      },
+      "text": "=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.726212395562066,
+        "y0": 0.8149574176229611,
+        "x1": 0.7385679756114686,
+        "y1": 0.8275364577168166
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.738573510662403,
+        "y0": 0.8206187745537421,
+        "x1": 0.745490329717499,
+        "y1": 0.8294240778142756
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8937859628714767,
+        "y0": 0.8149574176229611,
+        "x1": 0.9199947781032987,
+        "y1": 0.8275364577168166
+      },
+      "text": "(1a)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6357385971966911,
+        "y0": 0.8268700422662677,
+        "x1": 0.6467576369740604,
+        "y1": 0.8356753455268012
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.831643288785761,
+        "x1": 0.10081080517737694,
+        "y1": 0.8442223288796165
+      },
+      "text": "ing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10965016932269327,
+        "y0": 0.831643288785761,
+        "x1": 0.17318615882225286,
+        "y1": 0.8442223288796165
+      },
+      "text": "efficiency",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1820255229675692,
+        "y0": 0.831643288785761,
+        "x1": 0.20100654651916106,
+        "y1": 0.8442223288796165
+      },
+      "text": "for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20984592313080833,
+        "y0": 0.831643288785761,
+        "x1": 0.2631914226058262,
+        "y1": 0.8442223288796165
+      },
+      "text": "wireless",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27201449325661253,
+        "y0": 0.831643288785761,
+        "x1": 0.3796333861506842,
+        "y1": 0.8442223288796165
+      },
+      "text": "communications",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3884727378296696,
+        "y0": 0.831643288785761,
+        "x1": 0.43594160890267564,
+        "y1": 0.8442223288796165
+      },
+      "text": "[6–12].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44478098551432294,
+        "y0": 0.831643288785761,
+        "x1": 0.45834121205448325,
+        "y1": 0.8442223288796165
+      },
+      "text": "In",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4671805388008068,
+        "y0": 0.831643288785761,
+        "x1": 0.4902312833499285,
+        "y1": 0.8442223288796165
+      },
+      "text": "[8],",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7141454360064339,
+        "y0": 0.8379180220642475,
+        "x1": 0.7237514919704862,
+        "y1": 0.846723325324781
+      },
+      "text": "H",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6347058863421671,
+        "y0": 0.8393387276716906,
+        "x1": 0.6411197138767616,
+        "y1": 0.8519177677655461
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6411274430019404,
+        "y0": 0.8393387276716906,
+        "x1": 0.6456366644965278,
+        "y1": 0.8519177677655461
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6456486820395476,
+        "y0": 0.8393387276716906,
+        "x1": 0.6519648234049479,
+        "y1": 0.8519177677655461
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6519803813859528,
+        "y0": 0.8393387276716906,
+        "x1": 0.6564896028805403,
+        "y1": 0.8519177677655461
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6727810529322406,
+        "y0": 0.8393387276716906,
+        "x1": 0.6895481683070364,
+        "y1": 0.8519177677655461
+      },
+      "text": "Tr",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6997320137771905,
+        "y0": 0.8393387276716906,
+        "x1": 0.7138782576018688,
+        "y1": 0.8519177677655461
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7245669894748263,
+        "y0": 0.8393387276716906,
+        "x1": 0.7387132332995047,
+        "y1": 0.8519177677655461
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7509640463037428,
+        "y0": 0.8393387276716906,
+        "x1": 0.7785980124878727,
+        "y1": 0.8519177677655461
+      },
+      "text": "≤ P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7785980124878727,
+        "y0": 0.8449988323028641,
+        "x1": 0.7982203664343341,
+        "y1": 0.8538041355633976
+      },
+      "text": "max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7990342682483149,
+        "y0": 0.8393387276716906,
+        "x1": 0.8035434897429024,
+        "y1": 0.8519177677655461
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.892874125561683,
+        "y0": 0.8393387276716906,
+        "x1": 0.9199945786420036,
+        "y1": 0.8519177677655461
+      },
+      "text": "(1b)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.8467379880673958,
+        "x1": 0.490231289583094,
+        "y1": 0.8593170281612512
+      },
+      "text": "the mismatch between the inductive bias of CNNs and the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.8618326873490305,
+        "x1": 0.15868178224251941,
+        "y1": 0.8744117274428859
+      },
+      "text": "permutation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16784672955282373,
+        "y0": 0.8618326873490305,
+        "x1": 0.2502009821873085,
+        "y1": 0.8744117274428859
+      },
+      "text": "equivariance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25938218559315,
+        "y0": 0.8618326873490305,
+        "x1": 0.31453462987164266,
+        "y1": 0.8744117274428859
+      },
+      "text": "property",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32371585821014603,
+        "y0": 0.8618326873490305,
+        "x1": 0.3372760598176445,
+        "y1": 0.8744117274428859
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34644100712794884,
+        "y0": 0.8618326873490305,
+        "x1": 0.36633365606170853,
+        "y1": 0.8744117274428859
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3755148844002119,
+        "y0": 0.8618326873490305,
+        "x1": 0.44061364067925346,
+        "y1": 0.8744117274428859
+      },
+      "text": "precoding",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4497785879895578,
+        "y0": 0.8618326873490305,
+        "x1": 0.4902312833499285,
+        "y1": 0.8744117274428859
+      },
+      "text": "policy",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7024231954337725,
+        "y0": 0.8636076582802666,
+        "x1": 0.7069324169283598,
+        "y1": 0.8761866983741221
+      },
+      "text": "|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7069460800270629,
+        "y0": 0.8664369492819814,
+        "x1": 0.7151277828839869,
+        "y1": 0.875242252542515
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7151307249380872,
+        "y0": 0.8651572821116207,
+        "x1": 0.7231073317184947,
+        "y1": 0.8714468021585484
+      },
+      "text": "H",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7151307249380872,
+        "y0": 0.8714691514920707,
+        "x1": 0.721300361982358,
+        "y1": 0.8777586715389983
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7239248238357843,
+        "y0": 0.8664369492819814,
+        "x1": 0.7316962846743515,
+        "y1": 0.875242252542515
+      },
+      "text": "v",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7317058588165084,
+        "y0": 0.8702873274533436,
+        "x1": 0.7378754958607792,
+        "y1": 0.8765768475002713
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7388218898399204,
+        "y0": 0.8636076582802666,
+        "x1": 0.7433311113345078,
+        "y1": 0.8761866983741221
+      },
+      "text": "|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7433431288775276,
+        "y0": 0.8635726799868574,
+        "x1": 0.7488779304853452,
+        "y1": 0.8698622000337851
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.8769286485633465,
+        "x1": 0.1051572288563049,
+        "y1": 0.8895076886572019
+      },
+      "text": "was",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11401287402982026,
+        "y0": 0.8769286485633465,
+        "x1": 0.1795837177949793,
+        "y1": 0.8895076886572019
+      },
+      "text": "identified,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1884393629684947,
+        "y0": 0.8769286485633465,
+        "x1": 0.21194587657654207,
+        "y1": 0.8895076886572019
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22080153421638837,
+        "y0": 0.8769286485633465,
+        "x1": 0.23616868062736163,
+        "y1": 0.8895076886572019
+      },
+      "text": "an",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24504061929540696,
+        "y0": 0.8769286485633465,
+        "x1": 0.33273430119932085,
+        "y1": 0.8895076886572019
+      },
+      "text": "edge-updated",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34158990897384345,
+        "y0": 0.8769286485633465,
+        "x1": 0.37865664912205116,
+        "y1": 0.8895076886572019
+      },
+      "text": "graph",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3875122818292356,
+        "y0": 0.8769286485633465,
+        "x1": 0.42819293651705476,
+        "y1": 0.8895076886572019
+      },
+      "text": "neural",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4370485692242392,
+        "y0": 0.8769286485633465,
+        "x1": 0.4902312833499285,
+        "y1": 0.8895076886572019
+      },
+      "text": "network",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679188048917,
+        "y0": 0.8706518628380515,
+        "x1": 0.5495369107115502,
+        "y1": 0.883230902931907
+      },
+      "text": "where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5552842383291207,
+        "y0": 0.8706518628380515,
+        "x1": 0.5676398183785233,
+        "y1": 0.883230902931907
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5676453534294578,
+        "y0": 0.876311967469225,
+        "x1": 0.5745621724845538,
+        "y1": 0.8851172707297585
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5802695579778135,
+        "y0": 0.8706518628380515,
+        "x1": 0.6250556497012868,
+        "y1": 0.883230902931907
+      },
+      "text": "= log₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6383104511335784,
+        "y0": 0.8706518532049776,
+        "x1": 0.6627611646465227,
+        "y1": 0.8832308932988331
+      },
+      "text": "1 +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6683742049472784,
+        "y0": 0.8748651472004977,
+        "x1": 0.6820483238868464,
+        "y1": 0.8836704504610312
+      },
+      "text": "P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6820523131127451,
+        "y0": 0.8868152740025761,
+        "x1": 0.6920474183325674,
+        "y1": 0.8931047940495038
+      },
+      "text": "m̸",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6920474183325674,
+        "y0": 0.8868152740025761,
+        "x1": 0.7004065420113358,
+        "y1": 0.8931047940495038
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.700413423426011,
+        "y0": 0.8868152740025761,
+        "x1": 0.7065830604702819,
+        "y1": 0.8931047940495038
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7097532982919731,
+        "y0": 0.8786381242251156,
+        "x1": 0.7142625197865604,
+        "y1": 0.8912171643189709
+      },
+      "text": "|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7142745373295802,
+        "y0": 0.8814686771595117,
+        "x1": 0.7224562401865043,
+        "y1": 0.8902739804200451
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7224591822406046,
+        "y0": 0.880951631550837,
+        "x1": 0.730435789021012,
+        "y1": 0.8872411515977647
+      },
+      "text": "H",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7224591822406046,
+        "y0": 0.8870299181552849,
+        "x1": 0.7286288192848754,
+        "y1": 0.8933194382022126
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7312549266939848,
+        "y0": 0.8814686771595117,
+        "x1": 0.7390263875325521,
+        "y1": 0.8902739804200451
+      },
+      "text": "v",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7390343161190257,
+        "y0": 0.8852420389050185,
+        "x1": 0.7490294712041717,
+        "y1": 0.8915315589519462
+      },
+      "text": "m",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7498447692472171,
+        "y0": 0.8786381242251156,
+        "x1": 0.7543539907418045,
+        "y1": 0.8912171643189709
+      },
+      "text": "|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7543660082848244,
+        "y0": 0.8786031459317063,
+        "x1": 0.759900809892642,
+        "y1": 0.884892665978634
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7607189502591402,
+        "y0": 0.8814686771595117,
+        "x1": 0.7707124597886029,
+        "y1": 0.8902739804200451
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7707124099232792,
+        "y0": 0.8814686771595117,
+        "x1": 0.776626487183415,
+        "y1": 0.8902739804200451
+      },
+      "text": "δ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7766290801802492,
+        "y0": 0.8870299181552849,
+        "x1": 0.78279871722452,
+        "y1": 0.8933194382022126
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7770424637140012,
+        "y0": 0.880951631550837,
+        "x1": 0.7825772653218188,
+        "y1": 0.8872411515977647
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8011699003331801,
+        "y0": 0.8706507550345527,
+        "x1": 0.9199884950725081,
+        "y1": 0.883229795128408
+      },
+      "text": "is the data rate of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065495609458,
+        "y0": 0.8920233478449812,
+        "x1": 0.4902312397177703,
+        "y1": 0.9046023879388366
+      },
+      "text": "(GNN) was proposed to leverage the permutation equivariance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097663231145323,
+        "y0": 0.8920232322480943,
+        "x1": 0.5368867263295292,
+        "y1": 0.9046022723419498
+      },
+      "text": "user",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5410964068244485,
+        "y0": 0.8920232322480943,
+        "x1": 0.5495613447201797,
+        "y1": 0.9046022723419498
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5500849804847069,
+        "y0": 0.8920232322480943,
+        "x1": 0.5541546890159058,
+        "y1": 0.9046022723419498
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5583643695108251,
+        "y0": 0.8920232322480943,
+        "x1": 0.5655921487247243,
+        "y1": 0.9046022723419498
+      },
+      "text": "δ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5655996285232843,
+        "y0": 0.8993588366893807,
+        "x1": 0.5725164475783803,
+        "y1": 0.9081641399499142
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5662156647326899,
+        "y0": 0.8912313159066018,
+        "x1": 0.5726994533164829,
+        "y1": 0.9000366191671352
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5778185775856567,
+        "y0": 0.8920232322480943,
+        "x1": 0.7269645641052646,
+        "y1": 0.9046022723419498
+      },
+      "text": "is the noise power, and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.731181325476154,
+        "y0": 0.8920232322480943,
+        "x1": 0.7416322994855494,
+        "y1": 0.9046022723419498
+      },
+      "text": "P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7416322994855494,
+        "y0": 0.8976833368792678,
+        "x1": 0.7612546534320108,
+        "y1": 0.9064886401398013
+      },
+      "text": "max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7662777370876737,
+        "y0": 0.8920232322480943,
+        "x1": 0.919998069214665,
+        "y1": 0.9046022723419498
+      },
+      "text": "is the maximal transmit",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.03245709999464452,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": "1/324 item không có bề rộng (width=0) — giữ chữ, bỏ hộp",
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

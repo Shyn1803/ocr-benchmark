@@ -1,0 +1,742 @@
+{
+  "schema_version": 2,
+  "engine": "opendataloader",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.04407_pg3",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "3\n\n![](<2503.04407_pg3_images/imageFile1.png>)\n\n<table>\n  <tr>\n    <td> </td>\n    <td> </td>\n    <td> </td>\n    <td> </td>\n    <td> </td>\n    <td> </td>\n    <td> </td>\n    <td colspan=\"2\"> </td>\n    <td> </td>\n    <td colspan=\"2\"> </td>\n    <td> </td>\n    <td colspan=\"2\"> </td>\n    <td> </td>\n  </tr>\n  <tr>\n    <td colspan=\"8\">M M Movable Antennas M<br><br></td>\n    <td colspan=\"3\"> </td>\n    <td colspan=\"3\">Fixed Antennas</td>\n    <td colspan=\"2\"> </td>\n  </tr>\n</table>\n\n\nRF Chain RF Chain RF Chain RF Chain RF Chain\n\nRF Chain\n\nRadar Signal Processing\n\nRadar Signal Processing\n\nTransmitter Receiver\n\nFig. 1. Proposed MA-enabled FH-MIMO radar system.\n\nachieve improved performance in various tasks, e.g., if better resolution of target angles (velocity or distance) is required, the antenna positions can be adjusted to improve the performance of the ambiguity function in the angular (Doppler or delay) domain.\n\nThe remainder of this paper is organized as follows. Section II describes the considered MA-enabled FH-MIMO radar system model and the corresponding ambiguity function. In Section III, we analyze the relationship between the ambiguity function and the antenna positions. In Section IV, we propose a low complexity algorithm to solve the antenna position optimization problem. Section V provides the numerical results and discussions. Finally, we conclude this paper in Section VI.\n\nNotations: Scalars, vectors and matrices are respectively denoted by lower/upper case, boldface lower case and boldface upper case letters. For an arbitrary matrix A, AT, A∗ and AH denote its transpose, conjugate and conjugate transpose respectively. · denotes the Euclidean norm of a complex vector, and |·| denotes the absolute value of a complex scalar. ⌈·⌉ represents the round-up operator. For a complex number x, ℜ{x} denotes its real part and ∠x denotes its angle. I and 0 denote an identity matrix and an all-zero vector with appropriate dimensions, respectively. Cn×m denotes the space of n × m complex matrices.\n\nII. SIGNAL MODEL A. MA-Enabled FH-MIMO Radar System\n\nAs shown in Fig. 1, we consider an MA-enabled FHMIMO radar system equipped with a colocated transmitter and receiver, which are comprised of linear arrays with Mt and Mr antennas, respectively. Since the transmit antenna array is the primary factor that affects the ambiguity function, we assume that the transmit antennas are movable while the receive antenna positions are ﬁxed with half wavelength spacing for ease of analysis [8]. Each MA is attached to an electrical machinery, such that the interval between two adjacent antennas can be dynamically adjusted [26]. Let dt,i (dr,i), 1 ≤ i ≤ Mt − 1 (1 ≤ i ≤ Mr − 1) denote the interval between the (i − 1)-th and i-th transmit (receive) antenna and deﬁne dt,0 = 0, dr,0 = 0, dr,i = λ2,i ∈ Mr\n\n![](<2503.04407_pg3_images/imageFile2.png>)\n\n[1,2,··· ,Mr − 1]. Then, the transmit antenna position vector can be denoted by xt = [xt,0,xt,1,··· ,xt,M\n\nt−1]T, where\n\nxt,0 = 0 and xt,m = mi=0 dt,i,m ∈ Mt [1,2,··· ,Mt−1]. Similarly, the receive antenna position vector can be expressed\n\nr−1]T, where xr,0 = 0 and\n\nas xr = [xr,0,xr,1,··· ,xr,M\n\nxr,m = λ2m,m ∈ Mr. Accordingly, the steering vectors of the transmit and receive antenna arrays are respectively\n\n![](<2503.04407_pg3_images/imageFile3.png>)\n\ngiven by a(xt,α) = [1,ej2λπxt,1 sinα,··· ,ej2λπxt,Mt−1 sinα]T and b(xr,α) = [1,ejπsinα,··· ,ejπ(M\n\n![](<2503.04407_pg3_images/imageFile4.png>)\n\n![](<2503.04407_pg3_images/imageFile5.png>)\n\nr−1) sinα]T, where λ denotes the signal wavelength and α is the steering angle of the array.\n\nConsider a target at (ˆτ,v,θˆ ), where τˆ denotes the delay corresponding to the target range, vˆ is the Doppler frequency of the target and θ ∈ [−π2, π2] represents the direction angle of the target. Then, the received signal can be represented by\n\n![](<2503.04407_pg3_images/imageFile6.png>)\n\n![](<2503.04407_pg3_images/imageFile7.png>)\n\nyτ,ˆ v,θˆ (t) = a(xt, θ)Tφ(t − τˆ)b(xr, θ)ej2πvtˆ + n(t), (1)\n\nt−1(t)]T, n(t) = [n0(t),n1(t),··· ,nM\n\nwhere φ(t) = [φ0(t),φ1(t),··· ,φM\n\nr−1(t)]T, φm(t) represents the FH waveform transmitted from the m-th transmit antenna and nm(t) denotes the Gaussian noise received by the m-th receive antenna.\n\nAs the FH waveform, the pulse width Tw is divided into Q sub-pulses of width ∆t = Tw/Q each [35]. Therefore, the m-th FH waveform during each pulse can be further expressed as [8]\n\nQ−1\n\nej2πcm,q∆fts(t − q∆t), (2)\n\nφm(t) =\n\nq=0\n\nwhere cm,q ∈ K is the FH code with K {1,2,··· ,K} being the set of available hops, ∆f represents the frequency hopping interval and s(t) represents the pulse function which is deﬁned as\n\n1, 0 < t < ∆t, 0, otherwise.\n\ns(t) =\n\n(3)\n\nNote that the waveforms in an FH-MIMO radar system are required to be orthogonal for zero Doppler and zero delay (see [8]), thus the condition cm,q = cm′,q,∀q,m = m′ must be satisﬁed during each sub-pulse that comprises the radar pulse. This implies that the transmit antenna number Mt that can be employed is upper bounded by the hop number Q. In this paper, our main focus is to investigate the radar performance enhancement brought by MA, and the FH code is designed by adopting the method presented in [13].\n\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.914313725490196,
+        "y0": 0.033335858585858635,
+        "x1": 0.9200114379084968,
+        "y1": 0.0413131313131313
+      },
+      "text": "3",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.48364379084967324,
+        "y0": 0.09380050505050497,
+        "x1": 0.512107843137255,
+        "y1": 0.11579545454545459
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "table",
+      "box": {
+        "page": 0,
+        "x0": 0.19258169934640523,
+        "y0": 0.14892550505050495,
+        "x1": 0.797998366013072,
+        "y1": 0.19404924242424249
+      },
+      "text": "M M Movable Antennas M Fixed Antennas",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2967075163398693,
+        "y0": 0.19874116161616162,
+        "x1": 0.7568529411764706,
+        "y1": 0.20800883838383843
+      },
+      "text": "RF Chain RF Chain RF Chain RF Chain RF Chain",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.20883986928104575,
+        "y0": 0.1987525252525253,
+        "x1": 0.25066339869281046,
+        "y1": 0.20800505050505047
+      },
+      "text": "RF Chain",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2878660130718954,
+        "y0": 0.24012626262626258,
+        "x1": 0.39376797385620915,
+        "y1": 0.24937878787878798
+      },
+      "text": "Radar Signal Processing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6142859477124183,
+        "y0": 0.24012626262626258,
+        "x1": 0.720187908496732,
+        "y1": 0.24937878787878798
+      },
+      "text": "Radar Signal Processing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2947222222222222,
+        "y0": 0.2623674242424242,
+        "x1": 0.6775032679738562,
+        "y1": 0.27284974747474744
+      },
+      "text": "Transmitter Receiver",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08,
+        "y0": 0.2914103535353536,
+        "x1": 0.3760016339869281,
+        "y1": 0.3005265151515152
+      },
+      "text": "Fig. 1. Proposed MA-enabled FH-MIMO radar system.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11274509803921569,
+        "y0": 0.30634595959595956,
+        "x1": 0.49075653594771246,
+        "y1": 0.3781969696969697
+      },
+      "text": "achieve improved performance in various tasks, e.g., if better resolution of target angles (velocity or distance) is required, the antenna positions can be adjusted to improve the performance of the ambiguity function in the angular (Doppler or delay) domain.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08,
+        "y0": 0.38377020202020207,
+        "x1": 0.49056209150326796,
+        "y1": 0.5007714646464647
+      },
+      "text": "The remainder of this paper is organized as follows. Section II describes the considered MA-enabled FH-MIMO radar system model and the corresponding ambiguity function. In Section III, we analyze the relationship between the ambiguity function and the antenna positions. In Section IV, we propose a low complexity algorithm to solve the antenna position optimization problem. Section V provides the numerical results and discussions. Finally, we conclude this paper in Section VI.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08,
+        "y0": 0.5042234848484849,
+        "x1": 0.4907156862745098,
+        "y1": 0.6670845959595959
+      },
+      "text": "Notations: Scalars, vectors and matrices are respectively denoted by lower/upper case, boldface lower case and boldface upper case letters. For an arbitrary matrix A, AT, A∗ and AH denote its transpose, conjugate and conjugate transpose respectively. · denotes the Euclidean norm of a complex vector, and |·| denotes the absolute value of a complex scalar. ⌈·⌉ represents the round-up operator. For a complex number x, ℜ{x} denotes its real part and ∠x denotes its angle. I and 0 denote an identity matrix and an all-zero vector with appropriate dimensions, respectively. Cn×m denotes the space of n × m complex matrices.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08,
+        "y0": 0.6840732323232324,
+        "x1": 0.3624950980392157,
+        "y1": 0.7141186868686868
+      },
+      "text": "II. SIGNAL MODEL A. MA-Enabled FH-MIMO Radar System",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08,
+        "y0": 0.721800505050505,
+        "x1": 0.4907369281045752,
+        "y1": 0.9181010101010101
+      },
+      "text": "As shown in Fig. 1, we consider an MA-enabled FHMIMO radar system equipped with a colocated transmitter and receiver, which are comprised of linear arrays with Mt and Mr antennas, respectively. Since the transmit antenna array is the primary factor that affects the ambiguity function, we assume that the transmit antennas are movable while the receive antenna positions are ﬁxed with half wavelength spacing for ease of analysis [8]. Each MA is attached to an electrical machinery, such that the interval between two adjacent antennas can be dynamically adjusted [26]. Let dt,i (dr,i), 1 ≤ i ≤ Mt − 1 (1 ≤ i ≤ Mr − 1) denote the interval between the (i − 1)-th and i-th transmit (receive) antenna and deﬁne dt,0 = 0, dr,0 = 0, dr,i = λ2,i ∈ Mr",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.39958823529411763,
+        "y0": 0.9081969696969697,
+        "x1": 0.4074313725490196,
+        "y1": 0.9088030303030303
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.08,
+        "y0": 0.9172323232323232,
+        "x1": 0.49051797385620916,
+        "y1": 0.9458371212121213
+      },
+      "text": "[1,2,··· ,Mr − 1]. Then, the transmit antenna position vector can be denoted by xt = [xt,0,xt,1,··· ,xt,M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4,
+        "y0": 0.930669191919192,
+        "x1": 0.49036437908496733,
+        "y1": 0.9464204545454545
+      },
+      "text": "t−1]T, where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5098022875816994,
+        "y0": 0.30218308080808076,
+        "x1": 0.9202957516339869,
+        "y1": 0.3328939393939394
+      },
+      "text": "xt,0 = 0 and xt,m = mi=0 dt,i,m ∈ Mt [1,2,··· ,Mt−1]. Similarly, the receive antenna position vector can be expressed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7178415032679739,
+        "y0": 0.3340012626262626,
+        "x1": 0.9200996732026144,
+        "y1": 0.349905303030303
+      },
+      "text": "r−1]T, where xr,0 = 0 and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5098022875816994,
+        "y0": 0.33586868686868687,
+        "x1": 0.7178986928104575,
+        "y1": 0.3493219696969697
+      },
+      "text": "as xr = [xr,0,xr,1,··· ,xr,M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5098039215686274,
+        "y0": 0.3488497474747475,
+        "x1": 0.9202957516339869,
+        "y1": 0.3781969696969697
+      },
+      "text": "xr,m = λ2m,m ∈ Mr. Accordingly, the steering vectors of the transmit and receive antenna arrays are respectively",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.5756666666666667,
+        "y0": 0.35698484848484857,
+        "x1": 0.5835098039215686,
+        "y1": 0.35759090909090907
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.5098039215686274,
+        "y0": 0.3778585858585859,
+        "x1": 0.917485294117647,
+        "y1": 0.40962626262626256
+      },
+      "text": "given by a(xt,α) = [1,ej2λπxt,1 sinα,··· ,ej2λπxt,Mt−1 sinα]T and b(xr,α) = [1,ejπsinα,··· ,ejπ(M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.6933137254901961,
+        "y0": 0.38350000000000006,
+        "x1": 0.7060588235294117,
+        "y1": 0.38395454545454544
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.8140980392156862,
+        "y0": 0.38350000000000006,
+        "x1": 0.826843137254902,
+        "y1": 0.38395454545454544
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.5098055555555555,
+        "y0": 0.3944570707070707,
+        "x1": 0.9201274509803923,
+        "y1": 0.4385
+      },
+      "text": "r−1) sinα]T, where λ denotes the signal wavelength and α is the steering angle of the array.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5098039215686274,
+        "y0": 0.4417777777777777,
+        "x1": 0.9204934640522876,
+        "y1": 0.4992575757575757
+      },
+      "text": "Consider a target at (ˆτ,v,θˆ ), where τˆ denotes the delay corresponding to the target range, vˆ is the Doppler frequency of the target and θ ∈ [−π2, π2] represents the direction angle of the target. Then, the received signal can be represented by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.6807647058823529,
+        "y0": 0.4778939393939394,
+        "x1": 0.6888039215686275,
+        "y1": 0.4784999999999999
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.6997843137254901,
+        "y0": 0.4778939393939394,
+        "x1": 0.7078235294117647,
+        "y1": 0.4784999999999999
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5519607843137255,
+        "y0": 0.5085820707070707,
+        "x1": 0.9199754901960784,
+        "y1": 0.5229482323232324
+      },
+      "text": "yτ,ˆ v,θˆ (t) = a(xt, θ)Tφ(t − τˆ)b(xr, θ)ej2πvtˆ + n(t), (1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5098039215686274,
+        "y0": 0.5333964646464646,
+        "x1": 0.9199035947712418,
+        "y1": 0.5637171717171717
+      },
+      "text": "t−1(t)]T, n(t) = [n0(t),n1(t),··· ,nM",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5098039215686274,
+        "y0": 0.5351111111111111,
+        "x1": 0.785547385620915,
+        "y1": 0.5485656565656566
+      },
+      "text": "where φ(t) = [φ0(t),φ1(t),··· ,φM",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5098055555555555,
+        "y0": 0.5485479797979798,
+        "x1": 0.9203676470588235,
+        "y1": 0.6077424242424243
+      },
+      "text": "r−1(t)]T, φm(t) represents the FH waveform transmitted from the m-th transmit antenna and nm(t) denotes the Gaussian noise received by the m-th receive antenna.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5098055555555555,
+        "y0": 0.6108686868686868,
+        "x1": 0.9202990196078431,
+        "y1": 0.6683484848484849
+      },
+      "text": "As the FH waveform, the pulse width Tw is divided into Q sub-pulses of width ∆t = Tw/Q each [35]. Therefore, the m-th FH waveform during each pulse can be further expressed as [8]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6568643790849673,
+        "y0": 0.6696426767676769,
+        "x1": 0.681656862745098,
+        "y1": 0.6771893939393939
+      },
+      "text": "Q−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6843153594771242,
+        "y0": 0.6787335858585859,
+        "x1": 0.9199787581699347,
+        "y1": 0.6929482323232323
+      },
+      "text": "ej2πcm,q∆fts(t − q∆t), (2)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5992173202614379,
+        "y0": 0.6813573232323232,
+        "x1": 0.652687908496732,
+        "y1": 0.6929469696969697
+      },
+      "text": "φm(t) =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6588251633986928,
+        "y0": 0.6973699494949495,
+        "x1": 0.679890522875817,
+        "y1": 0.7049179292929293
+      },
+      "text": "q=0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5098055555555555,
+        "y0": 0.7175353535353535,
+        "x1": 0.9204950980392156,
+        "y1": 0.7750151515151515
+      },
+      "text": "where cm,q ∈ K is the FH code with K {1,2,··· ,K} being the set of available hops, ∆f represents the frequency hopping interval and s(t) represents the pulse function which is deﬁned as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.689609477124183,
+        "y0": 0.7740858585858585,
+        "x1": 0.7937859477124184,
+        "y1": 0.801770202020202
+      },
+      "text": "1, 0 < t < ∆t, 0, otherwise.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6341209150326798,
+        "y0": 0.7825694444444444,
+        "x1": 0.674062091503268,
+        "y1": 0.7938914141414142
+      },
+      "text": "s(t) =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9029444444444444,
+        "y0": 0.7832714646464647,
+        "x1": 0.9199787581699347,
+        "y1": 0.7935290404040404
+      },
+      "text": "(3)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5098071895424837,
+        "y0": 0.8124065656565657,
+        "x1": 0.920563725490196,
+        "y1": 0.9445606060606061
+      },
+      "text": "Note that the waveforms in an FH-MIMO radar system are required to be orthogonal for zero Doppler and zero delay (see [8]), thus the condition cm,q = cm′,q,∀q,m = m′ must be satisﬁed during each sub-pulse that comprises the radar pulse. This implies that the transmit antenna number Mt that can be employed is upper bounded by the hop number Q. In this paper, our main focus is to investigate the radar performance enhancement brought by MA, and the FH code is designed by adopting the method presented in [13].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.48364379084967324,
+        "y0": 0.09380050505050497,
+        "x1": 0.512107843137255,
+        "y1": 0.11579545454545459
+      },
+      "source_id": "2503.04407_pg3_images/imageFile1.png",
+      "file": "000.png",
+      "sha256": "7479e8edfc66b51edf841a91f0ef736baaa52405690a60b17a7dc59fb28406e1"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.39958823529411763,
+        "y0": 0.9081969696969697,
+        "x1": 0.4074313725490196,
+        "y1": 0.9088030303030303
+      },
+      "source_id": "2503.04407_pg3_images/imageFile2.png",
+      "file": "001.png",
+      "sha256": "14e2e0e7ff8d4c2d680e435cce6c3bbec00f28d062f0864f07d395298abc2a3f"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.5756666666666667,
+        "y0": 0.35698484848484857,
+        "x1": 0.5835098039215686,
+        "y1": 0.35759090909090907
+      },
+      "source_id": "2503.04407_pg3_images/imageFile3.png",
+      "file": "002.png",
+      "sha256": "ac91debf7931b69b896e9c6e8220f860008c8251e06f128a30cc7e750a4bc83f"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.6933137254901961,
+        "y0": 0.38350000000000006,
+        "x1": 0.7060588235294117,
+        "y1": 0.38395454545454544
+      },
+      "source_id": "2503.04407_pg3_images/imageFile4.png",
+      "file": "003.png",
+      "sha256": "7ad03ea5503742d46eba2002c886c6edb17ce77c7b7817da1e5830ba243494db"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.8140980392156862,
+        "y0": 0.38350000000000006,
+        "x1": 0.826843137254902,
+        "y1": 0.38395454545454544
+      },
+      "source_id": "2503.04407_pg3_images/imageFile5.png",
+      "file": "004.png",
+      "sha256": "7ad03ea5503742d46eba2002c886c6edb17ce77c7b7817da1e5830ba243494db"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.6807647058823529,
+        "y0": 0.4778939393939394,
+        "x1": 0.6888039215686275,
+        "y1": 0.4784999999999999
+      },
+      "source_id": "2503.04407_pg3_images/imageFile6.png",
+      "file": "005.png",
+      "sha256": "332042c6b992d346118e6969920466f94f04ea7812e95c58d1e70e064e66cf30"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.6997843137254901,
+        "y0": 0.4778939393939394,
+        "x1": 0.7078235294117647,
+        "y1": 0.4784999999999999
+      },
+      "source_id": "2503.04407_pg3_images/imageFile7.png",
+      "file": "006.png",
+      "sha256": "2d7c906337c6003e189cd1eec3182a51b0c0f6b078433a9b84a72c0d85a9c115"
+    }
+  ],
+  "tables": [
+    {
+      "html": "<table><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td colspan=\"2\"></td><td></td><td colspan=\"2\"></td><td></td><td colspan=\"2\"></td><td></td></tr><tr><td colspan=\"8\">M M Movable Antennas M</td><td colspan=\"3\"></td><td colspan=\"3\">Fixed Antennas</td><td colspan=\"2\"></td></tr></table>",
+      "box": {
+        "page": 0,
+        "x0": 0.19258169934640523,
+        "y0": 0.14892550505050495,
+        "x1": 0.797998366013072,
+        "y1": 0.19404924242424249
+      },
+      "n_rows": 2,
+      "n_cols": 16
+    }
+  ],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 1.3900959999882616,
+  "model_load_seconds": null,
+  "peak_rss_mb": 203.97265625,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "opendataloader_version": "2.5.0",
+    "table_method": "cluster",
+    "include_header_footer": true,
+    "reading_order": "xycut",
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "F:\\vnpt\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe"
+  }
+}

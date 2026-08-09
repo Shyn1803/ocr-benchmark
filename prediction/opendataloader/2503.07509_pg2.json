@@ -1,0 +1,349 @@
+{
+  "schema_version": 2,
+  "engine": "opendataloader",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.07509_pg2",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "![](<2503.07509_pg2_images/imageFile1.png>)\n\nFig. 1: The architecture of the implemented AE-NOMA for two-users. Each FCNN[ℓ] represents a fully connected layer with ℓ nodes. The main structure which consists five hidden layers each with 32 neurons is replicated at Tx, Rx1 and Rx2. The Tx, however, has a side block (Sub-Network 2) which is used to adjust power allocation for each symbol.\n\nII. SYSTEM MODEL\n\nConsider a downlink NOMA system involving a base station (BS) communicating with two users. All nodes are equipped with single antennas. The user with weaker (stronger) channel is referred to as the weak (strong) user. The channels between the BS and the weak and strong users are respectively denoted by h1 and h2 satisfying |h1|2 ≤ |h2|2. Both channel gains are known at the BS, but each user only knows its own channel gain. All channel gains are complex-valued and independently drawn from a continuous distribution.\n\nIn a NOMA system, the BS employs superposition coding to concurrently transmit messages to both users. The transmitted signal x is defined by x =\n\n√\n\n√\n\nαPs¯ 2, where s1 and s2 are independent and identically distributed complex Gaussian signals with zero mean and unit variance, CN(0,1). Here, P represents the BS’s transmit power budget, α ∈ [0,1] is the fraction of power allocated to the weak user, and α¯ ≜ 1 − α. The received signals at the users are expressed as\n\nαPs1+\n\n# yk = hkx + nk, k ∈ {1,2} (1)\n\nwhere the noises n1 and n2 are independent and identically distributed circularly-symmetric complex Gaussian random variables with zero mean and unit variance, CN(0,1).\n\nThe weak user decodes its message by treating the interfering signal from the other user as noise. In contrast, the strong user first decodes the weak user’s message, treating its own interfering signal as noise, and then applies SIC to decode its own message. The combined use of superposition coding and SIC decoding with Gaussian codebooks results in achieving the capacity region of this channel.\n\nIII. NETWORK STRUCTURE A. Autoencoder’s Structure\n\nAn autoencoder consists of two parts, an encoder and a decoder. The AE processes a binary input vector s ∈ [0,1]d\n\n′\n\nby first mapping it to a hidden representation u ∈ [0,1]d\n\nthrough a deterministic mapping u = fθ(s) = σ(Ws + b), where θ = {W,b}, W is a d′×d weight matrix, and b is a bias\n\nvector. Here, σ(x) = 1+1ex is the sigmoid function and σ(x) = [σ(x1),...,σ(xd)]T. The resulting latent representation u is then transformed back to a reconstructed vector ˆs ∈ [0,1]d in the input space, given by ˆs = gθ′(u) = σ(W′u + b′) with θ′ = {W′,b′}. For each training sample s(i), the AE maps it to a corresponding u(i) and a reconstruction ˆs(i).\n\nThe proposed AE-NOMA network, illustrated in Fig. 1, consists of one transmitter (Tx) encoder and two decoders each at one of the receivers, i.e., Rx1 and Rx2. Each encoder and decoder, include a fully connected neural network (FCNN) composed of a sequence of fully connected layers and some residual connections. As seen in Fig. 1, the encoder (Tx) comprises a main block and a secondary network, referred to as Sub-Network 1 and Sub-Network 2, respectively.\n\nThis main block, replicated at Tx, Rx1 and Rx2, consists of an input layer, five hidden layers, and an output layer. The hidden layers contain 32 neurons each, while the final layer (output layer) has two neurons representing the in-phase (I) and quadrature-phase (Q) components of the symbol designed by the autoencoder for transmission. In addition to the main block, the Tx has a side block (Sub-network 2) which helps to better adjust the I and Q components under a given average power constraint, thereby optimizing the use of the I/Q plane in a way similar to a quadrature amplitude modulation (QAM).\n\nIn the main block, we have also implemented residual connections to enhance learning capacity and improves performance without the need for additional parameters or a wider network. These shortcuts also play a crucial role in preserving gradients within the network. We have used the activation function exponential linear unit which provides a smooth, nonzero output for negative inputs, and can help improve learning stability and performance.\n\n",
+  "blocks": [
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.0802516339869281,
+        "y0": 0.06381439393939403,
+        "x1": 0.91975,
+        "y1": 0.29025378787878786
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.2967462121212121,
+        "x1": 0.9199918300653595,
+        "y1": 0.34209217171717177
+      },
+      "text": "Fig. 1: The architecture of the implemented AE-NOMA for two-users. Each FCNN[ℓ] represents a fully connected layer with ℓ nodes. The main structure which consists five hidden layers each with 32 neurons is replicated at Tx, Rx1 and Rx2. The Tx, however, has a side block (Sub-Network 2) which is used to adjust power allocation for each symbol.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21512908496732025,
+        "y0": 0.3699558080808081,
+        "x1": 0.355124183006536,
+        "y1": 0.3851123737373737
+      },
+      "text": "II. SYSTEM MODEL",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.3894646464646465,
+        "x1": 0.49023529411764705,
+        "y1": 0.5253813131313131
+      },
+      "text": "Consider a downlink NOMA system involving a base station (BS) communicating with two users. All nodes are equipped with single antennas. The user with weaker (stronger) channel is referred to as the weak (strong) user. The channels between the BS and the weak and strong users are respectively denoted by h1 and h2 satisfying |h1|2 ≤ |h2|2. Both channel gains are known at the BS, but each user only knows its own channel gain. All channel gains are complex-valued and independently drawn from a continuous distribution.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.525395202020202,
+        "x1": 0.49023202614379086,
+        "y1": 0.5707411616161616
+      },
+      "text": "In a NOMA system, the BS employs superposition coding to concurrently transmit messages to both users. The transmitted signal x is defined by x =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25654084967320256,
+        "y0": 0.5468080808080809,
+        "x1": 0.2701062091503268,
+        "y1": 0.5686325757575759
+      },
+      "text": "√",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3235179738562091,
+        "y0": 0.5468080808080809,
+        "x1": 0.3370833333333333,
+        "y1": 0.5686325757575759
+      },
+      "text": "√",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.555584595959596,
+        "x1": 0.490233660130719,
+        "y1": 0.6462159090909091
+      },
+      "text": "αPs¯ 2, where s1 and s2 are independent and identically distributed complex Gaussian signals with zero mean and unit variance, CN(0,1). Here, P represents the BS’s transmit power budget, α ∈ [0,1] is the fraction of power allocated to the weak user, and α¯ ≜ 1 − α. The received signals at the users are expressed as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2701062091503268,
+        "y0": 0.5577727272727273,
+        "x1": 0.32220261437908493,
+        "y1": 0.5712941919191918
+      },
+      "text": "αPs1+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.17985294117647058,
+        "y0": 0.654979797979798,
+        "x1": 0.49023202614379086,
+        "y1": 0.6786780303030303
+      },
+      "text": "yk = hkx + nk, k ∈ {1,2} (1)",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.6789002525252525,
+        "x1": 0.49023202614379086,
+        "y1": 0.7327878787878788
+      },
+      "text": "where the noises n1 and n2 are independent and identically distributed circularly-symmetric complex Gaussian random variables with zero mean and unit variance, CN(0,1).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.7242601010101011,
+        "x1": 0.49023202614379086,
+        "y1": 0.8299861111111111
+      },
+      "text": "The weak user decodes its message by treating the interfering signal from the other user as noise. In contrast, the strong user first decodes the weak user’s message, treating its own interfering signal as noise, and then applies SIC to decode its own message. The combined use of superposition coding and SIC decoding with Gaussian codebooks results in achieving the capacity region of this channel.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.8390542929292929,
+        "x1": 0.381359477124183,
+        "y1": 0.8735833333333334
+      },
+      "text": "III. NETWORK STRUCTURE A. Autoencoder’s Structure",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.877885101010101,
+        "x1": 0.49023202614379086,
+        "y1": 0.9166780303030303
+      },
+      "text": "An autoencoder consists of two parts, an encoder and a decoder. The AE processes a binary input vector s ∈ [0,1]d",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9147761437908496,
+        "y0": 0.3682436868686869,
+        "x1": 0.9183660130718954,
+        "y1": 0.379155303030303
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.3699558080808081,
+        "x1": 0.9147761437908496,
+        "y1": 0.3936540404040404
+      },
+      "text": "by first mapping it to a hidden representation u ∈ [0,1]d",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.38505176767676774,
+        "x1": 0.9199967320261438,
+        "y1": 0.42384469696969695
+      },
+      "text": "through a deterministic mapping u = fθ(s) = σ(Ws + b), where θ = {W,b}, W is a d′×d weight matrix, and b is a bias",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.41524116161616165,
+        "x1": 0.9199983660130718,
+        "y1": 0.5067449494949494
+      },
+      "text": "vector. Here, σ(x) = 1+1ex is the sigmoid function and σ(x) = [σ(x1),...,σ(xd)]T. The resulting latent representation u is then transformed back to a reconstructed vector ˆs ∈ [0,1]d in the input space, given by ˆs = gθ′(u) = σ(W′u + b′) with θ′ = {W′,b′}. For each training sample s(i), the AE maps it to a corresponding u(i) and a reconstruction ˆs(i).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.5096578282828284,
+        "x1": 0.9199950980392158,
+        "y1": 0.6304785353535354
+      },
+      "text": "The proposed AE-NOMA network, illustrated in Fig. 1, consists of one transmitter (Tx) encoder and two decoders each at one of the receivers, i.e., Rx1 and Rx2. Each encoder and decoder, include a fully connected neural network (FCNN) composed of a sequence of fully connected layers and some residual connections. As seen in Fig. 1, the encoder (Tx) comprises a main block and a secondary network, referred to as Sub-Network 1 and Sub-Network 2, respectively.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.6333914141414141,
+        "x1": 0.9199934640522875,
+        "y1": 0.7844027777777778
+      },
+      "text": "This main block, replicated at Tx, Rx1 and Rx2, consists of an input layer, five hidden layers, and an output layer. The hidden layers contain 32 neurons each, while the final layer (output layer) has two neurons representing the in-phase (I) and quadrature-phase (Q) components of the symbol designed by the autoencoder for transmission. In addition to the main block, the Tx has a side block (Sub-network 2) which helps to better adjust the I and Q components under a given average power constraint, thereby optimizing the use of the I/Q plane in a way similar to a quadrature amplitude modulation (QAM).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.7873156565656566,
+        "x1": 0.9200016339869282,
+        "y1": 0.9081363636363636
+      },
+      "text": "In the main block, we have also implemented residual connections to enhance learning capacity and improves performance without the need for additional parameters or a wider network. These shortcuts also play a crucial role in preserving gradients within the network. We have used the activation function exponential linear unit which provides a smooth, nonzero output for negative inputs, and can help improve learning stability and performance.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.0802516339869281,
+        "y0": 0.06381439393939403,
+        "x1": 0.91975,
+        "y1": 0.29025378787878786
+      },
+      "source_id": "2503.07509_pg2_images/imageFile1.png",
+      "file": "000.png",
+      "sha256": "247d6611e48abafd407a571709e32ca9cca1f01bd772d41b87924621680f57ea"
+    }
+  ],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.8991256000008434,
+  "model_load_seconds": null,
+  "peak_rss_mb": 136.609375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "opendataloader_version": "2.5.0",
+    "table_method": "cluster",
+    "include_header_footer": true,
+    "reading_order": "xycut",
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "F:\\vnpt\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe"
+  }
+}

@@ -312,14 +312,22 @@ def test_tach_chay_khoi_cham_la_cai_khe_cua_A2():
 
 
 def test_thieu_ground_truth_ra_NA_chu_khong_ra_0():
-    """Thiếu nhãn là lỗi bộ mẫu, không phải lỗi engine — không được phạt engine."""
+    """Thiếu nhãn là lỗi bộ mẫu, không phải lỗi engine — không được phạt engine.
+
+    Ô in **"chưa có nhãn"**, không phải ``N/A``: ``N/A`` là "engine không có năng lực
+    làm việc này", còn đây engine có năng lực và bộ mẫu mới là chỗ thiếu. Gộp hai
+    trạng thái thành một chuỗi thì người đọc bảng không biết nên đi bổ sung nhãn hay
+    đi đổi engine. Điều bất biến chung — **không** in ``0.000`` — vẫn giữ nguyên.
+    """
     bang = run_bench([TotAdapter()], [DOC], [GiongHetGT()], {})
     (r,) = bang.rows
     assert r.value is None
     assert r.na_reason is NAReason.NO_GROUND_TRUTH
     o = bang.cell("giong_gt", "tot")
-    assert o.applicable is False
-    assert o.cell() == "N/A"
+    assert o.n_chua_nhan == 1
+    assert o.n_thieu_nang_luc == 0
+    assert o.penalized_mean is None
+    assert o.cell() == "chưa có nhãn (1 tài liệu)"
 
 
 def test_thieu_nang_luc_ra_NA_va_van_co_mat_trong_xep_hang():

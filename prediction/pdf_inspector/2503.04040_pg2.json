@@ -1,0 +1,4886 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.04040_pg2",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "proach cannot be directly applied to this joint optimization problem. To address this challenge, the authors of [25] studied a secure rate maximization problem with joint beamforming, FA position control, and artificial noise optimization problem. Then, they proposed the minimum mean square error (MMSE) method to decouple the optimization variables, demonstrating that the joint optimization significantly improves performance. The FAS was further extended to multiuser systems by [12], where the authors considered the transmit power minimiza- tion problem in an FA-assisted multiuser system with joint beamforming and FA position optimization. They decoupled the variables using zero-forcing (ZF) and MMSE methods. Then, they optimized FA positions via a multi-directional descent (MDD) framework. It was demonstrated that FAS can effectively cancel MUI, thereby significantly reducing trans- mit power while ensuring the data rate. More recently, [26] evaluated the system capacity gain of the FAS by solving the weighted sum rate (WSR) maximization problem in an FA- assisted downlink MU-multiple-input single-output (MISO) system. The authors first applied the weighted minimum mean square error (WMMSE) algorithm to decouple beamforming vectors and FA positions. Then, they leveraged the majoriza- tion maximization (MM) framework to solve the resulting non- concave FA position optimization problem. Simulation results demonstrated that FAS enhances overall system capacity in MU-MISO networks. However, the MM framework in [26] has unaffordable complexity when the number of FAs at the BS is large. Specifically, the MM framework optimizes one FA position at a time while keeping the others fixed in each iteration, leading to the increased computational time as the number of FAs grows.\n\n*B.Contributions* In this paper, we propose a novel block coordinate ascent (BCA)-based algorithm for joint beamforming and FA position optimization in the FA-assisted downlink MU-MIMO system, as well as provide a decentralized implementation of the proposed algorithm. Our contributions are summarized as follows.\n- ** Different from [26] that focuses on MU-MISO networks, we consider the more general FA-assisted MU-MIMO networks. We formulate the joint beamforming and an- tenna position optimization as a WSR maximization prob- lem, where the objective function is non-concave and the optimization variables are highly coupled. To decouple the beamforming matrices and FA positions, we utilize two matrix fractional programming (FP) techniques, i.e., the quadratic transform and the Lagrangian dual trans- form [27], [28]. These FP techniques enable us to solve the decoupled subproblems by a BCA-based algorithm.\n- ** Unlike existing FA position optimization algorithms that sequentially update FA positions, we propose a novel optimization algorithm based on the MM framework that optimizes all FA positions simultaneously. The pro- posed algorithm reduces computational time by exploit- ing parallelism and can be easily extended to a de- centralized implementation. Additionally, we introduce a box-constrained movement mode to simplify both the formulated problem and the engineering implementation of FAS. This movement mode provides closed-form so-\nlutions to reduce complexity and enables decentralized implementation by allowing the independent movement of each FA.\n\n- ** To further reduce computational, storage, and intercon- nection costs, we propose a decentralized implementation of our algorithm by utilizing the decentralized baseband processing (DBP) architecture [29], which partitions the transmit FA array into several clusters. The DBP architec- ture can decompose the optimization problem into smaller subproblems, and enable decentralized units (DUs) to solve them in parallel. To enable the decentralized im- plementation of the proposed BCA-based algorithm, we employ the non-homogeneous transform and Nesterov’s extrapolation [30], [31] to avoid the matrix inversion in the optimization of beamforming matrices. The decentral- ized implementation can significantly alleviate computa- tional, storage, and interconnection costs with negligible performance loss.\n- ** We conduct various numerical experiments to verify the performance of our proposed algorithm. It is shown that the proposed algorithm can improve the WSR of FA- assisted MU-MIMO networks by 47% compared with conventional MIMO networks using FPAs. Moreover, the decentralized implementation reduces computation time by approximately 70% and has similar performance compared with the centralized implementation. The remainder of this paper is organized as follows. Sec-\ntionIIpresents the channel model of the FA-assisted MU- MIMO system and formulates the WSR problem. SectionIII reformulates the problem using FP techniques and solves it using BCA and MM. The decentralized implementation of the proposed algorithm is introduced in SectionIV. Simulation results are provided in SectionV, and conclusions are drawn in SectionVI. *Notation:* Italic letters, boldface lowercase letters, and bold- face uppercase letters denote scalars, vectors, and matrices, respectively. The imaginary unit is denoted by *ȷ*. For a complex number *a*, its amplitude and phase are given by *|a|* and ∠*a*, respectively. The *ℓ₂* norm of a vector a is *∥*a*∥*2. [A]*m*, [A]*mn*, A T, A H, det(A), tr(A), vec(A), *∥*A*∥∞*, and *∥*A*∥*Fdenote the *m*-th row, the (*m,n*)-th element, transpose, conjugate transpose, determinant, trace, vectorization, the infinity norm, and the Frobenius norm of matrix A, respectively. A *⪰* 0 and A *≻* 0 indicate that A is positive semi-definite and positive definite, respectively. C *M ×N*, R *M ×N*, and R *M* + *×N*\n\ndenote the sets of *M×N* complex, real, and non-negative real matrices, respectively. The circularly symmetric complex Gaussian (CSCG) distribution with zero mean and covariance *σ²*I is represented as *CN*(0*,σ²*I), and the uniform distribution over [*a,b*] is denoted by *U* [*a,b*]. Operator *∂* (*·*) denotes the partial differential. *∇*x*f* (x) and *∇* 2 x*f* (x) denote the gradient vector and Hessian matrix of *f* (x) with respect to (w.r.t.) x respectively.\n\n## II.SYSTEM MODEL AND PROBLEM FORMULATION\n\nAs shown in Fig.1, we consider a downlink MU-MIMO system where a BS with *M* FAs serves *K* users, each equipped with *N* FAs. A three-dimensional (3D) Cartesian coordinate system is established to describe the positions of the transmit FAs at the BS and receive FAs at the users.\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9259352161329367,
+        "y0": 0.028800904476833367,
+        "x1": 0.9317927972237353,
+        "y1": 0.03708440966437865
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.0647072794262139,
+        "x1": 0.48995678539175,
+        "y1": 0.07654089160159727
+      },
+      "text": "proach cannot be directly applied to this joint optimization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.06470561197726721,
+        "x1": 0.9317918744309364,
+        "y1": 0.07653922415265058
+      },
+      "text": "lutions to reduce complexity and enables decentralized",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.07819715889848022,
+        "x1": 0.48995688792428327,
+        "y1": 0.09003077107386359
+      },
+      "text": "problem. To address this challenge, the authors of [25] studied",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.0781966514140181,
+        "x1": 0.9317918744309364,
+        "y1": 0.09003026358940147
+      },
+      "text": "implementation by allowing the independent movement",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.09168703837074643,
+        "x1": 0.48995683665801665,
+        "y1": 0.1035206505461298
+      },
+      "text": "a secure rate maximization problem with joint beamforming,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.09168653088628442,
+        "x1": 0.6241655656367803,
+        "y1": 0.10352014306166779
+      },
+      "text": "of each FA.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.10517807780749744,
+        "x1": 0.48995683665801665,
+        "y1": 0.1170116899828808
+      },
+      "text": "FA position control, and artificial noise optimization problem.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5282877526788782,
+        "y0": 0.1087276773108734,
+        "x1": 0.5351411809986566,
+        "y1": 0.11701118249841869
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.10517757032303532,
+        "x1": 0.9317918744309364,
+        "y1": 0.11701118249841869
+      },
+      "text": "To further reduce computational, storage, and intercon-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.11866795727976365,
+        "x1": 0.48995678539175,
+        "y1": 0.13050156945514702
+      },
+      "text": "Then, they proposed the minimum mean square error (MMSE)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.11866744979530164,
+        "x1": 0.9317918744309364,
+        "y1": 0.130501061970685
+      },
+      "text": "nection costs, we propose a decentralized implementation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.13215783675202997,
+        "x1": 0.48995683665801665,
+        "y1": 0.14399144892741333
+      },
+      "text": "method to decouple the optimization variables, demonstrating",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.13215732926756796,
+        "x1": 0.9317918744309364,
+        "y1": 0.14399094144295121
+      },
+      "text": "of our algorithm by utilizing the decentralized baseband",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.14564887618878086,
+        "x1": 0.48995683665801665,
+        "y1": 0.15748248836416423
+      },
+      "text": "that the joint optimization significantly improves performance.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.14564836870431885,
+        "x1": 0.9317918744309364,
+        "y1": 0.15748198087970222
+      },
+      "text": "processing (DBP) architecture [29], which partitions the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.15913875566104718,
+        "x1": 0.48995688792428327,
+        "y1": 0.17097236783643055
+      },
+      "text": "The FAS was further extended to multiuser systems by [12],",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.15913824817658506,
+        "x1": 0.9317918744309364,
+        "y1": 0.17097186035196843
+      },
+      "text": "transmit FA array into several clusters. The DBP architec-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.17262979509779808,
+        "x1": 0.48995683665801665,
+        "y1": 0.18446340727318145
+      },
+      "text": "where the authors considered the transmit power minimiza-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.17262812764885138,
+        "x1": 0.9317918744309364,
+        "y1": 0.18446173982423475
+      },
+      "text": "ture can decompose the optimization problem into smaller",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.1861196745700644,
+        "x1": 0.48995683665801665,
+        "y1": 0.19795328674544777
+      },
+      "text": "tion problem in an FA-assisted multiuser system with joint",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.18611916708560228,
+        "x1": 0.6332365163189534,
+        "y1": 0.19795277926098565
+      },
+      "text": "subproblems,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6422572773261112,
+        "y0": 0.18611916708560228,
+        "x1": 0.6664241954080177,
+        "y1": 0.19795277926098565
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6754282436122593,
+        "y0": 0.18611916708560228,
+        "x1": 0.7191094610157726,
+        "y1": 0.19795277926098565
+      },
+      "text": "enable",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.728130273289197,
+        "y0": 0.18611916708560228,
+        "x1": 0.8173504437995202,
+        "y1": 0.19795277926098565
+      },
+      "text": "decentralized",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.826371204806678,
+        "y0": 0.18611916708560228,
+        "x1": 0.8589229258583939,
+        "y1": 0.19795277926098565
+      },
+      "text": "units",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8679269227963688,
+        "y0": 0.18611916708560228,
+        "x1": 0.9097504557628521,
+        "y1": 0.19795277926098565
+      },
+      "text": "(DUs)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9187712680362765,
+        "y0": 0.18611916708560228,
+        "x1": 0.9317919769634695,
+        "y1": 0.19795277926098565
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.1996095540423306,
+        "x1": 0.48995683665801665,
+        "y1": 0.21144316621771397
+      },
+      "text": "beamforming and FA position optimization. They decoupled",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.1996090465578686,
+        "x1": 0.9317918744309364,
+        "y1": 0.21144265873325196
+      },
+      "text": "solve them in parallel. To enable the decentralized im-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.2131005934790816,
+        "x1": 0.48995683665801665,
+        "y1": 0.22493420565446498
+      },
+      "text": "the variables using zero-forcing (ZF) and MMSE methods.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.2131000859946195,
+        "x1": 0.9317918744309364,
+        "y1": 0.22493369817000286
+      },
+      "text": "plementation of the proposed BCA-based algorithm, we",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.22659047295134782,
+        "x1": 0.10678376275412844,
+        "y1": 0.2384240851267312
+      },
+      "text": "Then,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11630659994337186,
+        "y0": 0.22659047295134782,
+        "x1": 0.14487512432766878,
+        "y1": 0.2384240851267312
+      },
+      "text": "they",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15439797433347882,
+        "y0": 0.22659047295134782,
+        "x1": 0.22134238807102452,
+        "y1": 0.2384240851267312
+      },
+      "text": "optimized",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23088196369631747,
+        "y0": 0.22659047295134782,
+        "x1": 0.2510322466884059,
+        "y1": 0.2384240851267312
+      },
+      "text": "FA",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.260555058244516,
+        "y0": 0.22659047295134782,
+        "x1": 0.32100588158764803,
+        "y1": 0.2384240851267312
+      },
+      "text": "positions",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33052871877689144,
+        "y0": 0.22659047295134782,
+        "x1": 0.3509802423516046,
+        "y1": 0.2384240851267312
+      },
+      "text": "via",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.360503079540848,
+        "y0": 0.22659047295134782,
+        "x1": 0.3679339198215014,
+        "y1": 0.2384240851267312
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3774567570107448,
+        "y0": 0.22659047295134782,
+        "x1": 0.48995683665801665,
+        "y1": 0.2384240851267312
+      },
+      "text": "multi-directional",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.2265899654668858,
+        "x1": 0.9317918744309364,
+        "y1": 0.23842357764226918
+      },
+      "text": "employ the non-homogeneous transform and Nesterov’s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.24008035242361414,
+        "x1": 0.48995688792428327,
+        "y1": 0.2519139645989975
+      },
+      "text": "descent (MDD) framework. It was demonstrated that FAS can",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.24007984493915213,
+        "x1": 0.9317917718984031,
+        "y1": 0.2519134571145354
+      },
+      "text": "extrapolation [30], [31] to avoid the matrix inversion in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.25357139186036504,
+        "x1": 0.48995688792428327,
+        "y1": 0.2654050040357484
+      },
+      "text": "effectively cancel MUI, thereby significantly reducing trans-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.253570884375903,
+        "x1": 0.9317918744309364,
+        "y1": 0.2654044965512864
+      },
+      "text": "the optimization of beamforming matrices. The decentral-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.26706127133263136,
+        "x1": 0.48995678539175,
+        "y1": 0.2788948835080147
+      },
+      "text": "mit power while ensuring the data rate. More recently, [26]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.26706076384816924,
+        "x1": 0.9317918744309364,
+        "y1": 0.2788943760235526
+      },
+      "text": "ized implementation can significantly alleviate computa-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.28055231076938225,
+        "x1": 0.48995683665801665,
+        "y1": 0.2923859229447656
+      },
+      "text": "evaluated the system capacity gain of the FAS by solving the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.28055064332043556,
+        "x1": 0.9317918744309364,
+        "y1": 0.2923842554958189
+      },
+      "text": "tional, storage, and interconnection costs with negligible",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.29404219024164857,
+        "x1": 0.48995683665801665,
+        "y1": 0.30587580241703194
+      },
+      "text": "weighted sum rate (WSR) maximization problem in an FA-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.29404168275718645,
+        "x1": 0.6641648397720659,
+        "y1": 0.3058752949325698
+      },
+      "text": "performance loss.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.3075320697139148,
+        "x1": 0.12027307099130803,
+        "y1": 0.31936568188929815
+      },
+      "text": "assisted",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12957833414504102,
+        "y0": 0.3075320697139148,
+        "x1": 0.19238893092385534,
+        "y1": 0.31936568188929815
+      },
+      "text": "downlink",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2017109453302045,
+        "y0": 0.3075320697139148,
+        "x1": 0.3300099041587563,
+        "y1": 0.31936568188929815
+      },
+      "text": "MU-multiple-input",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33933190574853883,
+        "y0": 0.3075320697139148,
+        "x1": 0.4276650416807708,
+        "y1": 0.31936568188929815
+      },
+      "text": "single-output",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4369702792013705,
+        "y0": 0.3075320697139148,
+        "x1": 0.48995678539175,
+        "y1": 0.31936568188929815
+      },
+      "text": "(MISO)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5282877526788782,
+        "y0": 0.31108166921729086,
+        "x1": 0.5351411809986566,
+        "y1": 0.31936517440483614
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.30753156222945277,
+        "x1": 0.9317918744309364,
+        "y1": 0.31936517440483614
+      },
+      "text": "We conduct various numerical experiments to verify the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.3210231091506658,
+        "x1": 0.48995688792428327,
+        "y1": 0.33285672132604915
+      },
+      "text": "system. The authors first applied the weighted minimum mean",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.32102260166620367,
+        "x1": 0.9317918744309364,
+        "y1": 0.33285621384158703
+      },
+      "text": "performance of our proposed algorithm. It is shown that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.334512988622932,
+        "x1": 0.48995683665801665,
+        "y1": 0.34634660079831536
+      },
+      "text": "square error (WMMSE) algorithm to decouple beamforming",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.33451248113847,
+        "x1": 0.9317918744309364,
+        "y1": 0.34634609331385335
+      },
+      "text": "the proposed algorithm can improve the WSR of FA-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.3480028680951983,
+        "x1": 0.48995678539175,
+        "y1": 0.3598364802705817
+      },
+      "text": "vectors and FA positions. Then, they leveraged the majoriza-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.3480023606107363,
+        "x1": 0.5955803156330005,
+        "y1": 0.35983597278611956
+      },
+      "text": "assisted",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6042328823133356,
+        "y0": 0.3480023606107363,
+        "x1": 0.6841812409088914,
+        "y1": 0.35983597278611956
+      },
+      "text": "MU-MIMO",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6928338075892265,
+        "y0": 0.3480023606107363,
+        "x1": 0.7540209683197374,
+        "y1": 0.35983597278611956
+      },
+      "text": "networks",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7626735862663391,
+        "y0": 0.3480023606107363,
+        "x1": 0.7794096640675923,
+        "y1": 0.35983597278611956
+      },
+      "text": "by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7880579756477983,
+        "y0": 0.3480023606107363,
+        "x1": 0.8187352481933013,
+        "y1": 0.35983597278611956
+      },
+      "text": "47%",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.827394376955763,
+        "y0": 0.3480023606107363,
+        "x1": 0.8933848280041528,
+        "y1": 0.35983597278611956
+      },
+      "text": "compared",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9020373434182212,
+        "y0": 0.3480023606107363,
+        "x1": 0.9317941301466673,
+        "y1": 0.35983597278611956
+      },
+      "text": "with",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.3614939075319492,
+        "x1": 0.48995683665801665,
+        "y1": 0.3733275197073326
+      },
+      "text": "tion maximization (MM) framework to solve the resulting non-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.3614934000474872,
+        "x1": 0.6290525225017733,
+        "y1": 0.37332701222287057
+      },
+      "text": "conventional",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.638859861837592,
+        "y0": 0.3614934000474872,
+        "x1": 0.6862732121843481,
+        "y1": 0.37332701222287057
+      },
+      "text": "MIMO",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6960638387172505,
+        "y0": 0.3614934000474872,
+        "x1": 0.7572510507140281,
+        "y1": 0.37332701222287057
+      },
+      "text": "networks",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7670583900498467,
+        "y0": 0.3614934000474872,
+        "x1": 0.8033255312418893,
+        "y1": 0.37332701222287057
+      },
+      "text": "using",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8131329218439746,
+        "y0": 0.3614934000474872,
+        "x1": 0.8529815756879477,
+        "y1": 0.37332701222287057
+      },
+      "text": "FPAs.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8627889150237663,
+        "y0": 0.3614934000474872,
+        "x1": 0.9317918744309364,
+        "y1": 0.37332701222287057
+      },
+      "text": "Moreover,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.37498378700421553,
+        "x1": 0.48995683665801665,
+        "y1": 0.3868173991795989
+      },
+      "text": "concave FA position optimization problem. Simulation results",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.3749832795197535,
+        "x1": 0.5639657932012577,
+        "y1": 0.3868168916951368
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.573655989117863,
+        "y0": 0.3749832795197535,
+        "x1": 0.6628761596281861,
+        "y1": 0.3868168916951368
+      },
+      "text": "decentralized",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6725664068110581,
+        "y0": 0.3749832795197535,
+        "x1": 0.7776189333747603,
+        "y1": 0.3868168916951368
+      },
+      "text": "implementation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.787309078025099,
+        "y0": 0.3749832795197535,
+        "x1": 0.8384211357092656,
+        "y1": 0.3868168916951368
+      },
+      "text": "reduces",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8481113828921375,
+        "y0": 0.3749832795197535,
+        "x1": 0.9317918744309364,
+        "y1": 0.3868168916951368
+      },
+      "text": "computation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.38847366647648174,
+        "x1": 0.48995683665801665,
+        "y1": 0.4003072786518651
+      },
+      "text": "demonstrated that FAS enhances overall system capacity in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.38847315899201973,
+        "x1": 0.9317862351416087,
+        "y1": 0.4003067711674031
+      },
+      "text": "time by approximately 70% and has similar performance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.40196474216212286,
+        "x1": 0.2138111428072073,
+        "y1": 0.4137983543375062
+      },
+      "text": "MU-MISO networks.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5435142952596779,
+        "y0": 0.40196423467766085,
+        "x1": 0.8658181361854628,
+        "y1": 0.4137978468530442
+      },
+      "text": "compared with the centralized implementation.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0849421415436062,
+        "y0": 0.4154546216343892,
+        "x1": 0.14870668819500982,
+        "y1": 0.42728823380977254
+      },
+      "text": "However,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15869813751080644,
+        "y0": 0.4154546216343892,
+        "x1": 0.17914966108551958,
+        "y1": 0.42728823380977254
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18914111040131623,
+        "y0": 0.4154546216343892,
+        "x1": 0.2188978843131957,
+        "y1": 0.42728823380977254
+      },
+      "text": "MM",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22887260800950948,
+        "y0": 0.4154546216343892,
+        "x1": 0.30170813097621946,
+        "y1": 0.42728823380977254
+      },
+      "text": "framework",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31169961874171603,
+        "y0": 0.4154546216343892,
+        "x1": 0.3247203020357758,
+        "y1": 0.42728823380977254
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.334711764168139,
+        "y0": 0.4154546216343892,
+        "x1": 0.3625941023903723,
+        "y1": 0.42728823380977254
+      },
+      "text": "[26]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3725688004535528,
+        "y0": 0.4154546216343892,
+        "x1": 0.39487803409842925,
+        "y1": 0.42728823380977254
+      },
+      "text": "has",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40486949623079255,
+        "y0": 0.4154546216343892,
+        "x1": 0.48995586259895096,
+        "y1": 0.42728823380977254
+      },
+      "text": "unaffordable",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5267774997306922,
+        "y0": 0.41786655028692243,
+        "x1": 0.9317911567032037,
+        "y1": 0.4297001624623058
+      },
+      "text": "The remainder of this paper is organized as follows. Sec-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.4289456973200302,
+        "x1": 0.14326847798168152,
+        "y1": 0.44077930949541355
+      },
+      "text": "complexity",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15294194827880392,
+        "y0": 0.4289456973200302,
+        "x1": 0.18919235103479706,
+        "y1": 0.44077930949541355
+      },
+      "text": "when",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19886582133191946,
+        "y0": 0.4289456973200302,
+        "x1": 0.2193173449066326,
+        "y1": 0.44077930949541355
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2289908280203217,
+        "y0": 0.4289456973200302,
+        "x1": 0.28011962414053787,
+        "y1": 0.44077930949541355
+      },
+      "text": "number",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2898098200571432,
+        "y0": 0.4289456973200302,
+        "x1": 0.30375098916825977,
+        "y1": 0.44077930949541355
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3134244466488156,
+        "y0": 0.4289456973200302,
+        "x1": 0.3400850584713672,
+        "y1": 0.44077930949541355
+      },
+      "text": "FAs",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.349758515951923,
+        "y0": 0.4289456973200302,
+        "x1": 0.36184197499287624,
+        "y1": 0.44077930949541355
+      },
+      "text": "at",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.371515432473432,
+        "y0": 0.4289456973200302,
+        "x1": 0.39196695604814513,
+        "y1": 0.44077930949541355
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4016404135287009,
+        "y0": 0.4289456973200302,
+        "x1": 0.4221086755394636,
+        "y1": 0.44077930949541355
+      },
+      "text": "BS",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43178213302001933,
+        "y0": 0.4289456973200302,
+        "x1": 0.4429451062439157,
+        "y1": 0.44077930949541355
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45261858935760474,
+        "y0": 0.4289456973200302,
+        "x1": 0.48995683665801665,
+        "y1": 0.44077930949541355
+      },
+      "text": "large.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100407042017064,
+        "y0": 0.43135642975918864,
+        "x1": 0.9317904389754711,
+        "y1": 0.443190041934572
+      },
+      "text": "tionIIpresents the channel model of the FA-assisted MU-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.4424355767922965,
+        "x1": 0.48995688792428327,
+        "y1": 0.45426918896767987
+      },
+      "text": "Specifically, the MM framework optimizes one FA position",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100407042017064,
+        "y0": 0.44484630923145496,
+        "x1": 0.9317904389754711,
+        "y1": 0.45667992140683833
+      },
+      "text": "MIMO system and formulates the WSR problem. SectionIII",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.4559254562645627,
+        "x1": 0.080290516067222,
+        "y1": 0.4677590684399461
+      },
+      "text": "at",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08870877668428044,
+        "y0": 0.4559254562645627,
+        "x1": 0.09613960414836721,
+        "y1": 0.4677590684399461
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10457460320147517,
+        "y0": 0.4559254562645627,
+        "x1": 0.13433139633820462,
+        "y1": 0.4677590684399461
+      },
+      "text": "time",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1427496633635464,
+        "y0": 0.4559254562645627,
+        "x1": 0.17993729037264597,
+        "y1": 0.4677590684399461
+      },
+      "text": "while",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18837227020090394,
+        "y0": 0.4559254562645627,
+        "x1": 0.24119140484735496,
+        "y1": 0.4677590684399461
+      },
+      "text": "keeping",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24960965905613008,
+        "y0": 0.4559254562645627,
+        "x1": 0.2700611826308432,
+        "y1": 0.4677590684399461
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27847943683961834,
+        "y0": 0.4559254562645627,
+        "x1": 0.3193824839890446,
+        "y1": 0.4677590684399461
+      },
+      "text": "others",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32781747663386923,
+        "y0": 0.4559254562645627,
+        "x1": 0.3610386325950326,
+        "y1": 0.4677590684399461
+      },
+      "text": "fixed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3694568868038077,
+        "y0": 0.4559254562645627,
+        "x1": 0.3824775700978674,
+        "y1": 0.4677590684399461
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3909125627426921,
+        "y0": 0.4559254562645627,
+        "x1": 0.4215730968521456,
+        "y1": 0.4677590684399461
+      },
+      "text": "each",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42999135106092073,
+        "y0": 0.4559254562645627,
+        "x1": 0.48995683665801665,
+        "y1": 0.4677590684399461
+      },
+      "text": "iteration,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100407042017064,
+        "y0": 0.4583373849170961,
+        "x1": 0.9317904389754711,
+        "y1": 0.47017099709247945
+      },
+      "text": "reformulates the problem using FP techniques and solves it",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.46941653195020383,
+        "x1": 0.48995683665801665,
+        "y1": 0.4812501441255872
+      },
+      "text": "leading to the increased computational time as the number",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100407042017064,
+        "y0": 0.4718272643893623,
+        "x1": 0.9317905415080043,
+        "y1": 0.48366087656474566
+      },
+      "text": "using BCA and MM. The decentralized implementation of the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.48290641142247015,
+        "x1": 0.16519276604711908,
+        "y1": 0.4947400235978535
+      },
+      "text": "of FAs grows.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100407042017064,
+        "y0": 0.4853171438616286,
+        "x1": 0.9317905415080043,
+        "y1": 0.497150756037012
+      },
+      "text": "proposed algorithm is introduced in SectionIV. Simulation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.50463370618485,
+        "x1": 0.18365268487983938,
+        "y1": 0.5164673183602333
+      },
+      "text": "B.Contributions",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100407042017064,
+        "y0": 0.4988082195472697,
+        "x1": 0.9317904389754711,
+        "y1": 0.5106418317226531
+      },
+      "text": "results are provided in SectionV, and conclusions are drawn",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100407042017064,
+        "y0": 0.5122980990195359,
+        "x1": 0.6068256224810792,
+        "y1": 0.5241317111949193
+      },
+      "text": "in SectionVI.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0849421415436062,
+        "y0": 0.5216276208719677,
+        "x1": 0.4899557985161177,
+        "y1": 0.533461233047351
+      },
+      "text": "In this paper, we propose a novel block coordinate ascent",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5267774997306922,
+        "y0": 0.5257879784918023,
+        "x1": 0.5909436919478843,
+        "y1": 0.5376215906671855
+      },
+      "text": "Notation:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5956346578756115,
+        "y0": 0.5257879784918023,
+        "x1": 0.9317960782647987,
+        "y1": 0.5376215906671855
+      },
+      "text": "Italic letters, boldface lowercase letters, and bold-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.5351186965576088,
+        "x1": 0.48995688792428327,
+        "y1": 0.5469523087329922
+      },
+      "text": "(BCA)-based algorithm for joint beamforming and FA position",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100407554679731,
+        "y0": 0.5392790541774433,
+        "x1": 0.9317905415080043,
+        "y1": 0.5511126663528267
+      },
+      "text": "face uppercase letters denote scalars, vectors, and matrices,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.5486085760298751,
+        "x1": 0.48995683665801665,
+        "y1": 0.5604421882052584
+      },
+      "text": "optimization in the FA-assisted downlink MU-MIMO system,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100407554679731,
+        "y0": 0.5527689336497096,
+        "x1": 0.8176838283313119,
+        "y1": 0.564602545825093
+      },
+      "text": "respectively. The imaginary unit is denoted by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8216021090886308,
+        "y0": 0.5527689336497096,
+        "x1": 0.828028797005113,
+        "y1": 0.564602545825093
+      },
+      "text": "ȷ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8280293609340458,
+        "y0": 0.5527689336497096,
+        "x1": 0.9317932073538683,
+        "y1": 0.564602545825093
+      },
+      "text": ". For a complex",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.5620996517155161,
+        "x1": 0.08214822613738536,
+        "y1": 0.5739332638908995
+      },
+      "text": "as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09190536938990539,
+        "y0": 0.5620996517155161,
+        "x1": 0.12072493186524508,
+        "y1": 0.5739332638908995
+      },
+      "text": "well",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13048208152604843,
+        "y0": 0.5620996517155161,
+        "x1": 0.14442325063716507,
+        "y1": 0.5739332638908995
+      },
+      "text": "as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15418041311453506,
+        "y0": 0.5620996517155161,
+        "x1": 0.20505817114370847,
+        "y1": 0.5739332638908995
+      },
+      "text": "provide",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21481532080451182,
+        "y0": 0.5620996517155161,
+        "x1": 0.22224613545203192,
+        "y1": 0.5739332638908995
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23200328511283527,
+        "y0": 0.5620996517155161,
+        "x1": 0.32122345562315846,
+        "y1": 0.5739332638908995
+      },
+      "text": "decentralized",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3309806052839618,
+        "y0": 0.5620996517155161,
+        "x1": 0.43604984465058017,
+        "y1": 0.5739332638908995
+      },
+      "text": "implementation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44580699431138354,
+        "y0": 0.5620996517155161,
+        "x1": 0.45974818905563347,
+        "y1": 0.5739332638908995
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46950528745017023,
+        "y0": 0.5620996517155161,
+        "x1": 0.48995683665801665,
+        "y1": 0.5739332638908995
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100407042017064,
+        "y0": 0.5662600093353507,
+        "x1": 0.5611694746887894,
+        "y1": 0.578093621510734
+      },
+      "text": "number",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.567664398006135,
+        "y0": 0.5662600093353507,
+        "x1": 0.5765010618498815,
+        "y1": 0.578093621510734
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5765106999080049,
+        "y0": 0.5662600093353507,
+        "x1": 0.8448740719542542,
+        "y1": 0.578093621510734
+      },
+      "text": ", its amplitude and phase are given by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8513747883597274,
+        "y0": 0.5662600093353507,
+        "x1": 0.8695053086128851,
+        "y1": 0.578093621510734
+      },
+      "text": "|a|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8760137662246169,
+        "y0": 0.5662600093353507,
+        "x1": 0.9187586565346895,
+        "y1": 0.578093621510734
+      },
+      "text": "and ∠",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.918762040108286,
+        "y0": 0.5662600093353507,
+        "x1": 0.9275987039520324,
+        "y1": 0.578093621510734
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9276083420101559,
+        "y0": 0.5662600093353507,
+        "x1": 0.9317923870936025,
+        "y1": 0.578093621510734
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.5755895311877823,
+        "x1": 0.1295615957089915,
+        "y1": 0.5874231433631658
+      },
+      "text": "proposed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13972041656871667,
+        "y0": 0.5755895311877823,
+        "x1": 0.20899113968641228,
+        "y1": 0.5874231433631658
+      },
+      "text": "algorithm.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21913322211008793,
+        "y0": 0.5755895311877823,
+        "x1": 0.24515785026215783,
+        "y1": 0.5874231433631658
+      },
+      "text": "Our",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.255316671121883,
+        "y0": 0.5755895311877823,
+        "x1": 0.3433151152325245,
+        "y1": 0.5874231433631658
+      },
+      "text": "contributions",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3534739360922497,
+        "y0": 0.5755895311877823,
+        "x1": 0.3739087212309133,
+        "y1": 0.5874231433631658
+      },
+      "text": "are",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38405080365458893,
+        "y0": 0.5755895311877823,
+        "x1": 0.4658568723203082,
+        "y1": 0.5874231433631658
+      },
+      "text": "summarized",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47601569318003334,
+        "y0": 0.5755895311877823,
+        "x1": 0.48995683665801665,
+        "y1": 0.5874231433631658
+      },
+      "text": "as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100407042017064,
+        "y0": 0.5797498888076169,
+        "x1": 0.6240470380283684,
+        "y1": 0.5915835009830003
+      },
+      "text": "respectively. The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6287436432454232,
+        "y0": 0.5797498888076169,
+        "x1": 0.6423845201998475,
+        "y1": 0.5915835009830003
+      },
+      "text": "ℓ₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6479179446868449,
+        "y0": 0.5797498888076169,
+        "x1": 0.7901679926491032,
+        "y1": 0.5915835009830003
+      },
+      "text": "norm of a vector a is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7948598301033628,
+        "y0": 0.5797498888076169,
+        "x1": 0.8032278690039893,
+        "y1": 0.5915835009830003
+      },
+      "text": "∥",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8032273563413233,
+        "y0": 0.5797498888076169,
+        "x1": 0.8125828348032048,
+        "y1": 0.5915835009830003
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8125843727912032,
+        "y0": 0.5797498888076169,
+        "x1": 0.8209524116918298,
+        "y1": 0.5915835009830003
+      },
+      "text": "∥",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8209518990291637,
+        "y0": 0.5850745602125516,
+        "x1": 0.827617846611934,
+        "y1": 0.5933580654000967
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8284593311121385,
+        "y0": 0.5797498888076169,
+        "x1": 0.8611712592470238,
+        "y1": 0.5915835009830003
+      },
+      "text": ". [A]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.861185306204076,
+        "y0": 0.5850745602125516,
+        "x1": 0.8730528317300505,
+        "y1": 0.5933580654000967
+      },
+      "text": "m",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8738970846086522,
+        "y0": 0.5797498888076169,
+        "x1": 0.9066090640098039,
+        "y1": 0.5915835009830003
+      },
+      "text": ", [A]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9066231109668562,
+        "y0": 0.5850745602125516,
+        "x1": 0.9267616283507567,
+        "y1": 0.5933580654000967
+      },
+      "text": "mn",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9276083420101559,
+        "y0": 0.5797498888076169,
+        "x1": 0.9317923870936025,
+        "y1": 0.5915835009830003
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0682070506179854,
+        "y0": 0.5890794106600487,
+        "x1": 0.12218098355305329,
+        "y1": 0.600913022835432
+      },
+      "text": "follows.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100407042017064,
+        "y0": 0.5932397682798832,
+        "x1": 0.5245843801112058,
+        "y1": 0.6050733804552666
+      },
+      "text": "A",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5245919162523981,
+        "y0": 0.5924959767365889,
+        "x1": 0.5330854549736961,
+        "y1": 0.6007794819241342
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5339304255800303,
+        "y0": 0.5932397682798832,
+        "x1": 0.5585097807768477,
+        "y1": 0.6050733804552666
+      },
+      "text": ", A",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.55851731691804,
+        "y0": 0.5924959767365889,
+        "x1": 0.5673037398205045,
+        "y1": 0.6007794819241342
+      },
+      "text": "H",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5681397388301813,
+        "y0": 0.5932397682798832,
+        "x1": 0.7491945569156157,
+        "y1": 0.6050733804552666
+      },
+      "text": ", det(A), tr(A), vec(A),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7550461911194871,
+        "y0": 0.5932397682798832,
+        "x1": 0.7634142300201137,
+        "y1": 0.6050733804552666
+      },
+      "text": "∥",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7634137173574475,
+        "y0": 0.5932397682798832,
+        "x1": 0.7779573932669468,
+        "y1": 0.6050733804552666
+      },
+      "text": "A",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7779649294081391,
+        "y0": 0.5932397682798832,
+        "x1": 0.7863329683087656,
+        "y1": 0.6050733804552666
+      },
+      "text": "∥",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7863324556460995,
+        "y0": 0.5985656358981926,
+        "x1": 0.799664402077907,
+        "y1": 0.606849141085738
+      },
+      "text": "∞",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8005124486602381,
+        "y0": 0.5932397682798832,
+        "x1": 0.8347210441826565,
+        "y1": 0.6050733804552666
+      },
+      "text": ", and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8405644757838696,
+        "y0": 0.5932397682798832,
+        "x1": 0.8489325146844962,
+        "y1": 0.6050733804552666
+      },
+      "text": "∥",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8489320020218301,
+        "y0": 0.5932397682798832,
+        "x1": 0.8634756779313294,
+        "y1": 0.6050733804552666
+      },
+      "text": "A",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8634832653387883,
+        "y0": 0.5932397682798832,
+        "x1": 0.8718513555056815,
+        "y1": 0.6050733804552666
+      },
+      "text": "∥",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8718508428430153,
+        "y0": 0.5985656358981926,
+        "x1": 0.8804850049336359,
+        "y1": 0.606849141085738
+      },
+      "text": "F",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8871748425966485,
+        "y0": 0.5932397682798832,
+        "x1": 0.9317933098864015,
+        "y1": 0.6050733804552666
+      },
+      "text": "denote",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08645404782889052,
+        "y0": 0.6078726109409536,
+        "x1": 0.0933074633321022,
+        "y1": 0.6161561161284987
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.6043225039531155,
+        "x1": 0.48995652265213363,
+        "y1": 0.6161561161284987
+      },
+      "text": "Different from [26] that focuses on MU-MISO networks,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100405504029066,
+        "y0": 0.6067308439655243,
+        "x1": 0.5304920483444865,
+        "y1": 0.6185644561409076
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5398519357052969,
+        "y0": 0.6067308439655243,
+        "x1": 0.5545462319061085,
+        "y1": 0.6185644561409076
+      },
+      "text": "m",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5545459755747755,
+        "y0": 0.6067308439655243,
+        "x1": 0.5731397890793252,
+        "y1": 0.6185644561409076
+      },
+      "text": "-th",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5824952675412067,
+        "y0": 0.6067308439655243,
+        "x1": 0.6111976609641998,
+        "y1": 0.6185644561409076
+      },
+      "text": "row,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6205699034952642,
+        "y0": 0.6067308439655243,
+        "x1": 0.641021401436844,
+        "y1": 0.6185644561409076
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6503738039227287,
+        "y0": 0.6067308439655243,
+        "x1": 0.6568673943171425,
+        "y1": 0.6185644561409076
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6568816976055277,
+        "y0": 0.6067308439655243,
+        "x1": 0.6890484602612381,
+        "y1": 0.6185644561409076
+      },
+      "text": "m,n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.689060046437493,
+        "y0": 0.6067308439655243,
+        "x1": 0.7141617536248417,
+        "y1": 0.6185644561409076
+      },
+      "text": ")-th",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7235172320867232,
+        "y0": 0.6067308439655243,
+        "x1": 0.7806877320942828,
+        "y1": 0.6185644561409076
+      },
+      "text": "element,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7900432105561643,
+        "y0": 0.6067308439655243,
+        "x1": 0.8574394851676471,
+        "y1": 0.6185644561409076
+      },
+      "text": "transpose,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8668117789649781,
+        "y0": 0.6067308439655243,
+        "x1": 0.93179802638293,
+        "y1": 0.6185644561409076
+      },
+      "text": "conjugate",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.6178123834253817,
+        "x1": 0.1211932107610653,
+        "y1": 0.6296459956007651
+      },
+      "text": "we",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12956126247825853,
+        "y0": 0.6178123834253817,
+        "x1": 0.21508275128430449,
+        "y1": 0.6296459956007651
+      },
+      "text": "consider the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22346752862098057,
+        "y0": 0.6178123834253817,
+        "x1": 0.2578602213068103,
+        "y1": 0.6296459956007651
+      },
+      "text": "more",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2662282858405702,
+        "y0": 0.6178123834253817,
+        "x1": 0.48995647779415036,
+        "y1": 0.6296459956007651
+      },
+      "text": "general FA-assisted MU-MIMO",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100405504029066,
+        "y0": 0.6202207234377906,
+        "x1": 0.9317903364429378,
+        "y1": 0.6320543356131739
+      },
+      "text": "transpose, determinant, trace, vectorization, the infinity norm,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.631302262897648,
+        "x1": 0.48995652265213363,
+        "y1": 0.6431358750730314
+      },
+      "text": "networks. We formulate the joint beamforming and an-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100405504029066,
+        "y0": 0.6337106029100568,
+        "x1": 0.8929360431062126,
+        "y1": 0.6455442150854402
+      },
+      "text": "and the Frobenius norm of matrix A, respectively. A",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9010474943424354,
+        "y0": 0.6337106029100568,
+        "x1": 0.9140514904667122,
+        "y1": 0.6455442150854402
+      },
+      "text": "⪰",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.922168786057329,
+        "y0": 0.6337106029100568,
+        "x1": 0.9317920794960027,
+        "y1": 0.6455442150854402
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.6447933385832891,
+        "x1": 0.48995652265213363,
+        "y1": 0.6566269507586724
+      },
+      "text": "tenna position optimization as a WSR maximization prob-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100406016691732,
+        "y0": 0.647201678595698,
+        "x1": 0.5342075197510798,
+        "y1": 0.6590352907710813
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5431882418040119,
+        "y0": 0.647201678595698,
+        "x1": 0.5577319177135113,
+        "y1": 0.6590352907710813
+      },
+      "text": "A",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5681682428744188,
+        "y0": 0.647201678595698,
+        "x1": 0.581172187732429,
+        "y1": 0.6590352907710813
+      },
+      "text": "≻",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5916145110465304,
+        "y0": 0.647201678595698,
+        "x1": 0.6012377532189376,
+        "y1": 0.6590352907710813
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6102176550116039,
+        "y0": 0.647201678595698,
+        "x1": 0.6632041612019834,
+        "y1": 0.6590352907710813
+      },
+      "text": "indicate",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6721746812678594,
+        "y0": 0.647201678595698,
+        "x1": 0.6972788492360057,
+        "y1": 0.6590352907710813
+      },
+      "text": "that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7062655181758651,
+        "y0": 0.647201678595698,
+        "x1": 0.7208091940853645,
+        "y1": 0.6590352907710813
+      },
+      "text": "A",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7297957604926907,
+        "y0": 0.647201678595698,
+        "x1": 0.7409587337165869,
+        "y1": 0.6590352907710813
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7499460178516457,
+        "y0": 0.647201678595698,
+        "x1": 0.8022798019354941,
+        "y1": 0.6590352907710813
+      },
+      "text": "positive",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8112503732676366,
+        "y0": 0.647201678595698,
+        "x1": 0.8986462849467621,
+        "y1": 0.6590352907710813
+      },
+      "text": "semi-definite",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9076335690818209,
+        "y0": 0.647201678595698,
+        "x1": 0.9318004871637274,
+        "y1": 0.6590352907710813
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.6582832180555553,
+        "x1": 0.489956471385867,
+        "y1": 0.6701168302309387
+      },
+      "text": "lem, where the objective function is non-concave and the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100405504029066,
+        "y0": 0.6606915580679642,
+        "x1": 0.5623743344867549,
+        "y1": 0.6725251702433476
+      },
+      "text": "positive",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5709432346199756,
+        "y0": 0.6606915580679642,
+        "x1": 0.6253355643734483,
+        "y1": 0.6725251702433476
+      },
+      "text": "definite,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.633904464506669,
+        "y0": 0.6606915580679642,
+        "x1": 0.7172000489157289,
+        "y1": 0.6725251702433476
+      },
+      "text": "respectively.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7257690515814829,
+        "y0": 0.6606915580679642,
+        "x1": 0.7378525106224362,
+        "y1": 0.6725251702433476
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7378558941960327,
+        "y0": 0.6599477665246699,
+        "x1": 0.7729258655301019,
+        "y1": 0.6682312717122152
+      },
+      "text": "M ×N",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7750285514552809,
+        "y0": 0.6606915580679642,
+        "x1": 0.7792125965387274,
+        "y1": 0.6725251702433476
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7877823169322141,
+        "y0": 0.6606915580679642,
+        "x1": 0.7998657759731673,
+        "y1": 0.6725251702433476
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7998691595467639,
+        "y0": 0.6599477665246699,
+        "x1": 0.834939130880833,
+        "y1": 0.6682312717122152
+      },
+      "text": "M ×N",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8370435085928104,
+        "y0": 0.6606915580679642,
+        "x1": 0.841227553676257,
+        "y1": 0.6725251702433476
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8497964025432111,
+        "y0": 0.6606915580679642,
+        "x1": 0.8739633206251176,
+        "y1": 0.6725251702433476
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8825316568294057,
+        "y0": 0.6606915580679642,
+        "x1": 0.8946151158703589,
+        "y1": 0.6725251702433476
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8946201399644871,
+        "y0": 0.659179253804685,
+        "x1": 0.907378058009016,
+        "y1": 0.6674627589922303
+      },
+      "text": "M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8946201399644871,
+        "y0": 0.6671874311135153,
+        "x1": 0.9048944124566274,
+        "y1": 0.6754709363010607
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9086387980375911,
+        "y0": 0.659179253804685,
+        "x1": 0.9296884195117581,
+        "y1": 0.6674627589922303
+      },
+      "text": "×N",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.6717730975278215,
+        "x1": 0.489956471385867,
+        "y1": 0.683606709703205
+      },
+      "text": "optimization variables are highly coupled. To decouple",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100405504029066,
+        "y0": 0.6741826337536052,
+        "x1": 0.6366659219578398,
+        "y1": 0.6860162459289887
+      },
+      "text": "denote the sets of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6441682274141534,
+        "y0": 0.6741826337536052,
+        "x1": 0.6985614286941583,
+        "y1": 0.6860162459289887
+      },
+      "text": "M×N",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7078966569807272,
+        "y0": 0.6741826337536052,
+        "x1": 0.9317922845610692,
+        "y1": 0.6860162459289887
+      },
+      "text": "complex, real, and non-negative",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.6852641732134628,
+        "x1": 0.489956471385867,
+        "y1": 0.697097785388846
+      },
+      "text": "the beamforming matrices and FA positions, we utilize",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100405504029066,
+        "y0": 0.6876725132258715,
+        "x1": 0.9317902339104046,
+        "y1": 0.6995061254012549
+      },
+      "text": "real matrices, respectively. The circularly symmetric complex",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.698754052685729,
+        "x1": 0.48995652265213363,
+        "y1": 0.7105876648611124
+      },
+      "text": "two matrix fractional programming (FP) techniques, i.e.,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100405504029066,
+        "y0": 0.7011623926981378,
+        "x1": 0.9317903364429378,
+        "y1": 0.7129960048735211
+      },
+      "text": "Gaussian (CSCG) distribution with zero mean and covariance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.71224512837137,
+        "x1": 0.489956471385867,
+        "y1": 0.7240787405467535
+      },
+      "text": "the quadratic transform and the Lagrangian dual trans-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100405504029066,
+        "y0": 0.7146534683837789,
+        "x1": 0.5268698302768643,
+        "y1": 0.7264870805591623
+      },
+      "text": "σ²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5277130065638671,
+        "y0": 0.7146534683837789,
+        "x1": 0.649978233409534,
+        "y1": 0.7264870805591623
+      },
+      "text": "I is represented as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.654215646676526,
+        "y0": 0.7146534683837789,
+        "x1": 0.677713129848985,
+        "y1": 0.7264870805591623
+      },
+      "text": "CN",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6802019020280352,
+        "y0": 0.7146534683837789,
+        "x1": 0.6963330378832414,
+        "y1": 0.7264870805591623
+      },
+      "text": "(0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6963339094097738,
+        "y0": 0.7146534683837789,
+        "x1": 0.7206017707706436,
+        "y1": 0.7264870805591623
+      },
+      "text": ",σ²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7214432552708482,
+        "y0": 0.7146534683837789,
+        "x1": 0.9317990517082623,
+        "y1": 0.7264870805591623
+      },
+      "text": "I), and the uniform distribution",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.7257350078436363,
+        "x1": 0.489956471385867,
+        "y1": 0.7375686200190197
+      },
+      "text": "form [27], [28]. These FP techniques enable us to solve",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100404991366401,
+        "y0": 0.7281433478560452,
+        "x1": 0.5515198303890758,
+        "y1": 0.7399769600314285
+      },
+      "text": "over [",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5515338773461281,
+        "y0": 0.7281433478560452,
+        "x1": 0.574981170843572,
+        "y1": 0.7399769600314285
+      },
+      "text": "a,b",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5750002931610191,
+        "y0": 0.7281433478560452,
+        "x1": 0.6833538033657393,
+        "y1": 0.7399769600314285
+      },
+      "text": "] is denoted by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6909565907046165,
+        "y0": 0.7281433478560452,
+        "x1": 0.7014166521469664,
+        "y1": 0.7399769600314285
+      },
+      "text": "U",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7030921362724497,
+        "y0": 0.7281433478560452,
+        "x1": 0.7077280422298333,
+        "y1": 0.7399769600314285
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7077403974000873,
+        "y0": 0.7281433478560452,
+        "x1": 0.7311876908975312,
+        "y1": 0.7399769600314285
+      },
+      "text": "a,b",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7312085050017766,
+        "y0": 0.7281433478560452,
+        "x1": 0.807119081172536,
+        "y1": 0.7399769600314285
+      },
+      "text": "]. Operator",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8147310964394038,
+        "y0": 0.7281433478560452,
+        "x1": 0.8236012371552492,
+        "y1": 0.7399769600314285
+      },
+      "text": "∂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8273353182166235,
+        "y0": 0.7281433478560452,
+        "x1": 0.8338289086110372,
+        "y1": 0.7399769600314285
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8338449036862208,
+        "y0": 0.7281433478560452,
+        "x1": 0.8384808096436045,
+        "y1": 0.7399769600314285
+      },
+      "text": "·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8384931648138585,
+        "y0": 0.7281433478560452,
+        "x1": 0.9317861326090755,
+        "y1": 0.7399769600314285
+      },
+      "text": ") denotes the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.7392248873159026,
+        "x1": 0.483128112270463,
+        "y1": 0.751058499491286
+      },
+      "text": "the decoupled subproblems by a BCA-based algorithm.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100404991366401,
+        "y0": 0.7416332273283115,
+        "x1": 0.6365319632031771,
+        "y1": 0.7534668395036948
+      },
+      "text": "partial differential.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6421539757988837,
+        "y0": 0.7416332273283115,
+        "x1": 0.6560951705431336,
+        "y1": 0.7534668395036948
+      },
+      "text": "∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6561004509685948,
+        "y0": 0.7469590949466208,
+        "x1": 0.6640902473541422,
+        "y1": 0.7552426001341661
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6649367046822083,
+        "y0": 0.7416332273283115,
+        "x1": 0.6731206464194236,
+        "y1": 0.7534668395036948
+      },
+      "text": "f",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6777206659901773,
+        "y0": 0.7416332273283115,
+        "x1": 0.7306775915447205,
+        "y1": 0.7534668395036948
+      },
+      "text": "(x) and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7362918116679018,
+        "y0": 0.7416332273283115,
+        "x1": 0.7502330064121517,
+        "y1": 0.7534668395036948
+      },
+      "text": "∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7502399786244113,
+        "y0": 0.740889417660572,
+        "x1": 0.7569059262071817,
+        "y1": 0.7491729228481174
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7502399786244113,
+        "y0": 0.7481088916176062,
+        "x1": 0.7582297750099587,
+        "y1": 0.7563923968051516
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7590745405512265,
+        "y0": 0.7416332273283115,
+        "x1": 0.7672584822884417,
+        "y1": 0.7534668395036948
+      },
+      "text": "f",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7718585018591955,
+        "y0": 0.7416332273283115,
+        "x1": 0.9317925921586689,
+        "y1": 0.7534668395036948
+      },
+      "text": "(x) denote the gradient",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08645404782889052,
+        "y0": 0.7562660699893817,
+        "x1": 0.0933074633321022,
+        "y1": 0.7645495751769271
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.7527159630015436,
+        "x1": 0.489956471385867,
+        "y1": 0.7645495751769271
+      },
+      "text": "Unlike existing FA position optimization algorithms that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100404478703734,
+        "y0": 0.7551243030139525,
+        "x1": 0.712446845740332,
+        "y1": 0.7669579151893359
+      },
+      "text": "vector and Hessian matrix of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7189536115652656,
+        "y0": 0.7551243030139525,
+        "x1": 0.7271375533024808,
+        "y1": 0.7669579151893359
+      },
+      "text": "f",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7317375728732345,
+        "y0": 0.7551243030139525,
+        "x1": 0.931776494550952,
+        "y1": 0.7669579151893359
+      },
+      "text": "(x) with respect to (w.r.t.) x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.76620584247381,
+        "x1": 0.18256450710468758,
+        "y1": 0.7780394546491933
+      },
+      "text": "sequentially",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19133421720423596,
+        "y0": 0.76620584247381,
+        "x1": 0.23595265886085565,
+        "y1": 0.7780394546491933
+      },
+      "text": "update",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2447223945935373,
+        "y0": 0.76620584247381,
+        "x1": 0.26487265195249243,
+        "y1": 0.7780394546491933
+      },
+      "text": "FA",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2736256492491246,
+        "y0": 0.76620584247381,
+        "x1": 0.33826049204256986,
+        "y1": 0.7780394546491933
+      },
+      "text": "positions,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3470302021421182,
+        "y0": 0.76620584247381,
+        "x1": 0.36654450146372497,
+        "y1": 0.7780394546491933
+      },
+      "text": "we",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3753142115632733,
+        "y0": 0.76620584247381,
+        "x1": 0.42830071775365286,
+        "y1": 0.7780394546491933
+      },
+      "text": "propose",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43707040222006793,
+        "y0": 0.76620584247381,
+        "x1": 0.4445012425007213,
+        "y1": 0.7780394546491933
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4532709526002697,
+        "y0": 0.76620584247381,
+        "x1": 0.48995642652788374,
+        "y1": 0.7780394546491933
+      },
+      "text": "novel",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100404478703734,
+        "y0": 0.7686141824862188,
+        "x1": 0.5933360322794332,
+        "y1": 0.7804477946616022
+      },
+      "text": "respectively.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.7796957219460763,
+        "x1": 0.18629665286449718,
+        "y1": 0.7915293341214595
+      },
+      "text": "optimization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19640525841607376,
+        "y0": 0.7796957219460763,
+        "x1": 0.26149197490002274,
+        "y1": 0.7915293341214595
+      },
+      "text": "algorithm",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2716173188876489,
+        "y0": 0.7796957219460763,
+        "x1": 0.30972543171380534,
+        "y1": 0.7915293341214595
+      },
+      "text": "based",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31983403726538195,
+        "y0": 0.7796957219460763,
+        "x1": 0.33657014069976837,
+        "y1": 0.7915293341214595
+      },
+      "text": "on",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34669548468739453,
+        "y0": 0.7796957219460763,
+        "x1": 0.36714700826210767,
+        "y1": 0.7915293341214595
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3772556138136843,
+        "y0": 0.7796957219460763,
+        "x1": 0.4070124005421304,
+        "y1": 0.7915293341214595
+      },
+      "text": "MM",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.417121006093707,
+        "y0": 0.7796957219460763,
+        "x1": 0.489956529060417,
+        "y1": 0.7915293341214595
+      },
+      "text": "framework",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.7931867976317173,
+        "x1": 0.489956471385867,
+        "y1": 0.8050204098071007
+      },
+      "text": "that optimizes all FA positions simultaneously. The pro-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.8066766771039836,
+        "x1": 0.489956471385867,
+        "y1": 0.818510289279367
+      },
+      "text": "posed algorithm reduces computational time by exploit-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5383096926067436,
+        "y0": 0.8018524935589058,
+        "x1": 0.9035363690540187,
+        "y1": 0.813686105734289
+      },
+      "text": "II.SYSTEM MODEL AND PROBLEM FORMULATION",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.8201677527896247,
+        "x1": 0.12306765926727818,
+        "y1": 0.832001364965008
+      },
+      "text": "ing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13287501141966343,
+        "y0": 0.8201677527896247,
+        "x1": 0.2072502526212959,
+        "y1": 0.832001364965008
+      },
+      "text": "parallelism",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21705760477368116,
+        "y0": 0.8201677527896247,
+        "x1": 0.24122454848872102,
+        "y1": 0.832001364965008
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2510318878245396,
+        "y0": 0.8201677527896247,
+        "x1": 0.27426160728647303,
+        "y1": 0.832001364965008
+      },
+      "text": "can",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2840689466222916,
+        "y0": 0.8201677527896247,
+        "x1": 0.2998678258035716,
+        "y1": 0.832001364965008
+      },
+      "text": "be",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.309691929208573,
+        "y0": 0.8201677527896247,
+        "x1": 0.34873726628783597,
+        "y1": 0.832001364965008
+      },
+      "text": "easily",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35854463125678787,
+        "y0": 0.8201677527896247,
+        "x1": 0.4187109268202114,
+        "y1": 0.832001364965008
+      },
+      "text": "extended",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4285182917891633,
+        "y0": 0.8201677527896247,
+        "x1": 0.441538975083223,
+        "y1": 0.832001364965008
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4513463144190416,
+        "y0": 0.8201677527896247,
+        "x1": 0.458777154699695,
+        "y1": 0.832001364965008
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46858454530178023,
+        "y0": 0.8201677527896247,
+        "x1": 0.489956529060417,
+        "y1": 0.832001364965008
+      },
+      "text": "de-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5267771921330925,
+        "y0": 0.8201660490917878,
+        "x1": 0.9317908491056041,
+        "y1": 0.8319996612671712
+      },
+      "text": "As shown in Fig.1, we consider a downlink MU-MIMO",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.8336576322618909,
+        "x1": 0.17510018995193513,
+        "y1": 0.8454912444372743
+      },
+      "text": "centralized",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18388665130409965,
+        "y0": 0.8336576322618909,
+        "x1": 0.2931399485707313,
+        "y1": 0.8454912444372743
+      },
+      "text": "implementation.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30194313554237867,
+        "y0": 0.8336576322618909,
+        "x1": 0.38964031343726224,
+        "y1": 0.8454912444372743
+      },
+      "text": "Additionally,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39844350040890963,
+        "y0": 0.8336576322618909,
+        "x1": 0.41795779973051633,
+        "y1": 0.8454912444372743
+      },
+      "text": "we",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4267442482661142,
+        "y0": 0.8336576322618909,
+        "x1": 0.489956529060417,
+        "y1": 0.8454912444372743
+      },
+      "text": "introduce",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100403966041068,
+        "y0": 0.8336571247774289,
+        "x1": 0.5565333124000726,
+        "y1": 0.8454907369528123
+      },
+      "text": "system",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5671105172616359,
+        "y0": 0.8336571247774289,
+        "x1": 0.6079968003418793,
+        "y1": 0.8454907369528123
+      },
+      "text": "where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6185740052034424,
+        "y0": 0.8336571247774289,
+        "x1": 0.6260048454840959,
+        "y1": 0.8454907369528123
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6365820503456591,
+        "y0": 0.8336571247774289,
+        "x1": 0.6570503123564216,
+        "y1": 0.8454907369528123
+      },
+      "text": "BS",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6676275172179849,
+        "y0": 0.8336571247774289,
+        "x1": 0.697384303946431,
+        "y1": 0.8454907369528123
+      },
+      "text": "with",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7079603809501287,
+        "y0": 0.8336571247774289,
+        "x1": 0.7241944082024295,
+        "y1": 0.8454907369528123
+      },
+      "text": "M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7365992042025202,
+        "y0": 0.8336571247774289,
+        "x1": 0.7632598160250719,
+        "y1": 0.8454907369528123
+      },
+      "text": "FAs",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.773837020886635,
+        "y0": 0.8336571247774289,
+        "x1": 0.8154095029455087,
+        "y1": 0.8454907369528123
+      },
+      "text": "serves",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8259879894637373,
+        "y0": 0.8336571247774289,
+        "x1": 0.8401969479185128,
+        "y1": 0.8454907369528123
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8519776283888431,
+        "y0": 0.8336571247774289,
+        "x1": 0.8905543148918528,
+        "y1": 0.8454907369528123
+      },
+      "text": "users,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9011315710196826,
+        "y0": 0.8336571247774289,
+        "x1": 0.9317920794960027,
+        "y1": 0.8454907369528123
+      },
+      "text": "each",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.8471475207963798,
+        "x1": 0.48995652265213363,
+        "y1": 0.8589811329717632
+      },
+      "text": "a box-constrained movement mode to simplify both the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100404478703734,
+        "y0": 0.8471470133119177,
+        "x1": 0.6092688189491093,
+        "y1": 0.8589806254873011
+      },
+      "text": "equipped with",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6173755536888036,
+        "y0": 0.8471470133119177,
+        "x1": 0.6308146466178347,
+        "y1": 0.8589806254873011
+      },
+      "text": "N",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6407596871457789,
+        "y0": 0.8471470133119177,
+        "x1": 0.9318004871637274,
+        "y1": 0.8589806254873011
+      },
+      "text": "FAs. A three-dimensional (3D) Cartesian",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.8606385964820209,
+        "x1": 0.489956471385867,
+        "y1": 0.8724722086574042
+      },
+      "text": "formulated problem and the engineering implementation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100404991366401,
+        "y0": 0.8606380889975588,
+        "x1": 0.9317902339104046,
+        "y1": 0.8724717011729421
+      },
+      "text": "coordinate system is established to describe the positions of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10167891784774193,
+        "y0": 0.8741284850165096,
+        "x1": 0.489956471385867,
+        "y1": 0.885962097191893
+      },
+      "text": "of FAS. This movement mode provides closed-form so-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100404991366401,
+        "y0": 0.8741279775320476,
+        "x1": 0.5304919970782198,
+        "y1": 0.885961589707431
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5393286609219663,
+        "y0": 0.8741279775320476,
+        "x1": 0.5941896156185587,
+        "y1": 0.885961589707431
+      },
+      "text": "transmit",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6030262794623051,
+        "y0": 0.8741279775320476,
+        "x1": 0.6296868912848568,
+        "y1": 0.885961589707431
+      },
+      "text": "FAs",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6385235551286033,
+        "y0": 0.8741279775320476,
+        "x1": 0.6506070141695565,
+        "y1": 0.885961589707431
+      },
+      "text": "at",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.659443678013303,
+        "y0": 0.8741279775320476,
+        "x1": 0.6798951759548827,
+        "y1": 0.885961589707431
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6887318397986292,
+        "y0": 0.8741279775320476,
+        "x1": 0.7092001018093919,
+        "y1": 0.885961589707431
+      },
+      "text": "BS",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7180200528502221,
+        "y0": 0.8741279775320476,
+        "x1": 0.7421869709321286,
+        "y1": 0.885961589707431
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7510236347758751,
+        "y0": 0.8741279775320476,
+        "x1": 0.7986713232273245,
+        "y1": 0.885961589707431
+      },
+      "text": "receive",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8075079870710709,
+        "y0": 0.8741279775320476,
+        "x1": 0.8341685988936225,
+        "y1": 0.885961589707431
+      },
+      "text": "FAs",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.843005262737369,
+        "y0": 0.8741279775320476,
+        "x1": 0.8550887217783222,
+        "y1": 0.885961589707431
+      },
+      "text": "at",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8639253856220687,
+        "y0": 0.8741279775320476,
+        "x1": 0.8843769348299151,
+        "y1": 0.885961589707431
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8932135986736616,
+        "y0": 0.8741279775320476,
+        "x1": 0.9317903364429378,
+        "y1": 0.885961589707431
+      },
+      "text": "users.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      595.276,
+      841.89
+    ]
+  ],
+  "seconds": 0.034756399982143193,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

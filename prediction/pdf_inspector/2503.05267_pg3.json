@@ -1,0 +1,7392 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.05267_pg3",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "Transmission problems and domain decompositions for parabolic equations on evolving domains 3\n\nproblem becomes\n\n*𝑢*¤*𝑖*(*𝑡*)−∇· *𝛼*(*𝑡*)∇*𝑢𝑖*(*𝑡*) + ∇· **w**(*𝑡*)+ *𝛽*(*𝑡*) *𝑢𝑖*(*𝑡*) = *𝑓𝑖*(*𝑡*) in Ω*𝑖*(*𝑡*)*,*    *𝑢𝑖*(*𝑡*)=0 on *𝜕*Ω*𝑖*(*𝑡*)\\ Γ(*𝑡*)   for *𝑖* = 1*,*2*,* (2)    *𝑢₁*(*𝑡*) = *𝑢₂*(*𝑡*) on Γ(*𝑡*)*,* \n\n| 𝛼(𝑡)∇𝑢 (𝑡)· 𝜈 (𝑡)+ 𝛼(𝑡)∇𝑢 (𝑡)· 𝜈 (𝑡)=0||on Γ(𝑡),|\n|---|---|---|\n||2 2||\n|𝑖 Ω (𝑡 )|𝑖 𝑖|Ω (𝑡 )|\n\n 1 1\n\nwhere *𝜈* (*𝑡*) is the unit outward normal vector of *𝜕*Ω (*𝑡*), *𝑓* (*𝑡*) = *𝑓* (*𝑡*) |, and *𝑢𝑖*(*𝑡*) = *𝑖* *𝑢*(*𝑡*) |. *𝑖* The non-overlapping domain decompositions can then be derived by approximating the transmission problem. For example, consider the classic Robin–Robin method, first introduced in [27]. By taking linear combinations of the last two equations in (2), one has the equivalent Robin conditions\n\n*𝛼*(*𝑡*)∇*𝑢₁*(*𝑡*)· *𝜈𝑖*(*𝑡*)+ *𝑠₀𝑢₁*(*𝑡*) = *𝛼*(*𝑡*)∇*𝑢₂*(*𝑡*)· *𝜈𝑖*(*𝑡*)+ *𝑠₀𝑢₂*(*𝑡*) on Γ(*𝑡*) for *𝑖* = 1*,*2*,*\n\nand a method parameter *𝑠₀ >* 0. Alternating between the subdomains then gives the Robin– *𝑛 𝑛* Robin method as computing (*𝑢₁,𝑢₂*) for *𝑛* = 1*,*2*,...* with\n\n*𝑛 𝑛 𝑛* *𝑢*¤1(*𝑡*)−∇· *𝛼*(*𝑡*)∇*𝑢₁*(*𝑡*) + ∇· **w**(*𝑡*)+ *𝛽*(*𝑡*) *𝑢₁*(*𝑡*) = *𝑓₁*(*𝑡*) in Ω₁(*𝑡*)*,*  *𝑛*  *𝑢₁*(*𝑡*)=0 on *𝜕*Ω₁(*𝑡*)\\ Γ(*𝑡*)*,*   *𝑛 𝑛*\n\n| |𝛼(𝑡)∇𝑢|(𝑡)· 𝜈₁ (𝑡)+ 𝑠₀𝑢||(𝑡) =|||\n|---|---|---|---|---|---|---|\n|||1|𝑛−1|1|𝑛−1||\n|2 𝑛|2 𝑛|||2 𝑛|2|2|\n|||||𝑛|||\n|||𝑛|1 𝑛|2 𝑛 2|0 1 𝑛||\n|2 𝑖||𝑖𝑛||𝑖|𝑖𝑛|Ω (𝑡 )|\n\n1 1   *𝛼*(*𝑡*)∇*𝑢₂* (*𝑡*)· *𝜈₁*(*𝑡*)+*𝑠₀𝑢₂* (*𝑡*) on Γ(*𝑡*)*,*\n\n(3)\n*𝑢*¤ (*𝑡*)−∇· *𝛼*(*𝑡*)∇*𝑢* (*𝑡*) + ∇· **w**(*𝑡*)+ *𝛽*(*𝑡*) *𝑢* (*𝑡*) = *𝑓* (*𝑡*) in Ω (*𝑡*)*,*    *𝑢* (*𝑡*)=0 on *𝜕*Ω₂(*𝑡*)\\ Γ(*𝑡*)*,*    *𝛼*(*𝑡*)∇*𝑢₂*(*𝑡*)· *𝜈₂*(*𝑡*)+ *𝑠₀𝑢₂*(*𝑡*) =    *𝛼*(*𝑡*)∇*𝑢* (*𝑡*)· *𝜈* (*𝑡*)+*𝑠 𝑢* (*𝑡*) on Γ(*𝑡*)*.*\n\nHere, *𝑢⁰* is an initial guess and *𝑢* (*𝑡*) approximates *𝑢* (*𝑡*) = *𝑢*(*𝑡*) |. Note that the Robin– *𝑖* Robin method is sequential, but the computation of each *𝑢* can be implemented in parallel when Ω (*𝑡*) is a union of nonadjacent subdomains, as is the case inFigure 1. The well posedness of parabolic equations on evolving domains can be derived via the framework [3], which relies on a variational formulation where the standard Sobolev– Bochner solution space\n\n−1 *𝐻¹* (0*,𝑇*);*𝐻* (Ω) ∩ *𝐿²* (0*,𝑇*); *𝐻₀₁*(Ω) (4)\n\nis generalized to evolving domains Ω(*𝑡*). The framework has also been extended to a Banach space setting [2]. This variational setting constitutes the starting point of the design and analysis of a wide range of finite element methods for equations on evolving domains. The\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764718253845698,
+        "y0": 0.05277495355724471,
+        "x1": 0.8386955616664089,
+        "y1": 0.06595473078762237
+      },
+      "text": "Transmission problems and domain decompositions for parabolic equations on evolving domains",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8759090183963145,
+        "y0": 0.05277495355724471,
+        "x1": 0.8852124182013141,
+        "y1": 0.06595473078762237
+      },
+      "text": "3",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764718253845698,
+        "y0": 0.08906815907366117,
+        "x1": 0.2640605341433519,
+        "y1": 0.10371225740213186
+      },
+      "text": "problem becomes",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.118633895051664,
+        "x1": 0.1817953515085944,
+        "y1": 0.13327799338013468
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.12302746813453735,
+        "x1": 0.1817953515085944,
+        "y1": 0.13767156646300804
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18256033331971508,
+        "y0": 0.12068462390750656,
+        "x1": 0.1928973404250792,
+        "y1": 0.13532872223597714
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18593039816712092,
+        "y0": 0.12068462390750656,
+        "x1": 0.19281483866139382,
+        "y1": 0.13532872223597714
+      },
+      "text": "¤",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19360019655577357,
+        "y0": 0.12683459631162042,
+        "x1": 0.19842964493282636,
+        "y1": 0.1375247910492291
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20110814203132782,
+        "y0": 0.12068462390750656,
+        "x1": 0.2079925825256007,
+        "y1": 0.13532872223597714
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20873644413853362,
+        "y0": 0.12068462390750656,
+        "x1": 0.21448381369289413,
+        "y1": 0.13532872223597714
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21568408690504445,
+        "y0": 0.12068462390750656,
+        "x1": 0.2700567547285331,
+        "y1": 0.13532872223597714
+      },
+      "text": ")−∇·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2831206580672262,
+        "y0": 0.12068462390750656,
+        "x1": 0.2953803473226028,
+        "y1": 0.13532872223597714
+      },
+      "text": "𝛼",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29691012095805386,
+        "y0": 0.12068462390750656,
+        "x1": 0.3037945772845592,
+        "y1": 0.13532872223597714
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3045384072330271,
+        "y0": 0.12068462390750656,
+        "x1": 0.31028579261962014,
+        "y1": 0.13532872223597714
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3114839759770772,
+        "y0": 0.12068462390750656,
+        "x1": 0.3333364149190719,
+        "y1": 0.13532872223597714
+      },
+      "text": ")∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33348276807652877,
+        "y0": 0.12068462390750656,
+        "x1": 0.34381975934966036,
+        "y1": 0.13532872223597714
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3445226471448198,
+        "y0": 0.12683459631162042,
+        "x1": 0.34935211135410504,
+        "y1": 0.1375247910492291
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3520305767881415,
+        "y0": 0.12068462390750656,
+        "x1": 0.3589150331146469,
+        "y1": 0.13532872223597714
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3596588630631148,
+        "y0": 0.12068462390750656,
+        "x1": 0.3654062484497078,
+        "y1": 0.13532872223597714
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3666044318071649,
+        "y0": 0.12068462390750656,
+        "x1": 0.42653880459419874,
+        "y1": 0.13532872223597714
+      },
+      "text": ") + ∇·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4313453753952536,
+        "y0": 0.12068462390750656,
+        "x1": 0.4462720042193888,
+        "y1": 0.13532872223597714
+      },
+      "text": "w",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4473054373651955,
+        "y0": 0.12068462390750656,
+        "x1": 0.45418989369170093,
+        "y1": 0.13532872223597714
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4549337236401688,
+        "y0": 0.12068462390750656,
+        "x1": 0.46068110902676185,
+        "y1": 0.13532872223597714
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46187929238421893,
+        "y0": 0.12068462390750656,
+        "x1": 0.48604722699739245,
+        "y1": 0.13532872223597714
+      },
+      "text": ")+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4917844480907047,
+        "y0": 0.12068462390750656,
+        "x1": 0.5022868545292527,
+        "y1": 0.13532872223597714
+      },
+      "text": "𝛽",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5037539958528366,
+        "y0": 0.12068462390750656,
+        "x1": 0.510638452179342,
+        "y1": 0.13532872223597714
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5113822821278099,
+        "y0": 0.12068462390750656,
+        "x1": 0.5171296675144029,
+        "y1": 0.13532872223597714
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5183299407265533,
+        "y0": 0.12068462390750656,
+        "x1": 0.5252143970530587,
+        "y1": 0.13532872223597714
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5343107429211024,
+        "y0": 0.12068462390750656,
+        "x1": 0.544647734194234,
+        "y1": 0.13532872223597714
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5453506219893933,
+        "y0": 0.12683459631162042,
+        "x1": 0.5501800861986786,
+        "y1": 0.1375247910492291
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5528585832971802,
+        "y0": 0.12068462390750656,
+        "x1": 0.5597430079592205,
+        "y1": 0.13532872223597714
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5604868695721534,
+        "y0": 0.12068462390750656,
+        "x1": 0.5662342232942814,
+        "y1": 0.13532872223597714
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5674344965064317,
+        "y0": 0.12068462390750656,
+        "x1": 0.5933343190354645,
+        "y1": 0.13532872223597714
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6026728663966686,
+        "y0": 0.12068462390750656,
+        "x1": 0.6084202201187966,
+        "y1": 0.13532872223597714
+      },
+      "text": "𝑓",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6086264824441263,
+        "y0": 0.12683459631162042,
+        "x1": 0.6134559466534116,
+        "y1": 0.1375247910492291
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6161364702776762,
+        "y0": 0.12068462390750656,
+        "x1": 0.6230208949397166,
+        "y1": 0.13532872223597714
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6237647565526495,
+        "y0": 0.12068462390750656,
+        "x1": 0.6295121102747775,
+        "y1": 0.13532872223597714
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6307102936322345,
+        "y0": 0.12068462390750656,
+        "x1": 0.6375947182942749,
+        "y1": 0.13532872223597714
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6628338300955937,
+        "y0": 0.12068462390750656,
+        "x1": 0.6994691095259357,
+        "y1": 0.13532872223597714
+      },
+      "text": "in Ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6994687295523551,
+        "y0": 0.12683459631162042,
+        "x1": 0.7042981937616404,
+        "y1": 0.1375247910492291
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7069766908601418,
+        "y0": 0.12068462390750656,
+        "x1": 0.7138611155221822,
+        "y1": 0.13532872223597714
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7146070669898084,
+        "y0": 0.12068462390750656,
+        "x1": 0.7203544207119363,
+        "y1": 0.13532872223597714
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7215526040693935,
+        "y0": 0.12068462390750656,
+        "x1": 0.7284370287314338,
+        "y1": 0.13532872223597714
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7294714434756571,
+        "y0": 0.12068462390750656,
+        "x1": 0.7346399707766879,
+        "y1": 0.13532872223597714
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.1274210412174107,
+        "x1": 0.1817953515085944,
+        "y1": 0.1420651395458814
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.13181308912789158,
+        "x1": 0.1817953515085944,
+        "y1": 0.14645718745636216
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.13620666221076494,
+        "x1": 0.1817953515085944,
+        "y1": 0.15085076053923552
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.1406002352936383,
+        "x1": 0.1817953515085944,
+        "y1": 0.155244333622109
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.14499380837651166,
+        "x1": 0.1817953515085944,
+        "y1": 0.15963790670498235
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.14938738145938502,
+        "x1": 0.1817953515085944,
+        "y1": 0.1640314797878557
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5343107429211024,
+        "y0": 0.1441149502143001,
+        "x1": 0.544647734194234,
+        "y1": 0.15875904854277068
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5453506219893933,
+        "y0": 0.15026492261841395,
+        "x1": 0.5501800861986786,
+        "y1": 0.16095511735602264
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5528585832971802,
+        "y0": 0.1441149502143001,
+        "x1": 0.5597430079592205,
+        "y1": 0.15875904854277068
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5604868695721534,
+        "y0": 0.1441149502143001,
+        "x1": 0.5662342232942814,
+        "y1": 0.15875904854277068
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5674344965064317,
+        "y0": 0.1441149502143001,
+        "x1": 0.6094135977163162,
+        "y1": 0.15875904854277068
+      },
+      "text": ")=0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.662835983279217,
+        "y0": 0.1441149502143001,
+        "x1": 0.6835099658254802,
+        "y1": 0.15875904854277068
+      },
+      "text": "on",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6891116630083823,
+        "y0": 0.1441149502143001,
+        "x1": 0.6996967770296385,
+        "y1": 0.15875904854277068
+      },
+      "text": "𝜕",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7007512670447029,
+        "y0": 0.1441149502143001,
+        "x1": 0.716132724244803,
+        "y1": 0.15875904854277068
+      },
+      "text": "Ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7161323442712224,
+        "y0": 0.15026492261841395,
+        "x1": 0.7209618084805077,
+        "y1": 0.16095511735602264
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7236403055790093,
+        "y0": 0.1441149502143001,
+        "x1": 0.7305247302410496,
+        "y1": 0.15875904854277068
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7312685918539825,
+        "y0": 0.1441149502143001,
+        "x1": 0.7370159455761105,
+        "y1": 0.15875904854277068
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7382162187882608,
+        "y0": 0.1441149502143001,
+        "x1": 0.7857136129801083,
+        "y1": 0.15875904854277068
+      },
+      "text": ")\\ Γ(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7864574745930413,
+        "y0": 0.1441149502143001,
+        "x1": 0.7922048283151693,
+        "y1": 0.15875904854277068
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7934030116726263,
+        "y0": 0.1441149502143001,
+        "x1": 0.8002874363346667,
+        "y1": 0.15875904854277068
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.15377942936986588,
+        "x1": 0.1817953515085944,
+        "y1": 0.16842352769833646
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.15817300245273924,
+        "x1": 0.1817953515085944,
+        "y1": 0.17281710078120982
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6835086359179481,
+        "y0": 0.16754527652109363,
+        "x1": 0.7067875906748687,
+        "y1": 0.1821893748495642
+      },
+      "text": "for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7115420101019878,
+        "y0": 0.16754527652109363,
+        "x1": 0.7172893638241158,
+        "y1": 0.1821893748495642
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7238186398461657,
+        "y0": 0.16754527652109363,
+        "x1": 0.752136930886717,
+        "y1": 0.1821893748495642
+      },
+      "text": "= 1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7521383874521091,
+        "y0": 0.16754527652109363,
+        "x1": 0.75730691475314,
+        "y1": 0.1821893748495642
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7609785994623709,
+        "y0": 0.16754527652109363,
+        "x1": 0.7713155907355024,
+        "y1": 0.1821893748495642
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7713149574462015,
+        "y0": 0.16754527652109363,
+        "x1": 0.7764834847472323,
+        "y1": 0.1821893748495642
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8329928390077677,
+        "y0": 0.17116271628819602,
+        "x1": 0.85709874293391,
+        "y1": 0.1858068146166666
+      },
+      "text": "(2)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.18043181692999422,
+        "x1": 0.1817953515085944,
+        "y1": 0.1950759152584649
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.18482539001286769,
+        "x1": 0.1817953515085944,
+        "y1": 0.19946948834133826
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.18921896309574104,
+        "x1": 0.1817953515085944,
+        "y1": 0.20386306142421162
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.1936125361786144,
+        "x1": 0.1817953515085944,
+        "y1": 0.20825663450708498
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.19800458408909516,
+        "x1": 0.1817953515085944,
+        "y1": 0.21264868241756585
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.20239815717196852,
+        "x1": 0.1817953515085944,
+        "y1": 0.2170422555004392
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5322043593771076,
+        "y0": 0.1982986732127916,
+        "x1": 0.5507902604401744,
+        "y1": 0.21294277154126218
+      },
+      "text": "𝑢₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.55285845663932,
+        "y0": 0.1982986732127916,
+        "x1": 0.5597428813013603,
+        "y1": 0.21294277154126218
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5604867429142932,
+        "y0": 0.1982986732127916,
+        "x1": 0.5662340966364212,
+        "y1": 0.21294277154126218
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5674343698485715,
+        "y0": 0.1982986732127916,
+        "x1": 0.5933341923776043,
+        "y1": 0.21294277154126218
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.599014227447038,
+        "y0": 0.1982986732127916,
+        "x1": 0.6176001285101047,
+        "y1": 0.21294277154126218
+      },
+      "text": "𝑢₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6196683247092503,
+        "y0": 0.1982986732127916,
+        "x1": 0.6265527493712907,
+        "y1": 0.21294277154126218
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6272966109842236,
+        "y0": 0.1982986732127916,
+        "x1": 0.6330439647063516,
+        "y1": 0.21294277154126218
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6342421480638086,
+        "y0": 0.1982986732127916,
+        "x1": 0.641126572725849,
+        "y1": 0.21294277154126218
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6628357932924267,
+        "y0": 0.1982986732127916,
+        "x1": 0.7095591813006146,
+        "y1": 0.21294277154126218
+      },
+      "text": "on Γ(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7103030429135475,
+        "y0": 0.1982986732127916,
+        "x1": 0.7160503966356754,
+        "y1": 0.21294277154126218
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7172485799931325,
+        "y0": 0.1982986732127916,
+        "x1": 0.7241330046551728,
+        "y1": 0.21294277154126218
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7251674193993961,
+        "y0": 0.1982986732127916,
+        "x1": 0.730335946700427,
+        "y1": 0.21294277154126218
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.206791730254842,
+        "x1": 0.1817953515085944,
+        "y1": 0.22143582858331257
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.21118530333771535,
+        "x1": 0.1817953515085944,
+        "y1": 0.22582940166618592
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.2155788764205887,
+        "x1": 0.1817953515085944,
+        "y1": 0.23022297474905928
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25311984401182713,
+        "y0": 0.22172899951958513,
+        "x1": 0.26537953326720376,
+        "y1": 0.2363730978480557
+      },
+      "text": "𝛼",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2669093069026548,
+        "y0": 0.22172899951958513,
+        "x1": 0.2737937632291602,
+        "y1": 0.2363730978480557
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27453759317762805,
+        "y0": 0.22172899951958513,
+        "x1": 0.2802849785642211,
+        "y1": 0.2363730978480557
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2814852517763714,
+        "y0": 0.22172899951958513,
+        "x1": 0.3033376907183661,
+        "y1": 0.2363730978480557
+      },
+      "text": ")∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30348198568559476,
+        "y0": 0.22172899951958513,
+        "x1": 0.31381897695872635,
+        "y1": 0.2363730978480557
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3241360829478071,
+        "y0": 0.22172899951958513,
+        "x1": 0.33102053927431246,
+        "y1": 0.2363730978480557
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33176436922278035,
+        "y0": 0.22172899951958513,
+        "x1": 0.3375117546093734,
+        "y1": 0.2363730978480557
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33870993796683047,
+        "y0": 0.22172899951958513,
+        "x1": 0.35659295123473783,
+        "y1": 0.2363730978480557
+      },
+      "text": ")·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3618127116402181,
+        "y0": 0.22172899951958513,
+        "x1": 0.37132275374412793,
+        "y1": 0.2363730978480557
+      },
+      "text": "𝜈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38124658707729914,
+        "y0": 0.22172899951958513,
+        "x1": 0.38813104340380455,
+        "y1": 0.2363730978480557
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38887487335227244,
+        "y0": 0.22172899951958513,
+        "x1": 0.3946222587388655,
+        "y1": 0.2363730978480557
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39582044209632256,
+        "y0": 0.22172899951958513,
+        "x1": 0.41998837670949607,
+        "y1": 0.2363730978480557
+      },
+      "text": ")+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4247316185804528,
+        "y0": 0.22172899951958513,
+        "x1": 0.4369913078358294,
+        "y1": 0.2363730978480557
+      },
+      "text": "𝛼",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43852108147128044,
+        "y0": 0.22172899951958513,
+        "x1": 0.4454055377977858,
+        "y1": 0.2363730978480557
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44615145760094693,
+        "y0": 0.22172899951958513,
+        "x1": 0.45189884298753996,
+        "y1": 0.2363730978480557
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45309702634499704,
+        "y0": 0.22172899951958513,
+        "x1": 0.4749494652869917,
+        "y1": 0.2363730978480557
+      },
+      "text": ")∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4750937602542204,
+        "y0": 0.22172899951958513,
+        "x1": 0.48543075152735193,
+        "y1": 0.2363730978480557
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4957478575164327,
+        "y0": 0.22172899951958513,
+        "x1": 0.5026323138429382,
+        "y1": 0.2363730978480557
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5033761437914059,
+        "y0": 0.22172899951958513,
+        "x1": 0.509123529177999,
+        "y1": 0.2363730978480557
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5103238023901493,
+        "y0": 0.22172899951958513,
+        "x1": 0.5282068156580567,
+        "y1": 0.2363730978480557
+      },
+      "text": ")·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5334245178733088,
+        "y0": 0.22172899951958513,
+        "x1": 0.5429345599772186,
+        "y1": 0.2363730978480557
+      },
+      "text": "𝜈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5528583933103899,
+        "y0": 0.22172899951958513,
+        "x1": 0.5597428179724302,
+        "y1": 0.2363730978480557
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5604866795853631,
+        "y0": 0.22172899951958513,
+        "x1": 0.5662340333074911,
+        "y1": 0.2363730978480557
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5674343065196414,
+        "y0": 0.22172899951958513,
+        "x1": 0.6094134077295259,
+        "y1": 0.2363730978480557
+      },
+      "text": ")=0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6628357932924267,
+        "y0": 0.22172899951958513,
+        "x1": 0.7095591813006146,
+        "y1": 0.2363730978480557
+      },
+      "text": "on Γ(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7103030429135475,
+        "y0": 0.22172899951958513,
+        "x1": 0.7160503966356754,
+        "y1": 0.2363730978480557
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7172485799931325,
+        "y0": 0.22172899951958513,
+        "x1": 0.7241330046551728,
+        "y1": 0.2363730978480557
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7251674193993961,
+        "y0": 0.22172899951958513,
+        "x1": 0.730335946700427,
+        "y1": 0.2363730978480557
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17038328831811655,
+        "y0": 0.22465706136524666,
+        "x1": 0.1817953515085944,
+        "y1": 0.23930115969371735
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31452186475388577,
+        "y0": 0.227878971923699,
+        "x1": 0.32206788674866155,
+        "y1": 0.23856916666130767
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3716323688833778,
+        "y0": 0.227878971923699,
+        "x1": 0.3791783908781536,
+        "y1": 0.23856916666130767
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48613363932251136,
+        "y0": 0.227878971923699,
+        "x1": 0.49367966131728713,
+        "y1": 0.23856916666130767
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5432441751164685,
+        "y0": 0.227878971923699,
+        "x1": 0.5507901971112443,
+        "y1": 0.23856916666130767
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1169021968370148,
+        "y0": 0.2526493535248192,
+        "x1": 0.16841895156433198,
+        "y1": 0.267586334016113
+      },
+      "text": "where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1747909343562506,
+        "y0": 0.2529422356876424,
+        "x1": 0.18430097646016044,
+        "y1": 0.267586334016113
+      },
+      "text": "𝜈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18461060743164287,
+        "y0": 0.25909216323374473,
+        "x1": 0.18944005580869566,
+        "y1": 0.2697823579713534
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1921185370749646,
+        "y0": 0.2529422356876424,
+        "x1": 0.1990029775692375,
+        "y1": 0.267586334016113
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1997468391821704,
+        "y0": 0.2529422356876424,
+        "x1": 0.2054942087365309,
+        "y1": 0.267586334016113
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20669240792622054,
+        "y0": 0.2529422356876424,
+        "x1": 0.5272443900751225,
+        "y1": 0.267586334016113
+      },
+      "text": ") is the unit outward normal vector of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5336279937257141,
+        "y0": 0.2529422356876424,
+        "x1": 0.5442131077469703,
+        "y1": 0.267586334016113
+      },
+      "text": "𝜕",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5452675977620347,
+        "y0": 0.2529422356876424,
+        "x1": 0.5606490549621348,
+        "y1": 0.267586334016113
+      },
+      "text": "Ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5606486749885542,
+        "y0": 0.25909216323374473,
+        "x1": 0.5654781391978395,
+        "y1": 0.2697823579713534
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5681566362963409,
+        "y0": 0.2529422356876424,
+        "x1": 0.5750410609583814,
+        "y1": 0.267586334016113
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5757849225713143,
+        "y0": 0.2529422356876424,
+        "x1": 0.5815322762934423,
+        "y1": 0.267586334016113
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5827325495055926,
+        "y0": 0.2529422356876424,
+        "x1": 0.5959232690268073,
+        "y1": 0.267586334016113
+      },
+      "text": "),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6054763748031838,
+        "y0": 0.2529422356876424,
+        "x1": 0.6112237285253118,
+        "y1": 0.267586334016113
+      },
+      "text": "𝑓",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6114320807053347,
+        "y0": 0.25909216323374473,
+        "x1": 0.61626154491462,
+        "y1": 0.2697823579713534
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6189400420131216,
+        "y0": 0.2529422356876424,
+        "x1": 0.6258244666751619,
+        "y1": 0.267586334016113
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6265683282880948,
+        "y0": 0.2529422356876424,
+        "x1": 0.6323156820102228,
+        "y1": 0.267586334016113
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6335138653676798,
+        "y0": 0.2529422356876424,
+        "x1": 0.6597644035115963,
+        "y1": 0.267586334016113
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6719355272582306,
+        "y0": 0.2529422356876424,
+        "x1": 0.6776828809803586,
+        "y1": 0.267586334016113
+      },
+      "text": "𝑓",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6823549094694199,
+        "y0": 0.2529422356876424,
+        "x1": 0.6892393341314602,
+        "y1": 0.267586334016113
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6899852855990865,
+        "y0": 0.2529422356876424,
+        "x1": 0.6957326393212144,
+        "y1": 0.267586334016113
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6969308226786715,
+        "y0": 0.2529422356876424,
+        "x1": 0.7098103438373838,
+        "y1": 0.267586334016113
+      },
+      "text": ") |",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7106372296776754,
+        "y0": 0.2604694836202568,
+        "x1": 0.7218657022997987,
+        "y1": 0.2711596783578656
+      },
+      "text": "Ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7218659556155191,
+        "y0": 0.26470751505262624,
+        "x1": 0.72607314975766,
+        "y1": 0.27276187195625834
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7287741919552764,
+        "y0": 0.2604694836202568,
+        "x1": 0.7337998491900057,
+        "y1": 0.2711596783578656
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7346302814503829,
+        "y0": 0.2604694836202568,
+        "x1": 0.7394898902303949,
+        "y1": 0.2711596783578656
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7414969740119958,
+        "y0": 0.2604694836202568,
+        "x1": 0.7465226312467251,
+        "y1": 0.2711596783578656
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7487642220564794,
+        "y0": 0.2526493535248192,
+        "x1": 0.790454226700466,
+        "y1": 0.267586334016113
+      },
+      "text": ", and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7963393841744875,
+        "y0": 0.2529422356876424,
+        "x1": 0.806676375447619,
+        "y1": 0.267586334016113
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8073792632427784,
+        "y0": 0.25909216323374473,
+        "x1": 0.8122087274520637,
+        "y1": 0.2697823579713534
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8148872245505653,
+        "y0": 0.2529422356876424,
+        "x1": 0.8217716492126056,
+        "y1": 0.267586334016113
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8225155108255385,
+        "y0": 0.2529422356876424,
+        "x1": 0.8282628645476665,
+        "y1": 0.267586334016113
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8294631377598168,
+        "y0": 0.2529422356876424,
+        "x1": 0.85571158604904,
+        "y1": 0.267586334016113
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12006683846741477,
+        "y0": 0.2719789889115626,
+        "x1": 0.13040384557277887,
+        "y1": 0.28662308724003316
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13214013484928,
+        "y0": 0.2719789889115626,
+        "x1": 0.13902457534355286,
+        "y1": 0.28662308724003316
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1397684369564858,
+        "y0": 0.2719789889115626,
+        "x1": 0.1455158065108463,
+        "y1": 0.28662308724003316
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14671400570053592,
+        "y0": 0.2719789889115626,
+        "x1": 0.15959561671394146,
+        "y1": 0.28662308724003316
+      },
+      "text": ") |",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1604225183864656,
+        "y0": 0.27934452371255325,
+        "x1": 0.1716509910085889,
+        "y1": 0.29003471845016193
+      },
+      "text": "Ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17165122849207679,
+        "y0": 0.28358403545930355,
+        "x1": 0.17585843846645013,
+        "y1": 0.29163839236293576
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17855944899960152,
+        "y0": 0.27934452371255325,
+        "x1": 0.1835850904020984,
+        "y1": 0.29003471845016193
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18441555432694054,
+        "y0": 0.27934452371255325,
+        "x1": 0.18927519477141763,
+        "y1": 0.29003471845016193
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19128226272078594,
+        "y0": 0.27934452371255325,
+        "x1": 0.1963079041232828,
+        "y1": 0.29003471845016193
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19854740507834387,
+        "y0": 0.27197894405355094,
+        "x1": 0.20371590071490966,
+        "y1": 0.28662304238202163
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14865011358372923,
+        "y0": 0.29072438514505206,
+        "x1": 0.8557137550648959,
+        "y1": 0.30566136563634594
+      },
+      "text": "The non-overlapping domain decompositions can then be derived by approximating",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764718253845698,
+        "y0": 0.30976113836897223,
+        "x1": 0.8557094486976492,
+        "y1": 0.3246981188602661
+      },
+      "text": "the transmission problem. For example, consider the classic Robin–Robin method, first",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764718253845698,
+        "y0": 0.3290907737557156,
+        "x1": 0.8557148316567076,
+        "y1": 0.3437348720841863
+      },
+      "text": "introduced in [27]. By taking linear combinations of the last two equations in (2), one has",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764718253845698,
+        "y0": 0.34812900729401675,
+        "x1": 0.37979366309852225,
+        "y1": 0.36277310562248744
+      },
+      "text": "the equivalent Robin conditions",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15410778494735572,
+        "y0": 0.38082121210274966,
+        "x1": 0.16636747420273235,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝛼",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16789723200595086,
+        "y0": 0.38082121210274966,
+        "x1": 0.17478167250022372,
+        "y1": 0.39546531043122035
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17552760813561738,
+        "y0": 0.38082121210274966,
+        "x1": 0.18127497768997788,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1824731768796675,
+        "y0": 0.38082121210274966,
+        "x1": 0.20432559998942965,
+        "y1": 0.39546531043122035
+      },
+      "text": ")∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2044698949566583,
+        "y0": 0.38082121210274966,
+        "x1": 0.22305578018749256,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑢₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22512399221887064,
+        "y0": 0.38082121210274966,
+        "x1": 0.2320084327131435,
+        "y1": 0.39546531043122035
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23275229432607644,
+        "y0": 0.38082121210274966,
+        "x1": 0.23849966388043692,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23969993709258727,
+        "y0": 0.38082121210274966,
+        "x1": 0.2575829503604946,
+        "y1": 0.39546531043122035
+      },
+      "text": ")·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2628006525757467,
+        "y0": 0.38082121210274966,
+        "x1": 0.2723106946796565,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝜈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27262030981890645,
+        "y0": 0.386971139648852,
+        "x1": 0.27744977402819176,
+        "y1": 0.3976613343864608
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28012823946222815,
+        "y0": 0.38082121210274966,
+        "x1": 0.28701269578873356,
+        "y1": 0.39546531043122035
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2877586155918947,
+        "y0": 0.38082121210274966,
+        "x1": 0.2935060009784877,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2947041843359448,
+        "y0": 0.38082121210274966,
+        "x1": 0.3188721189491183,
+        "y1": 0.39546531043122035
+      },
+      "text": ")+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3240075568841729,
+        "y0": 0.38082121210274966,
+        "x1": 0.34000985925049027,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑠₀",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3409823699655426,
+        "y0": 0.38082121210274966,
+        "x1": 0.3595682710286094,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑢₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36163440903752675,
+        "y0": 0.38082121210274966,
+        "x1": 0.3685188653640321,
+        "y1": 0.39546531043122035
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36926478516719324,
+        "y0": 0.38082121210274966,
+        "x1": 0.3750121705537863,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37621035391124336,
+        "y0": 0.38082121210274966,
+        "x1": 0.40211014477581114,
+        "y1": 0.39546531043122035
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4079976770847114,
+        "y0": 0.38082121210274966,
+        "x1": 0.420257366340088,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝛼",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.421787139975539,
+        "y0": 0.38082121210274966,
+        "x1": 0.42867159630204443,
+        "y1": 0.39546531043122035
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4294154262505123,
+        "y0": 0.38082121210274966,
+        "x1": 0.43516281163710535,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4363630848492557,
+        "y0": 0.38082121210274966,
+        "x1": 0.45821552379125036,
+        "y1": 0.39546531043122035
+      },
+      "text": ")∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.458359818758479,
+        "y0": 0.38082121210274966,
+        "x1": 0.47694571982154577,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑢₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4790139160206913,
+        "y0": 0.38082121210274966,
+        "x1": 0.48589837234719674,
+        "y1": 0.39546531043122035
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4866422022956646,
+        "y0": 0.38082121210274966,
+        "x1": 0.49238958768225766,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49358777103971474,
+        "y0": 0.38082121210274966,
+        "x1": 0.511470784307622,
+        "y1": 0.39546531043122035
+      },
+      "text": ")·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5166905447131024,
+        "y0": 0.38082121210274966,
+        "x1": 0.5262005868170122,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝜈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5265102019562621,
+        "y0": 0.386971139648852,
+        "x1": 0.5313396661655474,
+        "y1": 0.3976613343864608
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5340181632640488,
+        "y0": 0.38082121210274966,
+        "x1": 0.5409025879260893,
+        "y1": 0.39546531043122035
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5416464495390222,
+        "y0": 0.38082121210274966,
+        "x1": 0.5473938032611502,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5485940764733005,
+        "y0": 0.38082121210274966,
+        "x1": 0.5727619794220089,
+        "y1": 0.39546531043122035
+      },
+      "text": ")+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5778974490215285,
+        "y0": 0.38082121210274966,
+        "x1": 0.593899783052311,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑠₀",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5948702355771351,
+        "y0": 0.38082121210274966,
+        "x1": 0.6134561366402019,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑢₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6155243328393474,
+        "y0": 0.38082121210274966,
+        "x1": 0.6224087575013878,
+        "y1": 0.39546531043122035
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6231526191143207,
+        "y0": 0.38082121210274966,
+        "x1": 0.6288999728364487,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.630100246048599,
+        "y0": 0.38082121210274966,
+        "x1": 0.6369846707106394,
+        "y1": 0.39546531043122035
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6586918014225238,
+        "y0": 0.38082121210274966,
+        "x1": 0.7054152527596418,
+        "y1": 0.39546531043122035
+      },
+      "text": "on Γ(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7061591143725747,
+        "y0": 0.38082121210274966,
+        "x1": 0.7119064680947027,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.713106741306853,
+        "y0": 0.38082121210274966,
+        "x1": 0.749471669534606,
+        "y1": 0.39546531043122035
+      },
+      "text": ") for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7542260889617249,
+        "y0": 0.38082121210274966,
+        "x1": 0.7599734426838529,
+        "y1": 0.39546531043122035
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7665027187059028,
+        "y0": 0.38082121210274966,
+        "x1": 0.7948210097464541,
+        "y1": 0.39546531043122035
+      },
+      "text": "= 1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7948203764571531,
+        "y0": 0.38082121210274966,
+        "x1": 0.799988903758184,
+        "y1": 0.39546531043122035
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8036626149931779,
+        "y0": 0.38082121210274966,
+        "x1": 0.8139996062663095,
+        "y1": 0.39546531043122035
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8139989729770085,
+        "y0": 0.38082121210274966,
+        "x1": 0.8191675002780393,
+        "y1": 0.39546531043122035
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764718253845698,
+        "y0": 0.4135134617694941,
+        "x1": 0.3129384831791066,
+        "y1": 0.4281575600979648
+      },
+      "text": "and a method parameter",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31856231382307815,
+        "y0": 0.4135134617694941,
+        "x1": 0.33456461618939554,
+        "y1": 0.4281575600979648
+      },
+      "text": "𝑠₀",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3416816796761515,
+        "y0": 0.4135134617694941,
+        "x1": 0.3548303487877809,
+        "y1": 0.4281575600979648
+      },
+      "text": ">",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.360937125852681,
+        "y0": 0.4135134617694941,
+        "x1": 0.8588229363847624,
+        "y1": 0.4281575600979648
+      },
+      "text": "0. Alternating between the subdomains then gives the Robin–",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764718253845698,
+        "y0": 0.4325502149934143,
+        "x1": 0.3637522234534042,
+        "y1": 0.447194313321885
+      },
+      "text": "Robin method as computing (",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36451682529094426,
+        "y0": 0.4325502149934143,
+        "x1": 0.383102694689546,
+        "y1": 0.447194313321885
+      },
+      "text": "𝑢₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3758575801061316,
+        "y0": 0.43118893765418775,
+        "x1": 0.3844147751277846,
+        "y1": 0.44187913239179655
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38560045102154733,
+        "y0": 0.4325502149934143,
+        "x1": 0.41296633828235246,
+        "y1": 0.447194313321885
+      },
+      "text": ",𝑢₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40572122369893804,
+        "y0": 0.43118893765418775,
+        "x1": 0.41427841872059107,
+        "y1": 0.44187913239179655
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4154640946143538,
+        "y0": 0.4325502149934143,
+        "x1": 0.4518289911776417,
+        "y1": 0.447194313321885
+      },
+      "text": ") for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4571001430098966,
+        "y0": 0.4325502149934143,
+        "x1": 0.4674371342830282,
+        "y1": 0.447194313321885
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47344828466348,
+        "y0": 0.4325502149934143,
+        "x1": 0.5017686338942595,
+        "y1": 0.447194313321885
+      },
+      "text": "= 1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5017680322694236,
+        "y0": 0.4325502149934143,
+        "x1": 0.5069365279059893,
+        "y1": 0.447194313321885
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5106103024699135,
+        "y0": 0.4325502149934143,
+        "x1": 0.5209472937430449,
+        "y1": 0.447194313321885
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5209466921182091,
+        "y0": 0.4325502149934143,
+        "x1": 0.5538803955843139,
+        "y1": 0.447194313321885
+      },
+      "text": ",...",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.559399448513438,
+        "y0": 0.4325502149934143,
+        "x1": 0.5961578393838908,
+        "y1": 0.447194313321885
+      },
+      "text": "with",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.46420615487742023,
+        "x1": 0.14450259112597338,
+        "y1": 0.4788502532058909
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.4685997279602936,
+        "x1": 0.14450259112597338,
+        "y1": 0.4832438262887643
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14526757293709405,
+        "y0": 0.46625715288133207,
+        "x1": 0.15560458004245814,
+        "y1": 0.48090125120980265
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1486376377844999,
+        "y0": 0.46625715288133207,
+        "x1": 0.1555220782787728,
+        "y1": 0.48090125120980265
+      },
+      "text": "¤",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15630743617315251,
+        "y0": 0.4747398764598789,
+        "x1": 0.16385345816792832,
+        "y1": 0.4854300711974876
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15661041760697464,
+        "y0": 0.4641624021953149,
+        "x1": 0.16516759679639512,
+        "y1": 0.4748525969329236
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16738464764573638,
+        "y0": 0.4662571977393436,
+        "x1": 0.17426908814000927,
+        "y1": 0.4809012960678142
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1750129497529422,
+        "y0": 0.4662571977393436,
+        "x1": 0.18076031930730269,
+        "y1": 0.4809012960678142
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18196059251945304,
+        "y0": 0.4662571977393436,
+        "x1": 0.23633324451070914,
+        "y1": 0.4809012960678142
+      },
+      "text": ")−∇·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2493950738269415,
+        "y0": 0.4662571977393436,
+        "x1": 0.2616547630823181,
+        "y1": 0.4809012960678142
+      },
+      "text": "𝛼",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26318661074022986,
+        "y0": 0.4662571977393436,
+        "x1": 0.2700710670667353,
+        "y1": 0.4809012960678142
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27081489701520317,
+        "y0": 0.4662571977393436,
+        "x1": 0.2765622824017962,
+        "y1": 0.4809012960678142
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2777604657592533,
+        "y0": 0.4662571977393436,
+        "x1": 0.29961290470124796,
+        "y1": 0.4809012960678142
+      },
+      "text": ")∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2997571996684766,
+        "y0": 0.4662571977393436,
+        "x1": 0.31834310073154337,
+        "y1": 0.4809012960678142
+      },
+      "text": "𝑢₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3111000443383572,
+        "y0": 0.46416244705332643,
+        "x1": 0.3196572393600102,
+        "y1": 0.4748526417909351
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32187638006404473,
+        "y0": 0.4662572425973551,
+        "x1": 0.3287608363905501,
+        "y1": 0.4809013409258258
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.329504666339018,
+        "y0": 0.4662572425973551,
+        "x1": 0.335252051725611,
+        "y1": 0.4809013409258258
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3364502350830681,
+        "y0": 0.4662572425973551,
+        "x1": 0.396384607870102,
+        "y1": 0.4809013409258258
+      },
+      "text": ") + ∇·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4011890888164636,
+        "y0": 0.4662572425973551,
+        "x1": 0.41611571764059874,
+        "y1": 0.4809013409258258
+      },
+      "text": "w",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4171512406410987,
+        "y0": 0.4662572425973551,
+        "x1": 0.4240356969676041,
+        "y1": 0.4809013409258258
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.424779526916072,
+        "y0": 0.4662572425973551,
+        "x1": 0.43052691230266504,
+        "y1": 0.4809013409258258
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4317250956601221,
+        "y0": 0.4662572425973551,
+        "x1": 0.45589303027329564,
+        "y1": 0.4809013409258258
+      },
+      "text": ")+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4616302513666079,
+        "y0": 0.4662572425973551,
+        "x1": 0.4721326578051559,
+        "y1": 0.4809013409258258
+      },
+      "text": "𝛽",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47359979912873984,
+        "y0": 0.4662572425973551,
+        "x1": 0.48048425545524526,
+        "y1": 0.4809013409258258
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48122808540371315,
+        "y0": 0.4662572425973551,
+        "x1": 0.4869754707903062,
+        "y1": 0.4809013409258258
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4881757440024565,
+        "y0": 0.4662572425973551,
+        "x1": 0.49506020032896186,
+        "y1": 0.4809013409258258
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5041565778614706,
+        "y0": 0.4662572425973551,
+        "x1": 0.5227424472600724,
+        "y1": 0.4809013409258258
+      },
+      "text": "𝑢₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.515497332676658,
+        "y0": 0.46416249191133796,
+        "x1": 0.524054527698311,
+        "y1": 0.47485268664894664
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5262736367378804,
+        "y0": 0.46625728745536665,
+        "x1": 0.5331580930643858,
+        "y1": 0.48090138578383734
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5339019546773187,
+        "y0": 0.46625728745536665,
+        "x1": 0.5396493083994467,
+        "y1": 0.48090138578383734
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5408474917569038,
+        "y0": 0.46625728745536665,
+        "x1": 0.5667473142859366,
+        "y1": 0.48090138578383734
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5760878881729038,
+        "y0": 0.46625728745536665,
+        "x1": 0.5895875262151373,
+        "y1": 0.48090138578383734
+      },
+      "text": "𝑓₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5916557224142829,
+        "y0": 0.46625728745536665,
+        "x1": 0.5985401470763232,
+        "y1": 0.48090138578383734
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5992840086892561,
+        "y0": 0.46625728745536665,
+        "x1": 0.6050313624113841,
+        "y1": 0.48090138578383734
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6062316356235344,
+        "y0": 0.46625728745536665,
+        "x1": 0.6131160602855747,
+        "y1": 0.48090138578383734
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6499137784216186,
+        "y0": 0.46625728745536665,
+        "x1": 0.6940946998731558,
+        "y1": 0.48090138578383734
+      },
+      "text": "in Ω₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.696160806217608,
+        "y0": 0.46625728745536665,
+        "x1": 0.7030452308796484,
+        "y1": 0.48090138578383734
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7037911823472746,
+        "y0": 0.46625728745536665,
+        "x1": 0.7095385360694025,
+        "y1": 0.48090138578383734
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7107367194268597,
+        "y0": 0.46625728745536665,
+        "x1": 0.7176211440889,
+        "y1": 0.48090138578383734
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7186555588331233,
+        "y0": 0.46625728745536665,
+        "x1": 0.723824086134154,
+        "y1": 0.48090138578383734
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.47299330104316695,
+        "x1": 0.14450259112597338,
+        "y1": 0.48763739937163764
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.47738539381165934,
+        "x1": 0.14450259112597338,
+        "y1": 0.49202949214013003
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.4817789668945327,
+        "x1": 0.14450259112597338,
+        "y1": 0.4964230652230034
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.48617253997740606,
+        "x1": 0.14450259112597338,
+        "y1": 0.5008166383058767
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5154971743543327,
+        "y0": 0.48759429853251257,
+        "x1": 0.5240543693759857,
+        "y1": 0.49828449327012125
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.49056611306027953,
+        "x1": 0.14450259112597338,
+        "y1": 0.5052102113887501
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.4949596861431529,
+        "x1": 0.14450259112597338,
+        "y1": 0.5096037844716235
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5041564195391454,
+        "y0": 0.4896876137621602,
+        "x1": 0.5227422889377471,
+        "y1": 0.5043317120906308
+      },
+      "text": "𝑢₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5262734784155552,
+        "y0": 0.4896876137621602,
+        "x1": 0.5331579030775955,
+        "y1": 0.5043317120906308
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5339017646905284,
+        "y0": 0.4896876137621602,
+        "x1": 0.5396491184126564,
+        "y1": 0.5043317120906308
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5408473017701135,
+        "y0": 0.4896876137621602,
+        "x1": 0.5828284928346913,
+        "y1": 0.5043317120906308
+      },
+      "text": ")=0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6499137150926885,
+        "y0": 0.4896876137621602,
+        "x1": 0.6705876976389515,
+        "y1": 0.5043317120906308
+      },
+      "text": "on",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6761914846765471,
+        "y0": 0.4896876137621602,
+        "x1": 0.6867765986978032,
+        "y1": 0.5043317120906308
+      },
+      "text": "𝜕",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6878310887128676,
+        "y0": 0.4896876137621602,
+        "x1": 0.7107581879341629,
+        "y1": 0.5043317120906308
+      },
+      "text": "Ω₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7128242942786153,
+        "y0": 0.4896876137621602,
+        "x1": 0.7197087189406556,
+        "y1": 0.5043317120906308
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7204546704082817,
+        "y0": 0.4896876137621602,
+        "x1": 0.7262020241304097,
+        "y1": 0.5043317120906308
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7274002074878668,
+        "y0": 0.4896876137621602,
+        "x1": 0.7748976016797142,
+        "y1": 0.5043317120906308
+      },
+      "text": ")\\ Γ(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7756414632926472,
+        "y0": 0.4896876137621602,
+        "x1": 0.7813888170147751,
+        "y1": 0.5043317120906308
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7825890902269255,
+        "y0": 0.4896876137621602,
+        "x1": 0.7894735148889659,
+        "y1": 0.5043317120906308
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7905058397784959,
+        "y0": 0.4896876137621602,
+        "x1": 0.7956743670795268,
+        "y1": 0.5043317120906308
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.49935177891164517,
+        "x1": 0.14450259112597338,
+        "y1": 0.5139958772401159
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5037453519945185,
+        "x1": 0.14450259112597338,
+        "y1": 0.5183894503229892
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.508138925077392,
+        "x1": 0.14450259112597338,
+        "y1": 0.5227830234058626
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5125324981602652,
+        "x1": 0.14450259112597338,
+        "y1": 0.5271765964887359
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31371239436937115,
+        "y0": 0.5131179400689538,
+        "x1": 0.3259720836247477,
+        "y1": 0.5277620383974244
+      },
+      "text": "𝛼",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32750185726019876,
+        "y0": 0.5131179400689538,
+        "x1": 0.3343863135867042,
+        "y1": 0.5277620383974244
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33513014353517206,
+        "y0": 0.5131179400689538,
+        "x1": 0.3408775289217651,
+        "y1": 0.5277620383974244
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3420778021339154,
+        "y0": 0.5131179400689538,
+        "x1": 0.3639302410759101,
+        "y1": 0.5277620383974244
+      },
+      "text": ")∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3640745360431387,
+        "y0": 0.5131179400689538,
+        "x1": 0.3744115273162703,
+        "y1": 0.5277620383974244
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37541738071301933,
+        "y0": 0.5110246248393061,
+        "x1": 0.38397457573467236,
+        "y1": 0.5217148195769148
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3861916265840136,
+        "y0": 0.5131179400689538,
+        "x1": 0.393076082910519,
+        "y1": 0.5277620383974244
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3938199128589869,
+        "y0": 0.5131179400689538,
+        "x1": 0.3995672982455799,
+        "y1": 0.5277620383974244
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40076757145773023,
+        "y0": 0.5131179400689538,
+        "x1": 0.4186505847256376,
+        "y1": 0.5277620383974244
+      },
+      "text": ")·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4238682869408897,
+        "y0": 0.5131179400689538,
+        "x1": 0.4412360560335184,
+        "y1": 0.5277620383974244
+      },
+      "text": "𝜈₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44330219404243576,
+        "y0": 0.5131179400689538,
+        "x1": 0.4501866503689412,
+        "y1": 0.5277620383974244
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45093048031740907,
+        "y0": 0.5131179400689538,
+        "x1": 0.4566778657040021,
+        "y1": 0.5277620383974244
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4578781389161524,
+        "y0": 0.5131179400689538,
+        "x1": 0.48204607352932594,
+        "y1": 0.5277620383974244
+      },
+      "text": ")+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4871815114643805,
+        "y0": 0.5131179400689538,
+        "x1": 0.5031838138306979,
+        "y1": 0.5277620383974244
+      },
+      "text": "𝑠₀",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5041563245457502,
+        "y0": 0.5131179400689538,
+        "x1": 0.5144933158188818,
+        "y1": 0.5277620383974244
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5154970793609376,
+        "y0": 0.5110246248393061,
+        "x1": 0.5240542743825906,
+        "y1": 0.5217148195769148
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.52627338342216,
+        "y0": 0.5131179400689538,
+        "x1": 0.5331578397486654,
+        "y1": 0.5277620383974244
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5339017013615983,
+        "y0": 0.5131179400689538,
+        "x1": 0.5396490550837263,
+        "y1": 0.5277620383974244
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5408472384411834,
+        "y0": 0.5131179400689538,
+        "x1": 0.5667470609702162,
+        "y1": 0.5277620383974244
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5169260712431387,
+        "x1": 0.14450259112597338,
+        "y1": 0.5315701695716093
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5213181640116311,
+        "x1": 0.14450259112597338,
+        "y1": 0.5359622623401017
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37511441511142973,
+        "y0": 0.521600618789489,
+        "x1": 0.3826604371062055,
+        "y1": 0.5322908135270978
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5151961719495761,
+        "y0": 0.521600618789489,
+        "x1": 0.522742193944352,
+        "y1": 0.5322908135270978
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5257117370945044,
+        "x1": 0.14450259112597338,
+        "y1": 0.540355835422975
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5301053101773778,
+        "x1": 0.14450259112597338,
+        "y1": 0.5447494085058484
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42837347536360737,
+        "y0": 0.5344549960041112,
+        "x1": 0.4369306703852604,
+        "y1": 0.5451451907417199
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43768681781063234,
+        "y0": 0.5344549960041112,
+        "x1": 0.4554343388325947,
+        "y1": 0.5451451907417199
+      },
+      "text": "−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5776191817026772,
+        "y0": 0.5344550408621227,
+        "x1": 0.5861763767243302,
+        "y1": 0.5451452355997315
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.586930434295009,
+        "y0": 0.5344550408621227,
+        "x1": 0.6046779236525063,
+        "y1": 0.5451452355997315
+      },
+      "text": "−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5344988832602512,
+        "x1": 0.14450259112597338,
+        "y1": 0.5491429815887219
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5388924563431245,
+        "x1": 0.14450259112597338,
+        "y1": 0.5535365546715951
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36667057887465243,
+        "y0": 0.5365497466901283,
+        "x1": 0.37893026813002906,
+        "y1": 0.5511938450185989
+      },
+      "text": "𝛼",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3804600417654801,
+        "y0": 0.5365497466901283,
+        "x1": 0.38734449809198546,
+        "y1": 0.5511938450185989
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38808832804045335,
+        "y0": 0.5365497466901283,
+        "x1": 0.3938357134270464,
+        "y1": 0.5511938450185989
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3950359866391967,
+        "y0": 0.5365497466901283,
+        "x1": 0.4168884255811914,
+        "y1": 0.5511938450185989
+      },
+      "text": ")∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41703272054842006,
+        "y0": 0.5365497466901283,
+        "x1": 0.4356186216114868,
+        "y1": 0.5511938450185989
+      },
+      "text": "𝑢₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4575025666962053,
+        "y0": 0.5365497915481399,
+        "x1": 0.46438702302271073,
+        "y1": 0.5511938898766104
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4651308529711786,
+        "y0": 0.5365497915481399,
+        "x1": 0.47087823835777165,
+        "y1": 0.5511938898766104
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47207642171522873,
+        "y0": 0.5365497915481399,
+        "x1": 0.4899594349831361,
+        "y1": 0.5511938898766104
+      },
+      "text": ")·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4951791953886163,
+        "y0": 0.5365497915481399,
+        "x1": 0.5125448746265518,
+        "y1": 0.5511938898766104
+      },
+      "text": "𝜈₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5146130708256974,
+        "y0": 0.5365497915481399,
+        "x1": 0.5214975271522028,
+        "y1": 0.5511938898766104
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5222413571006707,
+        "y0": 0.5365497915481399,
+        "x1": 0.5279887424872637,
+        "y1": 0.5511938898766104
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5291869258447208,
+        "y0": 0.5365497915481399,
+        "x1": 0.5487651912424256,
+        "y1": 0.5511938898766104
+      },
+      "text": ")+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.54930355047719,
+        "y0": 0.5365497915481399,
+        "x1": 0.5653058845079725,
+        "y1": 0.5511938898766104
+      },
+      "text": "𝑠₀",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5662763370327967,
+        "y0": 0.5365497915481399,
+        "x1": 0.5848621747669334,
+        "y1": 0.5511938898766104
+      },
+      "text": "𝑢₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6067461198516518,
+        "y0": 0.5365498364061514,
+        "x1": 0.6136305445136921,
+        "y1": 0.551193934734622
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6143744061266251,
+        "y0": 0.5365498364061514,
+        "x1": 0.6201217598487531,
+        "y1": 0.551193934734622
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6213220330609034,
+        "y0": 0.5365498364061514,
+        "x1": 0.6282064577229438,
+        "y1": 0.551193934734622
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6499136517637584,
+        "y0": 0.5365498364061514,
+        "x1": 0.6966371031008762,
+        "y1": 0.551193934734622
+      },
+      "text": "on Γ(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6973809647138092,
+        "y0": 0.5365498364061514,
+        "x1": 0.7031283184359371,
+        "y1": 0.551193934734622
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7043285916480875,
+        "y0": 0.5365498364061514,
+        "x1": 0.7112130163101279,
+        "y1": 0.551193934734622
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7122453411996579,
+        "y0": 0.5365498364061514,
+        "x1": 0.7174138685006887,
+        "y1": 0.551193934734622
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8329905591662841,
+        "y0": 0.5518809590122695,
+        "x1": 0.8570964630924265,
+        "y1": 0.5665250573407401
+      },
+      "text": "(3)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5611512708203796,
+        "x1": 0.14450259112597338,
+        "y1": 0.5757953691488502
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5655448439032529,
+        "x1": 0.14450259112597338,
+        "y1": 0.5801889422317236
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14526743044700133,
+        "y0": 0.5673017527834683,
+        "x1": 0.15560443755236544,
+        "y1": 0.581945851111939
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14863749529440717,
+        "y0": 0.5673017527834683,
+        "x1": 0.15552193578868007,
+        "y1": 0.581945851111939
+      },
+      "text": "¤",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1566082010944212,
+        "y0": 0.5652084375538207,
+        "x1": 0.1651653802838417,
+        "y1": 0.5758986322914293
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1673845209878762,
+        "y0": 0.5673017527834683,
+        "x1": 0.17426896148214907,
+        "y1": 0.581945851111939
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.175012823095082,
+        "y0": 0.5673017527834683,
+        "x1": 0.18076019264944249,
+        "y1": 0.581945851111939
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18196046586159284,
+        "y0": 0.5673017527834683,
+        "x1": 0.23633311785284894,
+        "y1": 0.581945851111939
+      },
+      "text": ")−∇·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2493949471690813,
+        "y0": 0.5673017527834683,
+        "x1": 0.2616546364244579,
+        "y1": 0.581945851111939
+      },
+      "text": "𝛼",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2631843942276764,
+        "y0": 0.5673017527834683,
+        "x1": 0.27006885055418184,
+        "y1": 0.581945851111939
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27081477035734297,
+        "y0": 0.5673017527834683,
+        "x1": 0.276562155743936,
+        "y1": 0.581945851111939
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2777603391013931,
+        "y0": 0.5673017527834683,
+        "x1": 0.29961277804338776,
+        "y1": 0.581945851111939
+      },
+      "text": ")∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29975707301061644,
+        "y0": 0.5673017527834683,
+        "x1": 0.31009406428374797,
+        "y1": 0.581945851111939
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.311099917680497,
+        "y0": 0.5652084375538207,
+        "x1": 0.31965711270215,
+        "y1": 0.5758986322914293
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3218741635514913,
+        "y0": 0.5673017527834683,
+        "x1": 0.32875861987799665,
+        "y1": 0.581945851111939
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3295045396811578,
+        "y0": 0.5673017527834683,
+        "x1": 0.3352519250677508,
+        "y1": 0.581945851111939
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3364501084252079,
+        "y0": 0.5673017527834683,
+        "x1": 0.3963844812122418,
+        "y1": 0.581945851111939
+      },
+      "text": ") + ∇·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4011889621586034,
+        "y0": 0.5673017527834683,
+        "x1": 0.41611559098273854,
+        "y1": 0.581945851111939
+      },
+      "text": "w",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4171490241285453,
+        "y0": 0.5673017527834683,
+        "x1": 0.4240334804550507,
+        "y1": 0.581945851111939
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4247794002582118,
+        "y0": 0.5673017527834683,
+        "x1": 0.43052678564480484,
+        "y1": 0.581945851111939
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4317249690022619,
+        "y0": 0.5673017527834683,
+        "x1": 0.45589290361543544,
+        "y1": 0.581945851111939
+      },
+      "text": ")+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46162806651851956,
+        "y0": 0.5673017527834683,
+        "x1": 0.4721304729570675,
+        "y1": 0.581945851111939
+      },
+      "text": "𝛽",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47359967247087964,
+        "y0": 0.5673017527834683,
+        "x1": 0.48048412879738506,
+        "y1": 0.581945851111939
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48122795874585295,
+        "y0": 0.5673017527834683,
+        "x1": 0.486975344132446,
+        "y1": 0.581945851111939
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48817352748990306,
+        "y0": 0.5673017527834683,
+        "x1": 0.4950579838164085,
+        "y1": 0.581945851111939
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5041543613489172,
+        "y0": 0.5673017527834683,
+        "x1": 0.5144913526220487,
+        "y1": 0.581945851111939
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5154972060187978,
+        "y0": 0.5652084375538207,
+        "x1": 0.5240544010404508,
+        "y1": 0.5758986322914293
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5262735100800202,
+        "y0": 0.5673017527834683,
+        "x1": 0.5331579664065256,
+        "y1": 0.581945851111939
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5339018280194585,
+        "y0": 0.5673017527834683,
+        "x1": 0.5396491817415865,
+        "y1": 0.581945851111939
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5408473650990436,
+        "y0": 0.5673017527834683,
+        "x1": 0.5667471876280764,
+        "y1": 0.581945851111939
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5760877615150436,
+        "y0": 0.5673017527834683,
+        "x1": 0.5818351152371716,
+        "y1": 0.581945851111939
+      },
+      "text": "𝑓",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5916555957564227,
+        "y0": 0.5673017527834683,
+        "x1": 0.598540020418463,
+        "y1": 0.581945851111939
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5992838820313959,
+        "y0": 0.5673017527834683,
+        "x1": 0.6050312357535239,
+        "y1": 0.581945851111939
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.606229419110981,
+        "y0": 0.5673017527834683,
+        "x1": 0.6131138437730214,
+        "y1": 0.581945851111939
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6499136517637584,
+        "y0": 0.5673017527834683,
+        "x1": 0.7030451042217882,
+        "y1": 0.581945851111939
+      },
+      "text": "in Ω (",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7037910556894144,
+        "y0": 0.5673017527834683,
+        "x1": 0.7095384094115423,
+        "y1": 0.581945851111939
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7107365927689995,
+        "y0": 0.5673017527834683,
+        "x1": 0.7176210174310398,
+        "y1": 0.581945851111939
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7186554321752631,
+        "y0": 0.5673017527834683,
+        "x1": 0.7238239594762939,
+        "y1": 0.581945851111939
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5699369366717453,
+        "x1": 0.14450259112597338,
+        "y1": 0.5845810350002159
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5743305097546187,
+        "x1": 0.14450259112597338,
+        "y1": 0.5889746080830893
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15630730951529234,
+        "y0": 0.5757844315040037,
+        "x1": 0.16385333151006812,
+        "y1": 0.5864746262416124
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3107969520789074,
+        "y0": 0.5757844315040037,
+        "x1": 0.31834297407368317,
+        "y1": 0.5864746262416124
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5151962986074363,
+        "y0": 0.5757844315040037,
+        "x1": 0.5227423206022122,
+        "y1": 0.5864746262416124
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5820413775625013,
+        "y0": 0.5734531606439517,
+        "x1": 0.5895873995572771,
+        "y1": 0.5841433553815605
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6865485512205197,
+        "y0": 0.5734531606439517,
+        "x1": 0.6940945732152956,
+        "y1": 0.5841433553815605
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.578724082837492,
+        "x1": 0.14450259112597338,
+        "y1": 0.5933681811659627
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5831176559203655,
+        "x1": 0.14450259112597338,
+        "y1": 0.597761754248836
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5154970476964725,
+        "y0": 0.5886387638606142,
+        "x1": 0.5240542427181255,
+        "y1": 0.5993289585982229
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5875112290032388,
+        "x1": 0.14450259112597338,
+        "y1": 0.6021553273317094
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5919033217717311,
+        "x1": 0.14450259112597338,
+        "y1": 0.6065474201002018
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.504154203026592,
+        "y0": 0.5907320790902619,
+        "x1": 0.5144911942997235,
+        "y1": 0.6053761774187325
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.526273351757695,
+        "y0": 0.5907320790902619,
+        "x1": 0.5331577764197353,
+        "y1": 0.6053761774187325
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5339016380326682,
+        "y0": 0.5907320790902619,
+        "x1": 0.5396489917547962,
+        "y1": 0.6053761774187325
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5408471751122533,
+        "y0": 0.5907320790902619,
+        "x1": 0.5828262763221379,
+        "y1": 0.6053761774187325
+      },
+      "text": ")=0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6499135884348283,
+        "y0": 0.5907320790902619,
+        "x1": 0.6705875709810915,
+        "y1": 0.6053761774187325
+      },
+      "text": "on",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6761892681639936,
+        "y0": 0.5907320790902619,
+        "x1": 0.6867743821852498,
+        "y1": 0.6053761774187325
+      },
+      "text": "𝜕",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6878288722003142,
+        "y0": 0.5907320790902619,
+        "x1": 0.7107580612763027,
+        "y1": 0.6053761774187325
+      },
+      "text": "Ω₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7128241676207551,
+        "y0": 0.5907320790902619,
+        "x1": 0.7197085922827954,
+        "y1": 0.6053761774187325
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7204524538957283,
+        "y0": 0.5907320790902619,
+        "x1": 0.7261998076178563,
+        "y1": 0.6053761774187325
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7274000808300066,
+        "y0": 0.5907320790902619,
+        "x1": 0.774897475021854,
+        "y1": 0.6053761774187325
+      },
+      "text": ")\\ Γ(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.775641336634787,
+        "y0": 0.5907320790902619,
+        "x1": 0.7813886903569149,
+        "y1": 0.6053761774187325
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7825868737143721,
+        "y0": 0.5907320790902619,
+        "x1": 0.7894712983764124,
+        "y1": 0.6053761774187325
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7905057131206357,
+        "y0": 0.5907320790902619,
+        "x1": 0.7956742404216666,
+        "y1": 0.6053761774187325
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.5962968948546046,
+        "x1": 0.14450259112597338,
+        "y1": 0.6109409931830752
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.6006904679374778,
+        "x1": 0.14450259112597338,
+        "y1": 0.6153345662659485
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5151961402851111,
+        "y0": 0.5992147578107972,
+        "x1": 0.5227421622798869,
+        "y1": 0.6099049525484059
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.6050840410203513,
+        "x1": 0.14450259112597338,
+        "y1": 0.6197281393488219
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.6094775916742189,
+        "x1": 0.14450259112597338,
+        "y1": 0.6241216900026896
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3754151642004659,
+        "y0": 0.6120690901674077,
+        "x1": 0.3839723592221189,
+        "y1": 0.6227592849050165
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5154969210386123,
+        "y0": 0.6120690901674077,
+        "x1": 0.5240541160602653,
+        "y1": 0.6227592849050165
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.6138696844427112,
+        "x1": 0.14450259112597338,
+        "y1": 0.6285137827711819
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.6182632350965789,
+        "x1": 0.14450259112597338,
+        "y1": 0.6329073334250495
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31371226771151095,
+        "y0": 0.6141638632824307,
+        "x1": 0.3259719569668876,
+        "y1": 0.6288079616109012
+      },
+      "text": "𝛼",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3275017306023386,
+        "y0": 0.6141638632824307,
+        "x1": 0.334386186928844,
+        "y1": 0.6288079616109012
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33513001687731186,
+        "y0": 0.6141638632824307,
+        "x1": 0.3408774022639049,
+        "y1": 0.6288079616109012
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3420776754760552,
+        "y0": 0.6141638632824307,
+        "x1": 0.3639301144180499,
+        "y1": 0.6288079616109012
+      },
+      "text": ")∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3640744093852786,
+        "y0": 0.6141638632824307,
+        "x1": 0.38266027878388026,
+        "y1": 0.6288079616109012
+      },
+      "text": "𝑢₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3861914682616884,
+        "y0": 0.6141638632824307,
+        "x1": 0.39307592458819374,
+        "y1": 0.6288079616109012
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3938197545366616,
+        "y0": 0.6141638632824307,
+        "x1": 0.39956713992325466,
+        "y1": 0.6288079616109012
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.400767413135405,
+        "y0": 0.6141638632824307,
+        "x1": 0.41865042640331235,
+        "y1": 0.6288079616109012
+      },
+      "text": ")·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42386812861856443,
+        "y0": 0.6141638632824307,
+        "x1": 0.44123380785649996,
+        "y1": 0.6288079616109012
+      },
+      "text": "𝜈₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4433020040556455,
+        "y0": 0.6141638632824307,
+        "x1": 0.4501864603821509,
+        "y1": 0.6288079616109012
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45093029033061877,
+        "y0": 0.6141638632824307,
+        "x1": 0.4566776757172118,
+        "y1": 0.6288079616109012
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4578779489293621,
+        "y0": 0.6141638632824307,
+        "x1": 0.48204588354253564,
+        "y1": 0.6288079616109012
+      },
+      "text": ")+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4871813214775902,
+        "y0": 0.6141638632824307,
+        "x1": 0.5031836238439076,
+        "y1": 0.6288079616109012
+      },
+      "text": "𝑠₀",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5041540763687318,
+        "y0": 0.6141638632824307,
+        "x1": 0.5227399774317985,
+        "y1": 0.6288079616109012
+      },
+      "text": "𝑢₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5262732567642998,
+        "y0": 0.6141638632824307,
+        "x1": 0.5331577130908053,
+        "y1": 0.6288079616109012
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5339015747037381,
+        "y0": 0.6141638632824307,
+        "x1": 0.5396489284258661,
+        "y1": 0.6288079616109012
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5408471117833232,
+        "y0": 0.6141638632824307,
+        "x1": 0.566746934312356,
+        "y1": 0.6288079616109012
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.6226567857504464,
+        "x1": 0.14450259112597338,
+        "y1": 0.637300884078917
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.6270503364043141,
+        "x1": 0.14450259112597338,
+        "y1": 0.6416944347327846
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.6314438870581816,
+        "x1": 0.14450259112597338,
+        "y1": 0.6460879853866522
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38502108630454435,
+        "y0": 0.6375941895892243,
+        "x1": 0.397280775559921,
+        "y1": 0.6522382879176949
+      },
+      "text": "𝛼",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3988126073856002,
+        "y0": 0.6375941895892243,
+        "x1": 0.4056970637121056,
+        "y1": 0.6522382879176949
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4064408936605735,
+        "y0": 0.6375941895892243,
+        "x1": 0.4121882790471665,
+        "y1": 0.6522382879176949
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4133864624046236,
+        "y0": 0.6375941895892243,
+        "x1": 0.4352389013466183,
+        "y1": 0.6522382879176949
+      },
+      "text": ")∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4353831963138469,
+        "y0": 0.6375941895892243,
+        "x1": 0.4457201875869785,
+        "y1": 0.6522382879176949
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4467260409837275,
+        "y0": 0.6354994164742014,
+        "x1": 0.4552832360053805,
+        "y1": 0.64618961121181
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.457502376709415,
+        "y0": 0.6375941895892243,
+        "x1": 0.46438683303592043,
+        "y1": 0.6522382879176949
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4651306629843883,
+        "y0": 0.6375941895892243,
+        "x1": 0.47087804837098135,
+        "y1": 0.6522382879176949
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47207623172843843,
+        "y0": 0.6375941895892243,
+        "x1": 0.4899592449963458,
+        "y1": 0.6522382879176949
+      },
+      "text": ")·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.495179005401826,
+        "y0": 0.6375941895892243,
+        "x1": 0.5046890475057358,
+        "y1": 0.6522382879176949
+      },
+      "text": "𝜈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5146128808389071,
+        "y0": 0.6375941895892243,
+        "x1": 0.5214973371654125,
+        "y1": 0.6522382879176949
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5222411671138804,
+        "y0": 0.6375941895892243,
+        "x1": 0.5279885525004734,
+        "y1": 0.6522382879176949
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5291867358579305,
+        "y0": 0.6375941895892243,
+        "x1": 0.5487650012556354,
+        "y1": 0.6522382879176949
+      },
+      "text": ")+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5493033604903999,
+        "y0": 0.6375941895892243,
+        "x1": 0.576613138319138,
+        "y1": 0.6522382879176949
+      },
+      "text": "𝑠 𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5776189917158869,
+        "y0": 0.6354994164742014,
+        "x1": 0.58617618673754,
+        "y1": 0.64618961121181
+      },
+      "text": "𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5883932692513463,
+        "y0": 0.6375941895892243,
+        "x1": 0.5952776939133866,
+        "y1": 0.6522382879176949
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5960236453810128,
+        "y0": 0.6375941895892243,
+        "x1": 0.6017709991031408,
+        "y1": 0.6522382879176949
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6029691824605978,
+        "y0": 0.6375941895892243,
+        "x1": 0.6098536071226383,
+        "y1": 0.6522382879176949
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6499135251058982,
+        "y0": 0.6375941895892243,
+        "x1": 0.6966369131140859,
+        "y1": 0.6522382879176949
+      },
+      "text": "on Γ(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6973807747270189,
+        "y0": 0.6375941895892243,
+        "x1": 0.7031281284491468,
+        "y1": 0.6522382879176949
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7043284016612972,
+        "y0": 0.6375941895892243,
+        "x1": 0.7112128263233376,
+        "y1": 0.6522382879176949
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7125771847933722,
+        "y0": 0.6375941895892243,
+        "x1": 0.7177457120944031,
+        "y1": 0.6522382879176949
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13309052793549553,
+        "y0": 0.6405220271448281,
+        "x1": 0.14450259112597338,
+        "y1": 0.6551661254732988
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44642307538213793,
+        "y0": 0.6460754104243843,
+        "x1": 0.4539690973769137,
+        "y1": 0.656765605161993
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5049986626449857,
+        "y0": 0.6437441395643324,
+        "x1": 0.5125446846397615,
+        "y1": 0.654434334301941
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5577596725264065,
+        "y0": 0.6437441395643324,
+        "x1": 0.5653056945211823,
+        "y1": 0.654434334301941
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5773160261142973,
+        "y0": 0.6460754104243843,
+        "x1": 0.5848620481090732,
+        "y1": 0.656765605161993
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764718253845698,
+        "y0": 0.6709559450782945,
+        "x1": 0.16207853824406732,
+        "y1": 0.6856000434067652
+      },
+      "text": "Here,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16712320999005867,
+        "y0": 0.6709559450782945,
+        "x1": 0.18570909522089293,
+        "y1": 0.6856000434067652
+      },
+      "text": "𝑢⁰",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17816307322611716,
+        "y0": 0.6802397205980263,
+        "x1": 0.18570909522089293,
+        "y1": 0.690929915335635
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19184875583274646,
+        "y0": 0.6709559450782945,
+        "x1": 0.3664742908558132,
+        "y1": 0.6856000434067652
+      },
+      "text": "is an initial guess and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3715246147088158,
+        "y0": 0.6709559450782945,
+        "x1": 0.3818616059819474,
+        "y1": 0.6856000434067652
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3825644621126418,
+        "y0": 0.6797267243779848,
+        "x1": 0.39142256454565616,
+        "y1": 0.6904169191155936
+      },
+      "text": "𝑖𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3936416735852256,
+        "y0": 0.6709559450782945,
+        "x1": 0.40052612991173103,
+        "y1": 0.6856000434067652
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4012699598601989,
+        "y0": 0.6709559450782945,
+        "x1": 0.40701734524679195,
+        "y1": 0.6856000434067652
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40821552860424903,
+        "y0": 0.6709559450782945,
+        "x1": 0.5296757618561485,
+        "y1": 0.6856000434067652
+      },
+      "text": ") approximates",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5347257374000356,
+        "y0": 0.6709559450782945,
+        "x1": 0.5450627286731671,
+        "y1": 0.6856000434067652
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5457656164683266,
+        "y0": 0.6771058950534027,
+        "x1": 0.5505950806776119,
+        "y1": 0.6877960897910114
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5532735777761133,
+        "y0": 0.6709559450782945,
+        "x1": 0.5601580024381537,
+        "y1": 0.6856000434067652
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5609018640510867,
+        "y0": 0.6709559450782945,
+        "x1": 0.5666492177732146,
+        "y1": 0.6856000434067652
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.567849490985365,
+        "y0": 0.6709559450782945,
+        "x1": 0.5936807916120316,
+        "y1": 0.6856000434067652
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6017721390238825,
+        "y0": 0.6709559450782945,
+        "x1": 0.6121091302970141,
+        "y1": 0.6856000434067652
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6138475094282084,
+        "y0": 0.6709559450782945,
+        "x1": 0.6207319340902488,
+        "y1": 0.6856000434067652
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6214757957031818,
+        "y0": 0.6709559450782945,
+        "x1": 0.6272231494253098,
+        "y1": 0.6856000434067652
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6284213327827668,
+        "y0": 0.6709559450782945,
+        "x1": 0.6413008539414792,
+        "y1": 0.6856000434067652
+      },
+      "text": ") |",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6421277397817707,
+        "y0": 0.678321502308291,
+        "x1": 0.6533562124038941,
+        "y1": 0.6890116970458997
+      },
+      "text": "Ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6533564657196145,
+        "y0": 0.6825610140550413,
+        "x1": 0.6575636598617552,
+        "y1": 0.6906153709586735
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6602647020593717,
+        "y0": 0.678321502308291,
+        "x1": 0.6652903592941011,
+        "y1": 0.6890116970458997
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6661207915544782,
+        "y0": 0.678321502308291,
+        "x1": 0.6709804003344902,
+        "y1": 0.6890116970458997
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6729874841160911,
+        "y0": 0.678321502308291,
+        "x1": 0.6780131413508205,
+        "y1": 0.6890116970458997
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.680254858818435,
+        "y0": 0.6709559450782945,
+        "x1": 0.8588109672169738,
+        "y1": 0.6856000434067652
+      },
+      "text": ". Note that the Robin–",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764718253845698,
+        "y0": 0.6899927207312204,
+        "x1": 0.5743803660628998,
+        "y1": 0.7046368190596911
+      },
+      "text": "Robin method is sequential, but the computation of each",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5794455247177779,
+        "y0": 0.6899927207312204,
+        "x1": 0.5897825159909095,
+        "y1": 0.7046368190596911
+      },
+      "text": "𝑢",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.590485403786069,
+        "y0": 0.6987635224599166,
+        "x1": 0.5993455644093115,
+        "y1": 0.7094537171975253
+      },
+      "text": "𝑖𝑛",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.605650656018814,
+        "y0": 0.6899927207312204,
+        "x1": 0.8557061397610516,
+        "y1": 0.7046368190596911
+      },
+      "text": "can be implemented in parallel",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1169021968370148,
+        "y0": 0.7090309542695217,
+        "x1": 0.18223282775771246,
+        "y1": 0.7236750525979923
+      },
+      "text": "when Ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18223246361636442,
+        "y0": 0.7151809042446298,
+        "x1": 0.1870619119934172,
+        "y1": 0.7258710989822386
+      },
+      "text": "𝑖",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18974040909191867,
+        "y0": 0.7090309542695217,
+        "x1": 0.19662484958619156,
+        "y1": 0.7236750525979923
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19736871119912447,
+        "y0": 0.7090309542695217,
+        "x1": 0.20311608075348497,
+        "y1": 0.7236750525979923
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20431635396563533,
+        "y0": 0.7090309542695217,
+        "x1": 0.7476700248022435,
+        "y1": 0.7236750525979923
+      },
+      "text": ") is a union of nonadjacent subdomains, as is the case inFigure 1.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14865011358372923,
+        "y0": 0.7277748477596244,
+        "x1": 0.8557136284070357,
+        "y1": 0.7427118282509182
+      },
+      "text": "The well posedness of parabolic equations on evolving domains can be derived via",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764718253845698,
+        "y0": 0.7470605727603156,
+        "x1": 0.858815289416453,
+        "y1": 0.7617486039038441
+      },
+      "text": "the framework [3], which relies on a variational formulation where the standard Sobolev–",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764718253845698,
+        "y0": 0.7661427391136748,
+        "x1": 0.310266983927381,
+        "y1": 0.7807868374421454
+      },
+      "text": "Bochner solution space",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3155429804227884,
+        "y0": 0.7988349439224076,
+        "x1": 0.33917360072854413,
+        "y1": 0.8134790422508783
+      },
+      "text": "𝐻¹",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3493660753831917,
+        "y0": 0.7988349327079047,
+        "x1": 0.36741437715865527,
+        "y1": 0.8134790310363754
+      },
+      "text": "(0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3674137755338193,
+        "y0": 0.7988349327079047,
+        "x1": 0.38703342638734334,
+        "y1": 0.8134790310363754
+      },
+      "text": ",𝑇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38900998562463684,
+        "y0": 0.7988349327079047,
+        "x1": 0.40267617875302847,
+        "y1": 0.8134790310363754
+      },
+      "text": ");",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4066592201470869,
+        "y0": 0.7988349327079047,
+        "x1": 0.42158584897122203,
+        "y1": 0.8134790310363754
+      },
+      "text": "𝐻",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42334769147101775,
+        "y0": 0.7967401708073847,
+        "x1": 0.4410952124929801,
+        "y1": 0.8074303655449935
+      },
+      "text": "−1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44316340869212567,
+        "y0": 0.7988349327079047,
+        "x1": 0.4731402844119476,
+        "y1": 0.8134790310363754
+      },
+      "text": "(Ω)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4868933015035038,
+        "y0": 0.7988349327079047,
+        "x1": 0.50041409140839,
+        "y1": 0.8134790310363754
+      },
+      "text": "∩",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5059599008104806,
+        "y0": 0.7988349327079047,
+        "x1": 0.5260336834217385,
+        "y1": 0.8134790310363754
+      },
+      "text": "𝐿²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5362261897408511,
+        "y0": 0.7988349327079047,
+        "x1": 0.5542744915163147,
+        "y1": 0.8134790310363754
+      },
+      "text": "(0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5542738582270137,
+        "y0": 0.7988349327079047,
+        "x1": 0.5738934774160727,
+        "y1": 0.8134790310363754
+      },
+      "text": ",𝑇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5758721265080594,
+        "y0": 0.7988349327079047,
+        "x1": 0.589538319636451,
+        "y1": 0.8134790310363754
+      },
+      "text": ");",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5935213926949745,
+        "y0": 0.7988349327079047,
+        "x1": 0.6171520130007302,
+        "y1": 0.8134790310363754
+      },
+      "text": "𝐻₀₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6192181193451826,
+        "y0": 0.7988349327079047,
+        "x1": 0.6491949317360743,
+        "y1": 0.8134790310363754
+      },
+      "text": "(Ω)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8329910024687948,
+        "y0": 0.7988349327079047,
+        "x1": 0.8570969063949372,
+        "y1": 0.8134790310363754
+      },
+      "text": "(4)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764718253845698,
+        "y0": 0.8315271599456434,
+        "x1": 0.4221099433644819,
+        "y1": 0.8461712582741141
+      },
+      "text": "is generalized to evolving domains Ω(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42285375748071724,
+        "y0": 0.8315271599456434,
+        "x1": 0.4286011428673102,
+        "y1": 0.8461712582741141
+      },
+      "text": "𝑡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42979932622476735,
+        "y0": 0.8315271599456434,
+        "x1": 0.8557132959301527,
+        "y1": 0.8461712582741141
+      },
+      "text": "). The framework has also been extended to a Banach",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764718253845698,
+        "y0": 0.8502710534357462,
+        "x1": 0.8557095120265793,
+        "y1": 0.86520803392704
+      },
+      "text": "space setting [2]. This variational setting constitutes the starting point of the design and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764718253845698,
+        "y0": 0.8696021691368706,
+        "x1": 0.8557174914717717,
+        "y1": 0.8842462674653412
+      },
+      "text": "analysis of a wide range of finite element methods for equations on evolving domains. The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      481.89,
+      680.315
+    ]
+  ],
+  "seconds": 0.03486539999721572,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

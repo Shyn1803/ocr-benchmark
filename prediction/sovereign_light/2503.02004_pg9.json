@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "engine": "sovereign_light",
+  "engine_version": "9d9a363",
+  "doc_id": "2503.02004_pg9",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "9\nThe key advance of the MILP model is its global optimal-\nity guarantee, since it can explore all possible combinations\nvia branch-and-bound. Furthermore, by employing upper and\nlower bound pruning strategies, MILP significantly reduces\nineffective search efforts, thereby enhancing computational\nefficiency and guaranteeing the identification of the global\noptimality. However, despite its global optimality, its compu-\ntational complexity still grows rapidly as the problem size\nincreases with the time complexity O(2M · K). Empirical\nresults show that when M > 50 and K > 100, the size of\nthe branch-and-bound search tree leads to memory and time\ncosts that exceed practical limits.\nAlgorithm 2 GRSIP: Greedy Row Selection with Isolated\nPreselection.\nRequire: G, Nr, Ninit, ∆n\nEnsure: Is\n1: Initialize: l = 0, T(0) = {∅}\n2: while l ≤Ninit do\n3:\ni = arg max\ni∈T c\n(l)\n¯gi, s. t. D1({i}, T(l)) ≤∆n\n4:\nl = l + 1\n5:\nT(l) = T(l) ∪{i}\n6: end while\n7: while l ≤Nr do\n8:\ni = arg max\ni∈T c\n(l)\nmin\nk\n∥hk∥2, s.t. hk ∈Col(HT(l)∪{i})\n9:\nl = l + 1\n10:\nT(l) = T(l) ∪{i}\n11: end while\n12: return Is = T(l)\nHence, in the following we also propose a greedy algo-\nrithm in Algorithm 2 with the time complexity O(MKNr).\nThe algorithm starts by choosing Ninit positions with the\ntop average channel gains for each subcarrier, maintaining\na minimum separation of ∆n between them, where D1(·, ·)\nrepresents the minimal ℓ1-norm distance between two point\nsets. Then it incrementally adds indices to the candidate\nset, following the principle of maximizing the minimum\nsubcarrier gain, until Nr positions are chosen. Note that\nHT is formed by the row vectors of G associated with row\nindices in T.\nRemark 2 (Applications to Other Models). The theoretical\nanalysis and algorithms of the two-step framework for FAS\nproposed in this work could be extended to other prob-\nlems besides FAS. First, the proposed two-step framework\ncould be directly extended to the antenna selection problem\nwith discrete positions, regardless of whether the exact\nantennas deployment [38]–[41]. The group-sparse recovery\nformulation and D-GRIP analysis can be directly adapted\nto delay-Doppler domain channel estimation [42], [43],\nwhere structures induce similar group-wise sparsity pat-\nterns in reconstruction. The DC-GOMP algorithm employs\na correlation-aware selection mechanism to dynamically\nresolve coherence conflicts, offering a systematic and effi-\ncient approach to sparse event detection. Then, MILP-based\nspatial equalization offers new insights for the resource-\nconstrained optimization in RIS configuration on discrete\nphase [44]. These potential extensions highlight that our\nmethodology effectively tackles the unified challenge of\nsparsity-aware optimization under structured constraints,\nmaking it applicable to a wide range of domains, including\ncomputational sensing, adaptive control, and beyond.\nV. SIMULATION RESULTS\nIn this section, we present the performance of the proposed\ngroup-sparsity based frequency-space channel estimation al-\ngorithm, i.e., DC-GOMP, in comparison to two traditional\nalgorithms (OMP, GOMP), under FAS-assisted wideband\nSIMO system. The proposed positions optimization meth-\nods, i.e., MILP and GRSIP, are also evaluated through the\nphysical layer simulations and in terms of BER.\nSpace Frequency Grid\nFigure 2. (1) The first row has four expressions in frequency-space domain. The first one represents the original SFG and the last three represent the\nrecovered version by three different algorithm (our proposed DC-GOMP, OMP and GOMP). (2) Delay-wavenumber domain expressions corresponding\nto ones above. Black boxes denote the low power regions and red boxes denote the regions failing to correctly allocate the energy.",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.04471970000304282,
+  "model_load_seconds": null,
+  "peak_rss_mb": 6.1015625,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "F:\\vnpt\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 250
+  }
+}

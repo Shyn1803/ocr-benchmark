@@ -1,0 +1,759 @@
+{
+  "schema_version": 2,
+  "engine": "opendataloader",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.08187_pg4",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "Optimal Space-Variant Anisotropic Tikhonov Regularization Gholami and Gazzola A PREPRINT\n\n![](<2503.08187_pg4_images/imageFile1.png>)\n\nwhere α > 0. The FWI problem in equation 7 ensures that the estimated model, while satisfying the data (and the wave equation), is smooth along the direction θ.\n\nFigure 1, top row, shows the anisotropic regularization balls for only one term of the regularizer equation 4 and for different values of [σ]i = σ and [θ]i = θ. We observe that for σ = 0.5, the anisotropic regularization becomes equivalent to the standard isotropic regularization. When the value of σ increases, reaching the maximum considered value of 0.9, the degree of regularization applied in the direction θ and its normal is maximally different, resulting in a needle-shaped ellipse. This shape favors models with elongated features aligned with θ, while allowing variations in the normal direction to it, as illustrated in the bottom row.\n\n3 Algorithm\n\nThe augmented Lagrangian function of equation 7 is L(θ,σ,us,m,λ,ν) =\n\nns\n\n- 1\n\n![](<2503.08187_pg4_images/imageFile2.png>)\n\n- 2\n\n\nPus − ds 22 + αR(m,θ,σ)\n\ns=1\n\nns\n\nµ 2\n\nA(m)us − bs 22 − λTs (A(m)us − bs)\n\n+\n\n![](<2503.08187_pg4_images/imageFile3.png>)\n\ns=1\n\nτ 2\n\nθ − z 22 − νT(θ − z),\n\n+\n\n![](<2503.08187_pg4_images/imageFile4.png>)\n\nwhere z(θ) = min(max(θ,−π2), π2), λs and ν are Lagrange multipliers associated to the constraints, and µ > 0 and τ > 0 are the penalty parameters. The regularization parameter α > 0 is given, being typically determined by the\n\n![](<2503.08187_pg4_images/imageFile5.png>)\n\n![](<2503.08187_pg4_images/imageFile6.png>)\n\ndiscrepancy principle.\n\nThis problem can be efﬁciently solved using the alternating direction method of multipliers (ADMM, [15]), resulting in the following iterative procedure starting from initial guess m (typically encoding some prior information), (spatially invariant) σ = 0.5 and initial multipliers λs = ν = 0:\n\nθ+ = argmin\n\nL(θ,σ,us,m,λ,ν) (8a) σ+ = argmin\n\nθ\n\nL(θ+,σ,us,m,λ,ν) (8b) u+s = arg min\n\nσ\n\nL(θ+,σ+,u,m,λ,ν) (8c) m+ = arg min\n\nu\n\nL(θ+,σ+,u+s ,m,λ,ν) (8d)\n\nm\n\nλ+s = λs − µ(A(m+)u+s − bs) (8e) ν+ = ν − τ(θ+ − z+). (8f)\n\nHere, the updated variables at each iteration are denoted by a superscript “+”. Each step of the algorithm addresses a speciﬁc subproblem, as described more in details below.\n\n- Subproblem equation 8a involves minimizing the regularization function R, as deﬁned in equation 4, with respect to θ, given the current values of m and σ. This can can be efﬁciently achieved using a single iteration of the Gauss-Newton method. To ensure the stability of the θ update, it is essential to incorporate a smoothing term, as suggested by [11].\n- Subproblem equation 8b involves minimizing R with respect to σ, resulting in:\n\n\n[gz′]2i [gx′]2i + [gz′]2i\n\n[σ]i =\n\n, (9)\n\n![](<2503.08187_pg4_images/imageFile7.png>)\n\nwhere ([gx′]i,[gz′]i)T = R([θ]i)[∇m]i represent the rotated gradient of the current model at the ith pixel. This expression for equation 9 is justiﬁed by considering that, when [θ]i corresponds to the correct orientation angle, we typically expect |[gx′]i| ≪ |[gz′]i|. In this case, directly minimizing [gx′]2i + [gz′]2i would heavily penalize [gz′]i, which is undesirable because we aim to apply more smoothing along the direction deﬁned by [θ]i. The weights [σ]i in equation 9 balance the contributions of gradient components in the weighted sum [σ]2i [gx′]2i + (1 − [σ]i)2[gz′]2i , ensuring that the magnitudes of both terms are approximately equal before penalization. This adaptive weighting mechanism effectively enhances smoothing along the structural direction [θ]i while allowing variations across it, eventually enabling the recovery of dominating structures and details in the model m. To maintain stability during the σ update, the computed weights are smoothed using a convolution with a 5 × 5 averaging ﬁlter; alternatively, one could incorporate a smoothing term.\n\nA comprehensive analysis of the methods for solving subproblems equation 8c and equation 8d can be found in [14].\n\n4\n\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20058823529411765,
+        "y0": 0.04634595959595966,
+        "x1": 0.8826519607843137,
+        "y1": 0.05774242424242415
+      },
+      "text": "Optimal Space-Variant Anisotropic Tikhonov Regularization Gholami and Gazzola A PREPRINT",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.11762745098039215,
+        "y0": 0.05940909090909097,
+        "x1": 0.8823333333333334,
+        "y1": 0.06001515151515158
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.09405050505050516,
+        "x1": 0.8825212418300653,
+        "y1": 0.12001515151515152
+      },
+      "text": "where α > 0. The FWI problem in equation 7 ensures that the estimated model, while satisfying the data (and the wave equation), is smooth along the direction θ.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.12937500000000002,
+        "x1": 0.8828022875816993,
+        "y1": 0.209560606060606
+      },
+      "text": "Figure 1, top row, shows the anisotropic regularization balls for only one term of the regularizer equation 4 and for different values of [σ]i = σ and [θ]i = θ. We observe that for σ = 0.5, the anisotropic regularization becomes equivalent to the standard isotropic regularization. When the value of σ increases, reaching the maximum considered value of 0.9, the degree of regularization applied in the direction θ and its normal is maximally different, resulting in a needle-shaped ellipse. This shape favors models with elongated features aligned with θ, while allowing variations in the normal direction to it, as illustrated in the bottom row.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764869281045752,
+        "y0": 0.23122095959595956,
+        "x1": 0.2337254901960784,
+        "y1": 0.24477651515151522
+      },
+      "text": "3 Algorithm",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764869281045752,
+        "y0": 0.26134595959595963,
+        "x1": 0.4598611111111111,
+        "y1": 0.301699494949495
+      },
+      "text": "The augmented Lagrangian function of equation 7 is L(θ,σ,us,m,λ,ν) =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47705882352941176,
+        "y0": 0.27622601010101,
+        "x1": 0.4905522875816994,
+        "y1": 0.2841237373737373
+      },
+      "text": "ns",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.4598039215686274,
+        "y0": 0.2802626262626262,
+        "x1": 0.4679428104575163,
+        "y1": 0.29284217171717175
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.4598039215686274,
+        "y0": 0.2973838383838384,
+        "x1": 0.4679428104575163,
+        "y1": 0.30996338383838384
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5070588235294118,
+        "y0": 0.28718308080808075,
+        "x1": 0.6898464052287582,
+        "y1": 0.3024027777777778
+      },
+      "text": "Pus − ds 22 + αR(m,θ,σ)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47294117647058825,
+        "y0": 0.30667929292929286,
+        "x1": 0.4955032679738562,
+        "y1": 0.3145782828282828
+      },
+      "text": "s=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3670588235294117,
+        "y0": 0.31804419191919187,
+        "x1": 0.38055065359477125,
+        "y1": 0.32594191919191917
+      },
+      "text": "ns",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34784313725490196,
+        "y0": 0.3226603535353536,
+        "x1": 0.3576437908496732,
+        "y1": 0.35193308080808083
+      },
+      "text": "µ 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3968627450980392,
+        "y0": 0.3288017676767676,
+        "x1": 0.6429820261437909,
+        "y1": 0.3448813131313131
+      },
+      "text": "A(m)us − bs 22 − λTs (A(m)us − bs)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3296078431372549,
+        "y0": 0.33071717171717174,
+        "x1": 0.34225653594771244,
+        "y1": 0.34329671717171717
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.3478235294117647,
+        "y0": 0.3366818181818182,
+        "x1": 0.3578235294117647,
+        "y1": 0.3372878787878787
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3627450980392157,
+        "y0": 0.34864898989898985,
+        "x1": 0.38530718954248366,
+        "y1": 0.3565479797979798
+      },
+      "text": "s=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34784313725490196,
+        "y0": 0.3575088383838384,
+        "x1": 0.35637418300653595,
+        "y1": 0.38678156565656563
+      },
+      "text": "τ 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3670588235294117,
+        "y0": 0.36364898989898986,
+        "x1": 0.5113725490196078,
+        "y1": 0.3792209595959596
+      },
+      "text": "θ − z 22 − νT(θ − z),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3296078431372549,
+        "y0": 0.36556565656565654,
+        "x1": 0.34225653594771244,
+        "y1": 0.37814520202020196
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.3478235294117647,
+        "y0": 0.371530303030303,
+        "x1": 0.35684313725490197,
+        "y1": 0.3721363636363637
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.38667929292929293,
+        "x1": 0.8825228758169935,
+        "y1": 0.4146590909090909
+      },
+      "text": "where z(θ) = min(max(θ,−π2), π2), λs and ν are Lagrange multipliers associated to the constraints, and µ > 0 and τ > 0 are the penalty parameters. The regularization parameter α > 0 is given, being typically determined by the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.31429411764705883,
+        "y0": 0.39440909090909093,
+        "x1": 0.32233333333333336,
+        "y1": 0.39501515151515143
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.33978431372549023,
+        "y0": 0.39440909090909093,
+        "x1": 0.3478235294117647,
+        "y1": 0.39501515151515143
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.41664772727272725,
+        "x1": 0.26152124183006537,
+        "y1": 0.4280454545454545
+      },
+      "text": "discrepancy principle.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.43740656565656566,
+        "x1": 0.8824526143790851,
+        "y1": 0.4771540404040404
+      },
+      "text": "This problem can be efﬁciently solved using the alternating direction method of multipliers (ADMM, [15]), resulting in the following iterative procedure starting from initial guess m (typically encoding some prior information), (spatially invariant) σ = 0.5 and initial multipliers λs = ν = 0:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37058823529411766,
+        "y0": 0.47975883838383837,
+        "x1": 0.4637401960784314,
+        "y1": 0.4939027777777778
+      },
+      "text": "θ+ = argmin",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37058823529411766,
+        "y0": 0.4813232323232324,
+        "x1": 0.8824787581699346,
+        "y1": 0.519054292929293
+      },
+      "text": "L(θ,σ,us,m,λ,ν) (8a) σ+ = argmin",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4470588235294118,
+        "y0": 0.492739898989899,
+        "x1": 0.4532581699346405,
+        "y1": 0.5006388888888889
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37058823529411766,
+        "y0": 0.5049103535353536,
+        "x1": 0.8826748366013072,
+        "y1": 0.5451843434343434
+      },
+      "text": "L(θ+,σ,us,m,λ,ν) (8b) u+s = arg min",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4480392156862745,
+        "y0": 0.5172853535353535,
+        "x1": 0.4555816993464052,
+        "y1": 0.5251843434343435
+      },
+      "text": "σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37058660130718957,
+        "y0": 0.5293042929292929,
+        "x1": 0.8824787581699346,
+        "y1": 0.5679936868686868
+      },
+      "text": "L(θ+,σ+,u,m,λ,ν) (8c) m+ = arg min",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4476470588235294,
+        "y0": 0.5418308080808081,
+        "x1": 0.4553382352941176,
+        "y1": 0.5497297979797979
+      },
+      "text": "u",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4768611111111111,
+        "y0": 0.5538497474747475,
+        "x1": 0.8826748366013072,
+        "y1": 0.569729797979798
+      },
+      "text": "L(θ+,σ+,u+s ,m,λ,ν) (8d)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4507843137254902,
+        "y0": 0.5662247474747475,
+        "x1": 0.46232679738562094,
+        "y1": 0.5741237373737373
+      },
+      "text": "m",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37058660130718957,
+        "y0": 0.578395202020202,
+        "x1": 0.8826748366013072,
+        "y1": 0.6123863636363636
+      },
+      "text": "λ+s = λs − µ(A(m+)u+s − bs) (8e) ν+ = ν − τ(θ+ − z+). (8f)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1176454248366013,
+        "y0": 0.617709595959596,
+        "x1": 0.8823251633986927,
+        "y1": 0.6428939393939395
+      },
+      "text": "Here, the updated variables at each iteration are denoted by a superscript “+”. Each step of the algorithm addresses a speciﬁc subproblem, as described more in details below.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.1176454248366013,
+        "y0": 0.6514747474747475,
+        "x1": 0.8826503267973856,
+        "y1": 0.6912272727272728
+      },
+      "text": "Subproblem equation 8a involves minimizing the regularization function R, as deﬁned in equation 4, with respect to θ, given the current values of m and σ. This can can be efﬁciently achieved using a single iteration of the Gauss-Newton method. To ensure the stability of the θ update, it is essential to incorporate a smoothing term, as suggested by [11].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.6996565656565656,
+        "x1": 0.6331519607843137,
+        "y1": 0.7122361111111111
+      },
+      "text": "Subproblem equation 8b involves minimizing R with respect to σ, resulting in:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4745098039215686,
+        "y0": 0.7162739898989898,
+        "x1": 0.5662875816993463,
+        "y1": 0.7491237373737374
+      },
+      "text": "[gz′]2i [gx′]2i + [gz′]2i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4264705882352941,
+        "y0": 0.7258686868686869,
+        "x1": 0.4679428104575163,
+        "y1": 0.7388207070707071
+      },
+      "text": "[σ]i =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5690196078431373,
+        "y0": 0.7262954545454545,
+        "x1": 0.8824787581699346,
+        "y1": 0.7380454545454546
+      },
+      "text": ", (9)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.47449019607843135,
+        "y0": 0.7318333333333333,
+        "x1": 0.5672352941176471,
+        "y1": 0.732439393939394
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.7519823232323233,
+        "x1": 0.8826764705882353,
+        "y1": 0.891074494949495
+      },
+      "text": "where ([gx′]i,[gz′]i)T = R([θ]i)[∇m]i represent the rotated gradient of the current model at the ith pixel. This expression for equation 9 is justiﬁed by considering that, when [θ]i corresponds to the correct orientation angle, we typically expect |[gx′]i| ≪ |[gz′]i|. In this case, directly minimizing [gx′]2i + [gz′]2i would heavily penalize [gz′]i, which is undesirable because we aim to apply more smoothing along the direction deﬁned by [θ]i. The weights [σ]i in equation 9 balance the contributions of gradient components in the weighted sum [σ]2i [gx′]2i + (1 − [σ]i)2[gz′]2i , ensuring that the magnitudes of both terms are approximately equal before penalization. This adaptive weighting mechanism effectively enhances smoothing along the structural direction [θ]i while allowing variations across it, eventually enabling the recovery of dominating structures and details in the model m. To maintain stability during the σ update, the computed weights are smoothed using a convolution with a 5 × 5 averaging ﬁlter; alternatively, one could incorporate a smoothing term.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.900435606060606,
+        "x1": 0.8774035947712419,
+        "y1": 0.9118333333333333
+      },
+      "text": "A comprehensive analysis of the methods for solving subproblems equation 8c and equation 8d can be found in [14].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4958823529411765,
+        "y0": 0.9381641414141414,
+        "x1": 0.5040212418300654,
+        "y1": 0.9495606060606061
+      },
+      "text": "4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.11762745098039215,
+        "y0": 0.05940909090909097,
+        "x1": 0.8823333333333334,
+        "y1": 0.06001515151515158
+      },
+      "source_id": "2503.08187_pg4_images/imageFile1.png",
+      "file": "000.png",
+      "sha256": "5d3898460a646d16434a072bf9b86b6d776b8e484e1d6a265a23d09f79bdddb8"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.3478235294117647,
+        "y0": 0.3366818181818182,
+        "x1": 0.3578235294117647,
+        "y1": 0.3372878787878787
+      },
+      "source_id": "2503.08187_pg4_images/imageFile3.png",
+      "file": "001.png",
+      "sha256": "0081228c4d6c8adeccb5a34a4e6c324c92edcb1e1033e05f172d124aaac65610"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.3478235294117647,
+        "y0": 0.371530303030303,
+        "x1": 0.35684313725490197,
+        "y1": 0.3721363636363637
+      },
+      "source_id": "2503.08187_pg4_images/imageFile4.png",
+      "file": "002.png",
+      "sha256": "cd00e60937cb0c987c2375b37a565e41bdf4dea55907ba030ffd95d6cdb35bbf"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.31429411764705883,
+        "y0": 0.39440909090909093,
+        "x1": 0.32233333333333336,
+        "y1": 0.39501515151515143
+      },
+      "source_id": "2503.08187_pg4_images/imageFile5.png",
+      "file": "003.png",
+      "sha256": "53af965da901e3afcca6240fe724f6f4c070e631a526b733c18d4e2a509f2fa0"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.33978431372549023,
+        "y0": 0.39440909090909093,
+        "x1": 0.3478235294117647,
+        "y1": 0.39501515151515143
+      },
+      "source_id": "2503.08187_pg4_images/imageFile6.png",
+      "file": "004.png",
+      "sha256": "610f9423fb144688c3602c013e87098eada8a609479cabdf2f0fc9c311cd1b03"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.47449019607843135,
+        "y0": 0.7318333333333333,
+        "x1": 0.5672352941176471,
+        "y1": 0.732439393939394
+      },
+      "source_id": "2503.08187_pg4_images/imageFile7.png",
+      "file": "005.png",
+      "sha256": "9560acfa32956a6585269b7e99a3f4f3d510be8278d1c739e5913883ab32345c"
+    }
+  ],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 1.2381324999732897,
+  "model_load_seconds": null,
+  "peak_rss_mb": 165.65234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "opendataloader_version": "2.5.0",
+    "table_method": "cluster",
+    "include_header_footer": true,
+    "reading_order": "xycut",
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "F:\\vnpt\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe"
+  }
+}

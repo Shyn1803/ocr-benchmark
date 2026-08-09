@@ -1,0 +1,3332 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "02ef468d6658a2cc7878397e68640fe0357f_page_5_pg1",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "Fig. 4. Reputation checking during the publication process\n\n*B. Other Services* When a peer is connected to the network, services (publi- cation of contents, search, data download...) are achieved by sending requests to the other peers. In Kademlia [13] this is done in two phases. Firstly, *Kademlia REQ* are sent to find nodes which are potentially able to deliver the service (according to their place in the DHT). This phase is general and only concerns the iteration mechanism used to find several peers in a part of the P2P network. In the second step, when the nodes are found, a specific request is sent to ask for a particular service. The reputation checking must be done before the specific request for three reasons. Firstly, a peer can be a bridge and search contacts for other uncontrolled peers. Secondly, the real services are provided by the specific requests. Controlling the reputation at this point allows to revoke independently the different services. Finally, checking the reputation for *Kademlia REQ* would increase the overhead for no advantage. The figure 4 presents the running of a publication request and includes the reputation checking. The other requests (search, data download) follow the same scheme. However, inserting the revocation mechanism into the search function is not relevant for several reasons. Firstly, it is not a service through which a peer can damage the network. Then, searching is useless when the other services are inactive behind. Finally, it would also introduce overhead to the network and unnecessary delay for all users.\n*C. Implementation* We have implemented the revocation mechanism in KAD. To do that, we have introduced different modifications in the KAD client:\n- our modified client can manage a new kind of information called ”Account”;\n- the associated requests search/store Account were written, which partially behave like existing requests on key- words, files or notes;\n- new functions were added in the UDPListener, where all network’s requests are processed. In fact, these functions do the service-oriented revocation, searching for the rep- utation and checking it.\nFig. 5. Publication of accounts between modified KAD clients inside a\n\ntolerance zone\n\n- KadID and userID allocation were cheated to control the place of the peers in the DHT. We have tested that the reputation storage and retrieval\nand the revocation of services work fine on the modified peers. However, as our implementation defines new data types and messages to manage the accounts, we can just test our revocation mechanism on a few peers. Presently, as we test the mechanism with few resources, we have defined the KadID and UserID of modified peers to place them in the same tolerance zone. In this way, we are sure that the accounts can be stored (figure 5) when using the KAD publication mechanism. That is enough to verify the mechanism, but without the real number of replicated peers, performance measures would be wrong. That is why we are going to scale up our testbed on EmanicsLab to measure performances and compare the results with the evaluation presented in section\n\nV.\nV. ANALYSIS AND DISCUSSIONS\n*A. Performances Evaluation* The thesis [2] has led a performance evaluation of the KAD network which allows us to discuss some a priori performance results. The average delay needed to store information in the network is about 200 seconds. This time is needed to find ten peers (for the replication) with a KadID close to the hash of the information to store. This delay will occur the first time that a peer connects itself to the network and periodically later to maintain the account in the network despite the churn. The delay to retrieve the information fluctuates and depends on the replication. The more replication there is, the more robust the stored information is and the quicker it is retrieved. The information is retrieved linearly, so the more a peer waits, the more results are returned. A 100 seconds delay seems to be sufficient to retrieve enough information to guess the real reputation of a peer. This delay could seem huge because it appears prior to each service of the network, except the search as explained. But in fact, 100 seconds to bootstrap are not penalising, the publication process is entirely transparent for the user and 100 seconds preceding a download\n",
+  "blocks": [
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.10169764749364915,
+        "y0": 0.06818027688999373,
+        "x1": 0.46852706460391774,
+        "y1": 0.24873637189768782
+      },
+      "text": "[Image: R42]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.5499843023960886,
+        "y0": 0.06818035395458488,
+        "x1": 0.8797627368004494,
+        "y1": 0.24502733018663192
+      },
+      "text": "[Image: R43]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12352935940611597,
+        "y0": 0.2688637887588655,
+        "x1": 0.15848350524902344,
+        "y1": 0.2789270420267125
+      },
+      "text": "Fig. 4.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17215756185693679,
+        "y0": 0.2688637887588655,
+        "x1": 0.4466969109828176,
+        "y1": 0.2789270420267125
+      },
+      "text": "Reputation checking during the publication process",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.2651542075956711,
+        "x1": 0.5464324951171875,
+        "y1": 0.27521746086351795
+      },
+      "text": "Fig. 5.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5652504715265012,
+        "y0": 0.2651542075956711,
+        "x1": 0.9199856028837317,
+        "y1": 0.27521746086351795
+      },
+      "text": "Publication of accounts between modified KAD clients inside a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.2764752272403601,
+        "x1": 0.586634916417739,
+        "y1": 0.28653848050820707
+      },
+      "text": "tolerance zone",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999915079353681,
+        "y0": 0.30886192153198555,
+        "x1": 0.20007094838260825,
+        "y1": 0.32144095680930396
+      },
+      "text": "B. Other Services",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5260379267673866,
+        "y0": 0.31961701554481425,
+        "x1": 0.5327004825367647,
+        "y1": 0.32842231519294507
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.542475232891008,
+        "y0": 0.3158429716572617,
+        "x1": 0.9199788211997039,
+        "y1": 0.3284220069345801
+      },
+      "text": "KadID and userID allocation were cheated to control the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09627748003192976,
+        "y0": 0.3278794589668813,
+        "x1": 0.4902219647675558,
+        "y1": 0.3404584942441998
+      },
+      "text": "When a peer is connected to the network, services (publi-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.542475232891008,
+        "y0": 0.33093830672177404,
+        "x1": 0.7476860495174632,
+        "y1": 0.34351734199909245
+      },
+      "text": "place of the peers in the DHT.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999915079353681,
+        "y0": 0.3429741004500726,
+        "x1": 0.49022386588302314,
+        "y1": 0.3555531357273911
+      },
+      "text": "cation of contents, search, data download...) are achieved by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.526037677440768,
+        "y0": 0.3493497696789828,
+        "x1": 0.5473302205403646,
+        "y1": 0.3619288049563013
+      },
+      "text": "We",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5561042735779208,
+        "y0": 0.3493497696789828,
+        "x1": 0.5862686057495915,
+        "y1": 0.3619288049563013
+      },
+      "text": "have",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5950587652867136,
+        "y0": 0.3493497696789828,
+        "x1": 0.6330370934180964,
+        "y1": 0.3619288049563013
+      },
+      "text": "tested",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6418112461863,
+        "y0": 0.3493497696789828,
+        "x1": 0.6662293976428462,
+        "y1": 0.3619288049563013
+      },
+      "text": "that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6750196569106158,
+        "y0": 0.3493497696789828,
+        "x1": 0.6949122809117136,
+        "y1": 0.3619288049563013
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7036861843532987,
+        "y0": 0.3493497696789828,
+        "x1": 0.7696965036828534,
+        "y1": 0.3619288049563013
+      },
+      "text": "reputation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7784709057776756,
+        "y0": 0.3493497696789828,
+        "x1": 0.8254839329937704,
+        "y1": 0.3619288049563013
+      },
+      "text": "storage",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8342743418575113,
+        "y0": 0.3493497696789828,
+        "x1": 0.8577809053308824,
+        "y1": 0.3619288049563013
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8665552076950572,
+        "y0": 0.3493497696789828,
+        "x1": 0.9199820125804228,
+        "y1": 0.3619288049563013
+      },
+      "text": "retrieval",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999915079353681,
+        "y0": 0.3580694355145849,
+        "x1": 0.13064234864478017,
+        "y1": 0.37064847079190344
+      },
+      "text": "sending",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.138895421246298,
+        "y0": 0.3580694355145849,
+        "x1": 0.192240895788654,
+        "y1": 0.37064847079190344
+      },
+      "text": "requests",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20049389359218622,
+        "y0": 0.3580694355145849,
+        "x1": 0.2131587508457159,
+        "y1": 0.37064847079190344
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22142834133572048,
+        "y0": 0.3580694355145849,
+        "x1": 0.2413209902694802,
+        "y1": 0.37064847079190344
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24957402547200522,
+        "y0": 0.3580694355145849,
+        "x1": 0.2830268510806015,
+        "y1": 0.37064847079190344
+      },
+      "text": "other",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2912805095996732,
+        "y0": 0.3580694355145849,
+        "x1": 0.3296983506944444,
+        "y1": 0.37064847079190344
+      },
+      "text": "peers.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3379517349542356,
+        "y0": 0.3580694355145849,
+        "x1": 0.3515119365617341,
+        "y1": 0.37064847079190344
+      },
+      "text": "In",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35978155198440054,
+        "y0": 0.3580694355145849,
+        "x1": 0.4230733634599673,
+        "y1": 0.37064847079190344
+      },
+      "text": "Kademlia",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43132637372983046,
+        "y0": 0.3580694355145849,
+        "x1": 0.4584467769448274,
+        "y1": 0.37064847079190344
+      },
+      "text": "[13]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46670008640663296,
+        "y0": 0.3580694355145849,
+        "x1": 0.49022285611021754,
+        "y1": 0.37064847079190344
+      },
+      "text": "this",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097593419692096,
+        "y0": 0.3644451047434951,
+        "x1": 0.5332658555772569,
+        "y1": 0.37702414002081364
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5422676934136285,
+        "y0": 0.3644451047434951,
+        "x1": 0.5621603174147263,
+        "y1": 0.37702414002081364
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5711785609426062,
+        "y0": 0.3644451047434951,
+        "x1": 0.6391591589435254,
+        "y1": 0.37702414002081364
+      },
+      "text": "revocation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6481615951637817,
+        "y0": 0.3644451047434951,
+        "x1": 0.6617217718386182,
+        "y1": 0.37702414002081364
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6707404641544118,
+        "y0": 0.3644451047434951,
+        "x1": 0.7231743507135927,
+        "y1": 0.37702414002081364
+      },
+      "text": "services",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7321765874725541,
+        "y0": 0.3644451047434951,
+        "x1": 0.765466976789088,
+        "y1": 0.37702414002081364
+      },
+      "text": "work",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7744850707209967,
+        "y0": 0.3644451047434951,
+        "x1": 0.7989032221775428,
+        "y1": 0.37702414002081364
+      },
+      "text": "fine",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8079056583977993,
+        "y0": 0.3644451047434951,
+        "x1": 0.8241843927919476,
+        "y1": 0.37702414002081364
+      },
+      "text": "on",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8332029355117698,
+        "y0": 0.3644451047434951,
+        "x1": 0.8530955595128676,
+        "y1": 0.37702414002081364
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8620976466758579,
+        "y0": 0.3644451047434951,
+        "x1": 0.9199849047691994,
+        "y1": 0.37702414002081364
+      },
+      "text": "modified",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999915079353681,
+        "y0": 0.37316477057909725,
+        "x1": 0.09085707570992264,
+        "y1": 0.38574380585641577
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0992891274246515,
+        "y0": 0.37316477057909725,
+        "x1": 0.13093502069610397,
+        "y1": 0.38574380585641577
+      },
+      "text": "done",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13938331604003906,
+        "y0": 0.37316477057909725,
+        "x1": 0.15204818575989967,
+        "y1": 0.38574380585641577
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.160480898190168,
+        "y0": 0.37316477057909725,
+        "x1": 0.18473623936472375,
+        "y1": 0.38574380585641577
+      },
+      "text": "two",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1931685404060713,
+        "y0": 0.37316477057909725,
+        "x1": 0.24063738654641545,
+        "y1": 0.38574380585641577
+      },
+      "text": "phases.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24908609327927134,
+        "y0": 0.37316477057909725,
+        "x1": 0.29461794585184337,
+        "y1": 0.38574380585641577
+      },
+      "text": "Firstly,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3030546101090176,
+        "y0": 0.37316477057909725,
+        "x1": 0.40614737716375615,
+        "y1": 0.38574380585641577
+      },
+      "text": "Kademlia REQ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41458267012452765,
+        "y0": 0.37316492470827967,
+        "x1": 0.43445901309742646,
+        "y1": 0.3857439599855982
+      },
+      "text": "are",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4428914886674071,
+        "y0": 0.37316492470827967,
+        "x1": 0.46911655999476615,
+        "y1": 0.3857439599855982
+      },
+      "text": "sent",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4775652417949602,
+        "y0": 0.37316492470827967,
+        "x1": 0.49023013644748265,
+        "y1": 0.3857439599855982
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097593419692096,
+        "y0": 0.37954043980800745,
+        "x1": 0.9199824115030126,
+        "y1": 0.39211947508532596
+      },
+      "text": "peers. However, as our implementation defines new data types",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999948115130655,
+        "y0": 0.3882602212404964,
+        "x1": 0.4902237474528793,
+        "y1": 0.4008392565178148
+      },
+      "text": "find nodes which are potentially able to deliver the service",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097593419692096,
+        "y0": 0.3946357363402241,
+        "x1": 0.9199837080014297,
+        "y1": 0.4072147716175426
+      },
+      "text": "and messages to manage the accounts, we can just test our",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999948115130655,
+        "y0": 0.4033549012559833,
+        "x1": 0.4902246450287065,
+        "y1": 0.4159339365333018
+      },
+      "text": "(according to their place in the DHT). This phase is general",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097593419692096,
+        "y0": 0.4097310714047364,
+        "x1": 0.9199851042304943,
+        "y1": 0.42231010668205493
+      },
+      "text": "revocation mechanism on a few peers. Presently, as we test the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999948115130655,
+        "y0": 0.41844958127147025,
+        "x1": 0.490223797318203,
+        "y1": 0.43102861654878866
+      },
+      "text": "and only concerns the iteration mechanism used to find several",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097593419692096,
+        "y0": 0.42482640646924874,
+        "x1": 0.9199842066546671,
+        "y1": 0.43740544174656726
+      },
+      "text": "mechanism with few resources, we have defined the KadID",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999948115130655,
+        "y0": 0.4335442612869571,
+        "x1": 0.49022354799158435,
+        "y1": 0.4461232965642755
+      },
+      "text": "peers in a part of the P2P network. In the second step, when the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097593419692096,
+        "y0": 0.43992174153376107,
+        "x1": 0.5332658555772569,
+        "y1": 0.4525007768110796
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5420072966930913,
+        "y0": 0.43992174153376107,
+        "x1": 0.5899156557968239,
+        "y1": 0.4525007768110796
+      },
+      "text": "UserID",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5986570969126583,
+        "y0": 0.43992174153376107,
+        "x1": 0.6122173234528187,
+        "y1": 0.4525007768110796
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.620958764568653,
+        "y0": 0.43992174153376107,
+        "x1": 0.6788459727966708,
+        "y1": 0.4525007768110796
+      },
+      "text": "modified",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.687587812835095,
+        "y0": 0.43992174153376107,
+        "x1": 0.7219359453986672,
+        "y1": 0.4525007768110796
+      },
+      "text": "peers",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7306775859757966,
+        "y0": 0.43992174153376107,
+        "x1": 0.7433424307629953,
+        "y1": 0.4525007768110796
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7521006764929279,
+        "y0": 0.43992174153376107,
+        "x1": 0.7864488589218239,
+        "y1": 0.4525007768110796
+      },
+      "text": "place",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7951903997683057,
+        "y0": 0.43992174153376107,
+        "x1": 0.8277479184219261,
+        "y1": 0.4525007768110796
+      },
+      "text": "them",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8364894094030841,
+        "y0": 0.43992174153376107,
+        "x1": 0.8491543040556067,
+        "y1": 0.4525007768110796
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8578955955754698,
+        "y0": 0.43992174153376107,
+        "x1": 0.8777882694418914,
+        "y1": 0.4525007768110796
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8865299598843444,
+        "y0": 0.43992174153376107,
+        "x1": 0.9199828104256025,
+        "y1": 0.4525007768110796
+      },
+      "text": "same",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999948115130655,
+        "y0": 0.44863894130244397,
+        "x1": 0.4902257420658286,
+        "y1": 0.4612179765797625
+      },
+      "text": "nodes are found, a specific request is sent to ask for a particular",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097593419692096,
+        "y0": 0.4550170765982734,
+        "x1": 0.6123642765618618,
+        "y1": 0.4675961118755918
+      },
+      "text": "tolerance zone.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6205198499891493,
+        "y0": 0.4550170765982734,
+        "x1": 0.6340800266639859,
+        "y1": 0.4675961118755918
+      },
+      "text": "In",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6422194935917075,
+        "y0": 0.4550170765982734,
+        "x1": 0.6657423131606158,
+        "y1": 0.4675961118755918
+      },
+      "text": "this",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.673897587395961,
+        "y0": 0.4550170765982734,
+        "x1": 0.730987548828125,
+        "y1": 0.4675961118755918
+      },
+      "text": "way, we",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.739143421447355,
+        "y0": 0.4550170765982734,
+        "x1": 0.8268365797653697,
+        "y1": 0.4675961118755918
+      },
+      "text": "are sure that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.834992003596686,
+        "y0": 0.4550170765982734,
+        "x1": 0.8548846275977839,
+        "y1": 0.4675961118755918
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8630242441214767,
+        "y0": 0.4550170765982734,
+        "x1": 0.9199836082707823,
+        "y1": 0.4675961118755918
+      },
+      "text": "accounts",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999948115130655,
+        "y0": 0.46373362131793094,
+        "x1": 0.13017059774959788,
+        "y1": 0.47631265659524935
+      },
+      "text": "service.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1388957578372332,
+        "y0": 0.46373362131793094,
+        "x1": 0.16420921624875537,
+        "y1": 0.47631265659524935
+      },
+      "text": "The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1729345009997,
+        "y0": 0.46373362131793094,
+        "x1": 0.23894485772824756,
+        "y1": 0.47631265659524935
+      },
+      "text": "reputation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24768632377674377,
+        "y0": 0.46373362131793094,
+        "x1": 0.3064367256912531,
+        "y1": 0.47631265659524935
+      },
+      "text": "checking",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31517866546032475,
+        "y0": 0.46373362131793094,
+        "x1": 0.3468408522263072,
+        "y1": 0.47631265659524935
+      },
+      "text": "must",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35556618684257557,
+        "y0": 0.46373362131793094,
+        "x1": 0.3709333332535488,
+        "y1": 0.47631265659524935
+      },
+      "text": "be",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3796585681391697,
+        "y0": 0.46373362131793094,
+        "x1": 0.41130444894429125,
+        "y1": 0.47631265659524935
+      },
+      "text": "done",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42002998302185457,
+        "y0": 0.46373362131793094,
+        "x1": 0.4616059446646497,
+        "y1": 0.47631265659524935
+      },
+      "text": "before",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47033102995429943,
+        "y0": 0.46373362131793094,
+        "x1": 0.49022365395539724,
+        "y1": 0.47631265659524935
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097593419692096,
+        "y0": 0.4701124116627857,
+        "x1": 0.5323542675940819,
+        "y1": 0.48269144694010413
+      },
+      "text": "can",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5408683726990146,
+        "y0": 0.4701124116627857,
+        "x1": 0.5562355191099877,
+        "y1": 0.48269144694010413
+      },
+      "text": "be",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.564733218523412,
+        "y0": 0.4701124116627857,
+        "x1": 0.6045184665256076,
+        "y1": 0.48269144694010413
+      },
+      "text": "stored",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6130320729773029,
+        "y0": 0.4701124116627857,
+        "x1": 0.6564312105864482,
+        "y1": 0.48269144694010413
+      },
+      "text": "(figure",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6649453156913807,
+        "y0": 0.4701124116627857,
+        "x1": 0.6785054923662173,
+        "y1": 0.48269144694010413
+      },
+      "text": "5)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6870034411062602,
+        "y0": 0.4701124116627857,
+        "x1": 0.7222629123263888,
+        "y1": 0.48269144694010413
+      },
+      "text": "when",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7307764190474367,
+        "y0": 0.4701124116627857,
+        "x1": 0.7660524954203687,
+        "y1": 0.48269144694010413
+      },
+      "text": "using",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7745662514680351,
+        "y0": 0.4701124116627857,
+        "x1": 0.794458875469133,
+        "y1": 0.48269144694010413
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8029722824595333,
+        "y0": 0.4701124116627857,
+        "x1": 0.838232102736928,
+        "y1": 0.48269144694010413
+      },
+      "text": "KAD",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8467299517463235,
+        "y0": 0.4701124116627857,
+        "x1": 0.9199843063853146,
+        "y1": 0.48269144694010413
+      },
+      "text": "publication",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999948115130655,
+        "y0": 0.4788283013334178,
+        "x1": 0.49022284987705206,
+        "y1": 0.4914073366107363
+      },
+      "text": "specific request for three reasons. Firstly, a peer can be a bridge",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097593419692096,
+        "y0": 0.48520770819500236,
+        "x1": 0.5879787370270374,
+        "y1": 0.4977867434723209
+      },
+      "text": "mechanism.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5971765455856822,
+        "y0": 0.48520770819500236,
+        "x1": 0.6270155065199908,
+        "y1": 0.4977867434723209
+      },
+      "text": "That",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6361969093871273,
+        "y0": 0.48520770819500236,
+        "x1": 0.6470548343035131,
+        "y1": 0.4977867434723209
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6562359878440308,
+        "y0": 0.48520770819500236,
+        "x1": 0.7041606529086244,
+        "y1": 0.4977867434723209
+      },
+      "text": "enough",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7133583617366217,
+        "y0": 0.48520770819500236,
+        "x1": 0.7260232563891442,
+        "y1": 0.4977867434723209
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7352042603336908,
+        "y0": 0.48520770819500236,
+        "x1": 0.7738337797277114,
+        "y1": 0.4977867434723209
+      },
+      "text": "verify",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7830151825948478,
+        "y0": 0.48520770819500236,
+        "x1": 0.8029078065959456,
+        "y1": 0.4977867434723209
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8121053159626481,
+        "y0": 0.48520770819500236,
+        "x1": 0.890324711020476,
+        "y1": 0.4977867434723209
+      },
+      "text": "mechanism,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8995057149650225,
+        "y0": 0.48520770819500236,
+        "x1": 0.9199846055772569,
+        "y1": 0.4977867434723209
+      },
+      "text": "but",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999948115130655,
+        "y0": 0.4939229428166091,
+        "x1": 0.4902236477222318,
+        "y1": 0.5065019780939275
+      },
+      "text": "and search contacts for other uncontrolled peers. Secondly, the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097593419692096,
+        "y0": 0.5003030432595147,
+        "x1": 0.5595071830001532,
+        "y1": 0.5128820785368331
+      },
+      "text": "without",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.56922548580793,
+        "y0": 0.5003030432595147,
+        "x1": 0.5891181098090278,
+        "y1": 0.5128820785368331
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5988364126168045,
+        "y0": 0.5003030432595147,
+        "x1": 0.6232382581124898,
+        "y1": 0.5128820785368331
+      },
+      "text": "real",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6329563614589716,
+        "y0": 0.5003030432595147,
+        "x1": 0.682687946394378,
+        "y1": 0.5128820785368331
+      },
+      "text": "number",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6924063489328023,
+        "y0": 0.5003030432595147,
+        "x1": 0.7059665256076388,
+        "y1": 0.5128820785368331
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.715685327068653,
+        "y0": 0.5003030432595147,
+        "x1": 0.7798724205665339,
+        "y1": 0.5128820785368331
+      },
+      "text": "replicated",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7895907233743107,
+        "y0": 0.5003030432595147,
+        "x1": 0.8280085644690819,
+        "y1": 0.5128820785368331
+      },
+      "text": "peers,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8377271664688011,
+        "y0": 0.5003030432595147,
+        "x1": 0.9199837080014297,
+        "y1": 0.5128820785368331
+      },
+      "text": "performance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999948115130655,
+        "y0": 0.509017622832096,
+        "x1": 0.4902239967794979,
+        "y1": 0.5215966581094145
+      },
+      "text": "real services are provided by the specific requests. Controlling",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097593419692096,
+        "y0": 0.515398378324027,
+        "x1": 0.9199842066546671,
+        "y1": 0.5279774136013455
+      },
+      "text": "measures would be wrong. That is why we are going to scale",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999948115130655,
+        "y0": 0.5241123028475829,
+        "x1": 0.09989211761873532,
+        "y1": 0.5366913381249014
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1080478593414905,
+        "y0": 0.5241123028475829,
+        "x1": 0.17404204723881742,
+        "y1": 0.5366913381249014
+      },
+      "text": "reputation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18219765806509777,
+        "y0": 0.5241123028475829,
+        "x1": 0.1939509273354524,
+        "y1": 0.5366913381249014
+      },
+      "text": "at",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20210651322907092,
+        "y0": 0.5241123028475829,
+        "x1": 0.2672376944348703,
+        "y1": 0.5366913381249014
+      },
+      "text": "this point",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2753930933335248,
+        "y0": 0.5241123028475829,
+        "x1": 0.3382938609403722,
+        "y1": 0.5366913381249014
+      },
+      "text": "allows to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3464492847716886,
+        "y0": 0.5241123028475829,
+        "x1": 0.4902234544941023,
+        "y1": 0.5366913381249014
+      },
+      "text": "revoke independently",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097593419692096,
+        "y0": 0.5304937133885393,
+        "x1": 0.919984406115962,
+        "y1": 0.5430727486658578
+      },
+      "text": "up our testbed on EmanicsLab to measure performances and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999948115130655,
+        "y0": 0.5392069828630698,
+        "x1": 0.09989211761873532,
+        "y1": 0.5517860181403882
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10923583834779028,
+        "y0": 0.5392069828630698,
+        "x1": 0.16487633948232613,
+        "y1": 0.5517860181403882
+      },
+      "text": "different",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1742204902997983,
+        "y0": 0.5392069828630698,
+        "x1": 0.23072403552485446,
+        "y1": 0.5517860181403882
+      },
+      "text": "services.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2400683484046288,
+        "y0": 0.5392069828630698,
+        "x1": 0.28921384125753163,
+        "y1": 0.5517860181403882
+      },
+      "text": "Finally,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2985579048106873,
+        "y0": 0.5392069828630698,
+        "x1": 0.35732418883080574,
+        "y1": 0.5517860181403882
+      },
+      "text": "checking",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.366652220682381,
+        "y0": 0.5392069828630698,
+        "x1": 0.3865448696161407,
+        "y1": 0.5517860181403882
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3958885591793684,
+        "y0": 0.5392069828630698,
+        "x1": 0.46189890344158496,
+        "y1": 0.5517860181403882
+      },
+      "text": "reputation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47124316645603553,
+        "y0": 0.5392069828630698,
+        "x1": 0.4902242024739583,
+        "y1": 0.5517860181403882
+      },
+      "text": "for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097593419692096,
+        "y0": 0.5455890484530517,
+        "x1": 0.9199838077320772,
+        "y1": 0.5581680837303702
+      },
+      "text": "compare the results with the evaluation presented in section",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999948115130655,
+        "y0": 0.5543016628785566,
+        "x1": 0.18309190538194445,
+        "y1": 0.5668806981558752
+      },
+      "text": "Kademlia REQ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18727475833269505,
+        "y0": 0.5543037436225198,
+        "x1": 0.49022360409007354,
+        "y1": 0.5668827788998383
+      },
+      "text": "would increase the overhead for no advantage.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097593419692096,
+        "y0": 0.5606843835175639,
+        "x1": 0.5255823073044322,
+        "y1": 0.5732634187948824
+      },
+      "text": "V.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999914456037135,
+        "y0": 0.569399078687032,
+        "x1": 0.4902235105925915,
+        "y1": 0.5819781139643505
+      },
+      "text": "The figure 4 presents the running of a publication request and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999914456037135,
+        "y0": 0.5844937201702234,
+        "x1": 0.4902237100538865,
+        "y1": 0.5970727554475419
+      },
+      "text": "includes the reputation checking. The other requests (search,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6008813396777982,
+        "y0": 0.5874954630630185,
+        "x1": 0.615418228448606,
+        "y1": 0.600074498340337
+      },
+      "text": "V.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6243716969209558,
+        "y0": 0.5874954630630185,
+        "x1": 0.8288705863204657,
+        "y1": 0.600074498340337
+      },
+      "text": "ANALYSIS AND DISCUSSIONS",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999914456037135,
+        "y0": 0.5995884001857102,
+        "x1": 0.35315754834343405,
+        "y1": 0.6121674354630287
+      },
+      "text": "data download) follow the same scheme.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0962774737987643,
+        "y0": 0.6146434690013076,
+        "x1": 0.1582990409502017,
+        "y1": 0.6272225042786261
+      },
+      "text": "However,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1695801354701223,
+        "y0": 0.6146434690013076,
+        "x1": 0.22655576818129597,
+        "y1": 0.6272225042786261
+      },
+      "text": "inserting",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23783685023488563,
+        "y0": 0.6146434690013076,
+        "x1": 0.25772949916864535,
+        "y1": 0.6272225042786261
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26902708664439084,
+        "y0": 0.6146434690013076,
+        "x1": 0.3370076347799862,
+        "y1": 0.6272225042786261
+      },
+      "text": "revocation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.348288691900914,
+        "y0": 0.6146434690013076,
+        "x1": 0.42243842829286665,
+        "y1": 0.6272225042786261
+      },
+      "text": "mechanism",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43371990926904613,
+        "y0": 0.6146434690013076,
+        "x1": 0.45904964870876735,
+        "y1": 0.6272225042786261
+      },
+      "text": "into",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4703306808970333,
+        "y0": 0.6146434690013076,
+        "x1": 0.49022330489813115,
+        "y1": 0.6272225042786261
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.6088238978626752,
+        "x1": 0.6990814707637613,
+        "y1": 0.6214029331399937
+      },
+      "text": "A. Performances Evaluation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999914456037135,
+        "y0": 0.62973880406582,
+        "x1": 0.12157507503733915,
+        "y1": 0.6423178393431384
+      },
+      "text": "search",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13010481292126225,
+        "y0": 0.62973880406582,
+        "x1": 0.18436188791312424,
+        "y1": 0.6423178393431384
+      },
+      "text": "function",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1928920247196372,
+        "y0": 0.62973880406582,
+        "x1": 0.20374996210235397,
+        "y1": 0.6423178393431384
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21228002411088134,
+        "y0": 0.62973880406582,
+        "x1": 0.23308426102781607,
+        "y1": 0.6423178393431384
+      },
+      "text": "not",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24161439783432903,
+        "y0": 0.62973880406582,
+        "x1": 0.2932341831182343,
+        "y1": 0.6423178393431384
+      },
+      "text": "relevant",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3017805760202844,
+        "y0": 0.62973880406582,
+        "x1": 0.3207616120382072,
+        "y1": 0.6423178393431384
+      },
+      "text": "for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32929125019148286,
+        "y0": 0.62973880406582,
+        "x1": 0.37474162282507406,
+        "y1": 0.6423178393431384
+      },
+      "text": "several",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38327180949691075,
+        "y0": 0.62973880406582,
+        "x1": 0.43616146511501735,
+        "y1": 0.6423178393431384
+      },
+      "text": "reasons.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4446917764501634,
+        "y0": 0.62973880406582,
+        "x1": 0.49022360409007354,
+        "y1": 0.6423178393431384
+      },
+      "text": "Firstly,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5260379267673866,
+        "y0": 0.6292092547272191,
+        "x1": 0.9199825112336601,
+        "y1": 0.6417882900045375
+      },
+      "text": "The thesis [2] has led a performance evaluation of the KAD",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999914456037135,
+        "y0": 0.6448334840813068,
+        "x1": 0.08905013090644787,
+        "y1": 0.6574125193586253
+      },
+      "text": "it",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09790584464478337,
+        "y0": 0.6448334840813068,
+        "x1": 0.10876377579433466,
+        "y1": 0.6574125193586253
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11761938356885723,
+        "y0": 0.6448334840813068,
+        "x1": 0.13842362048579196,
+        "y1": 0.6574125193586253
+      },
+      "text": "not",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14727930305830014,
+        "y0": 0.6448334840813068,
+        "x1": 0.1545070698058683,
+        "y1": 0.6574125193586253
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16336308896931168,
+        "y0": 0.6448334840813068,
+        "x1": 0.20946450326956956,
+        "y1": 0.6574125193586253
+      },
+      "text": "service",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21832016090941586,
+        "y0": 0.6448334840813068,
+        "x1": 0.2689633587606592,
+        "y1": 0.6574125193586253
+      },
+      "text": "through",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2778192407944623,
+        "y0": 0.6448334840813068,
+        "x1": 0.31758850696040136,
+        "y1": 0.6574125193586253
+      },
+      "text": "which",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3264444139268663,
+        "y0": 0.6448334840813068,
+        "x1": 0.3336721931407654,
+        "y1": 0.6574125193586253
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34252819983787786,
+        "y0": 0.6448334840813068,
+        "x1": 0.3705439349405127,
+        "y1": 0.6574125193586253
+      },
+      "text": "peer",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3793993681864022,
+        "y0": 0.6448334840813068,
+        "x1": 0.4019942938112745,
+        "y1": 0.6574125193586253
+      },
+      "text": "can",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41085000131644456,
+        "y0": 0.6448334840813068,
+        "x1": 0.46147694307215076,
+        "y1": 0.6574125193586253
+      },
+      "text": "damage",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47033222672206904,
+        "y0": 0.6448334840813068,
+        "x1": 0.49022485072316685,
+        "y1": 0.6574125193586253
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.644303934742706,
+        "x1": 0.9199825112336601,
+        "y1": 0.6568829700200245
+      },
+      "text": "network which allows us to discuss some a priori performance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999914456037135,
+        "y0": 0.6599281640967938,
+        "x1": 0.4902239095151814,
+        "y1": 0.6725071993741123
+      },
+      "text": "network. Then, searching is useless when the other services",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.6593992698072183,
+        "x1": 0.9199830098868975,
+        "y1": 0.6719783050845367
+      },
+      "text": "results. The average delay needed to store information in the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999914456037135,
+        "y0": 0.6750228441122806,
+        "x1": 0.4902232612659729,
+        "y1": 0.687601879389599
+      },
+      "text": "are inactive behind. Finally, it would also introduce overhead",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.6744945856055828,
+        "x1": 0.9199837080014297,
+        "y1": 0.6870736208829014
+      },
+      "text": "network is about 200 seconds. This time is needed to find ten",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999914456037135,
+        "y0": 0.6901175241277675,
+        "x1": 0.42242277681437973,
+        "y1": 0.702696559405086
+      },
+      "text": "to the network and unnecessary delay for all users.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.6895899014039473,
+        "x1": 0.9199832093481924,
+        "y1": 0.7021689366812658
+      },
+      "text": "peers (for the replication) with a KadID close to the hash of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.7046852364684596,
+        "x1": 0.919984406115962,
+        "y1": 0.7172642717457781
+      },
+      "text": "the information to store. This delay will occur the first time",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999914456037135,
+        "y0": 0.713466900767702,
+        "x1": 0.20524764840119805,
+        "y1": 0.7260459360450204
+      },
+      "text": "C. Implementation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.7197805715329719,
+        "x1": 0.5341777427523744,
+        "y1": 0.7323596068102904
+      },
+      "text": "that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5423981909658394,
+        "y0": 0.7197805715329719,
+        "x1": 0.5496259701797386,
+        "y1": 0.7323596068102904
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5578631232766544,
+        "y0": 0.7197805715329719,
+        "x1": 0.5858788583792892,
+        "y1": 0.7323596068102904
+      },
+      "text": "peer",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5940993065927543,
+        "y0": 0.7197805715329719,
+        "x1": 0.6510586707420598,
+        "y1": 0.7323596068102904
+      },
+      "text": "connects",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6592792186861723,
+        "y0": 0.7197805715329719,
+        "x1": 0.6918367373397927,
+        "y1": 0.7323596068102904
+      },
+      "text": "itself",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7000735413794424,
+        "y0": 0.7197805715329719,
+        "x1": 0.7127383861666411,
+        "y1": 0.7323596068102904
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7209589341107536,
+        "y0": 0.7197805715329719,
+        "x1": 0.7408515581118515,
+        "y1": 0.7323596068102904
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7490725049785539,
+        "y0": 0.7197805715329719,
+        "x1": 0.8022549199123009,
+        "y1": 0.7323596068102904
+      },
+      "text": "network",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8104916740866268,
+        "y0": 0.7197805715329719,
+        "x1": 0.8339981876946743,
+        "y1": 0.7323596068102904
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8422188353694342,
+        "y0": 0.7197805715329719,
+        "x1": 0.9199824115030126,
+        "y1": 0.7323596068102904
+      },
+      "text": "periodically",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0962774737987643,
+        "y0": 0.7324844574687457,
+        "x1": 0.4902239032820159,
+        "y1": 0.7450634927460642
+      },
+      "text": "We have implemented the revocation mechanism in KAD.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.7348758873313364,
+        "x1": 0.5386869143816381,
+        "y1": 0.7474549226086549
+      },
+      "text": "later",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.548616745892693,
+        "y0": 0.7348758873313364,
+        "x1": 0.5612816405452155,
+        "y1": 0.7474549226086549
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5712117213828891,
+        "y0": 0.7348758873313364,
+        "x1": 0.6281873416277318,
+        "y1": 0.7474549226086549
+      },
+      "text": "maintain",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.638117322734758,
+        "y0": 0.7348758873313364,
+        "x1": 0.6580099467358558,
+        "y1": 0.7474549226086549
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6679396286509396,
+        "y0": 0.7348758873313364,
+        "x1": 0.7185665454739839,
+        "y1": 0.7474549226086549
+      },
+      "text": "account",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7285125333499285,
+        "y0": 0.7348758873313364,
+        "x1": 0.7411773781371273,
+        "y1": 0.7474549226086549
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7511075088401246,
+        "y0": 0.7348758873313364,
+        "x1": 0.7710001328412224,
+        "y1": 0.7474549226086549
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7809298147563062,
+        "y0": 0.7348758873313364,
+        "x1": 0.834112229690053,
+        "y1": 0.7474549226086549
+      },
+      "text": "network",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8440425099890216,
+        "y0": 0.7348758873313364,
+        "x1": 0.8901602551828023,
+        "y1": 0.7474549226086549
+      },
+      "text": "despite",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.900090336020476,
+        "y0": 0.7348758873313364,
+        "x1": 0.9199830098868975,
+        "y1": 0.7474549226086549
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999914456037135,
+        "y0": 0.7475797732671101,
+        "x1": 0.4902225631514406,
+        "y1": 0.7601588085444286
+      },
+      "text": "To do that, we have introduced different modifications in the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.7499712223958488,
+        "x1": 0.9199847053079044,
+        "y1": 0.7625502576731672
+      },
+      "text": "churn. The delay to retrieve the information fluctuates and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999914456037135,
+        "y0": 0.7626744725487449,
+        "x1": 0.16165341894611035,
+        "y1": 0.7752535078260634
+      },
+      "text": "KAD client:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.765066557460361,
+        "x1": 0.9199853036917892,
+        "y1": 0.7776455927376795
+      },
+      "text": "depends on the replication. The more replication there is, the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09627757976257723,
+        "y0": 0.7839321602474559,
+        "x1": 0.10294009189979703,
+        "y1": 0.7927374598955867
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11271514144598269,
+        "y0": 0.7801584246182682,
+        "x1": 0.4902198267918007,
+        "y1": 0.7927374598955867
+      },
+      "text": "our modified client can manage a new kind of information",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.7801618732587255,
+        "x1": 0.9199845058466095,
+        "y1": 0.7927409085360441
+      },
+      "text": "more robust the stored information is and the quicker it is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11271514144598269,
+        "y0": 0.795253123899903,
+        "x1": 0.23141963185827716,
+        "y1": 0.8078321591772214
+      },
+      "text": "called ”Account”;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.7952572083232379,
+        "x1": 0.9199846055772569,
+        "y1": 0.8078362436005564
+      },
+      "text": "retrieved. The information is retrieved linearly, so the more",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09627757976257723,
+        "y0": 0.8141215395445776,
+        "x1": 0.10294009189979703,
+        "y1": 0.8229268391927084
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11271514144598269,
+        "y0": 0.8103478039153899,
+        "x1": 0.4902201259837431,
+        "y1": 0.8229268391927084
+      },
+      "text": "the associated requests search/store Account were written,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.8103525433877502,
+        "x1": 0.9199836082707823,
+        "y1": 0.8229315786650686
+      },
+      "text": "a peer waits, the more results are returned. A 100 seconds",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11271514144598269,
+        "y0": 0.8254425031970245,
+        "x1": 0.15250041438084022,
+        "y1": 0.838021538474343
+      },
+      "text": "which",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16168187957963134,
+        "y0": 0.8254425031970245,
+        "x1": 0.21593894210516237,
+        "y1": 0.838021538474343
+      },
+      "text": "partially",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2251040390114379,
+        "y0": 0.8254425031970245,
+        "x1": 0.27063601624731926,
+        "y1": 0.838021538474343
+      },
+      "text": "behave",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.279817543777765,
+        "y0": 0.8254425031970245,
+        "x1": 0.30407273535634954,
+        "y1": 0.838021538474343
+      },
+      "text": "like",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31323743334003523,
+        "y0": 0.8254425031970245,
+        "x1": 0.36454805361679177,
+        "y1": 0.838021538474343
+      },
+      "text": "existing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3737291822246477,
+        "y0": 0.8254425031970245,
+        "x1": 0.4270746567670037,
+        "y1": 0.838021538474343
+      },
+      "text": "requests",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43625595990349264,
+        "y0": 0.8254425031970245,
+        "x1": 0.4525346942976409,
+        "y1": 0.838021538474343
+      },
+      "text": "on",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4616993922813266,
+        "y0": 0.8254425031970245,
+        "x1": 0.49021976446014603,
+        "y1": 0.838021538474343
+      },
+      "text": "key-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.8254478784522625,
+        "x1": 0.9199840071933721,
+        "y1": 0.8380269137295809
+      },
+      "text": "delay seems to be sufficient to retrieve enough information",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11271514144598269,
+        "y0": 0.8405371832125115,
+        "x1": 0.2530871123270272,
+        "y1": 0.85311621848983
+      },
+      "text": "words, files or notes;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.8405431846175531,
+        "x1": 0.9199840071933721,
+        "y1": 0.8531222198948716
+      },
+      "text": "to guess the real reputation of a peer. This delay could seem",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09627757976257723,
+        "y0": 0.8594068800560152,
+        "x1": 0.10294009189979703,
+        "y1": 0.868212179704146
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11271514144598269,
+        "y0": 0.8556331444268275,
+        "x1": 0.4902200761184194,
+        "y1": 0.868212179704146
+      },
+      "text": "new functions were added in the UDPListener, where all",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.8556385100489915,
+        "x1": 0.9199841069240197,
+        "y1": 0.86821754532631
+      },
+      "text": "huge because it appears prior to each service of the network,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11271514144598269,
+        "y0": 0.8707278340753883,
+        "x1": 0.49021783217885134,
+        "y1": 0.8833068693527067
+      },
+      "text": "network’s requests are processed. In fact, these functions",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.870733825847356,
+        "x1": 0.9199848050385518,
+        "y1": 0.8833128611246744
+      },
+      "text": "except the search as explained. But in fact, 100 seconds to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11271514144598269,
+        "y0": 0.8858225237239491,
+        "x1": 0.49021987665712446,
+        "y1": 0.8984015590012675
+      },
+      "text": "do the service-oriented revocation, searching for the rep-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.8858291416457205,
+        "x1": 0.9199851042304943,
+        "y1": 0.898408176923039
+      },
+      "text": "bootstrap are not penalising, the publication process is entirely",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11271514144598269,
+        "y0": 0.9009172230055837,
+        "x1": 0.27042366476619945,
+        "y1": 0.9134962582829023
+      },
+      "text": "utation and checking it.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097595912958283,
+        "y0": 0.9009244670771589,
+        "x1": 0.9199842066546671,
+        "y1": 0.9135035023544774
+      },
+      "text": "transparent for the user and 100 seconds preceding a download",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.02308949996950105,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

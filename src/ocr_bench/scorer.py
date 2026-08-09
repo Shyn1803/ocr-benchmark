@@ -111,13 +111,18 @@ class ScoreTable:
     def ranking(self, metric: str) -> list[Aggregate]:
         """Xếp hạng engine theo một metric, tốt nhất trước.
 
-        Engine không đo được (`applicable=False`) xuống cuối và **vẫn có mặt** —
-        cổng C2 cần thấy chúng để phân biệt "đứng bét" với "không xuất hiện".
+        Engine không đo được xuống cuối và **vẫn có mặt** — cổng C2 cần thấy chúng
+        để phân biệt "đứng bét" với "không xuất hiện".
+
+        Tiêu chí là `n_scored > 0`, **không** phải `applicable`. Một engine có năng
+        lực nhưng bộ mẫu chưa có nhãn thì `applicable=True` mà `penalized_mean` là
+        None; `penalized_mean or 0.0` biến nó thành 0.0 và xếp nó lẫn vào nhóm "đo
+        được và tệ nhất" — đúng kiểu hoà ở đáy mà C2 sinh ra để bắt.
         """
         cells = [self.cell(metric, e) for e in self.engines()]
         return sorted(
             cells,
-            key=lambda a: (a.applicable, a.penalized_mean or 0.0, a.engine),
+            key=lambda a: (a.n_scored > 0, a.penalized_mean or 0.0, a.engine),
             reverse=True,
         )
 

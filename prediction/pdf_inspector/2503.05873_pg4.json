@@ -1,0 +1,5504 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.05873_pg4",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "scheme as well. After the encryption, the size of the seed used to compress each of files is 3*.*27[KB]. The encrypted seed is stored on the second server. The rest of the files are stored\n\n||Individual Security) Let V||∈ F|be a set|\n|---|---|---|---|---|\n||s||L ℓ×n q||\n|||||L|\n|||||W|\n||s||||\n||s||||\n|K|L|s s|||\n|Z |V|=v Z e|s|L L|L|\n|e|L L||||\n\nover the rest of the servers, s.t. each server stores one file. This hybrid scheme is secured against both IT and Crypto- Eve’s. The overall data rate of the proposed scheme is 0*.*79.\n\n4) Finally, we assess the computational complexity of the\nproposed communication scheme. Complexity is measured in this paper, as the number of binary operations required to perform encoding and decoding of all the messages. We show that NU-HUNCC, which encrypts only a subset of links using McEliece, exhibits a more efficient run-time complexity com- pared to NUM. NU-HUNCC’s efficiency makes it a promising candidate for practical applications. The remainder of this paper is structured in the following manner. Sec.IIpresents NU-HUNCC setting, while Sec.III provides the comprehensive security definitions for IS and ISS-CCA1. In Sec.V, we introduce the encoding/decoding algorithm for NU-HUNCC. In Sec.VI, we provide the key findings and theorems of this paper. Sec.VIIoffers numerical results demonstrating the performance of NU-HUNCC. The proofs of the theorems provided in the paper are given in Sec.VIII,IX,X, and AppendixesAandB. We conclude the paper is Sec.XI.\n\n## II. SYSTEM MODEL\n\nWe consider a communication system where Alice wishes to transmit *ℓ* non-uniform confidential message³ over *ℓ* noiseless links, *L* = *{*1*,...,ℓ}*, to Bob, in the presence of an eaves- dropper, Eve. The messages are taken from a DMS (*V,pV*)\n\ns.t. *V ∈ {*0*,*1*}*. We denote the source message matrix by <u>V</u>*L∈* F *ℓ* 2 *×n*\nwhen *n* is the size of each source message. Bob’s observations are denoted by <u>Y</u>*L*. Those observations,\n\n|provide Bob reliable decode V|with high probability. That is,||\n|---|---|---|\n||L||\n|L L L|L|L|\n\n*L* P(*V*ˆ (*Y*) *̸*= *VL*) *≤ ϵe*, where *V*ˆ (*Y*) is the estimation of\n\n<u>V</u>. We consider two types of Eve: 1) IT-Eve, which observes any subset *W⊂L* of the links s.t. *|W|* ≜ *w < ℓ*, but is com- putationally unbounded, and 2) Crypto-Eve which observes all the links, but is bounded computationally. We denote IT-Eve’s observations by <u>Z</u>*W*and Crypto-Eve’s observations by <u>Z</u>*L*.\n## III. SECURITY DEFINITIONS\n\nIn this section, we provide the formal security definitions used throughout this paper.\n\n*A. Security against IT-Eve* Against IT-Eve, we consider information-theoretic security. For any subset of *ks< ℓ − w* source messages, we use the notion of *ks*individual security (*ks*-IS). We measure the leakage of information to the eavesdropper using *non-* *normalized variational distance*, denoted by V(*·, ·*). Addition- ally, we require the code to be reliable where the reliability is measured by the decoding error probability at Bob’s. For a In this paper, we assume the messages are independent to focus on the key methods and results. However, our proposed solution can be easily shown to be valid for dependent sources by using joint source coding schemes [54].\ncode to be *ks*-IS we require the information leakage and error probability to be negligible. We now formally define *ks*-IS: *ℓ×n* **Definition 1.** *(k* *of ℓ confidential source messages Alice intends to send,* <u>Y</u> *be Bob’s observations of the encoded messages, and* <u>Z</u> *be* *IT-Eve’s observations of the encoded messages. We say that* *the coding scheme is k -IS if:*\n\n*1)*<u>Security</u>*: ∀ϵ >* 0*, ∀W ⊂ L s.t. |W|* = *w < ℓ, and* *∀*<u>V</u> *s* *⊂* <u>V</u> *s.t. |K |* = *k < ℓ − w, it holds that* V(*p* *W Ks Ks*\n*,p* *W* ) *≤ ϵ.*\n\n*2)Reliability: ∀ϵ >* 0 *it holds that* P(<u>Vˆ</u> (<u>Y</u>) *̸*= *V*) *≤* *ϵ, where* <u>Vˆ</u> (<u>Y</u>) *is the decoding estimation of the* *message matrix from Bob’s observations.* Thus, IT-Eve that observes any subset of *w* links in the\nnetwork can’t obtain any information about any set of *ks< ℓ−* *w* individual messages, <u>V</u>*K* *s*. However, IT-Eve might be able to obtain some insignificant information about the mixture of all the messages. Yet, this negligible information is controlled [12], [55], [56]. Bob can reliably decode the message matrix from his observations of the encoded messages.\n\n*B. Security against Crypto-Eve* Crypto-Eve may perform passive/active attacks against Al- ice and the ciphertexts she produces, to obtain information about confidential messages. Two of the most common attacks given in the literature are the chosen-plaintext attack (CPA) and the chosen-ciphertext attack (CCA) [57]. In both attacks, Crypto-Eve is given a ciphertext from which she tries to obtain information about the plaintext. In CCA Crypto-Eve is active and prior to receiving the ciphertext, she can question a decryption oracle to provide her the plaintexts for a limited number of ciphertexts of her choice. However, she can’t use this decryption oracle after receiving the test ciphertext [57]. The information leakage is measured by Crypto-Eve’s ability to distinguish between plaintexts given the test ciphertext provided by Alice. There are two ways in which this leakage is measured: 1) indistinguishability (IND) - by observing a ciphertext created from one of two possible plaintexts, Crypto- Eve can’t distinguish between the two plaintexts better than a uniform coin-toss, 2) semantic security (SS) - by observing a ciphertext, Crypto-Eve can’t obtain any information about the original plaintext or some function applied on it, that is more significant than the information she obtains from the plaintexts original probability distribution. Those two definitions are equivalent, i.e. a cryptosystem that is IND is also SS and vice versa [1]. The security level of a cryptosystem is defined by the combination of Crpyto-Eve’s attack model and its information leakage. In this paper, we introduce a new notion of security, individual semantic security against a chosen ciphertext attack (ISS-CCA1). This notion of security is based on SS-CCA1 cryptographic security [1], [57], and usually requires the encryption scheme to be probabilistic⁴. To properly define ISS- To focus on our main contributions, we choose to work with public key encryption schemes, but any other PQ probabilistic encryption schemes would have achieved similar results.\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9142957699844261,
+        "y0": 0.048510330494004106,
+        "x1": 0.9199932821435866,
+        "y1": 0.05731563375453752
+      },
+      "text": "4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065682604422,
+        "y0": 0.08667853504720358,
+        "x1": 0.49023118361928103,
+        "y1": 0.09925757514105904
+      },
+      "text": "scheme as well. After the encryption, the size of the seed used",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.08667861211179484,
+        "x1": 0.5784155153760723,
+        "y1": 0.0992576522056503
+      },
+      "text": "code to be",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5833659951203789,
+        "y0": 0.08667861211179484,
+        "x1": 0.5918309330161101,
+        "y1": 0.0992576522056503
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5918415044647416,
+        "y0": 0.09233873600911613,
+        "x1": 0.5979834662543403,
+        "y1": 0.10114403926964965
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5987990136240043,
+        "y0": 0.08667861211179484,
+        "x1": 0.9199951770258885,
+        "y1": 0.0992576522056503
+      },
+      "text": "-IS we require the information leakage and error",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065682604422,
+        "y0": 0.10177325359498612,
+        "x1": 0.2790430106368719,
+        "y1": 0.11435229368884159
+      },
+      "text": "to compress each of files is 3",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2790425369162965,
+        "y0": 0.10177325359498612,
+        "x1": 0.28355175841088387,
+        "y1": 0.11435229368884159
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2835654215095869,
+        "y0": 0.10177325359498612,
+        "x1": 0.4902249005884906,
+        "y1": 0.11435229368884159
+      },
+      "text": "27[KB]. The encrypted seed is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.10177333065957739,
+        "x1": 0.8628379472720078,
+        "y1": 0.11435237075343274
+      },
+      "text": "probability to be negligible. We now formally define",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8685342626633987,
+        "y0": 0.10177333065957739,
+        "x1": 0.8769992005591299,
+        "y1": 0.11435237075343274
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8770097720077614,
+        "y0": 0.10743345455689868,
+        "x1": 0.8831516839320364,
+        "y1": 0.11623875781743209
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.883967281167024,
+        "y0": 0.10177333065957739,
+        "x1": 0.9083854326235703,
+        "y1": 0.11435237075343274
+      },
+      "text": "-IS:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000659319310406,
+        "y0": 0.11686797214276867,
+        "x1": 0.49023133321525225,
+        "y1": 0.12944701223662403
+      },
+      "text": "stored on the second server. The rest of the files are stored",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8404966865489686,
+        "y0": 0.12349772272687964,
+        "x1": 0.8641658608430351,
+        "y1": 0.13230302598741317
+      },
+      "text": "ℓ×n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679188048917,
+        "y0": 0.12428975466525916,
+        "x1": 0.595345341302211,
+        "y1": 0.13686879475911462
+      },
+      "text": "Definition 1.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6024656108781403,
+        "y0": 0.12428975466525916,
+        "x1": 0.61635210623149,
+        "y1": 0.13686879475911462
+      },
+      "text": "(k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6163610321244383,
+        "y0": 0.12994987856258045,
+        "x1": 0.622502993914037,
+        "y1": 0.13875518182311397
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6277924082637613,
+        "y0": 0.12428975466525916,
+        "x1": 0.7832382800532323,
+        "y1": 0.13686879475911462
+      },
+      "text": "Individual Security) Let",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7877041685814951,
+        "y0": 0.12428975466525916,
+        "x1": 0.7971946865904564,
+        "y1": 0.13686879475911462
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.800817003437117,
+        "y0": 0.1312073414975946,
+        "x1": 0.8098305097592422,
+        "y1": 0.14001264475812814
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8151748258303972,
+        "y0": 0.12428967760066789,
+        "x1": 0.8260164946512459,
+        "y1": 0.13686871769452336
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.830549003252017,
+        "y0": 0.12428967760066789,
+        "x1": 0.840495290319904,
+        "y1": 0.13686871769452336
+      },
+      "text": "F",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8404966865489686,
+        "y0": 0.1311732018836821,
+        "x1": 0.8464562908496732,
+        "y1": 0.13997850514421561
+      },
+      "text": "q",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8694541781556373,
+        "y0": 0.12428960053607674,
+        "x1": 0.919999764635672,
+        "y1": 0.1368686406299321
+      },
+      "text": "be a set",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000659319310406,
+        "y0": 0.1319626906905511,
+        "x1": 0.4902312833499285,
+        "y1": 0.14454173078440657
+      },
+      "text": "over the rest of the servers, s.t. each server stores one file.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679188048917,
+        "y0": 0.13938431908385918,
+        "x1": 0.8904243419372958,
+        "y1": 0.15196335917771464
+      },
+      "text": "of ℓ confidential source messages Alice intends to send,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8970897400301266,
+        "y0": 0.13938431908385918,
+        "x1": 0.9065314398871528,
+        "y1": 0.15196335917771464
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9101585438048917,
+        "y0": 0.1463019829807859,
+        "x1": 0.9191720999923407,
+        "y1": 0.15510728624131942
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000659319310406,
+        "y0": 0.14705740923833366,
+        "x1": 0.49023138308057596,
+        "y1": 0.15963644933218912
+      },
+      "text": "This hybrid scheme is secured against both IT and Crypto-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097680185355392,
+        "y0": 0.15447903763164172,
+        "x1": 0.8653123643663194,
+        "y1": 0.1670580777254972
+      },
+      "text": "be Bob’s observations of the encoded messages, and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8714755189185049,
+        "y0": 0.15447903763164172,
+        "x1": 0.8825776343252144,
+        "y1": 0.1670580777254972
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8837532591975592,
+        "y0": 0.16139801162661926,
+        "x1": 0.8966867284837112,
+        "y1": 0.1702033148871528
+      },
+      "text": "W",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9046257866753472,
+        "y0": 0.15447903763164172,
+        "x1": 0.9199929829516442,
+        "y1": 0.1670580777254972
+      },
+      "text": "be",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000659319310406,
+        "y0": 0.1621521277861162,
+        "x1": 0.45947928833805657,
+        "y1": 0.17473116787997156
+      },
+      "text": "Eve’s. The overall data rate of the proposed scheme is 0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45948043524050247,
+        "y0": 0.1621521277861162,
+        "x1": 0.46398965673508985,
+        "y1": 0.17473116787997156
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4640016742781097,
+        "y0": 0.1621521277861162,
+        "x1": 0.4843508153179892,
+        "y1": 0.17473116787997156
+      },
+      "text": "79.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679188048917,
+        "y0": 0.16957375617942427,
+        "x1": 0.9199926837597018,
+        "y1": 0.18215279627327963
+      },
+      "text": "IT-Eve’s observations of the encoded messages. We say that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628600076912275,
+        "y0": 0.17739072592571525,
+        "x1": 0.4902319814644608,
+        "y1": 0.18996976601957072
+      },
+      "text": "4) Finally, we assess the computational complexity of the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679188048917,
+        "y0": 0.1846684747272067,
+        "x1": 0.7098660437889348,
+        "y1": 0.19724751482106218
+      },
+      "text": "the coding scheme is k -IS if:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6637581220639297,
+        "y0": 0.19032983165798767,
+        "x1": 0.6699000838535284,
+        "y1": 0.1991351349185212
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.19248667750695736,
+        "x1": 0.4902312272514393,
+        "y1": 0.20506571760081282
+      },
+      "text": "proposed communication scheme. Complexity is measured in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.2075813960547399,
+        "x1": 0.10352939406251596,
+        "y1": 0.22016043614859537
+      },
+      "text": "this",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11176644119561888,
+        "y0": 0.2075813960547399,
+        "x1": 0.15134011062921263,
+        "y1": 0.22016043614859537
+      },
+      "text": "paper,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15956088296728196,
+        "y0": 0.2075813960547399,
+        "x1": 0.17312108457478043,
+        "y1": 0.22016043614859537
+      },
+      "text": "as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18135813794104882,
+        "y0": 0.2075813960547399,
+        "x1": 0.20125077440847758,
+        "y1": 0.22016043614859537
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20947155921287786,
+        "y0": 0.2075813960547399,
+        "x1": 0.2592031690809462,
+        "y1": 0.22016043614859537
+      },
+      "text": "number",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26744022244721455,
+        "y0": 0.2075813960547399,
+        "x1": 0.28100042405471304,
+        "y1": 0.22016043614859537
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2892211963927824,
+        "y0": 0.2075813960547399,
+        "x1": 0.3308134141311147,
+        "y1": 0.22016043614859537
+      },
+      "text": "binary",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33905046749738305,
+        "y0": 0.2075813960547399,
+        "x1": 0.4068677814957363,
+        "y1": 0.22016043614859537
+      },
+      "text": "operations",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4151048348620047,
+        "y0": 0.2075813960547399,
+        "x1": 0.46934569115732233,
+        "y1": 0.22016043614859537
+      },
+      "text": "required",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4775664385627298,
+        "y0": 0.2075813960547399,
+        "x1": 0.4902312833499285,
+        "y1": 0.22016043614859537
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5206257439906301,
+        "y0": 0.20174799182198266,
+        "x1": 0.5341859705307904,
+        "y1": 0.21432703191583802
+      },
+      "text": "1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5341859705307904,
+        "y0": 0.20174799182198266,
+        "x1": 0.5956708621355443,
+        "y1": 0.21432703191583802
+      },
+      "text": "Security",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5956699146943933,
+        "y0": 0.20174799182198266,
+        "x1": 0.6243559394786561,
+        "y1": 0.21432703191583802
+      },
+      "text": ": ∀ϵ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6243708990757761,
+        "y0": 0.20740811571930395,
+        "x1": 0.6305128608653748,
+        "y1": 0.21621341897983748
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6394264370787377,
+        "y0": 0.20174799182198266,
+        "x1": 0.6520750257703993,
+        "y1": 0.21432703191583802
+      },
+      "text": ">",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.660186219059564,
+        "y0": 0.20174799182198266,
+        "x1": 0.6683255862566381,
+        "y1": 0.21432703191583802
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6683250876034007,
+        "y0": 0.20174799182198266,
+        "x1": 0.807245541242213,
+        "y1": 0.21432703191583802
+      },
+      "text": ", ∀W ⊂ L s.t. |W|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8153855566884957,
+        "y0": 0.20174799182198266,
+        "x1": 0.8280341453801573,
+        "y1": 0.21432703191583802
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.836145338669322,
+        "y0": 0.20174799182198266,
+        "x1": 0.9199998643663194,
+        "y1": 0.21432703191583802
+      },
+      "text": "w < ℓ, and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.22267611460252246,
+        "x1": 0.4902312272514393,
+        "y1": 0.2352551546963778
+      },
+      "text": "perform encoding and decoding of all the messages. We show",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5423250385359222,
+        "y0": 0.2168427103697651,
+        "x1": 0.5513597376206342,
+        "y1": 0.22942175046362057
+      },
+      "text": "∀",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5513691621668199,
+        "y0": 0.2168427103697651,
+        "x1": 0.5608596801757812,
+        "y1": 0.22942175046362057
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5644820468877655,
+        "y0": 0.2237616073001515,
+        "x1": 0.5744071910583896,
+        "y1": 0.23256691056068501
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5744150697795394,
+        "y0": 0.2275349305133627,
+        "x1": 0.5798684413137,
+        "y1": 0.23382445056029044
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5909265256395527,
+        "y0": 0.21684263330517395,
+        "x1": 0.6035751143312142,
+        "y1": 0.2294216733990293
+      },
+      "text": "⊂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6130147697099673,
+        "y0": 0.21684263330517395,
+        "x1": 0.6225052877189288,
+        "y1": 0.2294216733990293
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6261291005253012,
+        "y0": 0.2237616073001515,
+        "x1": 0.6351426068474265,
+        "y1": 0.23256691056068501
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6443120919021905,
+        "y0": 0.21684263330517395,
+        "x1": 0.6633093840156505,
+        "y1": 0.2294216733990293
+      },
+      "text": "s.t.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6716552435183057,
+        "y0": 0.21684263330517395,
+        "x1": 0.688568863214231,
+        "y1": 0.2294216733990293
+      },
+      "text": "|K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6885817284677543,
+        "y0": 0.22250275720249524,
+        "x1": 0.6947236902573529,
+        "y1": 0.23130806046302876
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.695539237627017,
+        "y0": 0.21684263330517395,
+        "x1": 0.7000484591216044,
+        "y1": 0.2294216733990293
+      },
+      "text": "|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7094902088439542,
+        "y0": 0.21684263330517395,
+        "x1": 0.7221387975356158,
+        "y1": 0.2294216733990293
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7315800984700521,
+        "y0": 0.21684263330517395,
+        "x1": 0.7400450363657833,
+        "y1": 0.2294216733990293
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7400539622587317,
+        "y0": 0.22250275720249524,
+        "x1": 0.7461959240483302,
+        "y1": 0.23130806046302876
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7564412035973244,
+        "y0": 0.21684263330517395,
+        "x1": 0.8252968382991217,
+        "y1": 0.2294216733990293
+      },
+      "text": "< ℓ − w,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8336478339301215,
+        "y0": 0.21684263330517395,
+        "x1": 0.8426988389756944,
+        "y1": 0.2294216733990293
+      },
+      "text": "it",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8510335286458334,
+        "y0": 0.21684263330517395,
+        "x1": 0.8863095551534416,
+        "y1": 0.2294216733990293
+      },
+      "text": "holds",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8946606006497652,
+        "y0": 0.21684263330517395,
+        "x1": 0.9199903899548101,
+        "y1": 0.2294216733990293
+      },
+      "text": "that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.2377708331503049,
+        "x1": 0.49023132698208677,
+        "y1": 0.25034987324416036
+      },
+      "text": "that NU-HUNCC, which encrypts only a subset of links using",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5423251881318933,
+        "y0": 0.2319373518529565,
+        "x1": 0.5603978774126839,
+        "y1": 0.24451639194681185
+      },
+      "text": "V(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5604134353936887,
+        "y0": 0.2319373518529565,
+        "x1": 0.5686016706080218,
+        "y1": 0.24451639194681185
+      },
+      "text": "p",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.568602967106439,
+        "y0": 0.2379825675126278,
+        "x1": 0.5774683734170751,
+        "y1": 0.24678787077316133
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5782712549945108,
+        "y0": 0.24326604845547917,
+        "x1": 0.5893978044098499,
+        "y1": 0.2495555685024069
+      },
+      "text": "W",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5909134110594108,
+        "y0": 0.2379825675126278,
+        "x1": 0.6024613723256229,
+        "y1": 0.24678787077316133
+      },
+      "text": "|V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.605271233452691,
+        "y0": 0.24326604845547917,
+        "x1": 0.6193112142724928,
+        "y1": 0.2495555685024069
+      },
+      "text": "Ks",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.620941162109375,
+        "y0": 0.2379825675126278,
+        "x1": 0.6309346716388379,
+        "y1": 0.24678787077316133
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6309346217735141,
+        "y0": 0.2379825675126278,
+        "x1": 0.6374411988102533,
+        "y1": 0.24678787077316133
+      },
+      "text": "v",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6378545823440053,
+        "y0": 0.24326604845547917,
+        "x1": 0.6518945631638072,
+        "y1": 0.2495555685024069
+      },
+      "text": "Ks",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6543382632186989,
+        "y0": 0.2319373518529565,
+        "x1": 0.6697542277816074,
+        "y1": 0.24451639194681185
+      },
+      "text": ",p",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.669763103809232,
+        "y0": 0.23759870878373734,
+        "x1": 0.6786285101198682,
+        "y1": 0.24640401204427087
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6794313916973039,
+        "y0": 0.24288095669312915,
+        "x1": 0.690557941112643,
+        "y1": 0.24917047674005677
+      },
+      "text": "W",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6928888956705729,
+        "y0": 0.23193742891754765,
+        "x1": 0.6992050370359733,
+        "y1": 0.24451646901140311
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7037418340545853,
+        "y0": 0.23193742891754765,
+        "x1": 0.727517720141442,
+        "y1": 0.24451646901140311
+      },
+      "text": "≤ ϵ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7275326797385621,
+        "y0": 0.2375987858483286,
+        "x1": 0.7336746415281608,
+        "y1": 0.24640408910886202
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7344901888978248,
+        "y0": 0.23193742891754765,
+        "x1": 0.7385598974290237,
+        "y1": 0.24451646901140311
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.25286555169808744,
+        "x1": 0.49023127711676306,
+        "y1": 0.2654445917919429
+      },
+      "text": "McEliece, exhibits a more efficient run-time complexity com-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5206257938559539,
+        "y0": 0.2500232554445363,
+        "x1": 0.6376713272792841,
+        "y1": 0.26260229553839176
+      },
+      "text": "2)Reliability: ∀ϵ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6376862868764042,
+        "y0": 0.2556833793418576,
+        "x1": 0.6438624064127604,
+        "y1": 0.2644886826023911
+      },
+      "text": "e",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6506045971041411,
+        "y0": 0.2500232554445363,
+        "x1": 0.6632531857958027,
+        "y1": 0.26260229553839176
+      },
+      "text": ">",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6691928439670138,
+        "y0": 0.2500232554445363,
+        "x1": 0.677332211164088,
+        "y1": 0.26260229553839176
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6837892719343597,
+        "y0": 0.2500232554445363,
+        "x1": 0.7663551280701083,
+        "y1": 0.26260229553839176
+      },
+      "text": "it holds that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7728154300864226,
+        "y0": 0.2500232554445363,
+        "x1": 0.7890793046140983,
+        "y1": 0.26260229553839176
+      },
+      "text": "P(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7890948625951032,
+        "y0": 0.2500232554445363,
+        "x1": 0.7985853806040646,
+        "y1": 0.26260229553839176
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.791581795885672,
+        "y0": 0.24684395573355933,
+        "x1": 0.7997211630827461,
+        "y1": 0.2594229958274148
+      },
+      "text": "ˆ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8022074979894301,
+        "y0": 0.25694215237492257,
+        "x1": 0.8112210043115553,
+        "y1": 0.2657474556354561
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8120440813451032,
+        "y0": 0.25002317837994503,
+        "x1": 0.8183602227105035,
+        "y1": 0.2626022184738005
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8183741351358251,
+        "y0": 0.25002317837994503,
+        "x1": 0.8278158349928513,
+        "y1": 0.2626022184738005
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8314427893146191,
+        "y0": 0.25694215237492257,
+        "x1": 0.8404562956367443,
+        "y1": 0.2657474556354561
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8412777769799326,
+        "y0": 0.25002317837994503,
+        "x1": 0.8475939183453329,
+        "y1": 0.2626022184738005
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "̸",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8535359700520834,
+        "y0": 0.25002317837994503,
+        "x1": 0.8661846086090687,
+        "y1": 0.2626022184738005
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8721258624706393,
+        "y0": 0.25002317837994503,
+        "x1": 0.8816163306142769,
+        "y1": 0.2626022184738005
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.88523854773029,
+        "y0": 0.25694215237492257,
+        "x1": 0.894252103917739,
+        "y1": 0.2657474556354561
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8950734855302798,
+        "y0": 0.25002317837994503,
+        "x1": 0.9013896268956801,
+        "y1": 0.2626022184738005
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9073316786024306,
+        "y0": 0.25002317837994503,
+        "x1": 0.9199803171594159,
+        "y1": 0.2626022184738005
+      },
+      "text": "≤",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.26796027024587,
+        "x1": 0.4902312272514393,
+        "y1": 0.28053931033972535
+      },
+      "text": "pared to NUM. NU-HUNCC’s efficiency makes it a promising",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5423251382665697,
+        "y0": 0.267026940981547,
+        "x1": 0.5489180321786918,
+        "y1": 0.27960598107540247
+      },
+      "text": "ϵ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5489329917758119,
+        "y0": 0.2726870648788683,
+        "x1": 0.5551091113121681,
+        "y1": 0.2814923681394018
+      },
+      "text": "e",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5559231627221201,
+        "y0": 0.267026940981547,
+        "x1": 0.5599928712533191,
+        "y1": 0.27960598107540247
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5689298841688368,
+        "y0": 0.267026940981547,
+        "x1": 0.6081128587909773,
+        "y1": 0.27960598107540247
+      },
+      "text": "where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6170473285749847,
+        "y0": 0.267026940981547,
+        "x1": 0.6265378465839461,
+        "y1": 0.27960598107540247
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6195342618655535,
+        "y0": 0.2638464082371105,
+        "x1": 0.6276736290626277,
+        "y1": 0.27642544833096594
+      },
+      "text": "ˆ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6301601135652829,
+        "y0": 0.273944681943065,
+        "x1": 0.6391736198874081,
+        "y1": 0.2827499852035985
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6399951012305964,
+        "y0": 0.26702701804613826,
+        "x1": 0.6463112425959967,
+        "y1": 0.27960605813999373
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6463268005770016,
+        "y0": 0.26702701804613826,
+        "x1": 0.6557685004340278,
+        "y1": 0.27960605813999373
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6593954048904718,
+        "y0": 0.273944681943065,
+        "x1": 0.668408911212597,
+        "y1": 0.2827499852035985
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6692303925557853,
+        "y0": 0.26702701804613826,
+        "x1": 0.6755465339211857,
+        "y1": 0.27960605813999373
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6844967112821692,
+        "y0": 0.26702701804613826,
+        "x1": 0.695354636198555,
+        "y1": 0.27960605813999373
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7042916989793965,
+        "y0": 0.26702701804613826,
+        "x1": 0.7241843229804943,
+        "y1": 0.27960605813999373
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7331213857613358,
+        "y0": 0.26702701804613826,
+        "x1": 0.792799307629953,
+        "y1": 0.27960605813999373
+      },
+      "text": "decoding",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8017363205454708,
+        "y0": 0.26702701804613826,
+        "x1": 0.8695698657066994,
+        "y1": 0.27960605813999373
+      },
+      "text": "estimation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8785069284875409,
+        "y0": 0.26702701804613826,
+        "x1": 0.8911718231400633,
+        "y1": 0.27960605813999373
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9001088859209048,
+        "y0": 0.26702701804613826,
+        "x1": 0.9200015597873263,
+        "y1": 0.27960605813999373
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.2830562218271121,
+        "x1": 0.31725320629045073,
+        "y1": 0.29563526192096745
+      },
+      "text": "candidate for practical applications.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5423251382665697,
+        "y0": 0.2821217365939208,
+        "x1": 0.817061729680479,
+        "y1": 0.29470077668777617
+      },
+      "text": "message matrix from Bob’s observations.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628600076912275,
+        "y0": 0.2982948970313024,
+        "x1": 0.4902319814644608,
+        "y1": 0.3108739371251579
+      },
+      "text": "The remainder of this paper is structured in the following",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5260457057578891,
+        "y0": 0.3046381605996026,
+        "x1": 0.8124867358238869,
+        "y1": 0.31721720069345805
+      },
+      "text": "Thus, IT-Eve that observes any subset of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8202826306710835,
+        "y0": 0.3046381605996026,
+        "x1": 0.8319219452103758,
+        "y1": 0.31721720069345805
+      },
+      "text": "w",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8401747560189441,
+        "y0": 0.3046381605996026,
+        "x1": 0.9199894923789829,
+        "y1": 0.31721720069345805
+      },
+      "text": "links in the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.31338961557908496,
+        "x1": 0.49023132698208677,
+        "y1": 0.3259686556729403
+      },
+      "text": "manner. Sec.IIpresents NU-HUNCC setting, while Sec.III",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679188048917,
+        "y0": 0.31973287914738513,
+        "x1": 0.8589798671747345,
+        "y1": 0.3323119192412405
+      },
+      "text": "network can’t obtain any information about any set of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8629656025007659,
+        "y0": 0.31973287914738513,
+        "x1": 0.8714305403964971,
+        "y1": 0.3323119192412405
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8714411118451286,
+        "y0": 0.3253930030447064,
+        "x1": 0.8775830237694036,
+        "y1": 0.33419830630523994
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8829199099073223,
+        "y0": 0.31973287914738513,
+        "x1": 0.9199803171594159,
+        "y1": 0.3323119192412405
+      },
+      "text": "< ℓ−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.3284843341268674,
+        "x1": 0.13582644743077896,
+        "y1": 0.34106337422072286
+      },
+      "text": "provides",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14430767882104015,
+        "y0": 0.3284843341268674,
+        "x1": 0.16420032775479984,
+        "y1": 0.34106337422072286
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1726815466787301,
+        "y0": 0.3284843341268674,
+        "x1": 0.2705820121017157,
+        "y1": 0.34106337422072286
+      },
+      "text": "comprehensive",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27906323102564595,
+        "y0": 0.3284843341268674,
+        "x1": 0.3306017607645272,
+        "y1": 0.34106337422072286
+      },
+      "text": "security",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33908302955378117,
+        "y0": 0.3284843341268674,
+        "x1": 0.4078282125635085,
+        "y1": 0.34106337422072286
+      },
+      "text": "definitions",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4163094564201006,
+        "y0": 0.3284843341268674,
+        "x1": 0.43529046750536154,
+        "y1": 0.34106337422072286
+      },
+      "text": "for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44377171136195365,
+        "y0": 0.3284843341268674,
+        "x1": 0.458243525885289,
+        "y1": 0.34106337422072286
+      },
+      "text": "IS",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46672476974188115,
+        "y0": 0.3284843341268674,
+        "x1": 0.4902312833499285,
+        "y1": 0.34106337422072286
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679188048917,
+        "y0": 0.33482759769516757,
+        "x1": 0.521407233344184,
+        "y1": 0.34740663778902303
+      },
+      "text": "w",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5275963677300347,
+        "y0": 0.33482759769516757,
+        "x1": 0.6645007164649714,
+        "y1": 0.34740663778902303
+      },
+      "text": "individual messages,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6702450521631178,
+        "y0": 0.33482759769516757,
+        "x1": 0.6797355701720792,
+        "y1": 0.34740663778902303
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.683357837153416,
+        "y0": 0.34174649462555395,
+        "x1": 0.69328298132404,
+        "y1": 0.3505517978860875
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6932908600451899,
+        "y0": 0.3455198178387652,
+        "x1": 0.6987442315793505,
+        "y1": 0.3518093378856929
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7003741794162326,
+        "y0": 0.3348275206305764,
+        "x1": 0.9199908886080473,
+        "y1": 0.34740656072443177
+      },
+      "text": ". However, IT-Eve might be able",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.34357901414235437,
+        "x1": 0.49023132698208677,
+        "y1": 0.3561580542362097
+      },
+      "text": "ISS-CCA1. In Sec.V, we introduce the encoding/decoding",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.3499222006460633,
+        "x1": 0.9199926837597018,
+        "y1": 0.36250124073991874
+      },
+      "text": "to obtain some insignificant information about the mixture of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.3586736941578412,
+        "x1": 0.49023127711676306,
+        "y1": 0.3712527342516967
+      },
+      "text": "algorithm for NU-HUNCC. In Sec.VI, we provide the key",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.3650181522273054,
+        "x1": 0.9199926837597018,
+        "y1": 0.37759719232116085
+      },
+      "text": "all the messages. Yet, this negligible information is controlled",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.3737683741733281,
+        "x1": 0.49023127711676306,
+        "y1": 0.38634741426718355
+      },
+      "text": "findings and theorems of this paper. Sec.VIIoffers numerical",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.38011283224279235,
+        "x1": 0.9199925840290544,
+        "y1": 0.3926918723366477
+      },
+      "text": "[12], [55], [56]. Bob can reliably decode the message matrix",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.3888643257545702,
+        "x1": 0.49023127711676306,
+        "y1": 0.40144336584842566
+      },
+      "text": "results demonstrating the performance of NU-HUNCC. The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.3952075122582792,
+        "x1": 0.8297269733902676,
+        "y1": 0.4077865523521347
+      },
+      "text": "from his observations of the encoded messages.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.40395900577005717,
+        "x1": 0.49023127711676306,
+        "y1": 0.4165380458639125
+      },
+      "text": "proofs of the theorems provided in the paper are given in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.41905368578554403,
+        "x1": 0.49023127711676306,
+        "y1": 0.4316327258793995
+      },
+      "text": "Sec.VIII,IX,X, and AppendixesAandB. We conclude the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000658695993859,
+        "y0": 0.4341483658010309,
+        "x1": 0.19293232213437947,
+        "y1": 0.44672740589488635
+      },
+      "text": "paper is Sec.XI.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.4280989109867751,
+        "x1": 0.5237839642693015,
+        "y1": 0.44067795108063057
+      },
+      "text": "B.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5319233813316994,
+        "y0": 0.4280989109867751,
+        "x1": 0.7194872089460784,
+        "y1": 0.44067795108063057
+      },
+      "text": "Security against Crypto-Eve",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5260457556232129,
+        "y0": 0.44703071406393335,
+        "x1": 0.9199916864532272,
+        "y1": 0.4596097541577888
+      },
+      "text": "Crypto-Eve may perform passive/active attacks against Al-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21512912924772773,
+        "y0": 0.4674463573128286,
+        "x1": 0.23166836009306066,
+        "y1": 0.48002539740668404
+      },
+      "text": "II.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24062165403677746,
+        "y0": 0.4674463573128286,
+        "x1": 0.3551238315557343,
+        "y1": 0.48002539740668404
+      },
+      "text": "SYSTEM MODEL",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.4621253940794203,
+        "x1": 0.9199926837597018,
+        "y1": 0.4747044341732757
+      },
+      "text": "ice and the ciphertexts she produces, to obtain information",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.4772200740949072,
+        "x1": 0.9199926837597018,
+        "y1": 0.48979911418876265
+      },
+      "text": "about confidential messages. Two of the most common attacks",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628597583646088,
+        "y0": 0.48736555046505403,
+        "x1": 0.4902319814644608,
+        "y1": 0.4999445905589094
+      },
+      "text": "We consider a communication system where Alice wishes to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.49231475411039405,
+        "x1": 0.9199925840290544,
+        "y1": 0.5048937942042495
+      },
+      "text": "given in the literature are the chosen-plaintext attack (CPA)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000656202727673,
+        "y0": 0.5024615020462961,
+        "x1": 0.13336832383099725,
+        "y1": 0.5150405421401515
+      },
+      "text": "transmit",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13840362449097476,
+        "y0": 0.5024615020462961,
+        "x1": 0.14517558478062448,
+        "y1": 0.5150405421401515
+      },
+      "text": "ℓ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15022388782376558,
+        "y0": 0.5024615020462961,
+        "x1": 0.3803037880292905,
+        "y1": 0.5150405421401515
+      },
+      "text": "non-uniform confidential message³",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38615527184180964,
+        "y0": 0.5024615020462961,
+        "x1": 0.41459426381229575,
+        "y1": 0.5150405421401515
+      },
+      "text": "over",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4196307612400429,
+        "y0": 0.5024615020462961,
+        "x1": 0.4264027215296926,
+        "y1": 0.5150405421401515
+      },
+      "text": "ℓ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4314510370391646,
+        "y0": 0.5024615020462961,
+        "x1": 0.490233627020144,
+        "y1": 0.5150405421401515
+      },
+      "text": "noiseless",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.507409434125881,
+        "x1": 0.9199925840290544,
+        "y1": 0.5199884742197365
+      },
+      "text": "and the chosen-ciphertext attack (CCA) [57]. In both attacks,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000659319310406,
+        "y0": 0.517556182061783,
+        "x1": 0.11573846355762357,
+        "y1": 0.5301352221556384
+      },
+      "text": "links,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12329908134111392,
+        "y0": 0.517556182061783,
+        "x1": 0.13451515147888582,
+        "y1": 0.5301352221556384
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14250006083569494,
+        "y0": 0.517556182061783,
+        "x1": 0.15514864952735652,
+        "y1": 0.5301352221556384
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16313404507107204,
+        "y0": 0.517556182061783,
+        "x1": 0.17127342473447713,
+        "y1": 0.5301352221556384
+      },
+      "text": "{",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17127293854757072,
+        "y0": 0.517556182061783,
+        "x1": 0.1794123182109758,
+        "y1": 0.5301352221556384
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1794118320240694,
+        "y0": 0.517556182061783,
+        "x1": 0.22236982358047386,
+        "y1": 0.5301352221556384
+      },
+      "text": ",...,ℓ}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22237097048291973,
+        "y0": 0.517556182061783,
+        "x1": 0.4902379653033088,
+        "y1": 0.5301352221556384
+      },
+      "text": ", to Bob, in the presence of an eaves-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.5225053857071231,
+        "x1": 0.585480484307981,
+        "y1": 0.5350844258009786
+      },
+      "text": "Crypto-Eve",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5946128695618873,
+        "y0": 0.5225053857071231,
+        "x1": 0.6054707944782731,
+        "y1": 0.5350844258009786
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6146031797321794,
+        "y0": 0.5225053857071231,
+        "x1": 0.6501234465954351,
+        "y1": 0.5350844258009786
+      },
+      "text": "given",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6592720879448785,
+        "y0": 0.5225053857071231,
+        "x1": 0.6664998671587776,
+        "y1": 0.5350844258009786
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6756322524126839,
+        "y0": 0.5225053857071231,
+        "x1": 0.7404867932687398,
+        "y1": 0.5350844258009786
+      },
+      "text": "ciphertext",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.749619178522646,
+        "y0": 0.5225053857071231,
+        "x1": 0.7812650593277676,
+        "y1": 0.5350844258009786
+      },
+      "text": "from",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7903974944469976,
+        "y0": 0.5225053857071231,
+        "x1": 0.8301827424491932,
+        "y1": 0.5350844258009786
+      },
+      "text": "which",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8393314336639603,
+        "y0": 0.5225053857071231,
+        "x1": 0.8610310274011949,
+        "y1": 0.5350844258009786
+      },
+      "text": "she",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8701633627897774,
+        "y0": 0.5225053857071231,
+        "x1": 0.8981953539879494,
+        "y1": 0.5350844258009786
+      },
+      "text": "tries",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9073277891071794,
+        "y0": 0.5225053857071231,
+        "x1": 0.9199926837597018,
+        "y1": 0.5350844258009786
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000659319310406,
+        "y0": 0.5326508620772699,
+        "x1": 0.44584396462035336,
+        "y1": 0.5452299021711253
+      },
+      "text": "dropper, Eve. The messages are taken from a DMS (",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44585787704567503,
+        "y0": 0.5326508620772699,
+        "x1": 0.47258758544921875,
+        "y1": 0.5452299021711253
+      },
+      "text": "V,p",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4725981070325265,
+        "y0": 0.5383109474422956,
+        "x1": 0.4802784140593086,
+        "y1": 0.5471162507028291
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48390202740438626,
+        "y0": 0.5326508620772699,
+        "x1": 0.4902181687697866,
+        "y1": 0.5452299021711253
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.53760006572261,
+        "x1": 0.9199926837597018,
+        "y1": 0.5501791058164655
+      },
+      "text": "obtain information about the plaintext. In CCA Crypto-Eve is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000659319310406,
+        "y0": 0.5477455420927568,
+        "x1": 0.09900390400606043,
+        "y1": 0.5603245821866123
+      },
+      "text": "s.t.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10722717584348192,
+        "y0": 0.5477455420927568,
+        "x1": 0.1559169495027829,
+        "y1": 0.5603245821866123
+      },
+      "text": "V ∈ {",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15593468909170113,
+        "y0": 0.5477455420927568,
+        "x1": 0.16407406875510622,
+        "y1": 0.5603245821866123
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16407358256819982,
+        "y0": 0.5477455420927568,
+        "x1": 0.16858280406278722,
+        "y1": 0.5603245821866123
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17130887897965175,
+        "y0": 0.5477455420927568,
+        "x1": 0.17944825864305683,
+        "y1": 0.5603245821866123
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1794494055455027,
+        "y0": 0.5477455420927568,
+        "x1": 0.1875887852089078,
+        "y1": 0.5603245821866123
+      },
+      "text": "}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1875882990220014,
+        "y0": 0.5477455420927568,
+        "x1": 0.19165798262053846,
+        "y1": 0.5603245821866123
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19987876742493874,
+        "y0": 0.5477455420927568,
+        "x1": 0.22117138532252092,
+        "y1": 0.5603245821866123
+      },
+      "text": "We",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2293921576605903,
+        "y0": 0.5477455420927568,
+        "x1": 0.2727913202023974,
+        "y1": 0.5603245821866123
+      },
+      "text": "denote",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2810283735686657,
+        "y0": 0.5477455420927568,
+        "x1": 0.3009210225024255,
+        "y1": 0.5603245821866123
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30914176990783293,
+        "y0": 0.5477455420927568,
+        "x1": 0.3516293195338031,
+        "y1": 0.5603245821866123
+      },
+      "text": "source",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3598501168045343,
+        "y0": 0.5477455420927568,
+        "x1": 0.41500256108302697,
+        "y1": 0.5603245821866123
+      },
+      "text": "message",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4232233084884344,
+        "y0": 0.5477455420927568,
+        "x1": 0.46572716407526554,
+        "y1": 0.5603245821866123
+      },
+      "text": "matrix",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.473947911480673,
+        "y0": 0.5477455420927568,
+        "x1": 0.490226695740145,
+        "y1": 0.5603245821866123
+      },
+      "text": "by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.5526947457380968,
+        "x1": 0.9199926837597018,
+        "y1": 0.5652737858319523
+      },
+      "text": "active and prior to receiving the ciphertext, she can question",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.080006605659435,
+        "y0": 0.5628402221082437,
+        "x1": 0.08949712366839639,
+        "y1": 0.575419262202099
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0931192784527548,
+        "y0": 0.5697590805063344,
+        "x1": 0.10213280347437641,
+        "y1": 0.5785643837668679
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10747712577869689,
+        "y0": 0.5628401450436524,
+        "x1": 0.11831878213321462,
+        "y1": 0.5754191851375079
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12285130320031659,
+        "y0": 0.5628401450436524,
+        "x1": 0.13279762766719644,
+        "y1": 0.5754191851375079
+      },
+      "text": "F",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13279901142993006,
+        "y0": 0.561232577068637,
+        "x1": 0.1382458630730124,
+        "y1": 0.5700378803291706
+      },
+      "text": "ℓ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13279901142993006,
+        "y0": 0.5699686961944657,
+        "x1": 0.1392828249463848,
+        "y1": 0.5787739994549992
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1382483563391991,
+        "y0": 0.561232577068637,
+        "x1": 0.15646812339234195,
+        "y1": 0.5700378803291706
+      },
+      "text": "×n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16298201816533905,
+        "y0": 0.5628401450436524,
+        "x1": 0.198241813510072,
+        "y1": 0.5754191851375079
+      },
+      "text": "when",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2039395375968584,
+        "y0": 0.5628401450436524,
+        "x1": 0.21370679568621068,
+        "y1": 0.5754191851375079
+      },
+      "text": "n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21940849653256486,
+        "y0": 0.5628401450436524,
+        "x1": 0.45475050982306986,
+        "y1": 0.5754191851375079
+      },
+      "text": "is the size of each source message.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.5677894257535838,
+        "x1": 0.9199926837597018,
+        "y1": 0.5803684658474393
+      },
+      "text": "a decryption oracle to provide her the plaintexts for a limited",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628595090379902,
+        "y0": 0.5780787817155473,
+        "x1": 0.32309790218577666,
+        "y1": 0.5906578218094026
+      },
+      "text": "Bob’s observations are denoted by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32790359796262253,
+        "y0": 0.5780787817155473,
+        "x1": 0.33734527288698685,
+        "y1": 0.5906578218094026
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3409722272087546,
+        "y0": 0.5849977171782291,
+        "x1": 0.3499857584635417,
+        "y1": 0.5938030204387627
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35080718994140625,
+        "y0": 0.5780787817155473,
+        "x1": 0.49023477392258985,
+        "y1": 0.5906578218094026
+      },
+      "text": ". Those observations,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.5828841057690708,
+        "x1": 0.9199926837597018,
+        "y1": 0.5954631458629261
+      },
+      "text": "number of ciphertexts of her choice. However, she can’t use",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.593173461731034,
+        "x1": 0.2644285812876583,
+        "y1": 0.6057525018248895
+      },
+      "text": "provide Bob reliable decode",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.268715702630336,
+        "y0": 0.593173461731034,
+        "x1": 0.2782062206392974,
+        "y1": 0.6057525018248895
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2818300583783318,
+        "y0": 0.6000924357260116,
+        "x1": 0.29084358963311885,
+        "y1": 0.6088977389865451
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2959558823529412,
+        "y0": 0.5931735002633297,
+        "x1": 0.49022659600949753,
+        "y1": 0.6057525403571851
+      },
+      "text": "with high probability. That is,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.5979787857845575,
+        "x1": 0.9199926837597018,
+        "y1": 0.610557825878413
+      },
+      "text": "this decryption oracle after receiving the test ciphertext [57].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.6082681802788166,
+        "x1": 0.09627041785545598,
+        "y1": 0.620847220372672
+      },
+      "text": "P(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628595713696449,
+        "y0": 0.6082681802788166,
+        "x1": 0.10577646891276042,
+        "y1": 0.620847220372672
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09877288419436785,
+        "y0": 0.6050888805678396,
+        "x1": 0.10691226385777293,
+        "y1": 0.6176679206616951
+      },
+      "text": "ˆ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10939869849510442,
+        "y0": 0.6151871157414985,
+        "x1": 0.11841221728356056,
+        "y1": 0.6239924190020321
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11923366122775608,
+        "y0": 0.6082681802788166,
+        "x1": 0.12554981505948734,
+        "y1": 0.620847220372672
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12556536057416132,
+        "y0": 0.6082681802788166,
+        "x1": 0.13500703549852558,
+        "y1": 0.620847220372672
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13863398982029335,
+        "y0": 0.6151871157414985,
+        "x1": 0.14764750860874948,
+        "y1": 0.6239924190020321
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.148468952552945,
+        "y0": 0.6082681802788166,
+        "x1": 0.15478510638467627,
+        "y1": 0.620847220372672
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "̸",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15938561882068908,
+        "y0": 0.6082681802788166,
+        "x1": 0.17203421997868157,
+        "y1": 0.620847220372672
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1766323513454861,
+        "y0": 0.6082681802788166,
+        "x1": 0.1861228693544475,
+        "y1": 0.620847220372672
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18974673202614378,
+        "y0": 0.6151871157414985,
+        "x1": 0.19876025081459991,
+        "y1": 0.6239924190020321
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19958169475879545,
+        "y0": 0.6082681802788166,
+        "x1": 0.2058978485905267,
+        "y1": 0.620847220372672
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21049836102653952,
+        "y0": 0.6082681802788166,
+        "x1": 0.23433799992978963,
+        "y1": 0.620847220372672
+      },
+      "text": "≤ ϵ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2343529595269097,
+        "y0": 0.6139295372095974,
+        "x1": 0.2405291039959278,
+        "y1": 0.622734840470131
+      },
+      "text": "e",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2413431554058798,
+        "y0": 0.6082681802788166,
+        "x1": 0.2909119799246196,
+        "y1": 0.620847220372672
+      },
+      "text": ", where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2966470656052134,
+        "y0": 0.6082681802788166,
+        "x1": 0.3061375836141748,
+        "y1": 0.620847220372672
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2991339988957823,
+        "y0": 0.6050888805678396,
+        "x1": 0.30727336609285644,
+        "y1": 0.6176679206616951
+      },
+      "text": "ˆ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3097598007301879,
+        "y0": 0.6151871157414985,
+        "x1": 0.318773331984975,
+        "y1": 0.6239924190020321
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31959476346283955,
+        "y0": 0.6082681802788166,
+        "x1": 0.32591092976090175,
+        "y1": 0.620847220372672
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3259264628092448,
+        "y0": 0.6082681802788166,
+        "x1": 0.3353681377336091,
+        "y1": 0.620847220372672
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3389950920553768,
+        "y0": 0.6151871157414985,
+        "x1": 0.3480086233101639,
+        "y1": 0.6239924190020321
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3488300547880285,
+        "y0": 0.6082681802788166,
+        "x1": 0.49022849089179943,
+        "y1": 0.620847220372672
+      },
+      "text": ") is the estimation of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.6130747373657996,
+        "x1": 0.9199926837597018,
+        "y1": 0.6256537774596551
+      },
+      "text": "The information leakage is measured by Crypto-Eve’s ability",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000651839511846,
+        "y0": 0.6233641318600587,
+        "x1": 0.08949703640407985,
+        "y1": 0.6359431719539141
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0931192784527548,
+        "y0": 0.6302818342892811,
+        "x1": 0.10213280347437641,
+        "y1": 0.6390871375498146
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1029558805079242,
+        "y0": 0.6233641703923543,
+        "x1": 0.49022748735215926,
+        "y1": 0.6359432104862097
+      },
+      "text": ". We consider two types of Eve: 1) IT-Eve, which observes",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.6281694173812866,
+        "x1": 0.522432863322738,
+        "y1": 0.6407484574751421
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5318419512580422,
+        "y0": 0.6281694173812866,
+        "x1": 0.6033056919870813,
+        "y1": 0.6407484574751421
+      },
+      "text": "distinguish",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6127311357485703,
+        "y0": 0.6281694173812866,
+        "x1": 0.6669719421785641,
+        "y1": 0.6407484574751421
+      },
+      "text": "between",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6763810799791922,
+        "y0": 0.6281694173812866,
+        "x1": 0.7394450069252961,
+        "y1": 0.6407484574751421
+      },
+      "text": "plaintexts",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7488703509561376,
+        "y0": 0.6281694173812866,
+        "x1": 0.7843905679540697,
+        "y1": 0.6407484574751421
+      },
+      "text": "given",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7937997057546977,
+        "y0": 0.6281694173812866,
+        "x1": 0.8136923796211193,
+        "y1": 0.6407484574751421
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8231177236519608,
+        "y0": 0.6281694173812866,
+        "x1": 0.8457289552376941,
+        "y1": 0.6407484574751421
+      },
+      "text": "test",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8551380431729984,
+        "y0": 0.6281694173812866,
+        "x1": 0.9199925840290544,
+        "y1": 0.6407484574751421
+      },
+      "text": "ciphertext",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065308614494,
+        "y0": 0.6384588504078412,
+        "x1": 0.1493865991729537,
+        "y1": 0.6510378905016967
+      },
+      "text": "any subset",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15480555116740707,
+        "y0": 0.6384588504078412,
+        "x1": 0.2051231907863243,
+        "y1": 0.6510378905016967
+      },
+      "text": "W⊂L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21057679918077257,
+        "y0": 0.6384588504078412,
+        "x1": 0.3109516318327461,
+        "y1": 0.6510378905016967
+      },
+      "text": "of the links s.t.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31636765423943014,
+        "y0": 0.6384588504078412,
+        "x1": 0.34278807297251584,
+        "y1": 0.6510378905016967
+      },
+      "text": "|W|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3473513235453687,
+        "y0": 0.6384588504078412,
+        "x1": 0.3599999122370302,
+        "y1": 0.6510378905016967
+      },
+      "text": "≜",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.364534340652765,
+        "y0": 0.6384588504078412,
+        "x1": 0.40506844115413093,
+        "y1": 0.6510378905016967
+      },
+      "text": "w < ℓ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40511441698261336,
+        "y0": 0.6384588504078412,
+        "x1": 0.4902360205556832,
+        "y1": 0.6510378905016967
+      },
+      "text": ", but is com-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.6432640973967736,
+        "x1": 0.9199926837597018,
+        "y1": 0.655843137490629
+      },
+      "text": "provided by Alice. There are two ways in which this leakage",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065682604422,
+        "y0": 0.6535535304233282,
+        "x1": 0.4902312833499285,
+        "y1": 0.6661325705171836
+      },
+      "text": "putationally unbounded, and 2) Crypto-Eve which observes all",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.6583587774122603,
+        "x1": 0.9199927834903493,
+        "y1": 0.6709378175061158
+      },
+      "text": "is measured: 1) indistinguishability (IND) - by observing a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065682604422,
+        "y0": 0.6686482297049628,
+        "x1": 0.4902312833499285,
+        "y1": 0.6812272697988182
+      },
+      "text": "the links, but is bounded computationally. We denote IT-Eve’s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.6734534766938951,
+        "x1": 0.9199926837597018,
+        "y1": 0.6860325167877506
+      },
+      "text": "ciphertext created from one of two possible plaintexts, Crypto-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065682604422,
+        "y0": 0.6837429289865975,
+        "x1": 0.18386504229377298,
+        "y1": 0.696321969080453
+      },
+      "text": "observations by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18956211813135085,
+        "y0": 0.6837429289865975,
+        "x1": 0.2006642335380604,
+        "y1": 0.696321969080453
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20183823778738383,
+        "y0": 0.6906618644492795,
+        "x1": 0.214771669674543,
+        "y1": 0.699467167709813
+      },
+      "text": "W",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.222238553115745,
+        "y0": 0.6837429289865975,
+        "x1": 0.4475691053602431,
+        "y1": 0.696321969080453
+      },
+      "text": "and Crypto-Eve’s observations by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45326631832746117,
+        "y0": 0.6837429289865975,
+        "x1": 0.46436843373417075,
+        "y1": 0.696321969080453
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46554410847183925,
+        "y0": 0.6906618644492795,
+        "x1": 0.47455761479396447,
+        "y1": 0.699467167709813
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4753790961371528,
+        "y0": 0.6837429289865975,
+        "x1": 0.4794488046683517,
+        "y1": 0.696321969080453
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.6885481759755299,
+        "x1": 0.9199926837597018,
+        "y1": 0.7011272160693853
+      },
+      "text": "Eve can’t distinguish between the two plaintexts better than a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.703644127556772,
+        "x1": 0.9199926837597018,
+        "y1": 0.7162231676506274
+      },
+      "text": "uniform coin-toss, 2) semantic security (SS) - by observing a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1859673394097222,
+        "y0": 0.7170409012322474,
+        "x1": 0.2087413189457912,
+        "y1": 0.7296199413261029
+      },
+      "text": "III.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21769465028850082,
+        "y0": 0.7170409012322474,
+        "x1": 0.38428405063604215,
+        "y1": 0.7296199413261029
+      },
+      "text": "SECURITY DEFINITIONS",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.7187388268384067,
+        "x1": 0.9199926837597018,
+        "y1": 0.7313178669322621
+      },
+      "text": "ciphertext, Crypto-Eve can’t obtain any information about the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628595090379902,
+        "y0": 0.7369600943844727,
+        "x1": 0.4902319814644608,
+        "y1": 0.7495391344783282
+      },
+      "text": "In this section, we provide the formal security definitions",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.7338335261200414,
+        "x1": 0.9199926837597018,
+        "y1": 0.7464125662138967
+      },
+      "text": "original plaintext or some function applied on it, that is more",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653709461486,
+        "y0": 0.7520560459657148,
+        "x1": 0.2612379423153946,
+        "y1": 0.7646350860595703
+      },
+      "text": "used throughout this paper.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.748928225401676,
+        "x1": 0.9199926837597018,
+        "y1": 0.7615072654955315
+      },
+      "text": "significant than the information she obtains from the plaintexts",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.7640229246833108,
+        "x1": 0.5604111914541207,
+        "y1": 0.7766019647771663
+      },
+      "text": "original",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5698528414458232,
+        "y0": 0.7640229246833108,
+        "x1": 0.641300326079325,
+        "y1": 0.7766019647771663
+      },
+      "text": "probability",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6507420259363511,
+        "y0": 0.7640229246833108,
+        "x1": 0.7295637941048816,
+        "y1": 0.7766019647771663
+      },
+      "text": "distribution.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.739005444096584,
+        "y0": 0.7640229246833108,
+        "x1": 0.7787907419641034,
+        "y1": 0.7766019647771663
+      },
+      "text": "Those",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7882324418211295,
+        "y0": 0.7640229246833108,
+        "x1": 0.8124877829956852,
+        "y1": 0.7766019647771663
+      },
+      "text": "two",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8219294329873876,
+        "y0": 0.7640229246833108,
+        "x1": 0.8906746658624387,
+        "y1": 0.7766019647771663
+      },
+      "text": "definitions",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9001162659888174,
+        "y0": 0.7640229246833108,
+        "x1": 0.9199926837597018,
+        "y1": 0.7766019647771663
+      },
+      "text": "are",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.7791176239649454,
+        "x1": 0.9199926837597018,
+        "y1": 0.7916966640588009
+      },
+      "text": "equivalent, i.e. a cryptosystem that is IND is also SS and vice",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653709461486,
+        "y0": 0.788183579541216,
+        "x1": 0.09402255139319725,
+        "y1": 0.8007626196350714
+      },
+      "text": "A.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10216193105660233,
+        "y0": 0.788183579541216,
+        "x1": 0.2577705881954019,
+        "y1": 0.8007626196350714
+      },
+      "text": "Security against IT-Eve",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.7942135755461875,
+        "x1": 0.9199926837597018,
+        "y1": 0.806792615640043
+      },
+      "text": "versa [1]. The security level of a cryptosystem is defined by the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09628595090379902,
+        "y0": 0.8077441911504726,
+        "x1": 0.490231931599137,
+        "y1": 0.820323231244328
+      },
+      "text": "Against IT-Eve, we consider information-theoretic security.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.8093082748278223,
+        "x1": 0.9199926837597018,
+        "y1": 0.8218873149216777
+      },
+      "text": "combination of Crpyto-Eve’s attack model and its information",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653709461486,
+        "y0": 0.8228388904321073,
+        "x1": 0.10237355325736251,
+        "y1": 0.8354179305259628
+      },
+      "text": "For",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11111524993298101,
+        "y0": 0.8228388904321073,
+        "x1": 0.13437759798336651,
+        "y1": 0.8354179305259628
+      },
+      "text": "any",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14311928842581956,
+        "y0": 0.8228388904321073,
+        "x1": 0.18381618674284492,
+        "y1": 0.8354179305259628
+      },
+      "text": "subset",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19255786471896702,
+        "y0": 0.8228388904321073,
+        "x1": 0.20611806632646548,
+        "y1": 0.8354179305259628
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2148562163309334,
+        "y0": 0.8228388904321073,
+        "x1": 0.22332117915932648,
+        "y1": 0.8354179305259628
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22333170074263428,
+        "y0": 0.8284989950632808,
+        "x1": 0.22947366253223295,
+        "y1": 0.8373042983238144
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24044772378759446,
+        "y0": 0.8228388904321073,
+        "x1": 0.30609357746597987,
+        "y1": 0.8354179305259628
+      },
+      "text": "< ℓ − w",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31528759626002095,
+        "y0": 0.8228388904321073,
+        "x1": 0.35777514588599113,
+        "y1": 0.8354179305259628
+      },
+      "text": "source",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.366516861261106,
+        "y0": 0.8228388904321073,
+        "x1": 0.4320714115317351,
+        "y1": 0.8354179305259628
+      },
+      "text": "messages,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4408131019741881,
+        "y0": 0.8228388904321073,
+        "x1": 0.4597941379921109,
+        "y1": 0.8354179305259628
+      },
+      "text": "we",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46853582843456393,
+        "y0": 0.8228388904321073,
+        "x1": 0.4902354221717984,
+        "y1": 0.8354179305259628
+      },
+      "text": "use",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.824402974109457,
+        "x1": 0.5635530060412837,
+        "y1": 0.8369820142033124
+      },
+      "text": "leakage.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.8379335897137421,
+        "x1": 0.09989918602837457,
+        "y1": 0.8505126298075975
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10950365253523284,
+        "y0": 0.8379335897137421,
+        "x1": 0.15111216376809514,
+        "y1": 0.8505126298075975
+      },
+      "text": "notion",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16071663650811888,
+        "y0": 0.8379335897137421,
+        "x1": 0.17427683811561734,
+        "y1": 0.8505126298075975
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18386928084629034,
+        "y0": 0.8379335897137421,
+        "x1": 0.19233423120835247,
+        "y1": 0.8505126298075975
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1923447652579912,
+        "y0": 0.8435949562775968,
+        "x1": 0.19848672704758988,
+        "y1": 0.8524002595381304
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20890359317555146,
+        "y0": 0.8379335897137421,
+        "x1": 0.2745232675589767,
+        "y1": 0.8505126298075975
+      },
+      "text": "individual",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28412772783266954,
+        "y0": 0.8379335897137421,
+        "x1": 0.3356662825042126,
+        "y1": 0.8505126298075975
+      },
+      "text": "security",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34525448668236824,
+        "y0": 0.8379335897137421,
+        "x1": 0.3506752961601307,
+        "y1": 0.8505126298075975
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35068300035264754,
+        "y0": 0.8379335897137421,
+        "x1": 0.35914796318104064,
+        "y1": 0.8505126298075975
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3591568641413271,
+        "y0": 0.8435949562775968,
+        "x1": 0.3652988259309258,
+        "y1": 0.8524002595381304
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.366116018856273,
+        "y0": 0.8379335897137421,
+        "x1": 0.39549918579899407,
+        "y1": 0.8505126298075975
+      },
+      "text": "-IS).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4051036460726869,
+        "y0": 0.8379335897137421,
+        "x1": 0.4263962390376072,
+        "y1": 0.8505126298075975
+      },
+      "text": "We",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43598444321576285,
+        "y0": 0.8379335897137421,
+        "x1": 0.49022529951108046,
+        "y1": 0.8505126298075975
+      },
+      "text": "measure",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5260457556232129,
+        "y0": 0.83937140305837,
+        "x1": 0.5396059821633732,
+        "y1": 0.8519504431522253
+      },
+      "text": "In",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5499592700035744,
+        "y0": 0.83937140305837,
+        "x1": 0.5734820895724826,
+        "y1": 0.8519504431522253
+      },
+      "text": "this",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5838353275473601,
+        "y0": 0.83937140305837,
+        "x1": 0.6234089969809539,
+        "y1": 0.8519504431522253
+      },
+      "text": "paper,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.633762284821155,
+        "y0": 0.83937140305837,
+        "x1": 0.6527433208390778,
+        "y1": 0.8519504431522253
+      },
+      "text": "we",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.663096608679279,
+        "y0": 0.83937140305837,
+        "x1": 0.7245815002840329,
+        "y1": 0.8519504431522253
+      },
+      "text": "introduce",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7349347881242341,
+        "y0": 0.83937140305837,
+        "x1": 0.7421625673381331,
+        "y1": 0.8519504431522253
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7524995492174734,
+        "y0": 0.83937140305837,
+        "x1": 0.77921300152548,
+        "y1": 0.8519504431522253
+      },
+      "text": "new",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7895662893656812,
+        "y0": 0.83937140305837,
+        "x1": 0.8311747631995506,
+        "y1": 0.8519504431522253
+      },
+      "text": "notion",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8415281009050756,
+        "y0": 0.83937140305837,
+        "x1": 0.8550882775799121,
+        "y1": 0.8519504431522253
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8654416152854371,
+        "y0": 0.83937140305837,
+        "x1": 0.9199916864532272,
+        "y1": 0.8519504431522253
+      },
+      "text": "security,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000654332778033,
+        "y0": 0.8530282889953767,
+        "x1": 0.09989918602837457,
+        "y1": 0.8656073290892321
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1081850762460746,
+        "y0": 0.8530282889953767,
+        "x1": 0.15790040508594388,
+        "y1": 0.8656073290892321
+      },
+      "text": "leakage",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16618628907047844,
+        "y0": 0.8530282889953767,
+        "x1": 0.17974649067797693,
+        "y1": 0.8656073290892321
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18803238712884243,
+        "y0": 0.8530282889953767,
+        "x1": 0.26490068124010674,
+        "y1": 0.8656073290892321
+      },
+      "text": "information",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2732028337865094,
+        "y0": 0.8530282889953767,
+        "x1": 0.28586770350637,
+        "y1": 0.8656073290892321
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2941535999572355,
+        "y0": 0.8530282889953767,
+        "x1": 0.3140462488909952,
+        "y1": 0.8656073290892321
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3223321453418607,
+        "y0": 0.8530282889953767,
+        "x1": 0.40854442820829506,
+        "y1": 0.8656073290892321
+      },
+      "text": "eavesdropper",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41683032465916053,
+        "y0": 0.8530282889953767,
+        "x1": 0.45210640103209254,
+        "y1": 0.8656073290892321
+      },
+      "text": "using",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4603937685100082,
+        "y0": 0.8530282889953767,
+        "x1": 0.4902327294443168,
+        "y1": 0.8656073290892321
+      },
+      "text": "non-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.854467364272686,
+        "x1": 0.9199926837597018,
+        "y1": 0.8670464043665413
+      },
+      "text": "individual semantic security against a chosen ciphertext attack",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000651839511846,
+        "y0": 0.8681242502096927,
+        "x1": 0.2900024862850414,
+        "y1": 0.8807032903035482
+      },
+      "text": "normalized variational distance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29000814599928515,
+        "y0": 0.8681242502096927,
+        "x1": 0.3951658361098346,
+        "y1": 0.8807032903035482
+      },
+      "text": ", denoted by V(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39517972360249437,
+        "y0": 0.8681242502096927,
+        "x1": 0.4114454930124719,
+        "y1": 0.8807032903035482
+      },
+      "text": "·, ·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41145915611117495,
+        "y0": 0.8681242502096927,
+        "x1": 0.49022968765956904,
+        "y1": 0.8807032903035482
+      },
+      "text": "). Addition-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.8695620635543206,
+        "x1": 0.9199926837597018,
+        "y1": 0.8821411036481761
+      },
+      "text": "(ISS-CCA1). This notion of security is based on SS-CCA1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000651839511846,
+        "y0": 0.8832189494913274,
+        "x1": 0.49023118361928103,
+        "y1": 0.8957979895851829
+      },
+      "text": "ally, we require the code to be reliable where the reliability",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.8846567628359554,
+        "x1": 0.6001801833607792,
+        "y1": 0.8972358029298108
+      },
+      "text": "cryptographic",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6103544048234528,
+        "y0": 0.8846567628359554,
+        "x1": 0.6618929594949959,
+        "y1": 0.8972358029298108
+      },
+      "text": "security",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6720509248621324,
+        "y0": 0.8846567628359554,
+        "x1": 0.6951016195459303,
+        "y1": 0.8972358029298108
+      },
+      "text": "[1],",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.705275841008604,
+        "y0": 0.8846567628359554,
+        "x1": 0.7364659028894761,
+        "y1": 0.8972358029298108
+      },
+      "text": "[57],",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7466238682566125,
+        "y0": 0.8846567628359554,
+        "x1": 0.7701303818646599,
+        "y1": 0.8972358029298108
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7803046033273335,
+        "y0": 0.8846567628359554,
+        "x1": 0.8273339365042892,
+        "y1": 0.8972358029298108
+      },
+      "text": "usually",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8374919018714256,
+        "y0": 0.8846567628359554,
+        "x1": 0.8899257884306067,
+        "y1": 0.8972358029298108
+      },
+      "text": "requires",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9001000098932802,
+        "y0": 0.8846567628359554,
+        "x1": 0.9199926837597018,
+        "y1": 0.8972358029298108
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000651839511846,
+        "y0": 0.8983136487729622,
+        "x1": 0.4902312833499285,
+        "y1": 0.9108926888668176
+      },
+      "text": "is measured by the decoding error probability at Bob’s. For a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.89975146211759,
+        "x1": 0.7588887432821436,
+        "y1": 0.9123305022114455
+      },
+      "text": "encryption scheme to be probabilistic⁴",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7597025952308006,
+        "y0": 0.89975146211759,
+        "x1": 0.9199994654437296,
+        "y1": 0.9123305022114455
+      },
+      "text": ". To properly define ISS-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09302939620672487,
+        "y0": 0.9259260254676895,
+        "x1": 0.09791305641722835,
+        "y1": 0.9334735003384677
+      },
+      "text": "3",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09872710782718035,
+        "y0": 0.9269607482534467,
+        "x1": 0.4902387631484886,
+        "y1": 0.9370240057357634
+      },
+      "text": "In this paper, we assume the messages are independent to focus on the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.522790846481822,
+        "y0": 0.9259257075762508,
+        "x1": 0.5276745066923254,
+        "y1": 0.9334731824470289
+      },
+      "text": "4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5330571691974316,
+        "y0": 0.9269616922946892,
+        "x1": 0.9199976702920751,
+        "y1": 0.9370249497770059
+      },
+      "text": "To focus on our main contributions, we choose to work with public key",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000651839511846,
+        "y0": 0.9382827167559151,
+        "x1": 0.4902322806564032,
+        "y1": 0.948345974238232
+      },
+      "text": "key methods and results. However, our proposed solution can be easily shown",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.9382823988644764,
+        "x1": 0.9199936810661765,
+        "y1": 0.9483456563467931
+      },
+      "text": "encryption schemes, but any other PQ probabilistic encryption schemes would",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000651839511846,
+        "y0": 0.9496034233257024,
+        "x1": 0.49023223079107947,
+        "y1": 0.9596666808080192
+      },
+      "text": "to be valid for dependent sources by using joint source coding schemes [54].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679686702155,
+        "y0": 0.9496031054342636,
+        "x1": 0.6667737275167228,
+        "y1": 0.9596663629165804
+      },
+      "text": "have achieved similar results.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.03501489997142926,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": "2/391 item không có bề rộng (width=0) — giữ chữ, bỏ hộp",
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

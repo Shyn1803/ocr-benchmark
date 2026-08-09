@@ -47,7 +47,7 @@ def _cham() -> ScoreTable:
     return score_results([r for r in res if r.engine != "sabotage"] + sab, metrics, gt)
 
 
-def _md(bang: ScoreTable, ten: list[str]) -> str:
+def _md(bang: ScoreTable, ten: list[str], cong: dict[str, D.KetQuaCong]) -> str:
     d: list[str] = [
         "# C2 — thước đo có phân biệt được engine không",
         "",
@@ -60,6 +60,12 @@ def _md(bang: ScoreTable, ten: list[str]) -> str:
         "",
         "## 1. Cổng `sabotage` (AC-01)",
         "",
+        "Phán quyết là **một** phép so: `sabotage` phải thấp hơn chính **nguồn** của "
+        "nó. Đó là phép cô lập được đúng một biến — cùng engine, cùng bộ tài liệu, "
+        "chỉ khác chỗ đã bị làm hỏng. \"Có đứng bét toàn bảng không\" **không** phải "
+        "điều kiện đạt: nó trộn phép làm hỏng với chênh lệch năng lực giữa các "
+        "engine, nên nó kết tội thước đo vì một sự thật về engine.",
+        "",
         "`chạy` = cổng thực sự kiểm được điều gì. Metric không đo được thì `sabotage` "
         "xuống cuối **vì N/A**, không phải vì kém — đó không tính là đạt.",
         "",
@@ -68,7 +74,7 @@ def _md(bang: ScoreTable, ten: list[str]) -> str:
     ]
     chay = dat = 0
     for m in ten:
-        k = D.kiem_sabotage(bang, m, nguon=NGUON_MANH)
+        k = cong[m]
         chay += k.do_duoc
         dat += k.do_duoc and k.dat
         s = "—" if k.diem_sabotage is None else f"{k.diem_sabotage:.4f}"
@@ -99,15 +105,22 @@ def _md(bang: ScoreTable, ten: list[str]) -> str:
             f"{', '.join(p.engines) or '—'} | {p.ly_do} |"
         )
 
-    chinh = [p for p in pt if p.vao_bang_chinh]
+    def _truot(m: str) -> bool:
+        k = cong[m]
+        return k.do_duoc and not k.dat
+
+    chinh = [p for p in pt if p.vao_bang_chinh and not _truot(p.metric)]
     thieu = [p for p in pt if p.phan_quyet == D.PhanQuyet.KHONG_DU_DU_LIEU]
     khong = [p for p in pt if p.phan_quyet == D.PhanQuyet.KHONG_PHAN_BIET_DUOC]
+    bi_loai = [p for p in pt if p.vao_bang_chinh and _truot(p.metric)]
     d += [
         "",
         "## 3. Bảng chính / phụ lục (AC-03)",
         "",
         f"- **Bảng chính — {len(chinh)}/{len(ten)}**: "
         + (", ".join(f"`{p.metric}`" for p in chinh) or "_trống_"),
+        f"- **Phân tán đủ NHƯNG trượt cổng `sabotage` — {len(bi_loai)}**: "
+        + (", ".join(f"`{p.metric}`" for p in bi_loai) or "_trống_"),
         f"- **Phụ lục, không phân biệt được — {len(khong)}**: "
         + (", ".join(f"`{p.metric}`" for p in khong) or "_trống_"),
         f"- **Phụ lục, chưa đủ dữ liệu — {len(thieu)}**: "
@@ -128,8 +141,11 @@ def main() -> None:
     ra = GOC / "results"
     ra.mkdir(exist_ok=True)
 
-    (ra / "c2_discrimination.md").write_text(_md(bang, ten), encoding="utf-8")
-    nhom = D.phan_nhom_metric([D.do_phan_tan(bang, m) for m in ten], moi_metric=ten)
+    cong = {m: D.kiem_sabotage(bang, m, nguon=NGUON_MANH) for m in ten}
+    (ra / "c2_discrimination.md").write_text(_md(bang, ten, cong), encoding="utf-8")
+    nhom = D.phan_nhom_metric(
+        [D.do_phan_tan(bang, m) for m in ten], moi_metric=ten, cong=cong
+    )
     (ra / "c2_metric_status.json").write_text(
         json.dumps(nhom, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )

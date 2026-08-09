@@ -1,0 +1,322 @@
+{
+  "schema_version": 2,
+  "engine": "opendataloader",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.09581_pg21",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "# 6 Numerical Computations\n\nIn this section, we state numerical computations that show several phenomena discussed in the introduction. In particular, we will observe a suppression of Ostwald ripening, splitting scenarios and instabilities of flat fronts and growing particles. The numerical simulations also support the sharp interface asymptotics, as we get a good agreement between phase field computations and exact solutions of the sharp interface problem. All our numerical simulations are for the quartic potential (2.7) and the interpolation functions (2.8), (2.9) and (2.10), for a fixed value rc ∈ (0,1].\n\n## 6.1 Finite element method\n\nWe assume that Ω is a polyhedral domain and let Th be a regular triangulation of Ω into disjoint open simplices. Associated with Th is the piecewise linear finite element space\n\nSh = {ζ ∈ C0(Ω) : ζ|o ∈ P1(o) ∀o ∈ Th}, where we denote by P1(o) the set of all affine linear functions on o, see [13]. Let (·,·)h be the usual mass lumped L2-inner product on Ω associated with Th, and let πh : C0(Ω) → Sh be the standard interpolation operator. In addition, let τ denote a chosen uniform time step size. Then our finite element approximation of (2.1) is given as follows. Let ϕ0h ∈ Sh, e.g., ϕ0h = πhφ0 if φ0 ∈ C0(Ω). Then, for n ≥ 0, find (ϕnh+1,µnh+1) ∈ Sh × Sh such that\n\n1 τ\n\n(ϕnh+1 − ϕnh,χh)h + (m(ϕnh)∇µnh+1,∇χh)h = (Sε(ϕnh),χh)h ∀χh ∈ Sh, (6.1a) βε(∇ϕnh+1,∇ηh) +\n\nβ ε\n\n(ψ′(ϕnh+1),ηh)h − (µnh+1,ηh)h = 0 ∀ηh ∈ Sh. (6.1b) We implemented the scheme (6.1) with the help of the finite element toolbox ALBERTA, see [29]. To increase computational efficiency, we employ adaptive meshes, which have a finer mesh size hf within the diffuse interfacial regions and a coarser mesh size hc away from them. In particular, we use the strategy from [5, 7], and refine an element o if ηo = |maxo |ϕnh|−1| > 0.5, unless it is already of size hf, and similarly coarsen an element o if ηo < 0.1, unless it is already of size hc. For simplicity we assume from now on that Ω = di=1(0,Li) ⊂ Rd, with L1 ≥ L2 ≥ ··· ≥Ld, and then let hf = NLd\n\n, hc = NLd\n\nfor two chosen integer parameters Nf > Nc. Here, unless otherwise specified, for the computations with a phase field parameter ε = (2kπ)−1, k ∈ N, we choose Nf = 8Nc = 23+kLd. This ensures that the interfacial regions are accurately resolved, while using a relatively coarser mesh in the pure regions. For the time discretization we choose τ = 10−3, unless stated otherwise.\n\nc\n\nf\n\nThe nonlinear system of equations arising at each time level of (6.1) are solved with the help of Newton’s method. The resulting linear systems at each iteration in two spatial dimensions are solved by direct factorization using the package UMFPACK, see [15], and in three spatial dimensions with a V -cycle multigrid solver using a block Gauss–Seidel smoother.\n\nFor the initial data φ0 we in general choose a diffuse interface representation of a desired sharp interface, with signed distance function d0 : Ω → R. In particular, unless otherwise stated, we let\n\nd0(x) ε√2\n\n. (6.2) For the definition of S2 in (2.2), recall (2.4), we need to specify K± and L. For\n\nφ0(x) = tanh\n\nconvenience, for the numerical simulations to follow, we will define the relations ρ± = K±\n\n2β , 21\n\n",
+  "blocks": [
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642290298955,
+        "y0": 0.10124719381391878,
+        "x1": 0.4821259382202542,
+        "y1": 0.1183052417774294
+      },
+      "text": "6 Numerical Computations",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642290298955,
+        "y0": 0.13323474563185211,
+        "x1": 0.8571502966691081,
+        "y1": 0.25195571868058775
+      },
+      "text": "In this section, we state numerical computations that show several phenomena discussed in the introduction. In particular, we will observe a suppression of Ostwald ripening, splitting scenarios and instabilities of flat fronts and growing particles. The numerical simulations also support the sharp interface asymptotics, as we get a good agreement between phase field computations and exact solutions of the sharp interface problem. All our numerical simulations are for the quartic potential (2.7) and the interpolation functions (2.8), (2.9) and (2.10), for a fixed value rc ∈ (0,1].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642290298955,
+        "y0": 0.2630794996971101,
+        "x1": 0.41947936755387416,
+        "y1": 0.2772939457648862
+      },
+      "text": "6.1 Finite element method",
+      "html": null,
+      "level": 2,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642290298955,
+        "y0": 0.2881492831605079,
+        "x1": 0.8571502966691081,
+        "y1": 0.326725581726829
+      },
+      "text": "We assume that Ω is a polyhedral domain and let Th be a regular triangulation of Ω into disjoint open simplices. Associated with Th is the piecewise linear finite element space",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642290298955,
+        "y0": 0.3278563707847819,
+        "x1": 0.8571486167760838,
+        "y1": 0.443143403532528
+      },
+      "text": "Sh = {ζ ∈ C0(Ω) : ζ|o ∈ P1(o) ∀o ∈ Th}, where we denote by P1(o) the set of all affine linear functions on o, see [13]. Let (·,·)h be the usual mass lumped L2-inner product on Ω associated with Th, and let πh : C0(Ω) → Sh be the standard interpolation operator. In addition, let τ denote a chosen uniform time step size. Then our finite element approximation of (2.1) is given as follows. Let ϕ0h ∈ Sh, e.g., ϕ0h = πhφ0 if φ0 ∈ C0(Ω). Then, for n ≥ 0, find (ϕnh+1,µnh+1) ∈ Sh × Sh such that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22196594520860913,
+        "y0": 0.444630533680172,
+        "x1": 0.23159173223849105,
+        "y1": 0.4752437966955303
+      },
+      "text": "1 τ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1640432337268763,
+        "y0": 0.45056598843079265,
+        "x1": 0.8571418972039861,
+        "y1": 0.5069415244271818
+      },
+      "text": "(ϕnh+1 − ϕnh,χh)h + (m(ϕnh)∇µnh+1,∇χh)h = (Sε(ϕnh),χh)h ∀χh ∈ Sh, (6.1a) βε(∇ϕnh+1,∇ηh) +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3179701516607423,
+        "y0": 0.4760170568601598,
+        "x1": 0.32833509162136554,
+        "y1": 0.5066303198755182
+      },
+      "text": "β ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642290298955,
+        "y0": 0.48177671667319966,
+        "x1": 0.8571502966691081,
+        "y1": 0.6332228675955291
+      },
+      "text": "(ψ′(ϕnh+1),ηh)h − (µnh+1,ηh)h = 0 ∀ηh ∈ Sh. (6.1b) We implemented the scheme (6.1) with the help of the finite element toolbox ALBERTA, see [29]. To increase computational efficiency, we employ adaptive meshes, which have a finer mesh size hf within the diffuse interfacial regions and a coarser mesh size hc away from them. In particular, we use the strategy from [5, 7], and refine an element o if ηo = |maxo |ϕnh|−1| > 0.5, unless it is already of size hf, and similarly coarsen an element o if ηo < 0.1, unless it is already of size hc. For simplicity we assume from now on that Ω = di=1(0,Li) ⊂ Rd, with L1 ≥ L2 ≥ ··· ≥Ld, and then let hf = NLd",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7160376027254585,
+        "y0": 0.607995106249035,
+        "x1": 0.79018304114394,
+        "y1": 0.6276188100583211
+      },
+      "text": ", hc = NLd",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642290298955,
+        "y0": 0.6110643908349072,
+        "x1": 0.8571519765621326,
+        "y1": 0.7060981838482462
+      },
+      "text": "for two chosen integer parameters Nf > Nc. Here, unless otherwise specified, for the computations with a phase field parameter ε = (2kπ)−1, k ∈ N, we choose Nf = 8Nc = 23+kLd. This ensures that the interfacial regions are accurately resolved, while using a relatively coarser mesh in the pure regions. For the time discretization we choose τ = 10−3, unless stated otherwise.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7849568939449937,
+        "y0": 0.6211096461532979,
+        "x1": 0.7905710964325793,
+        "y1": 0.628209148463576
+      },
+      "text": "c",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7060086413697176,
+        "y0": 0.6215966456425424,
+        "x1": 0.7120411372203819,
+        "y1": 0.6286961479528205
+      },
+      "text": "f",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642290298955,
+        "y0": 0.7092339854375275,
+        "x1": 0.857145256990035,
+        "y1": 0.7865671287222796
+      },
+      "text": "The nonlinear system of equations arising at each time level of (6.1) are solved with the help of Newton’s method. The resulting linear systems at each iteration in two spatial dimensions are solved by direct factorization using the package UMFPACK, see [15], and in three spatial dimensions with a V -cycle multigrid solver using a block Gauss–Seidel smoother.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642290298955,
+        "y0": 0.7897029303115609,
+        "x1": 0.8571418972039861,
+        "y1": 0.8348477829645203
+      },
+      "text": "For the initial data φ0 we in general choose a diffuse interface representation of a desired sharp interface, with signed distance function d0 : Ω → R. In particular, unless otherwise stated, we let",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5307504418118655,
+        "y0": 0.835312214184751,
+        "x1": 0.5729661535153442,
+        "y1": 0.8673662830060934
+      },
+      "text": "d0(x) ε√2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17130877105745906,
+        "y0": 0.8440782049911508,
+        "x1": 0.8571435770970106,
+        "y1": 0.8938804356863723
+      },
+      "text": ". (6.2) For the definition of S2 in (2.2), recall (2.4), we need to specify K± and L. For",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40899011550944436,
+        "y0": 0.8440782049911508,
+        "x1": 0.5147343417171195,
+        "y1": 0.8581073536922876
+      },
+      "text": "φ0(x) = tanh",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642290298955,
+        "y0": 0.8856109467982753,
+        "x1": 0.8492060825566629,
+        "y1": 0.9099739871004525
+      },
+      "text": "convenience, for the numerical simulations to follow, we will define the relations ρ± = K±",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49083618355183145,
+        "y0": 0.8892717575930347,
+        "x1": 0.8571435770970106,
+        "y1": 0.937730582380121
+      },
+      "text": "2β , 21",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      595.276,
+      841.89
+    ]
+  ],
+  "seconds": 0.8814915000111796,
+  "model_load_seconds": null,
+  "peak_rss_mb": 131.640625,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "opendataloader_version": "2.5.0",
+    "table_method": "cluster",
+    "include_header_footer": true,
+    "reading_order": "xycut",
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "F:\\vnpt\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe"
+  }
+}

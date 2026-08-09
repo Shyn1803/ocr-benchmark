@@ -40,11 +40,43 @@ CORPUS: dict[str, str] = {
 }
 
 
+def _trai_deu(docs: list[Path], limit: int) -> list[Path]:
+    """Cắt còn `limit` file nhưng **trải đều trên các thư mục con**, xoay vòng.
+
+    `sorted(...)[:limit]` là cái bẫy: bộ `olmocr` xếp theo nhóm (`arxiv_math/`,
+    `tables/`, `old_scans/`, ...) và nhóm đầu bảng chữ cái có 522 file, nên
+    `--limit 60` lấy trọn 60 file `arxiv_math`. Chấm bộ đó thì **chỉ**
+    `assert_math_presence` có số, 5 metric assert còn lại trả N/A — trông y hệt
+    "engine không có năng lực" trong khi thật ra là mẫu chạy bị lệch. Đã mất một
+    lượt chạy vì chuyện này (2026-08-09).
+
+    Vẫn tất định: sắp trong từng nhóm, xoay vòng theo tên nhóm đã sắp.
+    """
+    theo_nhom: dict[str, list[Path]] = {}
+    for d in docs:
+        theo_nhom.setdefault(d.parent.name, []).append(d)
+    if len(theo_nhom) < 2:
+        return docs[:limit]
+
+    lay: list[Path] = []
+    hang = [theo_nhom[k] for k in sorted(theo_nhom)]
+    i = 0
+    while len(lay) < limit and any(i < len(h) for h in hang):
+        for h in hang:
+            if i < len(h):
+                lay.append(h[i])
+                if len(lay) == limit:
+                    break
+        i += 1
+    return sorted(lay)
+
+
 def tim_tai_lieu(corpus: str, limit: int | None, chi: str | None = None) -> list[Path]:
     """Danh sách file, **sắp xếp** rồi mới cắt.
 
     Cắt theo thứ tự thư mục trả về (tuỳ hệ thống file) thì `--limit 20` trên máy này và
     máy kia ra hai bộ khác nhau, và hai bảng điểm không so được với nhau dù cùng lệnh.
+    Bộ nhiều nhóm thì cắt **trải đều** — xem `_trai_deu`.
 
     ``chi`` lọc theo tên (stem) — dùng khi engine đắt tới mức chạy cả bộ là không khả
     thi và ta chỉ cần trả lời một câu hỏi hẹp (A7: "10 tài liệu hỏng ở chế độ nhẹ có được
@@ -65,7 +97,7 @@ def tim_tai_lieu(corpus: str, limit: int | None, chi: str | None = None) -> list
         if thieu:
             raise SystemExit(f"--only: không có trong bộ {corpus}: {', '.join(thieu)}")
         docs = [theo_stem[s] for s in sorted(muon)]
-    return docs[:limit] if limit else docs
+    return _trai_deu(docs, limit) if limit else docs
 
 
 def main(argv: list[str] | None = None) -> int:

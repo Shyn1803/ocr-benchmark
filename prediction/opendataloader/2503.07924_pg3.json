@@ -1,0 +1,672 @@
+{
+  "schema_version": 2,
+  "engine": "opendataloader",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.07924_pg3",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "- B. Quadratic Unconstrained Binary Optimization Model\n\nThe Quadratic Unconstrained Binary Optimization (QUBO) model provides a framework for solving combinatorial optimization problems, where the objective is to determine the optimal configuration of binary variables that minimizes a quadratic objective function. Formulated as an unconstrained optimization problem, it encodes the constraints within the objective function. The model is defined over binary variables xi ∈ {0,1}, and uses the quadratic function H(x) to represent pairwise interactions:\n\nH(x) =\n\ni̸=j\n\nQijxixj +\n\ni\n\nqixi (12)\n\nwhere Qij denotes the interaction coefficients between xi and xj, and qi represents the linear coefficients for xi. The objective function H(x) can be interpreted as a Hamiltonian, analogous to the energy function in Ising model.\n\nTo incorporate constraints from (3), we add penalty terms:\n\nH(x) = f(x) + P1\n\ni\n\nxS,i − 1\n\n2\n\n+ P2\n\ni\n\nxi,D − 1\n\n2\n\n+ P3\n\ni̸∈{S,D}\n\n \n\nj\n\nxi,j −\n\nk\n\nxk,i\n\n \n\n2\n\n(13)\n\nwhere P1, P2, and P3 are positive penalty coefficients that must be set large enough to ensure that any violation of the constraints is penalized heavily. Typically, P3 is chosen to be larger than P1 and P2 to enforce constraints more strictly.\n\nExpanding (13) yields the quadratic terms Qij and linear terms qi as follows: Qij =P1\n\ni̸=j\n\nxS,ixS,j + P2\n\ni̸=j\n\nxi,Dxj,D\n\n+ P3\n\ni̸∈{S,D}\n\n  \n\n(i,j)∈E (i,k)∈E k̸=j\n\nxi,jxi,k\n\n+\n\n(j,i)∈E (k,i)∈E k̸=j\n\nxj,ixk,i − 2\n\n(i,j)∈E (k,i)∈E\n\nxi,jxk,i\n\n  \n\n(14) qi = − P1\n\ni\n\nxS,i − P2\n\ni\n\nxi,D\n\n+ P3\n\ni̸∈{S,D}\n\n \n\n(i,j)∈E\n\nxi,j +\n\n(k,i)∈E\n\nxk,i\n\n  + f(x)\n\n(15)\n\n- C. Ising Model\n\n\nThe Ising model is a mathematical representation in statistical physics used to describe magnetic materials, where the system’s energy depends on the configuration of spin variables.\n\nIn the Ising model, each spin variable σi ∈ {−1,1} represents a binary state. The model’s Hamiltonian is given by:\n\nH(σ) = −\n\ni,j\n\nJijσiσj −\n\ni\n\nhiσi (16)\n\nwhere Jij denotes the coupling strength between spins i and j, and hi represents the influence of an external magnetic field on spin i.\n\nTo convert the QUBO model to the Ising model, we use the transformation σi = 2xi − 1, which maps the binary variables xi ∈ {0,1} to Ising spins σi ∈ {−1,1}. The QUBO expression can be rewritten in terms of Ising variables:\n\nσi + 1 2\n\n(σi + 1)(σj + 1) 4\n\nqi ·\n\nQij ·\n\n+\n\nH(σ) =\n\ni\n\ni̸=j\n\n(Qij + Qji) 4\n\nQij 4\n\nqi 2\n\n+ i̸=j\n\n=\n\nσiσj +\n\nσi\n\ni\n\ni̸=j\n\nQij 4\n\nqi 2\n\n+ i̸=j\n\n+ i\n\n(17) Thus, the coefficients in the Ising model are:\n\nQij 4\n\nJij = −\n\n(18)\n\n(Qij + Qji) 4\n\nqi 2 − i̸=j\n\n(19)\n\nhi = −\n\nWe use this mapping to transform the original optimization problem into the Ising model, allowing it to be solved using CIM.\n\nIII. COHERENT ISING MACHINE\n\nIn this section, we introduce Coherent Ising Machine (CIM) and explain its application to solving our multi-objective routing model.\n\nCIM is a quantum-inspired optimization technique that leverages principles from the Ising model. The Ising model represents optimization problems as energy minimization tasks, where the goal is to find the ground state of a system by minimizing its energy. In the context of combinatorial optimization, this ground state corresponds to an optimal or near-optimal solution. CIM utilizes an optical network of degenerate optical parametric oscillators (DOPOs) to represent spins in the Ising model. Each DOPO encodes the spin states using phase-coherent laser pulses, with the two possible phases corresponding to spin values of +1 or −1. The system’s energy is minimized by continuously adjusting the pump power, allowing CIM to evolve the spin states toward lower energy configurations and find solutions to the optimization problem.\n\nTheoretically, CIM operates by solving an Ising problem defined by a Hamiltonian that represents the energy of the spin system. The objective is to find a spin configuration that minimizes this Hamiltonian, which corresponds to solving a combinatorial optimization problem. In practical implementations, the dynamic behavior of CIM can be modeled\n\n",
+  "blocks": [
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.06275883838383844,
+        "x1": 0.45907352941176466,
+        "y1": 0.07777777777777783
+      },
+      "text": "B. Quadratic Unconstrained Binary Optimization Model The Quadratic Unconstrained Binary Optimization (QUBO) model provides a framework for solving combinatorial optimization problems, where the objective is to determine the optimal configuration of binary variables that minimizes a quadratic objective function. Formulated as an unconstrained optimization problem, it encodes the constraints within the objective function. The model is defined over binary variables xi ∈ {0,1}, and uses the quadratic function H(x) to represent pairwise interactions: H(x) = i̸=j Qijxixj + i qixi (12) where Qij denotes the interaction coefficients between xi and xj, and qi represents the linear coefficients for xi. The objective function H(x) can be interpreted as a Hamiltonian, analogous to the energy function in Ising model. To incorporate constraints from (3), we add penalty terms: H(x) = f(x) + P1 i xS,i − 1 2 + P2 i xi,D − 1 2 + P3 i̸∈{S,D}   j xi,j − k xk,i   2 (13) where P1, P2, and P3 are positive penalty coefficients that must be set large enough to ensure that any violation of the constraints is penalized heavily. Typically, P3 is chosen to be larger than P1 and P2 to enforce constraints more strictly. Expanding (13) yields the quadratic terms Qij and linear terms qi as follows: Qij =P1 i̸=j xS,ixS,j + P2 i̸=j xi,Dxj,D + P3 i̸∈{S,D}    (i,j)∈E (i,k)∈E k̸=j xi,jxi,k + (j,i)∈E (k,i)∈E k̸=j xj,ixk,i − 2 (i,j)∈E (k,i)∈E xi,jxk,i    (14) qi = − P1 i xS,i − P2 i xi,D + P3 i̸∈{S,D}   (i,j)∈E xi,j + (k,i)∈E xk,i   + f(x) (15)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.8403914141414142,
+        "x1": 0.18292156862745096,
+        "y1": 0.8554103535353536
+      },
+      "text": "C. Ising Model",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.8627891414141414,
+        "x1": 0.49023202614379086,
+        "y1": 0.9081363636363636
+      },
+      "text": "The Ising model is a mathematical representation in statistical physics used to describe magnetic materials, where the system’s energy depends on the configuration of spin variables.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.06276010101010099,
+        "x1": 0.9199934640522875,
+        "y1": 0.09301136363636364
+      },
+      "text": "In the Ising model, each spin variable σi ∈ {−1,1} represents a binary state. The model’s Hamiltonian is given by:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6010179738562091,
+        "y0": 0.10492297979797982,
+        "x1": 0.6727859477124183,
+        "y1": 0.12674747474747472
+      },
+      "text": "H(σ) = −",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6799967320261439,
+        "y0": 0.12291035353535362,
+        "x1": 0.6938562091503268,
+        "y1": 0.13171464646464648
+      },
+      "text": "i,j",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7017254901960784,
+        "y0": 0.10492297979797982,
+        "x1": 0.7693790849673203,
+        "y1": 0.12674747474747472
+      },
+      "text": "Jijσiσj −",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7824509803921569,
+        "y0": 0.12291035353535362,
+        "x1": 0.7870571895424836,
+        "y1": 0.13171464646464648
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7992238562091504,
+        "y0": 0.1030492424242424,
+        "x1": 0.9199950980392158,
+        "y1": 0.11875883838383838
+      },
+      "text": "hiσi (16)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.138719696969697,
+        "x1": 0.9199934640522875,
+        "y1": 0.1840669191919191
+      },
+      "text": "where Jij denotes the coupling strength between spins i and j, and hi represents the influence of an external magnetic field on spin i.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.18417803030303037,
+        "x1": 0.9199950980392158,
+        "y1": 0.24461994949494958
+      },
+      "text": "To convert the QUBO model to the Ising model, we use the transformation σi = 2xi − 1, which maps the binary variables xi ∈ {0,1} to Ising spins σi ∈ {−1,1}. The QUBO expression can be rewritten in terms of Ising variables:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8288856209150327,
+        "y0": 0.2656174242424243,
+        "x1": 0.871640522875817,
+        "y1": 0.29533585858585854
+      },
+      "text": "σi + 1 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6421356209150327,
+        "y0": 0.2656174242424243,
+        "x1": 0.7544084967320261,
+        "y1": 0.29533585858585854
+      },
+      "text": "(σi + 1)(σj + 1) 4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8024885620915032,
+        "y0": 0.27381313131313134,
+        "x1": 0.8233153594771242,
+        "y1": 0.29563762626262624
+      },
+      "text": "qi ·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6040915032679739,
+        "y0": 0.27381313131313134,
+        "x1": 0.6365653594771241,
+        "y1": 0.29563762626262624
+      },
+      "text": "Qij ·",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7599836601307189,
+        "y0": 0.27412752525252526,
+        "x1": 0.7726454248366013,
+        "y1": 0.2867070707070707
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5187581699346405,
+        "y0": 0.27412752525252526,
+        "x1": 0.5733464052287581,
+        "y1": 0.2867070707070707
+      },
+      "text": "H(σ) =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7857156862745098,
+        "y0": 0.2917992424242425,
+        "x1": 0.7903218954248367,
+        "y1": 0.30060353535353534
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5792990196078431,
+        "y0": 0.29180555555555554,
+        "x1": 0.5992859477124183,
+        "y1": 0.30706565656565665
+      },
+      "text": "i̸=j",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7984068627450981,
+        "y0": 0.30543560606060605,
+        "x1": 0.8796323529411765,
+        "y1": 0.3370353535353535
+      },
+      "text": "(Qij + Qji) 4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6060441176470588,
+        "y0": 0.30731691919191917,
+        "x1": 0.6289052287581699,
+        "y1": 0.3370353535353535
+      },
+      "text": "Qij 4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7232745098039216,
+        "y0": 0.30731691919191917,
+        "x1": 0.7351486928104575,
+        "y1": 0.3370353535353535
+      },
+      "text": "qi 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7415326797385621,
+        "y0": 0.3117575757575758,
+        "x1": 0.7969346405228758,
+        "y1": 0.32840656565656556
+      },
+      "text": "+ i̸=j",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5606813725490196,
+        "y0": 0.31582702020202014,
+        "x1": 0.573343137254902,
+        "y1": 0.32840656565656556
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6323316993464053,
+        "y0": 0.31582702020202014,
+        "x1": 0.6794934640522876,
+        "y1": 0.32934974747474755
+      },
+      "text": "σiσj +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.896281045751634,
+        "y0": 0.31582702020202014,
+        "x1": 0.91018954248366,
+        "y1": 0.32934974747474755
+      },
+      "text": "σi",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6925653594771242,
+        "y0": 0.3334999999999999,
+        "x1": 0.697171568627451,
+        "y1": 0.342304292929293
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5792990196078431,
+        "y0": 0.3335050505050504,
+        "x1": 0.5992859477124183,
+        "y1": 0.34876515151515153
+      },
+      "text": "i̸=j",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6968513071895425,
+        "y0": 0.34713510101010103,
+        "x1": 0.7322924836601308,
+        "y1": 0.3787348484848485
+      },
+      "text": "Qij 4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.621202614379085,
+        "y0": 0.3488472222222223,
+        "x1": 0.6434607843137254,
+        "y1": 0.3787348484848485
+      },
+      "text": "qi 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.64984477124183,
+        "y0": 0.35345707070707066,
+        "x1": 0.7052467320261437,
+        "y1": 0.37010606060606066
+      },
+      "text": "+ i̸=j",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5760555555555555,
+        "y0": 0.35545202020202016,
+        "x1": 0.6280604575163399,
+        "y1": 0.37010606060606066
+      },
+      "text": "+ i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.37586742424242425,
+        "x1": 0.9199934640522875,
+        "y1": 0.40611994949494945
+      },
+      "text": "(17) Thus, the coefficients in the Ising model are:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7301421568627451,
+        "y0": 0.4137335858585859,
+        "x1": 0.7530032679738562,
+        "y1": 0.4434507575757576
+      },
+      "text": "Qij 4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.673330065359477,
+        "y0": 0.42192929292929293,
+        "x1": 0.7281895424836601,
+        "y1": 0.44375378787878783
+      },
+      "text": "Jij = −",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8928725490196078,
+        "y0": 0.4200555555555556,
+        "x1": 0.9199934640522875,
+        "y1": 0.43521212121212116
+      },
+      "text": "(18)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7364166666666667,
+        "y0": 0.4503421717171717,
+        "x1": 0.817640522875817,
+        "y1": 0.4819419191919192
+      },
+      "text": "(Qij + Qji) 4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6612843137254902,
+        "y0": 0.45222348484848485,
+        "x1": 0.7349444444444444,
+        "y1": 0.4822436868686869
+      },
+      "text": "qi 2 − i̸=j",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8928725490196078,
+        "y0": 0.4585454545454546,
+        "x1": 0.9199934640522875,
+        "y1": 0.47370202020202024
+      },
+      "text": "(19)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6101650326797385,
+        "y0": 0.4604191919191919,
+        "x1": 0.6593316993464052,
+        "y1": 0.4822436868686869
+      },
+      "text": "hi = −",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.48519065656565663,
+        "x1": 0.9199934640522875,
+        "y1": 0.5305366161616162
+      },
+      "text": "We use this mapping to transform the original optimization problem into the Ising model, allowing it to be solved using CIM.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6020212418300653,
+        "y0": 0.5404431818181819,
+        "x1": 0.8277532679738562,
+        "y1": 0.5555997474747475
+      },
+      "text": "III. COHERENT ISING MACHINE",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.560544191919192,
+        "x1": 0.9199934640522875,
+        "y1": 0.6058901515151516
+      },
+      "text": "In this section, we introduce Coherent Ising Machine (CIM) and explain its application to solving our multi-objective routing model.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.6060025252525252,
+        "x1": 0.9199950980392158,
+        "y1": 0.8173926767676768
+      },
+      "text": "CIM is a quantum-inspired optimization technique that leverages principles from the Ising model. The Ising model represents optimization problems as energy minimization tasks, where the goal is to find the ground state of a system by minimizing its energy. In the context of combinatorial optimization, this ground state corresponds to an optimal or near-optimal solution. CIM utilizes an optical network of degenerate optical parametric oscillators (DOPOs) to represent spins in the Ising model. Each DOPO encodes the spin states using phase-coherent laser pulses, with the two possible phases corresponding to spin values of +1 or −1. The system’s energy is minimized by continuously adjusting the pump power, allowing CIM to evolve the spin states toward lower energy configurations and find solutions to the optimization problem.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.8175050505050505,
+        "x1": 0.9199934640522875,
+        "y1": 0.9081363636363636
+      },
+      "text": "Theoretically, CIM operates by solving an Ising problem defined by a Hamiltonian that represents the energy of the spin system. The objective is to find a spin configuration that minimizes this Hamiltonian, which corresponds to solving a combinatorial optimization problem. In practical implementations, the dynamic behavior of CIM can be modeled",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.8417737999698147,
+  "model_load_seconds": null,
+  "peak_rss_mb": 121.390625,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "opendataloader_version": "2.5.0",
+    "table_method": "cluster",
+    "include_header_footer": true,
+    "reading_order": "xycut",
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "F:\\vnpt\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe"
+  }
+}

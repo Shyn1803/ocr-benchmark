@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "engine": "sovereign_light",
+  "engine_version": "9d9a363",
+  "doc_id": "2503.05175_pg7",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "Self-Supervised Learning for Robust Optimization\n7\nApplication 2 (Inventory Management Problem). We consider an inven-\ntory management problem inspired by the classical newsvendor model, extended\nto a multi-retailer system with a centralized warehouse, with a formulation\nadopted from [16]. N retailers face uncertain demand dz = d0\nz + Qzu, where\nd0\nz is the expected demand, u is a k-dimensional vector of uncertainty factors,\nand Qz is a matrix capturing the sensitivity of retailers’ demand to these factors.\nThe stocking decisions x aim to maximize proﬁt across all retailers. Considering\nan auxiliary second stage variable y(u) representing sales (as in [16]), the problem\nis formulated as the following two-stage adjustable robust optimization:\nmaxx∈X ,P ∈IR P\ns.t.\nP ≤r⊤\nz y(u) −co\nz\n⊤x\n∀u ∈U(z)\ny(u) = min(x, d0\nz + Qzu) ∀u ∈U(z)\n1⊤x ≤Cz\nwhere the vector x is contained in X = {x : 0 ≤x ≤c}, and rz and co\nz are the\nrevenue and cost per unit sold respectively. Using a linear decision rule [10] for\nthe second-stage decisions, i.e., y(u) = Y u+y0, we derive the following one-stage\nrobust problem:\nmaxP ∈IR,Y ∈IRN×k,y0∈IRN,x∈X P\ns.t.\nP ≤r⊤\nz (Y u + y0) −c0\nz\n⊤x ∀u ∈Uz\nY u + y0 ≤x,\n∀u ∈Uz\nY u + y0 ≤d0\nz + Qzu,\n∀u ∈Uz\n1⊤x ≤Cz.\nWe generate a synthetic dataset D = {(ri, c0\ni , d0\ni , Qi, ˆui)}N\ni=1 for the inventory\nmanagement problem, where ˆui represents the nominal value of the uncertainty\nfactor.\nFor each application, we use a synthetically generated dataset to train a two-\nlayer fully connected neural network with problem-speciﬁc activation functions,\nas described in Section 2, to approximate the optimal solution of the paramet-\nric optimization problem. The dataset is split into training (70%), validation\n(15%), and testing (15%). At test time, we compute the optimal robust solu-\ntion using the Gurobi solver and evaluate the performance of our method based\non feasibility, optimality, and computational eﬃciency. To assess feasibility, we\ncompute the average maximum constraint violation over the test set, deﬁned as\nmaxj\n\u0002\n¯gj\nz (h(z))\n\u0003\n, where ¯gj\nz is given in Assumption 2, and report the percentage\nof feasible solutions produced by the learned model. For optimality, we measure\nregret deﬁned as (f ∗\nz −ˆfz)/f ∗\nz , where f ∗\nz is the optimal objective value obtained\nby Gurobi, and ˆfz is the objective value of the solution provided by the learned\nmodel. Finally, to evaluate computational eﬃciency, we compare the average\ncomputational time required by both Gurobi and the learned solver reported in\nseconds.\nCompared to the supervised learning approach, the solution provided by\nour method achieves a high level of feasibility, as shown in Table 1, whereby",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.011539299972355366,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "F:\\vnpt\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 250
+  }
+}

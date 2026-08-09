@@ -1,0 +1,3312 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.06070_pg1",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "## Natural Gradient Descent for Control\n\n*∗* *∗∗* Farnaz Adib Yaghmaie Ramin Esmzad *∗* Hamidreza Modares\n\n*∗* *Department of Mechanical Engineering, Michigan State University,* *East Lansing, MI 48824, USA (e-mails: {esmzadra,* *modaresh}@msu.edu).* *∗∗* *Department of Electrical Engineering, Link¨oping University, 58183* *Link¨oping, Sweden (e-mail: farnaz.adib.yaghmaie@liu.se)*\n\nAbstract: This paper bridges optimization and control, and presents a novel closed-loop control framework based on natural gradient descent, offering a trajectory-oriented alternative to traditional cost-function tuning. By leveraging the Fisher Information Matrix, we formulate a preconditioned gradient descent update that explicitly shapes system trajectories. We show that, in sharp contrast to traditional controllers, our approach provides flexibility to shape the system’s low-level behavior. To this end, the proposed method parameterizes closed- loop dynamics in terms of stationary covariance and an unknown cost function, providing a geometric interpretation of control adjustments. We establish theoretical stability conditions. The simulation results on a rotary inverted pendulum benchmark highlight the advantages of natural gradient descent in trajectory shaping.\n\n*Keywords:* Natural Gradient Descent, Trajectory Optimization, Stationary Covariance, Fisher <u>Information Matrix (FIM).</u>\n\n1. INTRODUCTION\nOptimization techniques, particularly gradient descent (GD) and its numerous variants (Ruder, 2017; Laborde and Oberman, 2020; Rattray et al., 1998; Martens, 2020), have become fundamental in modern control and ma- chine learning. These methods are broadly classified into two categories when applied to control systems: *GD-* *based control*, where gradient methods optimize controller parameters, and *controlled GD*, where control-theoretic tools improve the convergence properties of a gradient- based optimizer (Lessard et al., 2016; Padmanabhan and Seiler, 2024; Nayyer et al., 2022). GD-based methods have demonstrated significant success in learning controllers for uncertain environments (Narendra and Parthasarathy, 1990; Sutton, 2018; Kiumarsi et al., 2018; Luo et al., 2017), as well as in system identification (Ljung, 1998; Hardt et al., 2018) and adaptive control (Gaudio et al., 2019; Ioannou and Sun, 2012; Cheng et al., 2024; Landau et al.,\n\n2011). Despite their effectiveness, a key challenge persists: the closed-loop *trajectory behavior*—how system states evolve over time—is typically an *indirect* outcome of weight tuning or cost-function optimization. Traditional methods *⋆* This work is supported in part by the National Science Foundation under award ECCS-2227311. Farnaz Adib Yaghmaie is supported by the Excellence Center at Link¨oping–Lund in Information Technology (ELLIIT), ZENITH, and partially by Sensor informatics and Decision-making for the Digital Transformation (SEDDIT). This work was partly performed within the Competence Center SEDDIT-Sensor Informatics and De- cision making for the Digital Transformation, supported by Sweden’s Innovation Agency within the research and innovation program Ad- vanced digitalization.\nrely on defining an objective function, applying an opti- mization algorithm, and then observing the resulting state trajectories (Cothren et al., 2021). If these trajectories do not meet performance expectations, the objective function often requires manual adjustments, leading to a cumber- some iterative tuning process. Furthermore, this process is susceptible to “reward hacking,” where the optimized policy achieves a low-cost function value but deviates from the designer’s intended behavior (Skalse et al., 2022).\n\nIn our previous work (Esmzad and Modares, 2024), we proposed a fundamentally different perspective by *directly* *shaping* system trajectories through a *gradient-descent-* *like closed-loop* approach. We introduced a novel parame- terization of the stable closed-loop dynamics *A* + *BK* = *I −* 2Γ*P,* (1) where *A, B* are the system matrices, *K* is a feedback gain, and Γ*,P ≻* 0 represent a GD step and a quadratic Lya- punov cost matrix, respectively. This formulation ensures that the closed-loop system behaves analogously to a GD update applied to the Lyapunov function *V* (*xk*) = *x* *⊤* *kPxk*, leading to the explicit trajectory update dynamic *xk*+1= *xk−* Γ*∇xkV* (*xk*)*.* (2) Rather than iteratively adjusting an unknown cost func- tion to produce desired state trajectories, we directly im- pose a controlled gradient flow on the system states.\n\nThis trajectory-oriented perspective offers several advan- tages. Firstly, it provides explicit trajectory control. The gradient formulation provides direct control over the tra- jectory shape, eliminating the need for trial-and-error cost function tuning. Secondly, it quantifies robustness by the step size. For a small step size, closed-loop eigenvalues have small variations. Lastly, it unifies with a Linear Quadratic\n\n# arXiv:2503.06070v1 [eess.SY] 8 Mar 2025\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2744827699606464,
+        "y0": 0.11897491967818674,
+        "x1": 0.7236359647602016,
+        "y1": 0.13601538813525227
+      },
+      "text": "Natural Gradient Descent for Control",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3252793863063363,
+        "y0": 0.15376638015029165,
+        "x1": 0.4523566187352065,
+        "y1": 0.1655999923256749
+      },
+      "text": "Ramin Esmzad",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45523086197292834,
+        "y0": 0.15302135614473233,
+        "x1": 0.4620842902927067,
+        "y1": 0.16130486133227762
+      },
+      "text": "∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4685036983993297,
+        "y0": 0.15376638015029165,
+        "x1": 0.6610692800613708,
+        "y1": 0.1655999923256749
+      },
+      "text": "Farnaz Adib Yaghmaie",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6639794096857226,
+        "y0": 0.15302135614473233,
+        "x1": 0.6776862150590126,
+        "y1": 0.16130486133227762
+      },
+      "text": "∗∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41146964356036375,
+        "y0": 0.16678350159727395,
+        "x1": 0.5817594940827606,
+        "y1": 0.17861711377265732
+      },
+      "text": "Hamidreza Modares",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5846447595678045,
+        "y0": 0.16603847759171475,
+        "x1": 0.5914981878875829,
+        "y1": 0.17432198277926003
+      },
+      "text": "∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2505543425510289,
+        "y0": 0.19325581176226403,
+        "x1": 0.2574077452376739,
+        "y1": 0.2015393169498093
+      },
+      "text": "∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.261038550404954,
+        "y0": 0.19400083576782323,
+        "x1": 0.7529627813105549,
+        "y1": 0.2058344479432066
+      },
+      "text": "Department of Mechanical Engineering, Michigan State University,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31275406331343575,
+        "y0": 0.20701795721480565,
+        "x1": 0.6909855048789869,
+        "y1": 0.21885156939018902
+      },
+      "text": "East Lansing, MI 48824, USA (e-mails: {esmzadra,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42006563791549006,
+        "y0": 0.22003507866178806,
+        "x1": 0.5799559980895417,
+        "y1": 0.23186869083717143
+      },
+      "text": "modaresh}@msu.edu).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24832008175258463,
+        "y0": 0.2323072486009915,
+        "x1": 0.262026912759008,
+        "y1": 0.24059075378853678
+      },
+      "text": "∗∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2656616141625508,
+        "y0": 0.2330522726065507,
+        "x1": 0.7551926332100704,
+        "y1": 0.24488588478193407
+      },
+      "text": "Department of Electrical Engineering, Link¨oping University, 58183",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29154708003389657,
+        "y0": 0.24606939405353312,
+        "x1": 0.7082258376786567,
+        "y1": 0.2579030062289165
+      },
+      "text": "Link¨oping, Sweden (e-mail: farnaz.adib.yaghmaie@liu.se)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15523722875108564,
+        "y0": 0.27901912771176784,
+        "x1": 0.23416467091328752,
+        "y1": 0.2908527398871512
+      },
+      "text": "Abstract:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24463272989322918,
+        "y0": 0.27901912771176784,
+        "x1": 0.2772346662530937,
+        "y1": 0.2908527398871512
+      },
+      "text": "This",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2862888784992172,
+        "y0": 0.27901912771176784,
+        "x1": 0.32767726339467956,
+        "y1": 0.2908527398871512
+      },
+      "text": "paper",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33671476283788687,
+        "y0": 0.27901912771176784,
+        "x1": 0.3888644497583238,
+        "y1": 0.2908527398871512
+      },
+      "text": "bridges",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39791868763758065,
+        "y0": 0.27901912771176784,
+        "x1": 0.4898668130938422,
+        "y1": 0.2908527398871512
+      },
+      "text": "optimization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4989210509730991,
+        "y0": 0.27901912771176784,
+        "x1": 0.5258661905753592,
+        "y1": 0.2908527398871512
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5349204284546161,
+        "y0": 0.27901912771176784,
+        "x1": 0.5902165312222293,
+        "y1": 0.2908527398871512
+      },
+      "text": "control,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5992707691014861,
+        "y0": 0.27901912771176784,
+        "x1": 0.6261991446345635,
+        "y1": 0.2908527398871512
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6352533825138204,
+        "y0": 0.27901912771176784,
+        "x1": 0.6944657153880879,
+        "y1": 0.2908527398871512
+      },
+      "text": "presents",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7035031891981619,
+        "y0": 0.27901912771176784,
+        "x1": 0.7118712280987884,
+        "y1": 0.2908527398871512
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7209254659780453,
+        "y0": 0.27901912771176784,
+        "x1": 0.7585482923244323,
+        "y1": 0.2908527398871512
+      },
+      "text": "novel",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7675857661345064,
+        "y0": 0.27901912771176784,
+        "x1": 0.8480361752790145,
+        "y1": 0.2908527398871512
+      },
+      "text": "closed-loop",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15523722875108564,
+        "y0": 0.29203624915875026,
+        "x1": 0.8478775061838438,
+        "y1": 0.30386986133413363
+      },
+      "text": "control framework based on natural gradient descent, offering a trajectory-oriented alternative",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15523722875108564,
+        "y0": 0.3050533706057327,
+        "x1": 0.8478441831105445,
+        "y1": 0.31688698278111604
+      },
+      "text": "to traditional cost-function tuning. By leveraging the Fisher Information Matrix, we formulate",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15523722875108564,
+        "y0": 0.318070492052715,
+        "x1": 0.8478607933809276,
+        "y1": 0.32990410422809835
+      },
+      "text": "a preconditioned gradient descent update that explicitly shapes system trajectories. We show",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15523722875108564,
+        "y0": 0.3310876134996974,
+        "x1": 0.8478440805780113,
+        "y1": 0.34292122567508077
+      },
+      "text": "that, in sharp contrast to traditional controllers, our approach provides flexibility to shape",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15523722875108564,
+        "y0": 0.3441047349466798,
+        "x1": 0.17845020977696954,
+        "y1": 0.3559383471220632
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1882408234933053,
+        "y0": 0.3441047349466798,
+        "x1": 0.2493443304932686,
+        "y1": 0.3559383471220632
+      },
+      "text": "system’s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25913495702617095,
+        "y0": 0.3441047349466798,
+        "x1": 0.3218116591331558,
+        "y1": 0.3559383471220632
+      },
+      "text": "low-level",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33160226003292487,
+        "y0": 0.3441047349466798,
+        "x1": 0.3989818218414914,
+        "y1": 0.3559383471220632
+      },
+      "text": "behavior.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4087724483743938,
+        "y0": 0.3441047349466798,
+        "x1": 0.4278181227528806,
+        "y1": 0.3559383471220632
+      },
+      "text": "To",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.437608749285783,
+        "y0": 0.3441047349466798,
+        "x1": 0.46462084263224124,
+        "y1": 0.3559383471220632
+      },
+      "text": "this",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4744114691651436,
+        "y0": 0.3441047349466798,
+        "x1": 0.5050552648385476,
+        "y1": 0.3559383471220632
+      },
+      "text": "end,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.51484589137145,
+        "y0": 0.3441047349466798,
+        "x1": 0.5380588467642006,
+        "y1": 0.3559383471220632
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.547849473297103,
+        "y0": 0.3441047349466798,
+        "x1": 0.61347173001867,
+        "y1": 0.3559383471220632
+      },
+      "text": "proposed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6232623565515724,
+        "y0": 0.3441047349466798,
+        "x1": 0.6785416952500027,
+        "y1": 0.3559383471220632
+      },
+      "text": "method",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6883323217829052,
+        "y0": 0.3441047349466798,
+        "x1": 0.788832608936338,
+        "y1": 0.3559383471220632
+      },
+      "text": "parameterizes",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7986232354692404,
+        "y0": 0.3441047349466798,
+        "x1": 0.8479445111943085,
+        "y1": 0.3559383471220632
+      },
+      "text": "closed-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15523722875108564,
+        "y0": 0.3571218563936621,
+        "x1": 0.8479610701984248,
+        "y1": 0.3689554685690455
+      },
+      "text": "loop dynamics in terms of stationary covariance and an unknown cost function, providing a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15523722875108564,
+        "y0": 0.37013897784064453,
+        "x1": 0.8477938909029961,
+        "y1": 0.3819725900160279
+      },
+      "text": "geometric interpretation of control adjustments. We establish theoretical stability conditions.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15523722875108564,
+        "y0": 0.38315609928762695,
+        "x1": 0.8479109830559428,
+        "y1": 0.3949897114630103
+      },
+      "text": "The simulation results on a rotary inverted pendulum benchmark highlight the advantages of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15523722875108564,
+        "y0": 0.39617322073460937,
+        "x1": 0.49646960063614404,
+        "y1": 0.40800683290999273
+      },
+      "text": "natural gradient descent in trajectory shaping.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15523722875108564,
+        "y0": 0.4256259877115711,
+        "x1": 0.23026517924268272,
+        "y1": 0.4374595998869545
+      },
+      "text": "Keywords:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2363223142762769,
+        "y0": 0.4256259877115711,
+        "x1": 0.8425207452515987,
+        "y1": 0.4374595998869545
+      },
+      "text": "Natural Gradient Descent, Trajectory Optimization, Stationary Covariance, Fisher",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15523722875108564,
+        "y0": 0.43864314540744365,
+        "x1": 0.3529240797496797,
+        "y1": 0.450476757582827
+      },
+      "text": "Information Matrix (FIM).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20025333002126458,
+        "y0": 0.46909500429460904,
+        "x1": 0.3582421346506311,
+        "y1": 0.4809286164699924
+      },
+      "text": "1. INTRODUCTION",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087235315792,
+        "y0": 0.46922568154358524,
+        "x1": 0.934822120917965,
+        "y1": 0.4810592937189686
+      },
+      "text": "rely on defining an objective function, applying an opti-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087235315792,
+        "y0": 0.48224280299056765,
+        "x1": 0.9347886953121326,
+        "y1": 0.494076415165951
+      },
+      "text": "mization algorithm, and then observing the resulting state",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.4951102890190274,
+        "x1": 0.16515561082039046,
+        "y1": 0.5069439011944108
+      },
+      "text": "Optimization",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17640226340796775,
+        "y0": 0.4951102890190274,
+        "x1": 0.25727112063714724,
+        "y1": 0.5069439011944108
+      },
+      "text": "techniques,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2685344988442074,
+        "y0": 0.4951102890190274,
+        "x1": 0.35357062427108393,
+        "y1": 0.5069439011944108
+      },
+      "text": "particularly",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3648340537444107,
+        "y0": 0.4951102890190274,
+        "x1": 0.4247828009054571,
+        "y1": 0.5069439011944108
+      },
+      "text": "gradient",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43602944067646776,
+        "y0": 0.4951102890190274,
+        "x1": 0.4895180486820662,
+        "y1": 0.5069439011944108
+      },
+      "text": "descent",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087235315792,
+        "y0": 0.49525992443755007,
+        "x1": 0.9348053055825156,
+        "y1": 0.5070935366129334
+      },
+      "text": "trajectories (Cothren et al., 2021). If these trajectories do",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.5081274104660098,
+        "x1": 0.4896351408350129,
+        "y1": 0.5199610226413931
+      },
+      "text": "(GD) and its numerous variants (Ruder, 2017; Laborde",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087235315792,
+        "y0": 0.5082770458845325,
+        "x1": 0.9347886953121326,
+        "y1": 0.5201106580599157
+      },
+      "text": "not meet performance expectations, the objective function",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.5211445319129921,
+        "x1": 0.48965190490419574,
+        "y1": 0.5329781440883756
+      },
+      "text": "and Oberman, 2020; Rattray et al., 1998; Martens, 2020),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087235315792,
+        "y0": 0.5212941673315148,
+        "x1": 0.9348388337208813,
+        "y1": 0.5331277795068982
+      },
+      "text": "often requires manual adjustments, leading to a cumber-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.5341616533599746,
+        "x1": 0.10154167805201587,
+        "y1": 0.5459952655353579
+      },
+      "text": "have",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11126535724900352,
+        "y0": 0.5341616533599746,
+        "x1": 0.16562422294694368,
+        "y1": 0.5459952655353579
+      },
+      "text": "become",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1753311572995985,
+        "y0": 0.5341616533599746,
+        "x1": 0.2663755738245526,
+        "y1": 0.5459952655353579
+      },
+      "text": "fundamental",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27608248254407414,
+        "y0": 0.5341616533599746,
+        "x1": 0.29000691321914124,
+        "y1": 0.5459952655353579
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29973061164097886,
+        "y0": 0.5341616533599746,
+        "x1": 0.3550434528446416,
+        "y1": 0.5459952655353579
+      },
+      "text": "modern",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36476712563334596,
+        "y0": 0.5341616533599746,
+        "x1": 0.41542732244357555,
+        "y1": 0.5459952655353579
+      },
+      "text": "control",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4251509952322799,
+        "y0": 0.5341616533599746,
+        "x1": 0.45209613483454003,
+        "y1": 0.5459952655353579
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4618030435540615,
+        "y0": 0.5341616533599746,
+        "x1": 0.4896853817762948,
+        "y1": 0.5459952655353579
+      },
+      "text": "ma-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087235315792,
+        "y0": 0.5343112887784972,
+        "x1": 0.9347886953121326,
+        "y1": 0.5461449009538806
+      },
+      "text": "some iterative tuning process. Furthermore, this process",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.547178774806957,
+        "x1": 0.4896017152291805,
+        "y1": 0.5590123869823403
+      },
+      "text": "chine learning. These methods are broadly classified into",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087235315792,
+        "y0": 0.5473284102254796,
+        "x1": 0.9348389362534144,
+        "y1": 0.5591620224008629
+      },
+      "text": "is susceptible to “reward hacking,” where the optimized",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.5601958962539393,
+        "x1": 0.09457945630619899,
+        "y1": 0.5720295084293228
+      },
+      "text": "two",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10519014444814452,
+        "y0": 0.5601958962539393,
+        "x1": 0.17685413709847145,
+        "y1": 0.5720295084293228
+      },
+      "text": "categories",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1874480932126508,
+        "y0": 0.5601958962539393,
+        "x1": 0.2255394547861911,
+        "y1": 0.5720295084293228
+      },
+      "text": "when",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23615016215298662,
+        "y0": 0.5601958962539393,
+        "x1": 0.2890697145991681,
+        "y1": 0.5720295084293228
+      },
+      "text": "applied",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2996803963328303,
+        "y0": 0.5601958962539393,
+        "x1": 0.3145420512610039,
+        "y1": 0.5720295084293228
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3251359945586165,
+        "y0": 0.5601958962539393,
+        "x1": 0.3757961913688462,
+        "y1": 0.5720295084293228
+      },
+      "text": "control",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38639013466645883,
+        "y0": 0.5601958962539393,
+        "x1": 0.44751036728590504,
+        "y1": 0.5720295084293228
+      },
+      "text": "systems:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45842936434698467,
+        "y0": 0.5601958962539393,
+        "x1": 0.4899769330345294,
+        "y1": 0.5720295084293228
+      },
+      "text": "GD-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087235315792,
+        "y0": 0.5603455316724619,
+        "x1": 0.9348054081150488,
+        "y1": 0.5721791438478453
+      },
+      "text": "policy achieves a low-cost function value but deviates from",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.5732118577364371,
+        "x1": 0.16145692911611328,
+        "y1": 0.5850454699118204
+      },
+      "text": "based control",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1615099640689256,
+        "y0": 0.5732118577364371,
+        "x1": 0.4896714886180423,
+        "y1": 0.5850454699118204
+      },
+      "text": ", where gradient methods optimize controller",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087235315792,
+        "y0": 0.5733626531194443,
+        "x1": 0.9038101309177382,
+        "y1": 0.5851962652948277
+      },
+      "text": "the designer’s intended behavior (Skalse et al., 2022).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857156018189528,
+        "y0": 0.5862289791834194,
+        "x1": 0.15421018599887124,
+        "y1": 0.5980625913588028
+      },
+      "text": "parameters,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16323094700602905,
+        "y0": 0.5862289791834194,
+        "x1": 0.19017607379172252,
+        "y1": 0.5980625913588028
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19931260684546173,
+        "y0": 0.5862289791834194,
+        "x1": 0.26920257519758956,
+        "y1": 0.5980625913588028
+      },
+      "text": "controlled",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27835721806001024,
+        "y0": 0.5862289791834194,
+        "x1": 0.3039299853381431,
+        "y1": 0.5980625913588028
+      },
+      "text": "GD",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3039833791548217,
+        "y0": 0.5862289791834194,
+        "x1": 0.3086192851122053,
+        "y1": 0.5980625913588028
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31764004611936314,
+        "y0": 0.5862289791834194,
+        "x1": 0.360417516141869,
+        "y1": 0.5980625913588028
+      },
+      "text": "where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3694550155850763,
+        "y0": 0.5862289791834194,
+        "x1": 0.4898043195148396,
+        "y1": 0.5980625913588028
+      },
+      "text": "control-theoretic",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857157940674526,
+        "y0": 0.5992461006304018,
+        "x1": 0.4896184280320967,
+        "y1": 0.6110797128057852
+      },
+      "text": "tools improve the convergence properties of a gradient-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087235315792,
+        "y0": 0.5934804971593426,
+        "x1": 0.9349225002679955,
+        "y1": 0.6053141093347261
+      },
+      "text": "In our previous work (Esmzad and Modares, 2024), we",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857157940674526,
+        "y0": 0.6122632220773843,
+        "x1": 0.4896687202396452,
+        "y1": 0.6240968342527675
+      },
+      "text": "based optimizer (Lessard et al., 2016; Padmanabhan and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087235315792,
+        "y0": 0.6064976186063251,
+        "x1": 0.8774173340719789,
+        "y1": 0.6183312307817084
+      },
+      "text": "proposed a fundamentally different perspective by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8828442785232187,
+        "y0": 0.6064976186063251,
+        "x1": 0.9351948266762499,
+        "y1": 0.6183312307817084
+      },
+      "text": "directly",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857157940674526,
+        "y0": 0.6252803435243666,
+        "x1": 0.48961853056462995,
+        "y1": 0.6371139556997499
+      },
+      "text": "Seiler, 2024; Nayyer et al., 2022). GD-based methods have",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087747978459,
+        "y0": 0.6195135800888227,
+        "x1": 0.568519109203126,
+        "y1": 0.6313471922642061
+      },
+      "text": "shaping",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5787047423202903,
+        "y0": 0.6195135800888227,
+        "x1": 0.6285783095355926,
+        "y1": 0.6313471922642061
+      },
+      "text": "system",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6372476402851105,
+        "y0": 0.6195135800888227,
+        "x1": 0.7196227388771134,
+        "y1": 0.6313471922642061
+      },
+      "text": "trajectories",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7282920183603646,
+        "y0": 0.6195135800888227,
+        "x1": 0.785931143311044,
+        "y1": 0.6313471922642061
+      },
+      "text": "through",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7946004740605619,
+        "y0": 0.6195135800888227,
+        "x1": 0.8029685129611884,
+        "y1": 0.6313471922642061
+      },
+      "text": "a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.811847010078492,
+        "y0": 0.6195135800888227,
+        "x1": 0.9351586326920203,
+        "y1": 0.6313471922642061
+      },
+      "text": "gradient-descent-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857157940674526,
+        "y0": 0.638297464971349,
+        "x1": 0.16810119106810592,
+        "y1": 0.6501310771467324
+      },
+      "text": "demonstrated",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17767423074893124,
+        "y0": 0.638297464971349,
+        "x1": 0.25159758544349337,
+        "y1": 0.6501310771467324
+      },
+      "text": "significant",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2611706379408853,
+        "y0": 0.638297464971349,
+        "x1": 0.31253374653266147,
+        "y1": 0.6501310771467324
+      },
+      "text": "success",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3220900605940039,
+        "y0": 0.638297464971349,
+        "x1": 0.336014491269071,
+        "y1": 0.6501310771467324
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.345587543766463,
+        "y0": 0.638297464971349,
+        "x1": 0.4041471801673326,
+        "y1": 0.6501310771467324
+      },
+      "text": "learning",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4137202326647246,
+        "y0": 0.638297464971349,
+        "x1": 0.4895850024262643,
+        "y1": 0.6501310771467324
+      },
+      "text": "controllers",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087747978459,
+        "y0": 0.6325307015358052,
+        "x1": 0.6223758602692806,
+        "y1": 0.6443643137111885
+      },
+      "text": "like closed-loop",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6291132730277111,
+        "y0": 0.6325307015358052,
+        "x1": 0.9349822767348676,
+        "y1": 0.6443643137111885
+      },
+      "text": "approach. We introduced a novel parame-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857157940674526,
+        "y0": 0.6513145864183314,
+        "x1": 0.4895850024262643,
+        "y1": 0.6631481985937147
+      },
+      "text": "for uncertain environments (Narendra and Parthasarathy,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087747978459,
+        "y0": 0.6455478229827876,
+        "x1": 0.8396941283755613,
+        "y1": 0.6573814351581708
+      },
+      "text": "terization of the stable closed-loop dynamics",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857157940674526,
+        "y0": 0.6643317078653137,
+        "x1": 0.489652007436729,
+        "y1": 0.6761653200406972
+      },
+      "text": "1990; Sutton, 2018; Kiumarsi et al., 2018; Luo et al., 2017),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6504832061356833,
+        "y0": 0.6615142628787174,
+        "x1": 0.6630352901197565,
+        "y1": 0.6733478750541008
+      },
+      "text": "A",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6667546577626124,
+        "y0": 0.6615142628787174,
+        "x1": 0.6797586026206227,
+        "y1": 0.6733478750541008
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6834914532915982,
+        "y0": 0.6615142628787174,
+        "x1": 0.7112231712225191,
+        "y1": 0.6733478750541008
+      },
+      "text": "BK",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7170842896857141,
+        "y0": 0.6615142628787174,
+        "x1": 0.7300882345437243,
+        "y1": 0.6733478750541008
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7347517217525463,
+        "y0": 0.6615142628787174,
+        "x1": 0.7601448776655966,
+        "y1": 0.6733478750541008
+      },
+      "text": "I −",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7638760365497739,
+        "y0": 0.6615142628787174,
+        "x1": 0.7827041368927502,
+        "y1": 0.6733478750541008
+      },
+      "text": "2Γ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7827042906915501,
+        "y0": 0.6615142628787174,
+        "x1": 0.7985533595478453,
+        "y1": 0.6733478750541008
+      },
+      "text": "P,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9138518596245166,
+        "y0": 0.6615142628787174,
+        "x1": 0.9352071305802372,
+        "y1": 0.6733478750541008
+      },
+      "text": "(1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857157940674526,
+        "y0": 0.6773488293122961,
+        "x1": 0.08353365213464926,
+        "y1": 0.6891824414876795
+      },
+      "text": "as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09213600991511908,
+        "y0": 0.6773488293122961,
+        "x1": 0.12047024105270603,
+        "y1": 0.6891824414876795
+      },
+      "text": "well",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12907259242489252,
+        "y0": 0.6773488293122961,
+        "x1": 0.14403466515279653,
+        "y1": 0.6891824414876795
+      },
+      "text": "as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15263702934154966,
+        "y0": 0.6773488293122961,
+        "x1": 0.16656146001661679,
+        "y1": 0.6891824414876795
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17516381138880327,
+        "y0": 0.6773488293122961,
+        "x1": 0.2250374042372388,
+        "y1": 0.6891824414876795
+      },
+      "text": "system",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23365649404547484,
+        "y0": 0.6773488293122961,
+        "x1": 0.3288347275291603,
+        "y1": 0.6891824414876795
+      },
+      "text": "identification",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33743707890134683,
+        "y0": 0.6773488293122961,
+        "x1": 0.39107628156512436,
+        "y1": 0.6891824414876795
+      },
+      "text": "(Ljung,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3996786329373108,
+        "y0": 0.6773488293122961,
+        "x1": 0.4377867457634673,
+        "y1": 0.6891824414876795
+      },
+      "text": "1998;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4463891227687871,
+        "y0": 0.6773488293122961,
+        "x1": 0.48963519210127954,
+        "y1": 0.6891824414876795
+      },
+      "text": "Hardt",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138088773303792,
+        "y0": 0.6774795428101625,
+        "x1": 0.5565863729860183,
+        "y1": 0.6893131549855459
+      },
+      "text": "where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5614355466125167,
+        "y0": 0.6774795428101625,
+        "x1": 0.5962801001722836,
+        "y1": 0.6893131549855459
+      },
+      "text": "A, B",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6019495340646083,
+        "y0": 0.6774795428101625,
+        "x1": 0.7778794685416933,
+        "y1": 0.6893131549855459
+      },
+      "text": "are the system matrices,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7828773656076394,
+        "y0": 0.6774795428101625,
+        "x1": 0.797086324062415,
+        "y1": 0.6893131549855459
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8030982166157222,
+        "y0": 0.6774795428101625,
+        "x1": 0.9351125955846007,
+        "y1": 0.6893131549855459
+      },
+      "text": "is a feedback gain,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857157940674526,
+        "y0": 0.6903659688837236,
+        "x1": 0.48963519210127954,
+        "y1": 0.702199581059107
+      },
+      "text": "et al., 2018) and adaptive control (Gaudio et al., 2019;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138088773303792,
+        "y0": 0.69049668238159,
+        "x1": 0.5579587196770123,
+        "y1": 0.7023302945569734
+      },
+      "text": "and Γ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5579783033908589,
+        "y0": 0.69049668238159,
+        "x1": 0.5761537328935706,
+        "y1": 0.7023302945569734
+      },
+      "text": ",P",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5850783183845604,
+        "y0": 0.69049668238159,
+        "x1": 0.5980822632425705,
+        "y1": 0.7023302945569734
+      },
+      "text": "≻",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6046894084175345,
+        "y0": 0.69049668238159,
+        "x1": 0.9349597195775574,
+        "y1": 0.7023302945569734
+      },
+      "text": "0 represent a GD step and a quadratic Lya-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857157940674526,
+        "y0": 0.7033831084551511,
+        "x1": 0.48968533051002816,
+        "y1": 0.7152167206305344
+      },
+      "text": "Ioannou and Sun, 2012; Cheng et al., 2024; Landau et al.,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138088773303792,
+        "y0": 0.7035138219530175,
+        "x1": 0.9347720850417496,
+        "y1": 0.7153474341284008
+      },
+      "text": "punov cost matrix, respectively. This formulation ensures",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "arXiv:2503.06070v1  [eess.SY]  8 Mar 2025",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857157940674526,
+        "y0": 0.7164002480265785,
+        "x1": 0.11317329544388208,
+        "y1": 0.7282338602019619
+      },
+      "text": "2011).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138088773303792,
+        "y0": 0.7165309615244448,
+        "x1": 0.9348725669243133,
+        "y1": 0.7283645736998283
+      },
+      "text": "that the closed-loop system behaves analogously to a GD",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138088773303792,
+        "y0": 0.7295481010958724,
+        "x1": 0.8078119960320927,
+        "y1": 0.7413817132712557
+      },
+      "text": "update applied to the Lyapunov function",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8122435546507524,
+        "y0": 0.7295481010958724,
+        "x1": 0.8220007043115558,
+        "y1": 0.7413817132712557
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8257263777052053,
+        "y0": 0.7295481010958724,
+        "x1": 0.832219968099619,
+        "y1": 0.7413817132712557
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8322342713880043,
+        "y0": 0.7295481010958724,
+        "x1": 0.8417906110824801,
+        "y1": 0.7413817132712557
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8417995826791376,
+        "y0": 0.7348739687141818,
+        "x1": 0.8489107265211852,
+        "y1": 0.743157473901727
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8500344318191005,
+        "y0": 0.7295481010958724,
+        "x1": 0.8741845858318243,
+        "y1": 0.7413817132712557
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8788580186963695,
+        "y0": 0.7295481010958724,
+        "x1": 0.8884143583908453,
+        "y1": 0.7413817132712557
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.888423278721236,
+        "y0": 0.728804291428133,
+        "x1": 0.8988732919753296,
+        "y1": 0.7370877966156784
+      },
+      "text": "⊤",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.888423278721236,
+        "y0": 0.7364501792043994,
+        "x1": 0.8955344225632837,
+        "y1": 0.7447336843919448
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8997188777768632,
+        "y0": 0.7295480829714274,
+        "x1": 0.9223460648072807,
+        "y1": 0.7413816951468106
+      },
+      "text": "Px",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9223537547472728,
+        "y0": 0.7348739505897366,
+        "x1": 0.9294648985893204,
+        "y1": 0.743157455777282
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9305885526209692,
+        "y0": 0.7295480829714274,
+        "x1": 0.9352244585783528,
+        "y1": 0.7413816951468106
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857157940674526,
+        "y0": 0.7365180739420318,
+        "x1": 0.4895347102187158,
+        "y1": 0.7483516861174151
+      },
+      "text": "Despite their effectiveness, a key challenge persists: the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087747978459,
+        "y0": 0.7425652225428547,
+        "x1": 0.8756600289849793,
+        "y1": 0.7543988347182381
+      },
+      "text": "leading to the explicit trajectory update dynamic",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857157940674526,
+        "y0": 0.7495352135134592,
+        "x1": 0.1490220270009534,
+        "y1": 0.7613688256888426
+      },
+      "text": "closed-loop",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1544292339395468,
+        "y0": 0.7495352135134592,
+        "x1": 0.28948958532273794,
+        "y1": 0.7613688256888426
+      },
+      "text": "trajectory behavior",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29137579943713876,
+        "y0": 0.7495352135134592,
+        "x1": 0.48983246469521075,
+        "y1": 0.7613688256888426
+      },
+      "text": "—how system states evolve",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857157940674526,
+        "y0": 0.7625511568715119,
+        "x1": 0.0987969782617446,
+        "y1": 0.7743847690468952
+      },
+      "text": "over",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10905621692120021,
+        "y0": 0.7625511568715119,
+        "x1": 0.16954049150329795,
+        "y1": 0.7743847690468952
+      },
+      "text": "time—is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1797997173461869,
+        "y0": 0.7625511568715119,
+        "x1": 0.24245968101712223,
+        "y1": 0.7743847690468952
+      },
+      "text": "typically",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2527189068600112,
+        "y0": 0.7625511568715119,
+        "x1": 0.2703754961114545,
+        "y1": 0.7743847690468952
+      },
+      "text": "an",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2808327635422739,
+        "y0": 0.7625511568715119,
+        "x1": 0.33532552391204357,
+        "y1": 0.7743847690468952
+      },
+      "text": "indirect",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3472120692229319,
+        "y0": 0.7625511568715119,
+        "x1": 0.408533137441839,
+        "y1": 0.7743847690468952
+      },
+      "text": "outcome",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41879238891786125,
+        "y0": 0.7625511568715119,
+        "x1": 0.4322649587189913,
+        "y1": 0.7743847690468952
+      },
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.44252415892874697,
+        "y0": 0.7625511568715119,
+        "x1": 0.4899040836696707,
+        "y1": 0.7743847690468952
+      },
+      "text": "weight",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6323167994958957,
+        "y0": 0.7585316805632296,
+        "x1": 0.6418731391903714,
+        "y1": 0.7703652927386131
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6418821107870288,
+        "y0": 0.7638563700926093,
+        "x1": 0.6489932546290765,
+        "y1": 0.7721398752801546
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6492803457221157,
+        "y0": 0.7638563700926093,
+        "x1": 0.6662205657970264,
+        "y1": 0.7721398752801546
+      },
+      "text": "+1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6717119519454001,
+        "y0": 0.7585316805632296,
+        "x1": 0.6847158968034104,
+        "y1": 0.7703652927386131
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6893776922254341,
+        "y0": 0.7585316805632296,
+        "x1": 0.6989340319199099,
+        "y1": 0.7703652927386131
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6989430035165674,
+        "y0": 0.7638563700926093,
+        "x1": 0.706054147358615,
+        "y1": 0.7721398752801546
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7108954259800548,
+        "y0": 0.7585316805632296,
+        "x1": 0.7238993708380651,
+        "y1": 0.7703652927386131
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7276322215090406,
+        "y0": 0.7585316805632296,
+        "x1": 0.7380922829513905,
+        "y1": 0.7703652927386131
+      },
+      "text": "Γ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7380928981465898,
+        "y0": 0.7585316805632296,
+        "x1": 0.7520340928908398,
+        "y1": 0.7703652927386131
+      },
+      "text": "∇",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.752039373316301,
+        "y0": 0.7638563700926093,
+        "x1": 0.7596191421014685,
+        "y1": 0.7721398752801546
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7596291390234583,
+        "y0": 0.7674785857515591,
+        "x1": 0.7659721091265597,
+        "y1": 0.7733953918392509
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.767781654539239,
+        "y0": 0.7585316986876748,
+        "x1": 0.7775388042000424,
+        "y1": 0.7703653108630582
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7812627858068937,
+        "y0": 0.7585316986876748,
+        "x1": 0.7877563762013073,
+        "y1": 0.7703653108630582
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7877723712764909,
+        "y0": 0.7585316986876748,
+        "x1": 0.7973287109709667,
+        "y1": 0.7703653108630582
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7973376825676242,
+        "y0": 0.7638563882170544,
+        "x1": 0.8044488264096717,
+        "y1": 0.7721398934045997
+      },
+      "text": "k",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8055708399207889,
+        "y0": 0.7585316986876748,
+        "x1": 0.8120644303152026,
+        "y1": 0.7703653108630582
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8120804253903862,
+        "y0": 0.7585316986876748,
+        "x1": 0.8167163313477699,
+        "y1": 0.7703653108630582
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9138517570919834,
+        "y0": 0.7585316986876748,
+        "x1": 0.935207028047704,
+        "y1": 0.7703653108630582
+      },
+      "text": "(2)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857157940674526,
+        "y0": 0.7755682964429393,
+        "x1": 0.48956823835708146,
+        "y1": 0.7874019086183227
+      },
+      "text": "tuning or cost-function optimization. Traditional methods",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087747978459,
+        "y0": 0.7744969604946749,
+        "x1": 0.9348222234504983,
+        "y1": 0.7863305726700582
+      },
+      "text": "Rather than iteratively adjusting an unknown cost func-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.7923385458492449,
+        "x1": 0.0756810699116946,
+        "y1": 0.8018054594911634
+      },
+      "text": "⋆",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08279689180057077,
+        "y0": 0.7956798416717858,
+        "x1": 0.4898065752305706,
+        "y1": 0.8051467553137045
+      },
+      "text": "This work is supported in part by the National Science Foundation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087747978459,
+        "y0": 0.7875141000661023,
+        "x1": 0.9347719825092163,
+        "y1": 0.7993477122414857
+      },
+      "text": "tion to produce desired state trajectories, we directly im-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.8073951567269556,
+        "x1": 0.2473135967732825,
+        "y1": 0.8168620703688743
+      },
+      "text": "under award ECCS-2227311.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087747978459,
+        "y0": 0.8005312396375298,
+        "x1": 0.8975509298942844,
+        "y1": 0.8123648518129132
+      },
+      "text": "pose a controlled gradient flow on the system states.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.8191104717821254,
+        "x1": 0.11063952429931138,
+        "y1": 0.828577385424044
+      },
+      "text": "Farnaz",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11762853907771748,
+        "y0": 0.8191104717821254,
+        "x1": 0.14802138637604528,
+        "y1": 0.828577385424044
+      },
+      "text": "Adib",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15501040115445136,
+        "y0": 0.8191104717821254,
+        "x1": 0.21580947624669325,
+        "y1": 0.828577385424044
+      },
+      "text": "Yaghmaie",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22279847820853269,
+        "y0": 0.8191104717821254,
+        "x1": 0.23235815021033837,
+        "y1": 0.828577385424044
+      },
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23934717780531112,
+        "y0": 0.8191104717821254,
+        "x1": 0.30144498122968905,
+        "y1": 0.828577385424044
+      },
+      "text": "supported",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30843398319152854,
+        "y0": 0.8191104717821254,
+        "x1": 0.3234295712412315,
+        "y1": 0.828577385424044
+      },
+      "text": "by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33041857320307094,
+        "y0": 0.8191104717821254,
+        "x1": 0.3501672106293709,
+        "y1": 0.828577385424044
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35714283209562403,
+        "y0": 0.8191104717821254,
+        "x1": 0.42171756519146425,
+        "y1": 0.828577385424044
+      },
+      "text": "Excellence",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42869318665771744,
+        "y0": 0.8191104717821254,
+        "x1": 0.47018543700934,
+        "y1": 0.828577385424044
+      },
+      "text": "Center",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4771610841087265,
+        "y0": 0.8191104717821254,
+        "x1": 0.48980021821351044,
+        "y1": 0.828577385424044
+      },
+      "text": "at",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087747978459,
+        "y0": 0.820649065552983,
+        "x1": 0.9348054081150488,
+        "y1": 0.8324826777283664
+      },
+      "text": "This trajectory-oriented perspective offers several advan-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.8308257868372952,
+        "x1": 0.17043442139424875,
+        "y1": 0.8402927004792138
+      },
+      "text": "Link¨oping–Lund",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17880249874457527,
+        "y0": 0.8308257868372952,
+        "x1": 0.19065168376366856,
+        "y1": 0.8402927004792138
+      },
+      "text": "in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19900636780184214,
+        "y0": 0.8308257868372952,
+        "x1": 0.2724579574944543,
+        "y1": 0.8402927004792138
+      },
+      "text": "Information",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28081264153262786,
+        "y0": 0.8308257868372952,
+        "x1": 0.35071616981227516,
+        "y1": 0.8402927004792138
+      },
+      "text": "Technology",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3590708538504487,
+        "y0": 0.8308257868372952,
+        "x1": 0.42240043186276466,
+        "y1": 0.8402927004792138
+      },
+      "text": "(ELLIIT),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43075511590093823,
+        "y0": 0.8308257868372952,
+        "x1": 0.489733315735579,
+        "y1": 0.8402927004792138
+      },
+      "text": "ZENITH,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087747978459,
+        "y0": 0.8336662051244105,
+        "x1": 0.9347217415679345,
+        "y1": 0.8454998172997938
+      },
+      "text": "tages. Firstly, it provides explicit trajectory control. The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.8425410928302424,
+        "x1": 0.09147998754267454,
+        "y1": 0.852008006472161
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09889744732774168,
+        "y0": 0.8425410928302424,
+        "x1": 0.15143555311718063,
+        "y1": 0.852008006472161
+      },
+      "text": "partially",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15886639339783407,
+        "y0": 0.8425410928302424,
+        "x1": 0.17386198144753706,
+        "y1": 0.852008006472161
+      },
+      "text": "by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1812794412326042,
+        "y0": 0.8425410928302424,
+        "x1": 0.22166041835596537,
+        "y1": 0.852008006472161
+      },
+      "text": "Sensor",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22909125863661878,
+        "y0": 0.8425410928302424,
+        "x1": 0.2982985653825127,
+        "y1": 0.852008006472161
+      },
+      "text": "informatics",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30571602516757984,
+        "y0": 0.8425410928302424,
+        "x1": 0.32862445893664244,
+        "y1": 0.852008006472161
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3360419187217096,
+        "y0": 0.8425410928302424,
+        "x1": 0.43821276843903084,
+        "y1": 0.852008006472161
+      },
+      "text": "Decision-making",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4456436087196843,
+        "y0": 0.8425410928302424,
+        "x1": 0.46263417226840997,
+        "y1": 0.852008006472161
+      },
+      "text": "for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4700515807872105,
+        "y0": 0.8425410928302424,
+        "x1": 0.48980021821351044,
+        "y1": 0.852008006472161
+      },
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.8542563988231896,
+        "x1": 0.48978683771792414,
+        "y1": 0.8637233124651083
+      },
+      "text": "Digital Transformation (SEDDIT). This work was partly performed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087747978459,
+        "y0": 0.8466821575446857,
+        "x1": 0.9347886953121326,
+        "y1": 0.858515769720069
+      },
+      "text": "gradient formulation provides direct control over the tra-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.8659717048161368,
+        "x1": 0.48980026947977706,
+        "y1": 0.8754386184580555
+      },
+      "text": "within the Competence Center SEDDIT-Sensor Informatics and De-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087747978459,
+        "y0": 0.8596992971161131,
+        "x1": 0.9347886953121326,
+        "y1": 0.8715329092914965
+      },
+      "text": "jectory shape, eliminating the need for trial-and-error cost",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.8776870108090841,
+        "x1": 0.48978683771792414,
+        "y1": 0.8871539244510027
+      },
+      "text": "cision making for the Digital Transformation, supported by Sweden’s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087747978459,
+        "y0": 0.8727164366875406,
+        "x1": 0.9347552697063002,
+        "y1": 0.8845500488629239
+      },
+      "text": "function tuning. Secondly, it quantifies robustness by the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.8894023168020313,
+        "x1": 0.4897734572223379,
+        "y1": 0.89886923044395
+      },
+      "text": "Innovation Agency within the research and innovation program Ad-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087747978459,
+        "y0": 0.885733576258968,
+        "x1": 0.934805510647582,
+        "y1": 0.8975671884343513
+      },
+      "text": "step size. For a small step size, closed-loop eigenvalues have",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155377361195,
+        "y0": 0.9011176227949785,
+        "x1": 0.20088081630805502,
+        "y1": 0.9105845364368972
+      },
+      "text": "vanced digitalization.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087747978459,
+        "y0": 0.8987507158303955,
+        "x1": 0.9347886953121326,
+        "y1": 0.9105843280057788
+      },
+      "text": "small variations. Lastly, it unifies with a Linear Quadratic",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      595.276,
+      841.89
+    ]
+  ],
+  "seconds": 0.028449199977330863,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": "1/234 item không có bề rộng (width=0) — giữ chữ, bỏ hộp",
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

@@ -1,0 +1,2758 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.05542_pg2",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "*L. Hucker, M. Reiß, T. Stark/Comparing regularisation paths* 2\nConsider a potentially high-dimensional linear regression setting under random design, where the number of features *p* can possibly exceed the sample size *n*. We are given i.i.d. observations (*xi,yi*), *i* = 1*,...,n*, of R *p* -valued feature vectors *xi*and R-valued responses *yi*satisfying\n\n*y* *i*= *x* *⊤* *iβ₀* + *εi, i* = 1*,...,n.*\n\nHere, *β₀ ∈* R\n\n||is the unknown true coefficient vector. The error variables ε||satisfy E[ε|| X] = 0 and||\n|---|---|---|---|---|---|\n|p|||i|i i||\n|i i|||n ⊤||n ⊤|\n||n ⊤|||||\n\nVar(*ε | X*) = *σ²* for some noise level *σ >* 0. Using the notation *y* := (*y₁,...,y*), *X* := (*x₁,...,x*)\nand *ε* := (*ε₁,...,ε*) for the response vector, the feature matrix and the error vector, respectively, we have the linear model *y* = *Xβ₀* + *ε.* (1.1)\n\nThe ridge regression (RR) estimator of *β₀* is obtained as minimizer of the penalised least squares criterion *β* ˆ *λ* RR := argmin*Eλ*(*β*) with *Eλ*(*β*) := 2 <u>1</u> *n* *∥y − Xβ∥* 2 + <u>λ</u> 2 *∥β∥* 2 *,* (1.2) *β∈*R*p*\n\nwhere *λ* ⩾ 0 is the penalty parameter. For *λ* = 0 we take the minimum-norm solution for *β*ˆ*λ* RR, see Section2below. In practice, the RR estimator *β*ˆ*λ* RR is calculated by iterative solvers, for which standard gradient descent (GD) or conjugate gradients applied to the normal equations (CGNE) are natural choices. The default option for ridge regression in the standard Python package *scikit-learn* [17] uses conjugate gradients, profiting from its fast numerical convergence. Ali, Kolter and Tibshirani [2] have shown for the unpenalized criterion (*λ* = 0 in (1.2)) that the regularisation path of gradient flow (GF), the continuous-time analogue of gradient descent, can be very tightly bounded by the regularisation path of ridge regression, with a prediction error at each GF iterate bounded by a small factor times the RR prediction error under a naturally reparametrized ridge penalty *λ* *′*. In Proposition3.2below, we generalize this result to gradient flow solving the penalized criterion (1.2). Based on a precise non-asymptotic CG error control, our main result then bounds the prediction error for conjugate gradients after *t* iterations by the prediction error for gradient flow at iteration *τt*(Theorem3.7). The time reparametrisation *τt*is genuinely data-dependent due to the nonlinear nature of CG, but explicit in terms of the CG residual polynomial. This comparison result is surprisingly strong and implies that CG has the same regularisation effects as gradient flow and a fortiori ridge regression. The constant involved in the bound only depends on the spectrum of the empirical covariance matrix of the feature vectors *xi*, which is discussed for polynomial eigenvalue decay, Marchenko-Pastur type spectral distributions and spiked covariance models in Example3.9. This result is thus in line with other recent comparison and implicit regularisation theorems like Ali, Dobriban and Tibshirani [1] for stochastic gradient flow in regression or Wu et al. [22] for standard gradient descent in logistic regression. The comparison result allows in particular to bound the CG oracle error (the minimal prediction error along the CG regularisation path) by the corresponding GF and RR oracle errors. Establishing that the GD prediction risk is decaying monotonously along the iterates for large penalties *λ* in Proposition\n\n3.11, another application of the comparison result is the corresponding monotone bound on the CG errors. Since the main results are derived for in-sample prediction risk due to the intricate nonlinear dependencies in the CG iterates, we provide a transfer from in-sample to out-of-sample prediction risk in Proposition3.13. This high-probability result is essentially valid if the effective rank of the feature covariance matrix is small compared to the sample size. The theoretical results are then illustrated in a high-dimensional simulation and a real data example, where the regularisation paths of CG, GD and RR indeed closely resemble each other, see Section4.\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31109150406581904,
+        "y0": 0.09232691622743705,
+        "x1": 0.6885773901845894,
+        "y1": 0.10239017370975378
+      },
+      "text": "L. Hucker, M. Reiß, T. Stark/Comparing regularisation paths",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8541290682125715,
+        "y0": 0.09232691622743705,
+        "x1": 0.861044291577308,
+        "y1": 0.10239017370975378
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1584885665793824,
+        "y0": 0.11981311831811459,
+        "x1": 0.8603169684316597,
+        "y1": 0.13258084383877844
+      },
+      "text": "Consider a potentially high-dimensional linear regression setting under random design, where the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.1348448642576584,
+        "x1": 0.27519116370506536,
+        "y1": 0.14767548532196972
+      },
+      "text": "number of features",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2809134090647978,
+        "y0": 0.13509644522811426,
+        "x1": 0.28910161934646905,
+        "y1": 0.14767548532196972
+      },
+      "text": "p",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2946944392584508,
+        "y0": 0.1348448642576584,
+        "x1": 0.5519785662881689,
+        "y1": 0.14767548532196972
+      },
+      "text": "can possibly exceed the sample size",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5578349493687449,
+        "y0": 0.13509644522811426,
+        "x1": 0.567602219924428,
+        "y1": 0.14767548532196972
+      },
+      "text": "n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5676062091503268,
+        "y0": 0.1348448642576584,
+        "x1": 0.8168657090928819,
+        "y1": 0.14767548532196972
+      },
+      "text": ". We are given i.i.d. observations (",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8168807185553257,
+        "y0": 0.13509644522811426,
+        "x1": 0.8261759140912224,
+        "y1": 0.14767548532196972
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8261846405228758,
+        "y0": 0.14075656912543555,
+        "x1": 0.830788257075291,
+        "y1": 0.14956187238596907
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.831604552424811,
+        "y0": 0.13509644522811426,
+        "x1": 0.8468089384191176,
+        "y1": 0.14767548532196972
+      },
+      "text": ",y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8468202079822814,
+        "y0": 0.14075656912543555,
+        "x1": 0.8514238744000204,
+        "y1": 0.14956187238596907
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8522401697495404,
+        "y0": 0.1348448642576584,
+        "x1": 0.8632971071729473,
+        "y1": 0.14767548532196972
+      },
+      "text": "),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.1501911637758968,
+        "x1": 0.14455250509424147,
+        "y1": 0.16277020386975216
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1490833307403365,
+        "y0": 0.1501911637758968,
+        "x1": 0.1743968016181896,
+        "y1": 0.16277020386975216
+      },
+      "text": "= 1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17440686194725286,
+        "y0": 0.1501911637758968,
+        "x1": 0.2202803917180479,
+        "y1": 0.16277020386975216
+      },
+      "text": ",...,n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22035294576408038,
+        "y0": 0.1501911637758968,
+        "x1": 0.2605931400473601,
+        "y1": 0.16277020386975216
+      },
+      "text": ", of R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2605964311587265,
+        "y0": 0.14940051900015938,
+        "x1": 0.26729675991083285,
+        "y1": 0.1582058222606929
+      },
+      "text": "p",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2681209339815028,
+        "y0": 0.1501911637758968,
+        "x1": 0.4291015824461295,
+        "y1": 0.16277020386975216
+      },
+      "text": "-valued feature vectors",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43470918742659825,
+        "y0": 0.1501911637758968,
+        "x1": 0.4440043829624949,
+        "y1": 0.16277020386975216
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4440131093941483,
+        "y0": 0.1558512876732181,
+        "x1": 0.44861672594656354,
+        "y1": 0.16465659093375162
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45485951542075165,
+        "y0": 0.1501911637758968,
+        "x1": 0.6214510350445517,
+        "y1": 0.16277020386975216
+      },
+      "text": "and R-valued responses",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6270082261827257,
+        "y0": 0.1501911637758968,
+        "x1": 0.6349848329631331,
+        "y1": 0.16277020386975216
+      },
+      "text": "y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6349886227277369,
+        "y0": 0.1558512876732181,
+        "x1": 0.6395922392801522,
+        "y1": 0.16465659093375162
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6458350287543403,
+        "y0": 0.1501911637758968,
+        "x1": 0.712854672101588,
+        "y1": 0.16277020386975216
+      },
+      "text": "satisfying",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39287425022499234,
+        "y0": 0.1777694213269937,
+        "x1": 0.400850832072738,
+        "y1": 0.19034846142084916
+      },
+      "text": "y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40085626739302493,
+        "y0": 0.18342954522431498,
+        "x1": 0.40545988394544014,
+        "y1": 0.1922348484848485
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41079744326522927,
+        "y0": 0.1777694213269937,
+        "x1": 0.42344605688955267,
+        "y1": 0.19034846142084916
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4279804603726256,
+        "y0": 0.1777694213269937,
+        "x1": 0.43727565590852224,
+        "y1": 0.19034846142084916
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43728438234017564,
+        "y0": 0.1763486964534028,
+        "x1": 0.44744883019939746,
+        "y1": 0.1851539997139362
+      },
+      "text": "⊤",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43728438234017564,
+        "y0": 0.18465302267459904,
+        "x1": 0.4418879988925909,
+        "y1": 0.19345832593513257
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4482729544047437,
+        "y0": 0.1777694213269937,
+        "x1": 0.4639642752853094,
+        "y1": 0.19034846142084916
+      },
+      "text": "β₀",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46840044408062703,
+        "y0": 0.1777694213269937,
+        "x1": 0.4810490327722886,
+        "y1": 0.19034846142084916
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4846798765893076,
+        "y0": 0.1777694213269937,
+        "x1": 0.49226578855826186,
+        "y1": 0.19034846142084916
+      },
+      "text": "ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49227137347452,
+        "y0": 0.18342954522431498,
+        "x1": 0.49687499002693525,
+        "y1": 0.1922348484848485
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4976912853764553,
+        "y0": 0.1777694213269937,
+        "x1": 0.5022005068710427,
+        "y1": 0.19034846142084916
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5211977989845027,
+        "y0": 0.1777694213269937,
+        "x1": 0.5267976748397927,
+        "y1": 0.19034846142084916
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5313350702422897,
+        "y0": 0.1777694213269937,
+        "x1": 0.5566485535864737,
+        "y1": 0.19034846142084916
+      },
+      "text": "= 1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5566569808261846,
+        "y0": 0.1777694213269937,
+        "x1": 0.607039757024229,
+        "y1": 0.19034846142084916
+      },
+      "text": ",...,n.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.20518422849250562,
+        "x1": 0.17697943893133425,
+        "y1": 0.2179267960365372
+      },
+      "text": "Here,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18244607464160795,
+        "y0": 0.20534775594268184,
+        "x1": 0.19813740798850465,
+        "y1": 0.2179267960365372
+      },
+      "text": "β₀",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20347712398354523,
+        "y0": 0.20534775594268184,
+        "x1": 0.214318767871732,
+        "y1": 0.2179267960365372
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21885294696084814,
+        "y0": 0.20534775594268184,
+        "x1": 0.23060620376487184,
+        "y1": 0.2179267960365372
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23060949487623825,
+        "y0": 0.2045558010688936,
+        "x1": 0.23730982362834457,
+        "y1": 0.21336110432942712
+      },
+      "text": "p",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24356046689102073,
+        "y0": 0.20518422849250562,
+        "x1": 0.6612618639578227,
+        "y1": 0.2179267960365372
+      },
+      "text": "is the unknown true coefficient vector. The error variables",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6671225354562398,
+        "y0": 0.20534775594268184,
+        "x1": 0.6747084474251941,
+        "y1": 0.2179267960365372
+      },
+      "text": "ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6747140323414522,
+        "y0": 0.21100787984000313,
+        "x1": 0.6793176488938675,
+        "y1": 0.21981318310053666
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6855588426776961,
+        "y0": 0.20518422849250562,
+        "x1": 0.7523962282666973,
+        "y1": 0.2179267960365372
+      },
+      "text": "satisfy E[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7524918200922948,
+        "y0": 0.20534775594268184,
+        "x1": 0.760077732061249,
+        "y1": 0.2179267960365372
+      },
+      "text": "ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7600816714218239,
+        "y0": 0.21100787984000313,
+        "x1": 0.7646852879742392,
+        "y1": 0.21981318310053666
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7682156531639348,
+        "y0": 0.20534775594268184,
+        "x1": 0.7889281129525378,
+        "y1": 0.2179267960365372
+      },
+      "text": "| X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7889362410003063,
+        "y0": 0.21100787984000313,
+        "x1": 0.7935398575527216,
+        "y1": 0.21981318310053666
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7943562027675654,
+        "y0": 0.20518422849250562,
+        "x1": 0.8610282349430658,
+        "y1": 0.2179267960365372
+      },
+      "text": "] = 0 and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13833497240652445,
+        "y0": 0.22044239742587313,
+        "x1": 0.16995092155107486,
+        "y1": 0.23302143751972848
+      },
+      "text": "Var(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.16996568168690002,
+        "y0": 0.22044239742587313,
+        "x1": 0.17755158118952333,
+        "y1": 0.23302143751972848
+      },
+      "text": "ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17755717857211245,
+        "y0": 0.22610252132319442,
+        "x1": 0.18216079512452768,
+        "y1": 0.23490782458372794
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18568952722487106,
+        "y0": 0.22044239742587313,
+        "x1": 0.20640363256915722,
+        "y1": 0.23302143751972848
+      },
+      "text": "| X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2064101150612426,
+        "y0": 0.22610252132319442,
+        "x1": 0.21101374407998877,
+        "y1": 0.23490782458372794
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21183006436217064,
+        "y0": 0.22044239742587313,
+        "x1": 0.2351102143331291,
+        "y1": 0.23302143751972848
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2396568597531786,
+        "y0": 0.22044239742587313,
+        "x1": 0.2560279197942198,
+        "y1": 0.23302143751972848
+      },
+      "text": "σ²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2622663460525812,
+        "y0": 0.22044239742587313,
+        "x1": 0.39892054539100796,
+        "y1": 0.23302143751972848
+      },
+      "text": "for some noise level",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4044705808552262,
+        "y0": 0.22044239742587313,
+        "x1": 0.43152588489008886,
+        "y1": 0.23302143751972848
+      },
+      "text": "σ >",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43606043796913296,
+        "y0": 0.22044239742587313,
+        "x1": 0.5859976874457465,
+        "y1": 0.23302143751972848
+      },
+      "text": "0. Using the notation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5915506400314032,
+        "y0": 0.22044239742587313,
+        "x1": 0.5995272468118107,
+        "y1": 0.23302143751972848
+      },
+      "text": "y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6046372457267413,
+        "y0": 0.22000551825822,
+        "x1": 0.631355335509855,
+        "y1": 0.23258455835207548
+      },
+      "text": ":= (",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6313807169596354,
+        "y0": 0.22044239742587313,
+        "x1": 0.6458449020884396,
+        "y1": 0.23302143751972848
+      },
+      "text": "y₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6466633915122039,
+        "y0": 0.22044239742587313,
+        "x1": 0.690746282440385,
+        "y1": 0.23302143751972848
+      },
+      "text": ",...,y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.690820232715482,
+        "y0": 0.22610252132319442,
+        "x1": 0.6988651549894046,
+        "y1": 0.23490782458372794
+      },
+      "text": "n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6996813506082772,
+        "y0": 0.22044239742587313,
+        "x1": 0.7059280295777165,
+        "y1": 0.23302143751972848
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7059427897135416,
+        "y0": 0.21965051961667614,
+        "x1": 0.7161072375727635,
+        "y1": 0.22845582287720956
+      },
+      "text": "⊤",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7169297162224265,
+        "y0": 0.22044239742587313,
+        "x1": 0.7213893217198989,
+        "y1": 0.23302143751972848
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7268235449697457,
+        "y0": 0.22044239742587313,
+        "x1": 0.740302341436249,
+        "y1": 0.23302143751972848
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7461095074422999,
+        "y0": 0.22000551825822,
+        "x1": 0.7728259018044067,
+        "y1": 0.23258455835207548
+      },
+      "text": ":= (",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7728512832541871,
+        "y0": 0.22044239742587313,
+        "x1": 0.78863899380553,
+        "y1": 0.23302143751972848
+      },
+      "text": "x₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7894574832292943,
+        "y0": 0.22044239742587313,
+        "x1": 0.8348589130476409,
+        "y1": 0.23302143751972848
+      },
+      "text": ",...,x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8349362541647518,
+        "y0": 0.22610252132319442,
+        "x1": 0.8429811764386744,
+        "y1": 0.23490782458372794
+      },
+      "text": "n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.843797372057547,
+        "y0": 0.22044239742587313,
+        "x1": 0.8500441008923101,
+        "y1": 0.23302143751972848
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8500588610281352,
+        "y0": 0.21965051961667614,
+        "x1": 0.860223308887357,
+        "y1": 0.22845582287720956
+      },
+      "text": "⊤",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.23553711597365568,
+        "x1": 0.16468965617659825,
+        "y1": 0.24811615606751103
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17011927935033064,
+        "y0": 0.23553711597365568,
+        "x1": 0.17770517885295395,
+        "y1": 0.24811615606751103
+      },
+      "text": "ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1822336608288335,
+        "y0": 0.23510023680600256,
+        "x1": 0.2088172763001685,
+        "y1": 0.24767927689985791
+      },
+      "text": ":= (",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20884149838117214,
+        "y0": 0.23553711597365568,
+        "x1": 0.22291682124917023,
+        "y1": 0.24811615606751103
+      },
+      "text": "ε₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22373528574027268,
+        "y0": 0.23553711597365568,
+        "x1": 0.2674274818570006,
+        "y1": 0.24811615606751103
+      },
+      "text": ",...,ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2675016315933926,
+        "y0": 0.24119723987097696,
+        "x1": 0.275546578799977,
+        "y1": 0.2500025431315104
+      },
+      "text": "n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2763627494861877,
+        "y0": 0.23553711597365568,
+        "x1": 0.28256522284613717,
+        "y1": 0.24811615606751103
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28258005777994794,
+        "y0": 0.23474523816445858,
+        "x1": 0.2927444807065079,
+        "y1": 0.2435505414249921
+      },
+      "text": "⊤",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29898038876602073,
+        "y0": 0.23553711597365568,
+        "x1": 0.86039950800877,
+        "y1": 0.24811615606751103
+      },
+      "text": "for the response vector, the feature matrix and the error vector, respectively, we",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.2506318345214381,
+        "x1": 0.29259151882595485,
+        "y1": 0.2632108746152936
+      },
+      "text": "have the linear model",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45322223738128065,
+        "y0": 0.26572655306922066,
+        "x1": 0.4611988441616881,
+        "y1": 0.2783055931630761
+      },
+      "text": "y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4663104886323019,
+        "y0": 0.26572655306922066,
+        "x1": 0.4789590773239634,
+        "y1": 0.2783055931630761
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48349348080703636,
+        "y0": 0.26572655306922066,
+        "x1": 0.5139494752572253,
+        "y1": 0.2783055931630761
+      },
+      "text": "Xβ₀",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5183856440525428,
+        "y0": 0.26572655306922066,
+        "x1": 0.5310342327442045,
+        "y1": 0.2783055931630761
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5346634310055403,
+        "y0": 0.26572655306922066,
+        "x1": 0.5467585644690819,
+        "y1": 0.2783055931630761
+      },
+      "text": "ε.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8294886171428206,
+        "y0": 0.26572655306922066,
+        "x1": 0.8629089554930045,
+        "y1": 0.2783055931630761
+      },
+      "text": "(1.1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1584885665793824,
+        "y0": 0.28808467917972136,
+        "x1": 0.4399436127905752,
+        "y1": 0.3008901422674005
+      },
+      "text": "The ridge regression (RR) estimator of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4456339817421109,
+        "y0": 0.28831110217354516,
+        "x1": 0.4613253026226767,
+        "y1": 0.3008901422674005
+      },
+      "text": "β₀",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46757517297283496,
+        "y0": 0.28808467917972136,
+        "x1": 0.8606410805695976,
+        "y1": 0.3008901422674005
+      },
+      "text": "is obtained as minimizer of the penalised least squares",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.3034058207213276,
+        "x1": 0.19864681966943679,
+        "y1": 0.31598486081518307
+      },
+      "text": "criterion",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27856208452212267,
+        "y0": 0.31850184936716097,
+        "x1": 0.28775959388882505,
+        "y1": 0.33108088946101644
+      },
+      "text": "β",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2808823429681117,
+        "y0": 0.3151823691647462,
+        "x1": 0.28902171016518585,
+        "y1": 0.32776140925860164
+      },
+      "text": "ˆ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28776959188623363,
+        "y0": 0.3253854507147663,
+        "x1": 0.29548408159243517,
+        "y1": 0.33419075397529985
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28862907060610704,
+        "y0": 0.31708112449357007,
+        "x1": 0.30752214419296364,
+        "y1": 0.3258864277541035
+      },
+      "text": "RR",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3130424599242366,
+        "y0": 0.31850184936716097,
+        "x1": 0.38447366352953943,
+        "y1": 0.33108088946101644
+      },
+      "text": ":= argmin",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38736273572335833,
+        "y0": 0.31850184936716097,
+        "x1": 0.39594164081648286,
+        "y1": 0.33108088946101644
+      },
+      "text": "E",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3959542318107256,
+        "y0": 0.32416197326448226,
+        "x1": 0.40366872151692706,
+        "y1": 0.3329672765250158
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4044901779274535,
+        "y0": 0.31850184936716097,
+        "x1": 0.4108063442255157,
+        "y1": 0.33108088946101644
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41082023171817555,
+        "y0": 0.31850184936716097,
+        "x1": 0.4200177161522161,
+        "y1": 0.33108088946101644
+      },
+      "text": "β",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42088721780215993,
+        "y0": 0.31850184936716097,
+        "x1": 0.42720335916756025,
+        "y1": 0.33108088946101644
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4434967041015625,
+        "y0": 0.31850184936716097,
+        "x1": 0.4751100727156097,
+        "y1": 0.33108088946101644
+      },
+      "text": "with",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49142805111953636,
+        "y0": 0.31850184936716097,
+        "x1": 0.5000069811453227,
+        "y1": 0.33108088946101644
+      },
+      "text": "E",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5000211927625868,
+        "y0": 0.32416197326448226,
+        "x1": 0.5077356575361265,
+        "y1": 0.3329672765250158
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5085554933236316,
+        "y0": 0.31850184936716097,
+        "x1": 0.5148716346890319,
+        "y1": 0.33108088946101644
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5148871926700368,
+        "y0": 0.31850184936716097,
+        "x1": 0.5240847020367392,
+        "y1": 0.33108088946101644
+      },
+      "text": "β",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5249525581309998,
+        "y0": 0.31850184936716097,
+        "x1": 0.5518903545304841,
+        "y1": 0.33108088946101644
+      },
+      "text": ") :=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5583790797813266,
+        "y0": 0.3266126272654293,
+        "x1": 0.5648628683651195,
+        "y1": 0.3354179305259628
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5624035105985754,
+        "y0": 0.3173223366641035,
+        "x1": 0.5688872991823682,
+        "y1": 0.326127639924637
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5648676554361979,
+        "y0": 0.3266126272654293,
+        "x1": 0.5729125777101205,
+        "y1": 0.3354179305259628
+      },
+      "text": "n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5748692930134294,
+        "y0": 0.3185017723025698,
+        "x1": 0.6444400463228911,
+        "y1": 0.3310808123964252
+      },
+      "text": "∥y − Xβ∥",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6444395476696538,
+        "y0": 0.3170810474289788,
+        "x1": 0.6509233362534467,
+        "y1": 0.3258863506895123
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6553595050487643,
+        "y0": 0.3185017723025698,
+        "x1": 0.6680080937404259,
+        "y1": 0.3310808123964252
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.673593159594567,
+        "y0": 0.3173222595995123,
+        "x1": 0.6813076243681067,
+        "y1": 0.32612756286004574
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6742091459386489,
+        "y0": 0.3266126272654293,
+        "x1": 0.6806929345224418,
+        "y1": 0.3354179305259628
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.683267979840048,
+        "y0": 0.3185017723025698,
+        "x1": 0.7096132265976052,
+        "y1": 0.3310808123964252
+      },
+      "text": "∥β∥",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7096127279443678,
+        "y0": 0.3170810474289788,
+        "x1": 0.7160965165281608,
+        "y1": 0.3258863506895123
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.716915005951925,
+        "y0": 0.3185017723025698,
+        "x1": 0.7214242274465125,
+        "y1": 0.3310808123964252
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8294885174121732,
+        "y0": 0.3185017723025698,
+        "x1": 0.862908855762357,
+        "y1": 0.3310808123964252
+      },
+      "text": "(1.2)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34379572650186374,
+        "y0": 0.33293215493963224,
+        "x1": 0.3605258916717729,
+        "y1": 0.34173745820016577
+      },
+      "text": "β∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3605359395345052,
+        "y0": 0.33293215493963224,
+        "x1": 0.36876319436465993,
+        "y1": 0.34173745820016577
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36876633588005514,
+        "y0": 0.3329327810894359,
+        "x1": 0.3747813405554279,
+        "y1": 0.33922230113636365
+      },
+      "text": "p",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13836764665990095,
+        "y0": 0.3526100173141017,
+        "x1": 0.18080832288156148,
+        "y1": 0.365440638378413
+      },
+      "text": "where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1867794086730558,
+        "y0": 0.35286159828455765,
+        "x1": 0.1962699266820172,
+        "y1": 0.365440638378413
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2016388886894276,
+        "y0": 0.35286159828455765,
+        "x1": 0.4483785192950878,
+        "y1": 0.365440638378413
+      },
+      "text": "⩾ 0 is the penalty parameter. For",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4545392304464103,
+        "y0": 0.35286159828455765,
+        "x1": 0.4640297484553717,
+        "y1": 0.365440638378413
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4694003435521344,
+        "y0": 0.3526100173141017,
+        "x1": 0.7930371652241626,
+        "y1": 0.365440638378413
+      },
+      "text": "= 0 we take the minimum-norm solution for",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7992352753682853,
+        "y0": 0.35286159828455765,
+        "x1": 0.8084327847349877,
+        "y1": 0.365440638378413
+      },
+      "text": "β",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8015555587469363,
+        "y0": 0.34954215661443844,
+        "x1": 0.8096949259440104,
+        "y1": 0.3621211967082939
+      },
+      "text": "ˆ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8084428076650582,
+        "y0": 0.3601972219919918,
+        "x1": 0.8161572724385978,
+        "y1": 0.3690025252525253
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8093022863849316,
+        "y0": 0.352069681943065,
+        "x1": 0.8281953599717882,
+        "y1": 0.3608749852035985
+      },
+      "text": "RR",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8291928160424326,
+        "y0": 0.3526100173141017,
+        "x1": 0.8610066931232129,
+        "y1": 0.365440638378413
+      },
+      "text": ", see",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.3696671892898251,
+        "x1": 0.4606645372178819,
+        "y1": 0.3822462293836806
+      },
+      "text": "Section2below. In practice, the RR estimator",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4658055523641748,
+        "y0": 0.36966715075752954,
+        "x1": 0.47500306173087725,
+        "y1": 0.3822461908513849
+      },
+      "text": "β",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4681258357428258,
+        "y0": 0.3663477090874103,
+        "x1": 0.47626520293989993,
+        "y1": 0.3789267491812658
+      },
+      "text": "ˆ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4750130846609477,
+        "y0": 0.37700277446496366,
+        "x1": 0.4827275494344873,
+        "y1": 0.3858080777254972
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47587256338082107,
+        "y0": 0.36887523441603687,
+        "x1": 0.49476563696767767,
+        "y1": 0.3776805376765704
+      },
+      "text": "RR",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5005915024701286,
+        "y0": 0.3696671892898251,
+        "x1": 0.8606229295917586,
+        "y1": 0.3822462293836806
+      },
+      "text": "is calculated by iterative solvers, for which standard",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.3845102883348561,
+        "x1": 0.8603445813546773,
+        "y1": 0.39734090939916744
+      },
+      "text": "gradient descent (GD) or conjugate gradients applied to the normal equations (CGNE) are natural",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.3997433390280213,
+        "x1": 0.7107326033847784,
+        "y1": 0.4124355894146543
+      },
+      "text": "choices. The default option for ridge regression in the standard Python package",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7167140486972784,
+        "y0": 0.3997433390280213,
+        "x1": 0.7953417908911612,
+        "y1": 0.4124355894146543
+      },
+      "text": "scikit-learn",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8008414873110703,
+        "y0": 0.3997433390280213,
+        "x1": 0.8610050974328534,
+        "y1": 0.4124355894146543
+      },
+      "text": "[17] uses",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.4149512678685815,
+        "x1": 0.6092460482728248,
+        "y1": 0.42753030796243685
+      },
+      "text": "conjugate gradients, profiting from its fast numerical convergence.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1584885665793824,
+        "y0": 0.4297943669136124,
+        "x1": 0.688280903436,
+        "y1": 0.4426249879779238
+      },
+      "text": "Ali, Kolter and Tibshirani [2] have shown for the unpenalized criterion (",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6886029212303411,
+        "y0": 0.43004594788406836,
+        "x1": 0.6980934392393024,
+        "y1": 0.4426249879779238
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7034411960177951,
+        "y0": 0.4297943669136124,
+        "x1": 0.8609641081367443,
+        "y1": 0.4426249879779238
+      },
+      "text": "= 0 in (1.2)) that the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.4448903570271502,
+        "x1": 0.8603278266059028,
+        "y1": 0.4577209780914615
+      },
+      "text": "regularisation path of gradient flow (GF), the continuous-time analogue of gradient descent, can be",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13852940977009293,
+        "y0": 0.460236618013093,
+        "x1": 0.8608179030075572,
+        "y1": 0.47281565810694837
+      },
+      "text": "very tightly bounded by the regularisation path of ridge regression, with a prediction error at each GF",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.4753312980285799,
+        "x1": 0.8603076810151143,
+        "y1": 0.48791033812243534
+      },
+      "text": "iterate bounded by a small factor times the RR prediction error under a naturally reparametrized ridge",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.4901870139921555,
+        "x1": 0.1927974426668454,
+        "y1": 0.5030050566702178
+      },
+      "text": "penalty",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19829902150272544,
+        "y0": 0.4904260165763624,
+        "x1": 0.20778953951168683,
+        "y1": 0.5030050566702178
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2077941146551394,
+        "y0": 0.489635371800625,
+        "x1": 0.2115431143567453,
+        "y1": 0.4984406750611584
+      },
+      "text": "′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21236110512727227,
+        "y0": 0.4901870139921555,
+        "x1": 0.8603900585299223,
+        "y1": 0.5030050566702178
+      },
+      "text": ". In Proposition3.2below, we generalize this result to gradient flow solving the penalized",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.5052691156213933,
+        "x1": 0.8604723363140829,
+        "y1": 0.5180997366857047
+      },
+      "text": "criterion (1.2). Based on a precise non-asymptotic CG error control, our main result then bounds",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.5205776775726164,
+        "x1": 0.4863385468526603,
+        "y1": 0.5331944552334873
+      },
+      "text": "the prediction error for conjugate gradients after",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4921421724207261,
+        "y0": 0.5206154151396318,
+        "x1": 0.498018800822738,
+        "y1": 0.5331944552334873
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5034526251499949,
+        "y0": 0.5205776775726164,
+        "x1": 0.8612392649931067,
+        "y1": 0.5331944552334873
+      },
+      "text": "iterations by the prediction error for gradient flow",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.5355478392706977,
+        "x1": 0.2203491559994766,
+        "y1": 0.5482904068147294
+      },
+      "text": "at iteration",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2258611192890242,
+        "y0": 0.5357113667208739,
+        "x1": 0.23297493130553001,
+        "y1": 0.5482904068147294
+      },
+      "text": "τ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2329771253797743,
+        "y0": 0.5413714520858997,
+        "x1": 0.23788841097962624,
+        "y1": 0.5501767553464331
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.244119282641442,
+        "y0": 0.5355478392706977,
+        "x1": 0.5561502992717269,
+        "y1": 0.5482904068147294
+      },
+      "text": "(Theorem3.7). The time reparametrisation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.561864366718367,
+        "y0": 0.5357113667208739,
+        "x1": 0.5689782036675347,
+        "y1": 0.5482904068147294
+      },
+      "text": "τ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.568980397741779,
+        "y0": 0.5413714520858997,
+        "x1": 0.5738916833416309,
+        "y1": 0.5501767553464331
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5801225550034467,
+        "y0": 0.5355478392706977,
+        "x1": 0.8607394149880004,
+        "y1": 0.5482904068147294
+      },
+      "text": "is genuinely data-dependent due to the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.5506928364435832,
+        "x1": 0.8607281454248366,
+        "y1": 0.5633850868302162
+      },
+      "text": "nonlinear nature of CG, but explicit in terms of the CG residual polynomial. This comparison result",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.5656491843136875,
+        "x1": 0.8603610369115094,
+        "y1": 0.5784798053779987
+      },
+      "text": "is surprisingly strong and implies that CG has the same regularisation effects as gradient flow and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.5807690223058064,
+        "x1": 0.8603052874795751,
+        "y1": 0.5935744853934857
+      },
+      "text": "a fortiori ridge regression. The constant involved in the bound only depends on the spectrum of the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.5958385828769568,
+        "x1": 0.5036004259695415,
+        "y1": 0.6086692039412682
+      },
+      "text": "empirical covariance matrix of the feature vectors",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5102647270252502,
+        "y0": 0.5960901638474128,
+        "x1": 0.5195599225611468,
+        "y1": 0.6086692039412682
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5195686489928002,
+        "y0": 0.6017515207781936,
+        "x1": 0.5241722655452155,
+        "y1": 0.6105568240387271
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5249885608947354,
+        "y0": 0.5958385828769568,
+        "x1": 0.86069493511923,
+        "y1": 0.6086692039412682
+      },
+      "text": ", which is discussed for polynomial eigenvalue",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.6109332628924438,
+        "x1": 0.8634495953329249,
+        "y1": 0.623763883956755
+      },
+      "text": "decay, Marchenko-Pastur type spectral distributions and spiked covariance models in Example3.9.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13836764665990095,
+        "y0": 0.6261424259705977,
+        "x1": 0.8624955719592524,
+        "y1": 0.6388598355379971
+      },
+      "text": "This result is thus in line with other recent comparison and implicit regularisation theorems like Ali,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.6411239330214684,
+        "x1": 0.8609685960158803,
+        "y1": 0.6539545540857796
+      },
+      "text": "Dobriban and Tibshirani [1] for stochastic gradient flow in regression or Wu et al. [22] for standard",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.6564701940074111,
+        "x1": 0.4086427875593597,
+        "y1": 0.6690492341012666
+      },
+      "text": "gradient descent in logistic regression.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1584885665793824,
+        "y0": 0.6715648932890459,
+        "x1": 0.8606521631377975,
+        "y1": 0.6841439333829014
+      },
+      "text": "The comparison result allows in particular to bound the CG oracle error (the minimal prediction error",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.6864834855301212,
+        "x1": 0.8607889811197916,
+        "y1": 0.699238632664536
+      },
+      "text": "along the CG regularisation path) by the corresponding GF and RR oracle errors. Establishing that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.7017542918523152,
+        "x1": 0.7405441383910335,
+        "y1": 0.7143333319461707
+      },
+      "text": "the GD prediction risk is decaying monotonously along the iterates for large penalties",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7466176350911459,
+        "y0": 0.7017542918523152,
+        "x1": 0.7561081531001073,
+        "y1": 0.7143333319461707
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7615506539936938,
+        "y0": 0.7017542918523152,
+        "x1": 0.8609339894812091,
+        "y1": 0.7143333319461707
+      },
+      "text": "in Proposition",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13854575312994663,
+        "y0": 0.7166112408493505,
+        "x1": 0.860391442292656,
+        "y1": 0.7294292835274128
+      },
+      "text": "3.11, another application of the comparison result is the corresponding monotone bound on the CG",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.7317814152650159,
+        "x1": 0.8605388566559437,
+        "y1": 0.7445239828090475
+      },
+      "text": "errors. Since the main results are derived for in-sample prediction risk due to the intricate nonlinear",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.7470396419968268,
+        "x1": 0.8607179728987949,
+        "y1": 0.7596186820906822
+      },
+      "text": "dependencies in the CG iterates, we provide a transfer from in-sample to out-of-sample prediction risk",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.7620966037114462,
+        "x1": 0.8602077509063522,
+        "y1": 0.7747133813723169
+      },
+      "text": "in Proposition3.13. This high-probability result is essentially valid if the effective rank of the feature",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.7772290405600962,
+        "x1": 0.8602757672079249,
+        "y1": 0.7898080806539516
+      },
+      "text": "covariance matrix is small compared to the sample size. The theoretical results are then illustrated in a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.7922608442980834,
+        "x1": 0.8603697134778391,
+        "y1": 0.8049027799355863
+      },
+      "text": "high-dimensional simulation and a real data example, where the regularisation paths of CG, GD and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1389526167726205,
+        "y0": 0.807419691422973,
+        "x1": 0.5178732778511795,
+        "y1": 0.8199987315168284
+      },
+      "text": "RR indeed closely resemble each other, see Section4.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.03463380003813654,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

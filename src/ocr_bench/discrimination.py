@@ -67,8 +67,12 @@ ENGINE_TONG_HOP = frozenset({"sabotage", "noop"})
 """Engine không đại diện cho một công cụ OCR thật.
 
 `noop` không xuất gì; `sabotage` cố tình làm hỏng đầu ra của engine khác. Cả hai đều
-là **dụng cụ đo**, không phải đối tượng đo. Chúng vào cổng `sabotage` (nơi chúng có
-ích) và bị loại khỏi phép tính phân tán (nơi chúng làm số đẹp lên một cách vô nghĩa).
+là **dụng cụ đo**, không phải đối tượng đo, nên cả hai bị loại khỏi phép tính phân
+tán — ở đó chúng chỉ làm số đẹp lên một cách vô nghĩa.
+
+Ở cổng `sabotage` thì `sabotage` là **chủ thể** của phép thử, còn `noop` vẫn bị loại:
+nó là sàn theo cấu tạo, và "làm hỏng phải tệ hơn không có gì" là một đòi hỏi sai chứ
+không phải một phép thử về thước đo. Xem `kiem_sabotage`.
 """
 
 NGUON_SABOTAGE = "opendataloader"
@@ -133,6 +137,13 @@ class KetQuaCong:
     diem_nguon: float | None
     nguon: str
     ly_do: str
+    duoi_sabotage: tuple[str, ...] = ()
+    """Engine **thật** chấm thấp hơn `sabotage`. Quan trắc, không phải phán quyết.
+
+    Đây là kết luận về **engine**, không phải về thước đo — xem `kiem_sabotage`. Để
+    trống ở hầu hết metric; không trống thì phải in ra, vì "một công cụ thật còn tệ
+    hơn bản cố tình làm hỏng" là câu đáng đọc dù nó không kết tội metric.
+    """
 
     @property
     def do_duoc(self) -> bool:
@@ -350,15 +361,24 @@ def kiem_sabotage(
     nguon: str,
     ten_sabotage: str = "sabotage",
 ) -> KetQuaCong:
-    """`sabotage` có đứng bét không — và có đứng bét vì **điểm thấp** không.
+    """Làm hỏng đầu ra của một engine thì điểm có **giảm** không.
 
-    Ba chỗ phải khẳng định, thiếu chỗ nào cũng thành cổng rỗng:
+    Phán quyết `dat` là **một** phép so duy nhất: `sabotage` phải thấp hơn chính
+    **nguồn** của nó. Đó là phép cô lập được đúng một biến — cùng engine, cùng bộ tài
+    liệu, chỉ khác chỗ đã bị làm hỏng. Metric không thấy sự khác biệt đó là metric sai.
 
-    1. Nó phải **có mặt** và **đo được**. Đứng cuối vì N/A là đúng cái lỗi cổng này
+    "`sabotage` có đứng bét toàn bảng không" **không** còn là điều kiện đạt: nó trộn
+    phép làm hỏng với chênh lệch năng lực giữa các engine, nên nó kết tội thước đo vì
+    một sự thật về engine. Vẫn tính, nhưng trả ra `duoi_sabotage` như quan trắc.
+
+    Ba chỗ phải khẳng định trước khi cổng được coi là đã chạy, thiếu chỗ nào cũng
+    thành cổng rỗng:
+
+    1. Nó phải **có mặt** và **đo được**. Vắng mặt hoặc N/A là đúng cái lỗi cổng này
        sinh ra để bắt, không phải bằng chứng cổng đạt.
-    2. Bảng phải có từ 2 engine trở lên. Bảng một cột thì "đứng bét" là hiển nhiên.
-    3. Điểm của nó phải **thấp hơn nguồn**, không chỉ "đứng cuối". Bằng điểm nguồn mà
-       thắng ở khoá phụ (tên engine) cũng ra đứng cuối — và đó là metric hỏng.
+    2. Bảng phải có từ 2 engine **thật** trở lên. Bảng một cột thì so gì cũng vô nghĩa.
+    3. Bằng điểm nguồn cũng là trượt — `<` chứ không phải `<=`. Hoà nghĩa là phép làm
+       hỏng đi qua mà thước đo không nhúc nhích.
 
     "Đo được" ở đây là `n_scored > 0`, **không** phải `applicable`. Hai thứ này khác
     nhau đúng ở một chỗ: engine chỉ toàn tài liệu `ENGINE_FAILED` có `applicable=True`
@@ -393,7 +413,20 @@ def kiem_sabotage(
             f"{nguon} n_scored={src.n_scored}) — cổng KHÔNG chạy, không tính là đạt.",
         )
 
-    do_duoc = [a for a in xh if a.n_scored > 0]
+    # Chỉ so với engine **thật**. `noop` là sàn theo cấu tạo — nó không xuất gì, nên
+    # trên mọi khẳng định kiểu "chữ này phải có mặt" nó luôn 0.0. Bắt `sabotage` phải
+    # thấp hơn nó là bắt "làm hỏng" phải tệ hơn "không có gì", điều không đúng và
+    # cũng không nói gì về chất lượng thước đo: bản làm hỏng vẫn giữ lại một phần nội
+    # dung đúng, nên nó *phải* trên bản rỗng. Module này đã loại engine tổng hợp khỏi
+    # `do_phan_tan` vì đúng lý do đó (xem `ENGINE_TONG_HOP` và §1 của docstring); chỗ
+    # này trước đây quên áp, nên cổng báo "METRIC NÀY SAI" cho 4 metric chỉ vì `noop`
+    # nằm dưới `sabotage` (2026-08-10).
+    #
+    # Điều kiện 3 (thấp hơn nguồn) KHÔNG đổi — đó mới là phép phản chứng thật, và nó
+    # vẫn bắt được `assert_baseline` (hoà với nguồn) lẫn `assert_text_absence`
+    # (sabotage *cao hơn* nguồn).
+    bo_qua = ENGINE_TONG_HOP - {ten_sabotage}
+    do_duoc = [a for a in xh if a.n_scored > 0 and a.engine not in bo_qua]
     if len(do_duoc) < 2:
         return KetQuaCong(
             metric, True, xh[-1].engine, sab.penalized_mean, src.penalized_mean, nguon,
@@ -401,29 +434,53 @@ def kiem_sabotage(
         )
 
     bet = do_duoc[-1]
-    dat = bet.engine == ten_sabotage and sab.penalized_mean < src.penalized_mean
+    # Phán quyết = **chỉ** phép so với nguồn. Đó là phép duy nhất cô lập được đúng một
+    # biến: cùng engine, cùng bộ tài liệu, khác nhau mỗi chỗ đã bị làm hỏng. Metric
+    # nào không thấy sự khác biệt ấy là metric sai — không cần thêm điều kiện nào.
+    #
+    # "Ai đứng bét" thì KHÔNG cô lập được biến nào: nó trộn phép làm hỏng với chênh
+    # lệch **năng lực** giữa các engine. `pdf_inspector` được 0.0000 ở
+    # `assert_math_presence` vì nó thật sự không xuất công thức — một thước đo hoàn
+    # hảo vẫn phải xếp nó dưới bản `opendataloader` đã bị làm hỏng. Giữ nó làm điều
+    # kiện đạt/trượt là kết tội thước đo vì một sự thật về engine (2026-08-10).
+    #
+    # Nên nó xuống hạng **quan trắc**: vẫn tính, vẫn in ra ở `duoi_sabotage`, nhưng
+    # không bật đèn đỏ. Đây là nới cổng ở một chiều và phải nhìn thấy được: hai test
+    # khoá riêng ở `TestCongSabotage` giữ chiều còn lại (`test_loai_noop_...`,
+    # `test_engine_that_nam_duoi_sabotage_...`).
+    duoi = tuple(
+        a.engine
+        for a in do_duoc
+        if a.engine != ten_sabotage and a.penalized_mean < sab.penalized_mean
+    )
+    dat = sab.penalized_mean < src.penalized_mean
     if dat:
         ly_do = (
-            f"đứng bét trong {len(do_duoc)} engine đo được, "
-            f"{sab.penalized_mean:.4f} < {nguon} {src.penalized_mean:.4f}."
+            f"thấp hơn nguồn: {sab.penalized_mean:.4f} < {nguon} "
+            f"{src.penalized_mean:.4f}."
         )
-    elif bet.engine != ten_sabotage:
-        ly_do = (
-            f"engine bét là `{bet.engine}` ({bet.penalized_mean:.4f}), không phải "
-            f"`{ten_sabotage}` ({sab.penalized_mean:.4f}) — METRIC NÀY SAI."
-        )
+        if duoi:
+            ly_do += (
+                f" (Quan trắc, không phải lỗi metric: {', '.join(f'`{e}`' for e in duoi)}"
+                f" còn thấp hơn cả bản làm hỏng.)"
+            )
     else:
         ly_do = (
-            f"đứng cuối nhưng không thấp hơn nguồn: {sab.penalized_mean:.4f} ≥ "
-            f"{nguon} {src.penalized_mean:.4f} — METRIC NÀY SAI."
+            f"KHÔNG thấp hơn nguồn: {sab.penalized_mean:.4f} ≥ {nguon} "
+            f"{src.penalized_mean:.4f} — METRIC NÀY SAI, làm hỏng đầu ra mà điểm "
+            f"không giảm."
         )
     return KetQuaCong(
-        metric, dat, bet.engine, sab.penalized_mean, src.penalized_mean, nguon, ly_do
+        metric, dat, bet.engine, sab.penalized_mean, src.penalized_mean, nguon, ly_do,
+        duoi,
     )
 
 
 def phan_nhom_metric(
-    phan_tan: Sequence[PhanTan], *, moi_metric: Iterable[str]
+    phan_tan: Sequence[PhanTan],
+    *,
+    moi_metric: Iterable[str],
+    cong: Mapping[str, KetQuaCong] | None = None,
 ) -> dict[str, list[dict[str, object]]]:
     """Chia metric làm **đúng hai** nhóm: bảng chính và phụ lục.
 
@@ -433,6 +490,17 @@ def phan_nhom_metric(
 
     Xuống phụ lục **không phải** xoá metric: nó vẫn có số, vẫn có lý do, chỉ không
     nằm ở bảng người ta đọc để ra quyết định.
+
+    Hai điều kiện để **được** ở bảng chính, không phải một:
+
+    1. Phân tán đủ (`vao_bang_chinh`) — các engine chênh nhau đủ để nói lên điều gì.
+    2. **Qua cổng `sabotage`** — làm hỏng đầu ra thì điểm phải giảm.
+
+    Điều kiện 2 trước đây không được áp ở đây, nên một metric trượt cổng vẫn lọt vào
+    bảng người ta đọc để chọn engine. Đó là lỗ hổng nghiêm trọng hơn cả cái nó bỏ
+    sót: `assert_text_absence` phân tán rất đẹp (0.5) *và* thưởng điểm cho việc phá
+    tài liệu — đúng loại metric trông thuyết phục nhất trong khi sai nhất
+    (2026-08-10). `cong=None` giữ nguyên hành vi cũ cho chỗ gọi chưa có kết quả cổng.
     """
     can = set(moi_metric)
     co = {p.metric for p in phan_tan}
@@ -440,19 +508,28 @@ def phan_nhom_metric(
         thieu, thua = sorted(can - co), sorted(co - can)
         raise ValueError(f"lệch danh sách metric — thiếu {thieu}, thừa {thua}")
 
+    def _truot_cong(m: str) -> KetQuaCong | None:
+        k = (cong or {}).get(m)
+        return k if k is not None and k.do_duoc and not k.dat else None
+
     def _dong(p: PhanTan) -> dict[str, object]:
+        k = _truot_cong(p.metric)
         return {
             "metric": p.metric,
             "engines": list(p.engines),
             "n_doc_chung": p.n_doc_chung,
-            "diem": {k: round(v, 4) for k, v in sorted(p.diem.items())},
+            "diem": {k2: round(v, 4) for k2, v in sorted(p.diem.items())},
             "spread": None if p.spread is None else round(p.spread, 4),
             "phan_quyet": p.phan_quyet,
             "ly_do": p.ly_do,
+            "truot_cong_sabotage": None if k is None else k.ly_do,
         }
+
+    def _vao_chinh(p: PhanTan) -> bool:
+        return p.vao_bang_chinh and _truot_cong(p.metric) is None
 
     return {
         "nguong": NGUONG_PHAN_TAN,
-        "bang_chinh": [_dong(p) for p in phan_tan if p.vao_bang_chinh],
-        "phu_luc": [_dong(p) for p in phan_tan if not p.vao_bang_chinh],
+        "bang_chinh": [_dong(p) for p in phan_tan if _vao_chinh(p)],
+        "phu_luc": [_dong(p) for p in phan_tan if not _vao_chinh(p)],
     }

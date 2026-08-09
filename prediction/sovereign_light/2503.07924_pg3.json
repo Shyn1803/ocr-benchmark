@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "engine": "sovereign_light",
+  "engine_version": "9d9a363",
+  "doc_id": "2503.07924_pg3",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "B. Quadratic Unconstrained Binary Optimization Model\nThe Quadratic Unconstrained Binary Optimization (QUBO)\nmodel provides a framework for solving combinatorial opti-\nmization problems, where the objective is to determine the\noptimal configuration of binary variables that minimizes a\nquadratic objective function. Formulated as an unconstrained\noptimization problem, it encodes the constraints within the\nobjective function. The model is defined over binary variables\nxi ∈{0, 1}, and uses the quadratic function H(x) to represent\npairwise interactions:\nH(x) =\nX\ni̸=j\nQijxixj +\nX\ni\nqixi\n(12)\nwhere Qij denotes the interaction coefficients between xi\nand xj, and qi represents the linear coefficients for xi. The\nobjective function H(x) can be interpreted as a Hamiltonian,\nanalogous to the energy function in Ising model.\nTo incorporate constraints from (3), we add penalty terms:\nH(x) = f(x) + P1\n X\ni\nxS,i −1\n!2\n+ P2\n X\ni\nxi,D −1\n!2\n+ P3\nX\ni̸∈{S,D}\n\nX\nj\nxi,j −\nX\nk\nxk,i\n\n\n2\n(13)\nwhere P1, P2, and P3 are positive penalty coefficients that\nmust be set large enough to ensure that any violation of the\nconstraints is penalized heavily. Typically, P3 is chosen to be\nlarger than P1 and P2 to enforce constraints more strictly.\nExpanding (13) yields the quadratic terms Qij and linear\nterms qi as follows:\nQij = P1\nX\ni̸=j\nxS,ixS,j + P2\nX\ni̸=j\nxi,Dxj,D\n+ P3\nX\ni̸∈{S,D}\n\n\n\n\nX\n(i,j)∈E\nX\n(i,k)∈E\nk̸=j\nxi,jxi,k\n+\nX\n(j,i)∈E\nX\n(k,i)∈E\nk̸=j\nxj,ixk,i −2\nX\n(i,j)∈E\nX\n(k,i)∈E\nxi,jxk,i\n\n\n\n\n(14)\nqi = −P1\nX\ni\nxS,i −P2\nX\ni\nxi,D\n+ P3\nX\ni̸∈{S,D}\n\nX\n(i,j)∈E\nxi,j +\nX\n(k,i)∈E\nxk,i\n\n+ f(x)\n(15)\nC. Ising Model\nThe Ising model is a mathematical representation in statis-\ntical physics used to describe magnetic materials, where the\nsystem’s energy depends on the configuration of spin variables.\nIn the Ising model, each spin variable σi ∈{−1, 1} represents\na binary state. The model’s Hamiltonian is given by:\nH(σ) = −\nX\ni,j\nJijσiσj −\nX\ni\nhiσi\n(16)\nwhere Jij denotes the coupling strength between spins i and\nj, and hi represents the influence of an external magnetic field\non spin i.\nTo convert the QUBO model to the Ising model, we use\nthe transformation σi = 2xi −1, which maps the binary\nvariables xi ∈{0, 1} to Ising spins σi ∈{−1, 1}. The QUBO\nexpression can be rewritten in terms of Ising variables:\nH(σ) =\nX\ni̸=j\nQij · (σi + 1)(σj + 1)\n4\n+\nX\ni\nqi · σi + 1\n2\n=\nX\ni̸=j\nQij\n4 σiσj +\nX\ni\n\u0012qi\n2 +\nP\ni̸=j(Qij + Qji)\n4\n\u0013\nσi\n+\n\u0012P\ni qi\n2\n+\nP\ni̸=j Qij\n4\n\u0013\n(17)\nThus, the coefficients in the Ising model are:\nJij = −Qij\n4\n(18)\nhi = −qi\n2 −\nP\ni̸=j(Qij + Qji)\n4\n(19)\nWe use this mapping to transform the original optimization\nproblem into the Ising model, allowing it to be solved using\nCIM.\nIII. COHERENT ISING MACHINE\nIn this section, we introduce Coherent Ising Machine (CIM)\nand explain its application to solving our multi-objective\nrouting model.\nCIM is a quantum-inspired optimization technique that\nleverages principles from the Ising model. The Ising model\nrepresents optimization problems as energy minimization\ntasks, where the goal is to find the ground state of a system\nby minimizing its energy. In the context of combinatorial\noptimization, this ground state corresponds to an optimal or\nnear-optimal solution. CIM utilizes an optical network of\ndegenerate optical parametric oscillators (DOPOs) to represent\nspins in the Ising model. Each DOPO encodes the spin states\nusing phase-coherent laser pulses, with the two possible phases\ncorresponding to spin values of +1 or −1. The system’s energy\nis minimized by continuously adjusting the pump power,\nallowing CIM to evolve the spin states toward lower energy\nconfigurations and find solutions to the optimization problem.\nTheoretically, CIM operates by solving an Ising problem\ndefined by a Hamiltonian that represents the energy of the\nspin system. The objective is to find a spin configuration\nthat minimizes this Hamiltonian, which corresponds to solving\na combinatorial optimization problem. In practical imple-\nmentations, the dynamic behavior of CIM can be modeled",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.012456099968403578,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "F:\\vnpt\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1403
+  }
+}

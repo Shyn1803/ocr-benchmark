@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "engine": "sovereign_light",
+  "engine_version": "9d9a363",
+  "doc_id": "2503.09086_pg5",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "A PREPRINT\nis employed to construct the following practical loss function to train the neural network solution U(x; θ),\nJR,M(θ) :=\nwI\n|X(Ω)|\nX\nx∈X(Ω)\n\u00121\n2|∇U(x; θ)|2 −f(x)U(x; θ)\n\u0013\n+\nwB\n|X(∂Ω)|\nX\nx∈X(∂Ω)\n(U(x; θ) −g(x))2.\n(2.7)\nHere, again, the boundary condition is enforced with the L2-integral of the error, U(x; θ) −g(x), and the integrals of\nthe energy term and the boundary condition term are approximated by the Monte–Carlo method; the weight factors\nwI and wB are analogous to those in the PINN loss.\nThe integral form of the deep Ritz loss function, before approximation via numerical integration, reads\nJR(θ) := wI\nZ\nΩ\n\u00121\n2|∇U(x; θ)|2 −f(x)U(x; θ)\n\u0013\ndx + wB\nZ\n∂Ω\n(U(x; θ) −g(x))2 ds(x).\n(2.8)\nThe subscript R indicates that the loss is formed by the deep Ritz formulation. In addition, the subscript M in the\nloss JR,M(θ) in Eq. (2.7) means that the integral in the deep Ritz loss JR(θ) in Eq. (2.8) is approximated by the\nMonte–Carlo method.\nWhen the boundary condition is implemented as hard constraints using ansatz functions, that is, using the neural\nnetwork function eU(x; θ) in Eq. (2.6), we obtain the integral loss function\nJRI(θ) :=\nZ\nΩ\n\u00121\n2|∇eU(x; θ)|2 −f(x)eU(x; θ)\n\u0013\ndx\nand train the neural network eU(x; θ) for the loss JRI,M(θ) by approximating the integral in JRI using the Monte–\nCarlo method.\nIt has been numerically studied that for the Poisson model problem, the trained solution U(x; θP ) with the PINN\nloss JP,M(θ) gives better training results than the trained solution U(x; θR) with the deep Ritz loss JR,M(θ); see [40].\nIn our work, we will reinvestigate the performance of the two approaches for various hyper parameter settings and\nreport some of our new ﬁndings.\nAs an enhancement to soft enforcement of boundary conditions, an augmented Lagrangian term can be included to\nthe loss function [42] to obtain,\nLP,M(θ, λ) := JP,M(θ) +\n1\nX(∂Ω)\nX\nx∈X(∂Ω)\n(U(x; θ) −g(x))λ(x)\nand\nLR,M(θ, λ) := JR,M(θ) +\n1\nX(∂Ω)\nX\nx∈X(∂Ω)\n(U(x; θ) −g(x))λ(x),\nfor the PINN and deep Ritz loss functions, respectively. Here, the boundary condition is enforced as constraints on the\nneural network solution U(x; θ) by introducing Lagrange multipliers λ(x) for each collocation point x in the training\nsampling set X(∂Ω). Hence, λ(x) are additional parameters that have to be trained, in addition to θ. The use of such\nan augmented Lagrangian term can improve slow training progress for the boundary loss term and can provide a more\naccurate trained neural network solution, U(x; θ). In the augmented Lagrangian approach, the parameters θ and λ are\nthen optimized for the PINN and deep Ritz loss functions in the following sense:\n(θP , λP ) := arg\n\u0012\nmax\nλ\nmin\nθ\nLP,M(θ, λ)\n\u0013\nresp.\n(θR, λR) := arg\n\u0012\nmax\nλ\nmin\nθ\nLR,M(θ, λ)\n\u0013\n.\nWe note that the above optimization problems for θ are non-linear and non-convex while those for λ are linear. We\nthus use the Adam optimization method [20] in the gradient update for θ with a small learning rate ǫ and a simple\ngradient update for λ with a learning rate α, i.e.,\nλ = λ + α∇λLP,M\nor\nλ = λ + α∇λLR,M.\nThe learning rate α is often set to a larger value than the learning rate ǫ, as proposed in two-scale update schemes\nfor min-max optimization problems; see [14, 25, 7]. In our numerical experiments, we set ǫ = 0.001 for the Adam\noptimizer and α = 1 for the gradient ascent update.\nWe note that the augmented Lagrangian method can be considered as a loss balancing scheme, and in our numerical\nexperiments, we will also conduct comparisons on various loss balancing schemes as listed in Table 1.\n5",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.010797599970828742,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.02734375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "F:\\vnpt\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1403
+  }
+}

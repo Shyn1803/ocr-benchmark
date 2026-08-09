@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "engine": "sovereign_light",
+  "engine_version": "9d9a363",
+  "doc_id": "2503.04047_pg8",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "Published in Transactions on Machine Learning Research (02/2025)\nThe efficiency of simulated annealing around Tc has been reported in numerous studies. Kirkpatrick et al.\n(1983) demonstrated that during phase transition, the search becomes more efficient. Strobl & Barker (2016)\nshowed that when using simulated annealing to solve phylogeny reconstruction, the search is constrained to a\nsmall valley of the search space when the temperature is below Tc. The search efficiency around Tc can also\nbe seen in Figure 2 of (Cai & Ma, 2010b).\nWhile some algorithms (Basu & Frazer, 1990; Cai & Ma, 2010a) have used critical temperature Tc to design\nthe initial and final temperatures, its use for reheating is less common. Abramson et al. (1999) proposes a\nreheating strategy tied to function cost that implicitly involves Tc. However, this method lacks theoretical\nsupport and is sensitive to hyperparameters. Instead, our approach directly reheats to the critical temperature,\nwhich injects just the right amount of stochastic energy back into the system, enabling it to escape “wandering\nin contours” without incurring excessive randomness of a high-temperature regime.\n5.2.2\nSpecific Heat\nDetermining the critical temperature in simulated annealing requires identifying the phase transition point\nduring optimization, which is characterized by peaks in specific heat (Kirkpatrick et al., 1983; Strobl &\nBarker, 2016). In statistical physics, the system’s energy at temperature T, denoted as E(T), adheres to the\nBoltzmann distribution. Thus, the expected energy of a system can be seen as a function of the temperature,\nE[E(T)]. The specific heat at temperature T, denoted as CT , is traditionally defined in thermodynamics as\nthe rate of change of the expected energy E[E(T)] to temperature (Aarts et al., 1987), given by CT = ∂E[E(T )]\n∂T\n.\nIntegrating over the Boltzmann distribution allows deriving specific heat in terms of energy variance:\nCT = σ2(E(T))\nT 2\n(9)\nwhere σ2(E(T)) is the variance of the system energy at T.\n5.2.3\nDetermination of Critical Temperature\nTo determine the critical temperature based on specific heat, we first denote T(t) as the temperature at step\nt, C(t) as the specific heat at temperature T(t), and xt as the solution sampled at step t, then by selecting\nan appropriate sample size M, we define the approximation of C(t) as :\nˆC(t) = σ2({f(xt−M+1), · · · , f(xt)})\nT(t)2\n,\nt ≥M\n(10)\nwhere σ2({f(xt−M+1), · · · , f(xt)}) represents the variance in objective values over the M most recent steps.\nThe critical temperature Tc can be determined as T(t∗), where t∗= arg max\nt≥M\nˆC(t). However, SA with\ngradient-based discrete samplers convergences rapidly in the initial stage, resulting in an abnormal initial\npeak in specific heat (due to the high variance). As the annealing progresses, the specific heat quickly\ndecreases, eventually stabilizing at a level more typical of a critical temperature. This behavior is shown in\nFigure 4a&4b.\nTo address the abnormal peak, we introduce a “skip step” threshold, denoted as tskip, ensuring that the initial\ntransient behavior is excluded from the analysis. Thus, the critical temperature is identified as T(˜t∗), where\n˜t∗= arg max\nt≥tskip\nˆC(t).\n(11)\nOur method diverges from traditional SA reheat strategies (Abramson et al., 1999) by accounting for\ninhomogeneous chains and addressing gradient-based methods’ unique abnormal peaks.\n5.3\nReheated Gradient-based Discrete Sampling for Combinatorial Optimization\nCombining results in Section 5.1 and 5.2, we obtain the Reheated Sampling for Combinatorial Optimization\nalgorithm (ReSCO), which is summarized in Algorithm 1. ReSCO is compatible with any gradient-based\n8",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.01510640000924468,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "F:\\vnpt\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 250
+  }
+}

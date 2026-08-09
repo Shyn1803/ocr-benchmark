@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "engine": "sovereign_light",
+  "engine_version": "9d9a363",
+  "doc_id": "01460d3dc3eca92c0d1a17eff846fa682f3d_page_6_pg1",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "c3\nc2\nv1\nv2 v3\nv4\nv5\nv7\nv6\nv8\nv9\nc\nv1\nv2 v3\nv4\nv5\nv6\nc1\n1\n(a)\nc3\nc2\nv1\nv2 v3\nv4\nv5\nv7\nv6\nv8\nv9\nc\nv1\nv2 v3\nv4\nv5\nv6\nc1\n(b)\nFig. 5.\nThe network nodes are partitioned into cluster c1, c2 and c3. (a)\nThe nodes {v2, v3, v4, v5} are the border nodes of cluster c1 after Step II of\nSection III-B3b. (b) Node v1 replaces v2 and v3 as the border node.\nAlgorithm 2: Reduce Redundant Border Nodes\n1 for Each cluster ci do\n2\nSet cluster weight as 1/(|bi ∪βi|).\n3 Calculate MVC on cluster-level topology.\n4 if Border node in non-VC cluster then\n5\nChange to the cluster-ID of neighbor VC cluster.\n6 Calculate MVC on bm\ni ∪δm\ni\nas λi.\n7 Select Min{|bm\ni |, |λi|} as the border nodes of cm\ni .\nc2 are {v3, v5, v8, v9}, and the cluster border nodes between\nc1 and c3 are {v2, v3, v4, v6, v7}. Secondly, the intersection\narea between c2\n1 and c3\n1 becomes cluster c1 with border nodes\n{v2, v3, v4, v5}. Although we select the minimum number of\nborder nodes for c2\n1 and c3\n1, v1 can replace v2 and v3 as the\nborder node of c1 as shown in Fig. 5(b) to further decrease the\ntotal number of border nodes. We formalize the approach to\nreduce redundant border nodes as follows. The main operation\nﬂow is shown in Alg. 2.\n(i) We reset the cluster-ID of all the border nodes selected\nin Section III-B3b to a minimum number of clusters. We\nconvert it to the Minimum Vertex Cover (MVC) problem [12]\nas follows. In the ﬁrst place, we abstract the clusters into a\ncluster-level topology as shown in Fig. 6, where each cluster-\nlevel node represents a cluster. If there exists edges between\ntwo clusters as in Fig. 6.(a), we connect the two cluster-level\nnodes. Next, we set the weight of each node in the cluster-level\ntopology. The border nodes in cluster ci are bi after Alg. 1, and\nwe call all the other border nodes that have edge connections\nwith cluster ci as βi. The nodes set bi ∪βi represents the\nmaximum set of border nodes in ci if re-categorizing the\ncluster-ID of βi. To concentrate more border nodes in fewer\nclusters using MVC, we set weight value to each cluster. If the\nnumber of all the possible border nodes |bi ∪βi| is high, we set\na low weight value to the cluster ci. In the implementation, we\nset the weight of cluster ci to 1/(|bi ∪βi|). After that, we run\nthe MVC algorithm on the cluster-level topology. If a border\nnode belongs to a non-VC cluster, it changes its cluster-ID to\nthe neighbor VC cluster. To differentiate with the notations\nbefore this step, ci changes to cm\ni\nafter re-categorizing the\nborder nodes, and bi changes to bm\ni .\n(ii) Name δm\ni\nas the subset of cm\ni −bm\ni , in which each node\nC1\nC2\nC3\nC4\nC6\nC5\nC9\nC7\nC8\nC10\nC11\nC12\n(a)\nC1\nC2\nC3\nC4\nC5\nC6\nC7\nC8\nC9\nC11\nC12\nC10\n(b)\nFig. 6.\n(a) The network nodes are partitioned into clusters with different\ncolors. (b) The clusters are abstracted into a cluster-level topology. The nodes\nin solid blue are vertex cover clusters.\nhas at least a neighbor in bm\ni . To simplify the analysis, we\nsuppose there are not sink nodes at bm\ni\nor δm\ni . The nodes in\nbm\ni\nand δm\ni\nare not in cluster-contained-subnets. Name Φi =\nbm\ni ∪δm\ni . Fig. 5(a) illustrates the example Φ1 of c1. Then we\ncalculate MVC on Φi as λi. We use λi as alternative border\nnodes to bm\ni . Because each edge in Φi has at least one endpoint\nin the MVC nodes λi, so monitoring λi can capture all the\nﬂows passing over Φi. The number of λi is not necessarily\nsmaller than bm\ni . Therefore, we select Min{|bm\ni |, |λi|} as the\nnew border nodes of cm\ni . If λi are selected as the border nodes\nof cluster cm\ni , the non-VC nodes in bm\ni do not need to monitor\nthe ﬂow, and their cluster-ID are set to the neighbor cluster.\nC. Protocol for Cluster based SD-WSN\nCluFlow makes the SDN controller estimate ﬂow among\nclusters by monitoring the ﬂow at border nodes. The SDN\ncontroller controls trafﬁc ﬂow by injecting cluster-level routing\nrules to the border nodes. The management procedure of the\nSDN controller and nodes in WSN is shown in Alg. 3.\nThere are at least two beneﬁts of utilizing SDN control in\ncluster-level routing. Firstly, compared with SDN management\nfor every node in WSN, CluFlow trades granularity of SDN\ncontrol for less communication load. Only cluster border\nnodes communicate with the SDN controller. The number of\nnodes that communicate with the SDN controller decreases.\nSecondly, cluster-level routing and local routing are decoupled.\nThe nodes inside the clusters use only distributed local routing\nand do not need to request ﬂow table entries from the SDN\ncontroller. The communication delay caused by requesting\nﬂow table entries therefore decreases.\nIV. EXPERIMENTAL SETUP AND RESULTS\nIn this section, we test and evaluate CluFlow in simulation\nand a real deployed WSN.\nA. Benchmark Approaches\nTo evaluate the performance of CluFlow, three benchmark\napproaches are implemented to calculate the communication\nﬂow among clusters.",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.02180899999802932,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "F:\\vnpt\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1403
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "engine": "sovereign_light",
+  "engine_version": "9d9a363",
+  "doc_id": "2503.09565_pg19",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "With these lemmas at hand, we now prove our main theorem by an inductive argument. In\nparticular, we show that the following two families of Gaussian processes, introduced in Section 4,\nremain non-degenerate throughout training:\n{ bZW l\n0δxl−1\ns\n(ξi)}i∈[m],s∈[t],2≤l≤L,\n(C.1)\n{ bZW l⊤\n0 dhl\ns(ξi)}i∈[m],s∈[t],2≤l≤L.\n(C.2)\nRecall that a Gaussian process is non-degenerate if its covariance matrix C at any finite collection\nof points satisfies det(C) ̸= 0 (Adler and Taylor, 2009). Using the filtration framework introduced\nin Section 4, our proof follows the natural flow of computation in the network, proceeding layer by\nlayer and separately handling forward and backward passes. We break this into four key steps, each\nbuilding upon the results of previous steps:\n• Step 1: prove non-degeneracy for the features in the first hidden layer bZW 2\n0 δx1\ns(ξi). This forms\nour base case as it only depends on the input data and network initialization, providing the\nfoundation for our inductive argument.\n• Step 2: prove non-degeneracy for the features in remaining layers bZW l\n0δxl−1\ns\n(ξi), 3 ≤l ≤L. This\nstep leverages the non-degeneracy established in Step 1 and shows how it propagates through\ndeeper layers of the network.\n• Step 3: prove non-degeneracy for the gradients in the last layer bZW L⊤\n0\ndhL\ns (ξi). Here we transition\nfrom analyzing forward features to backward gradients, showing how the established feature\nproperties ensure meaningful gradient flow.\n• Step 4: prove non-degeneracy for the gradients in remaining layers bZW l⊤\n0 dhl\ns(ξi), 2 ≤l ≤L −1.\nFinally, we complete our analysis by showing how gradient non-degeneracy propagates backward\nthrough the network, ensuring effective training dynamics at all layers.\nThe proof proceeds by induction on the time step t, where at each step we verify these properties\nhold across all layers. This structure allows us to carefully track how the non-degeneracy property\nis maintained as information flows both forward and backward through the network during training.\nThis systematic proof structure allows us to establish the global property of non-degeneracy by\ncarefully tracking local changes at each layer and time step. We now proceed with the detailed\nproof.\nProof of Theorem 4.5. Considering Trajectory Until Error Signals Vanish. Throughout this\nproof, we focus on the training trajectory up to the time when all error signals ˚χt,i become zero.\nThis is because once the error signals vanish, there are no further parameter updates, and the\ntraining dynamics remain static thereafter. Our analysis ensures that up to this point, the Gaussian\nprocesses governing the feature and gradient updates remain non-degenerate, thereby maintaining\nthe linear independence of features across all layers.\nConnecting bZWδx to hl and xl. Recall from Section 3 that each pre-activation hl(ξ) and\npost-activation xl(ξ) can be decomposed into a primary Gaussian increment plus lower-order\n(history-dependent) terms in the infinite-width limit:\nBecause these additional terms do not alter the essential covariance structure when conditioned\non past information (they vanish or become deterministic in the limit), the linear (in)dependence\n19",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.011111099971458316,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "F:\\vnpt\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1403
+  }
+}

@@ -1,0 +1,1904 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.06838_pg3",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "ON THE WASSERSTEIN ALIGNMENT PROBLEM 3\n\nThe general idea is that we would like to find that transformation of *µ* on *X* that aligns most closely, in an optimal transport sense, to *ν* on *Z*. See Figure 1 for an illustration when *R ≡* 0. In practice, the penalization term *R*(*θ*) can be thought of as penalizing the *complexity* of the transformation *Tθ*. Also see (1.5) in Example 3 below which shows that the inner product Gromov-Wasserstein distance can indeed be written in the form of (1.3) for a suitable *R*(*θ*). Let us list a few examples where special cases of this, or similar, problems have been studied.\n\nExample 1 (Procrustes problem). The Procrustes problem seeks an optimal transformation—such as translation, scaling, rotation, or reflection—that best aligns one data matrix, X *∈* R *N ×n*, with another, Y *∈* R *N ×d* [21]. Specifically, the ob- jective is to find a transformation matrix *T ∈* R *n×d* that solves min*T∥*X*T −* Y*∥* 2, where *∥·∥* denotes the Frobenius norm. The matrix *T* can be restricted to different subclasses of linear transformations. In essence, Procrustes analysis learns a linear transformation that maps one set of *matched* points—represented by the rows of X and Y—onto the other. A particularly well-studied case is the *orthogonal Pro-* *crustes problem*, where *T* is restricted to be an orthogonal matrix (i.e., *n* = *d* and *T* *⊤* *T* = *In*). This variant has a closed form solution [35] and has gained renewed interest in machine learning [40]. The Procrustes problem has widespread applica- tions, from multivariate statistics to machine learning, including shape analysis in 2D [17, 20] and learning a linear mapping between word embeddings in different languages using a bilingual lexicon [29]. Our problem (1.2) extends the Procrustes problem by allowing for an arbitrary family *T* of transformations as opposed to just linear transformations. More impor- tantly, we remove the assumption that the correspondences between the two sets are known—that is, we do not assume prior knowledge of which row in X matches with which row in Y. Instead, we leverage the Wasserstein distance in (1.2) to infer these correspondences. Our next example fits this setup more closely.\n\nExample 2 (Point-cloud registration or scan matching). Point-cloud registration is an important problem for aligning 2D/3D shapes with applications in shape anal- ysis, computer vision, robotics, and medical imaging [5, 36, 17]. The problem is to find the optimal spatial transformation (scaling, rotation and translation) that minimizes the discrepancy between two point clouds. The Iterative Closest Point or ICP algorithm is a widely used method to solve this problem. The algorithm iteratively refines the alignment by: (1) finding correspondences by pairing each point in one data set with its “nearest” point (either in a greedy or an optimal matching sense) in the other, (2) estimating a transformation that minimizes the sum of squared distances between the matched points, and (3) applying the trans- formation and repeating until convergence. Despite its efficiency, ICP suffers from sensitivity to initialization, often converging to local minima if the initial alignment is poor. Additionally, it is vulnerable to noise and outliers. Many variants of the ICP algorithm have been developed over the years to improve its accuracy, robust- ness, and convergence properties [33, 32]. Our objective in (1.3) indeed tackles a problem similar to that of the ICP algorithm. However, our proposed convex\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.34481534770890776,
+        "y0": 0.1201113504592819,
+        "x1": 0.6550013224283854,
+        "y1": 0.1289166537198153
+      },
+      "text": "ON THE WASSERSTEIN ALIGNMENT PROBLEM",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.786352618847018,
+        "y0": 0.1201113504592819,
+        "x1": 0.7928364074308109,
+        "y1": 0.1289166537198153
+      },
+      "text": "3",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698037490346075,
+        "y0": 0.14652697365693368,
+        "x1": 0.6988268459544462,
+        "y1": 0.15910601375078914
+      },
+      "text": "The general idea is that we would like to find that transformation of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7050048728394352,
+        "y0": 0.14652697365693368,
+        "x1": 0.7148047054515165,
+        "y1": 0.15910601375078914
+      },
+      "text": "µ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.720540813371247,
+        "y0": 0.14652697365693368,
+        "x1": 0.7377148796530331,
+        "y1": 0.15910601375078914
+      },
+      "text": "on",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7434509377074398,
+        "y0": 0.14652697365693368,
+        "x1": 0.755057690190334,
+        "y1": 0.15910601375078914
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7631748174530228,
+        "y0": 0.14652697365693368,
+        "x1": 0.7929812163309334,
+        "y1": 0.15910601375078914
+      },
+      "text": "that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698038736979166,
+        "y0": 0.16162292523817579,
+        "x1": 0.5854127173330269,
+        "y1": 0.17420196533203125
+      },
+      "text": "aligns most closely, in an optimal transport sense, to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5915915295968648,
+        "y0": 0.16162292523817579,
+        "x1": 0.5996332604900684,
+        "y1": 0.17420196533203125
+      },
+      "text": "ν",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6064837087992749,
+        "y0": 0.16162292523817579,
+        "x1": 0.6236578249463848,
+        "y1": 0.17420196533203125
+      },
+      "text": "on",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6294820947584763,
+        "y0": 0.16162292523817579,
+        "x1": 0.6412679136188981,
+        "y1": 0.17420196533203125
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.642571941699857,
+        "y0": 0.16162292523817579,
+        "x1": 0.6470811631944444,
+        "y1": 0.17420196533203125
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6554809769773795,
+        "y0": 0.16162292523817579,
+        "x1": 0.7929062687493618,
+        "y1": 0.17420196533203125
+      },
+      "text": "See Figure 1 for an",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2069804372351154,
+        "y0": 0.17671764378595833,
+        "x1": 0.3269060421613307,
+        "y1": 0.1892966838798138
+      },
+      "text": "illustration when",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3321242238961014,
+        "y0": 0.17671764378595833,
+        "x1": 0.36178097693748723,
+        "y1": 0.1892966838798138
+      },
+      "text": "R ≡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36631540535322205,
+        "y0": 0.17671764378595833,
+        "x1": 0.6242523193359375,
+        "y1": 0.1892966838798138
+      },
+      "text": "0. In practice, the penalization term",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6295915491440717,
+        "y0": 0.17671764378595833,
+        "x1": 0.6419471291934743,
+        "y1": 0.1892966838798138
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6420768289005055,
+        "y0": 0.17671764378595833,
+        "x1": 0.6483929702659058,
+        "y1": 0.1892966838798138
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6484085282469108,
+        "y0": 0.17671764378595833,
+        "x1": 0.6560432583678002,
+        "y1": 0.1892966838798138
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6565016702888837,
+        "y0": 0.17671764378595833,
+        "x1": 0.7929013819476358,
+        "y1": 0.1892966838798138
+      },
+      "text": ") can be thought of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2069804372351154,
+        "y0": 0.19181236233374088,
+        "x1": 0.3247572456309998,
+        "y1": 0.20439140242759624
+      },
+      "text": "as penalizing the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32929907904730904,
+        "y0": 0.19181236233374088,
+        "x1": 0.40335115420272927,
+        "y1": 0.20439140242759624
+      },
+      "text": "complexity",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.407828486822789,
+        "y0": 0.19181236233374088,
+        "x1": 0.5577884250217013,
+        "y1": 0.20439140242759624
+      },
+      "text": "of the transformation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5623432234221813,
+        "y0": 0.19181236233374088,
+        "x1": 0.57184999752668,
+        "y1": 0.20439140242759624
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5718562805574704,
+        "y0": 0.19747248623106217,
+        "x1": 0.5780552384120966,
+        "y1": 0.2062777894915957
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.579220640893076,
+        "y0": 0.19181236233374088,
+        "x1": 0.7929652594273386,
+        "y1": 0.20439140242759624
+      },
+      "text": ". Also see (1.5) in Example 3",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2069804372351154,
+        "y0": 0.20690708088152332,
+        "x1": 0.7924622679068372,
+        "y1": 0.21948612097537878
+      },
+      "text": "below which shows that the inner product Gromov-Wasserstein distance can indeed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2069804372351154,
+        "y0": 0.22200179942930587,
+        "x1": 0.5237813712724673,
+        "y1": 0.23458083952316133
+      },
+      "text": "be written in the form of (1.3) for a suitable",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5295278511795343,
+        "y0": 0.22200179942930587,
+        "x1": 0.5418834312289369,
+        "y1": 0.23458083952316133
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5420147764916513,
+        "y0": 0.22200179942930587,
+        "x1": 0.5483309178570517,
+        "y1": 0.23458083952316133
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5483448302823734,
+        "y0": 0.22200179942930587,
+        "x1": 0.5559795604032629,
+        "y1": 0.23458083952316133
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5564396178800296,
+        "y0": 0.22200179942930587,
+        "x1": 0.5672649807400174,
+        "y1": 0.23458083952316133
+      },
+      "text": ").",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22651642444087008,
+        "y0": 0.23709651797708842,
+        "x1": 0.7924962760576235,
+        "y1": 0.24967555807094377
+      },
+      "text": "Let us list a few examples where special cases of this, or similar, problems have",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2069804746341082,
+        "y0": 0.2521924695583305,
+        "x1": 0.30146238538953996,
+        "y1": 0.2647715096521859
+      },
+      "text": "been studied.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2069804746341082,
+        "y0": 0.28238182958930425,
+        "x1": 0.27798840890522875,
+        "y1": 0.2949608696831597
+      },
+      "text": "Example",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2878859027538424,
+        "y0": 0.28238182958930425,
+        "x1": 0.29724619746987335,
+        "y1": 0.2949608696831597
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3059183756510417,
+        "y0": 0.28238182958930425,
+        "x1": 0.3872633292004953,
+        "y1": 0.2949608696831597
+      },
+      "text": "(Procrustes",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3958747963500179,
+        "y0": 0.28238182958930425,
+        "x1": 0.4645711861404718,
+        "y1": 0.2949608696831597
+      },
+      "text": "problem).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48135455761080476,
+        "y0": 0.28238182958930425,
+        "x1": 0.5093702927134396,
+        "y1": 0.2949608696831597
+      },
+      "text": "The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5179817349303002,
+        "y0": 0.28238182958930425,
+        "x1": 0.5930104972490298,
+        "y1": 0.2949608696831597
+      },
+      "text": "Procrustes",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.601622039196538,
+        "y0": 0.28238182958930425,
+        "x1": 0.6594930411943423,
+        "y1": 0.2949608696831597
+      },
+      "text": "problem",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.668104483411203,
+        "y0": 0.28238182958930425,
+        "x1": 0.703966577068653,
+        "y1": 0.2949608696831597
+      },
+      "text": "seeks",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7125780192855137,
+        "y0": 0.28238182958930425,
+        "x1": 0.7297520855672999,
+        "y1": 0.2949608696831597
+      },
+      "text": "an",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7383635277841606,
+        "y0": 0.28238182958930425,
+        "x1": 0.7925717721577563,
+        "y1": 0.2949608696831597
+      },
+      "text": "optimal",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698046216777727,
+        "y0": 0.2974765481370868,
+        "x1": 0.7957668678433287,
+        "y1": 0.31005558823094226
+      },
+      "text": "transformation—such as translation, scaling, rotation, or reflection—that best aligns",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698046216777727,
+        "y0": 0.31257126668486934,
+        "x1": 0.3483472836563011,
+        "y1": 0.3251503067787247
+      },
+      "text": "one data matrix, X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3543235928404565,
+        "y0": 0.31257126668486934,
+        "x1": 0.36516523672864326,
+        "y1": 0.3251503067787247
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37114548527337365,
+        "y0": 0.31257126668486934,
+        "x1": 0.3828987420773974,
+        "y1": 0.3251503067787247
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3829020331887638,
+        "y0": 0.3117806219091319,
+        "x1": 0.41265450271905635,
+        "y1": 0.32058592516966544
+      },
+      "text": "N ×n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41347067340526705,
+        "y0": 0.31257126668486934,
+        "x1": 0.5419404771592882,
+        "y1": 0.3251503067787247
+      },
+      "text": ", with another, Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.548385719847835,
+        "y0": 0.31257126668486934,
+        "x1": 0.5592273886686836,
+        "y1": 0.3251503067787247
+      },
+      "text": "∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.565207637213414,
+        "y0": 0.31257126668486934,
+        "x1": 0.5769608940174377,
+        "y1": 0.3251503067787247
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5769641851288041,
+        "y0": 0.3117806219091319,
+        "x1": 0.6054403766307955,
+        "y1": 0.32058592516966544
+      },
+      "text": "N ×d",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6125573052300347,
+        "y0": 0.31257126668486934,
+        "x1": 0.6423637041079453,
+        "y1": 0.3251503067787247
+      },
+      "text": "[21].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6521960987764246,
+        "y0": 0.31257126668486934,
+        "x1": 0.7928120232875051,
+        "y1": 0.3251503067787247
+      },
+      "text": "Specifically, the ob-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.32766721826611145,
+        "x1": 0.5001934774560866,
+        "y1": 0.3402462583599668
+      },
+      "text": "jective is to find a transformation matrix",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5061733270782272,
+        "y0": 0.32766721826611145,
+        "x1": 0.533735586926828,
+        "y1": 0.3402462583599668
+      },
+      "text": "T ∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5386945936414931,
+        "y0": 0.32766721826611145,
+        "x1": 0.5504478504455167,
+        "y1": 0.3402462583599668
+      },
+      "text": "R",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5504511415568831,
+        "y0": 0.3268752633923232,
+        "x1": 0.575440400566151,
+        "y1": 0.3356805666528567
+      },
+      "text": "n×d",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.581944584067351,
+        "y0": 0.32766721826611145,
+        "x1": 0.6910448261335784,
+        "y1": 0.3402462583599668
+      },
+      "text": "that solves min",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6911619099137051,
+        "y0": 0.33332734216343274,
+        "x1": 0.6988422169404871,
+        "y1": 0.34213264542396626
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7041292377546722,
+        "y0": 0.32766721826611145,
+        "x1": 0.7122686049517464,
+        "y1": 0.3402462583599668
+      },
+      "text": "∥",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7122697518541922,
+        "y0": 0.32766721826611145,
+        "x1": 0.7264159956788705,
+        "y1": 0.3402462583599668
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7264233258814593,
+        "y0": 0.32766721826611145,
+        "x1": 0.7546323888442096,
+        "y1": 0.3402462583599668
+      },
+      "text": "T −",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7584331238191891,
+        "y0": 0.32766721826611145,
+        "x1": 0.7725793676438675,
+        "y1": 0.3402462583599668
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7730540356604881,
+        "y0": 0.32766721826611145,
+        "x1": 0.7811934028575623,
+        "y1": 0.3402462583599668
+      },
+      "text": "∥",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7811945497600081,
+        "y0": 0.3268752633923232,
+        "x1": 0.7876783383438011,
+        "y1": 0.3356805666528567
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7884968277675654,
+        "y0": 0.32766721826611145,
+        "x1": 0.7930060492621528,
+        "y1": 0.3402462583599668
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698048710043915,
+        "y0": 0.3427618982815983,
+        "x1": 0.24858898586697048,
+        "y1": 0.3553409383754538
+      },
+      "text": "where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25331055884267767,
+        "y0": 0.3427618982815983,
+        "x1": 0.27836357066833894,
+        "y1": 0.3553409383754538
+      },
+      "text": "∥·∥",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2830572938607409,
+        "y0": 0.3427618982815983,
+        "x1": 0.5713053185955371,
+        "y1": 0.3553409383754538
+      },
+      "text": "denotes the Frobenius norm. The matrix",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5762745975668914,
+        "y0": 0.3427618982815983,
+        "x1": 0.5857813716713899,
+        "y1": 0.3553409383754538
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5927320991466248,
+        "y0": 0.3427618982815983,
+        "x1": 0.7927980111315359,
+        "y1": 0.3553409383754538
+      },
+      "text": "can be restricted to different",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698046216777727,
+        "y0": 0.3578565782970853,
+        "x1": 0.7924459370133144,
+        "y1": 0.37043561839094064
+      },
+      "text": "subclasses of linear transformations. In essence, Procrustes analysis learns a linear",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698046216777727,
+        "y0": 0.37295125831257214,
+        "x1": 0.4696056889552696,
+        "y1": 0.3855302984064276
+      },
+      "text": "transformation that maps one set of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47637590395858864,
+        "y0": 0.37295125831257214,
+        "x1": 0.5341817818435968,
+        "y1": 0.3855302984064276
+      },
+      "text": "matched",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5407549789528442,
+        "y0": 0.37295125831257214,
+        "x1": 0.7927827523424734,
+        "y1": 0.3855302984064276
+      },
+      "text": "points—represented by the rows of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698046216777727,
+        "y0": 0.388045938328059,
+        "x1": 0.3966505013260187,
+        "y1": 0.40062497842191447
+      },
+      "text": "X and Y—onto the other.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40487127366408804,
+        "y0": 0.388045938328059,
+        "x1": 0.6756684546377144,
+        "y1": 0.40062497842191447
+      },
+      "text": "A particularly well-studied case is the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6818268719841453,
+        "y0": 0.388045938328059,
+        "x1": 0.7929456623551113,
+        "y1": 0.40062497842191447
+      },
+      "text": "orthogonal Pro-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698048710043915,
+        "y0": 0.403140618343546,
+        "x1": 0.31739931792215587,
+        "y1": 0.41571965843740133
+      },
+      "text": "crustes problem",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3174952089396957,
+        "y0": 0.403140618343546,
+        "x1": 0.36940817739449294,
+        "y1": 0.41571965843740133
+      },
+      "text": ", where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3751798642227073,
+        "y0": 0.403140618343546,
+        "x1": 0.3846866632598677,
+        "y1": 0.41571965843740133
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3926749634586908,
+        "y0": 0.403140618343546,
+        "x1": 0.7140013252208436,
+        "y1": 0.41571965843740133
+      },
+      "text": "is restricted to be an orthogonal matrix (i.e.,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7201390484579249,
+        "y0": 0.403140618343546,
+        "x1": 0.729906319013608,
+        "y1": 0.41571965843740133
+      },
+      "text": "n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.734923368965099,
+        "y0": 0.403140618343546,
+        "x1": 0.7475719576567607,
+        "y1": 0.41571965843740133
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7525981828278187,
+        "y0": 0.403140618343546,
+        "x1": 0.7610631207235499,
+        "y1": 0.41571965843740133
+      },
+      "text": "d",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7667910008648642,
+        "y0": 0.403140618343546,
+        "x1": 0.792999816096686,
+        "y1": 0.41571965843740133
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698053696576288,
+        "y0": 0.4182365699247881,
+        "x1": 0.2164873360029233,
+        "y1": 0.43081561001864344
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2187550363976971,
+        "y0": 0.4174446535832954,
+        "x1": 0.22891945932425706,
+        "y1": 0.42624995684382894
+      },
+      "text": "⊤",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2297436084622651,
+        "y0": 0.4182365699247881,
+        "x1": 0.23925040749942555,
+        "y1": 0.43081561001864344
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24720928715724572,
+        "y0": 0.4182365699247881,
+        "x1": 0.2598578758489073,
+        "y1": 0.43081561001864344
+      },
+      "text": "=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2655622195574193,
+        "y0": 0.4182365699247881,
+        "x1": 0.27270859363032324,
+        "y1": 0.43081561001864344
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.272717444725286,
+        "y0": 0.4238966552898137,
+        "x1": 0.2807623919318704,
+        "y1": 0.4327019585503472
+      },
+      "text": "n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28157856261808106,
+        "y0": 0.4182365699247881,
+        "x1": 0.2924039254780688,
+        "y1": 0.43081561001864344
+      },
+      "text": ").",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.30174793916590076,
+        "y0": 0.4182365699247881,
+        "x1": 0.7925850861991932,
+        "y1": 0.43081561001864344
+      },
+      "text": "This variant has a closed form solution [35] and has gained renewed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698052449943194,
+        "y0": 0.43333124994027494,
+        "x1": 0.7924460492102928,
+        "y1": 0.4459102900341304
+      },
+      "text": "interest in machine learning [40]. The Procrustes problem has widespread applica-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698052449943194,
+        "y0": 0.4484259299557618,
+        "x1": 0.7923809749628205,
+        "y1": 0.46100497004961727
+      },
+      "text": "tions, from multivariate statistics to machine learning, including shape analysis in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698052449943194,
+        "y0": 0.4635206099712488,
+        "x1": 0.7925273795533024,
+        "y1": 0.47609965006510413
+      },
+      "text": "2D [17, 20] and learning a linear mapping between word embeddings in different",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698052449943194,
+        "y0": 0.47861528998673564,
+        "x1": 0.48860301846772236,
+        "y1": 0.4911943300805911
+      },
+      "text": "languages using a bilingual lexicon [29].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22651647430619384,
+        "y0": 0.4937099700022225,
+        "x1": 0.7924638635971967,
+        "y1": 0.506289010096078
+      },
+      "text": "Our problem (1.2) extends the Procrustes problem by allowing for an arbitrary",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698052449943194,
+        "y0": 0.5088059215834646,
+        "x1": 0.2512424693388097,
+        "y1": 0.5213849616773201
+      },
+      "text": "family",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2555900025211908,
+        "y0": 0.5088059215834646,
+        "x1": 0.2644456352283752,
+        "y1": 0.5213849616773201
+      },
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27288903130425346,
+        "y0": 0.5088059215834646,
+        "x1": 0.7925395591586244,
+        "y1": 0.5213849616773201
+      },
+      "text": "of transformations as opposed to just linear transformations. More impor-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698053696576288,
+        "y0": 0.5239006015989516,
+        "x1": 0.7924622180415135,
+        "y1": 0.536479641692807
+      },
+      "text": "tantly, we remove the assumption that the correspondences between the two sets",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698053696576288,
+        "y0": 0.5389952816144384,
+        "x1": 0.7929641623902165,
+        "y1": 0.5515743217082939
+      },
+      "text": "are known—that is, we do not assume prior knowledge of which row in X matches",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698053696576288,
+        "y0": 0.5540899616299253,
+        "x1": 0.7925617990930096,
+        "y1": 0.5666690017237808
+      },
+      "text": "with which row in Y. Instead, we leverage the Wasserstein distance in (1.2) to infer",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698052449943194,
+        "y0": 0.5691846416454123,
+        "x1": 0.7015291974435445,
+        "y1": 0.5817636817392677
+      },
+      "text": "these correspondences. Our next example fits this setup more closely.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20698052449943194,
+        "y0": 0.5993753117744369,
+        "x1": 0.614831849640491,
+        "y1": 0.6119543518682923
+      },
+      "text": "Example 2 (Point-cloud registration or scan matching).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6235735525492749,
+        "y0": 0.5993753117744369,
+        "x1": 0.7924982706705729,
+        "y1": 0.6119543518682923
+      },
+      "text": "Point-cloud registration",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.6144699917899238,
+        "x1": 0.7924949546265446,
+        "y1": 0.6270490318837791
+      },
+      "text": "is an important problem for aligning 2D/3D shapes with applications in shape anal-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.6295646718054106,
+        "x1": 0.671511207530701,
+        "y1": 0.6421437118992661
+      },
+      "text": "ysis, computer vision, robotics, and medical imaging [5, 36, 17].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6823854134752859,
+        "y0": 0.6295646718054106,
+        "x1": 0.7924786237330218,
+        "y1": 0.6421437118992661
+      },
+      "text": "The problem is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.6446593518208976,
+        "x1": 0.7924135744182113,
+        "y1": 0.657238391914753
+      },
+      "text": "to find the optimal spatial transformation (scaling, rotation and translation) that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.6597540318363845,
+        "x1": 0.5879522585401348,
+        "y1": 0.6723330719302398
+      },
+      "text": "minimizes the discrepancy between two point clouds.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5971497679068372,
+        "y0": 0.6597540318363845,
+        "x1": 0.7924297058504391,
+        "y1": 0.6723330719302398
+      },
+      "text": "The Iterative Closest Point",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.6748499834176266,
+        "x1": 0.6786248948838975,
+        "y1": 0.6874290235114819
+      },
+      "text": "or ICP algorithm is a widely used method to solve this problem.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6892386043772978,
+        "y0": 0.6748499834176266,
+        "x1": 0.7925110361934488,
+        "y1": 0.6874290235114819
+      },
+      "text": "The algorithm",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.6899446826992612,
+        "x1": 0.46581283270143997,
+        "y1": 0.7025237227931167
+      },
+      "text": "iteratively refines the alignment by:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4759219300513174,
+        "y0": 0.6899446826992612,
+        "x1": 0.7924134996202257,
+        "y1": 0.7025237227931167
+      },
+      "text": "(1) finding correspondences by pairing each",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.705039381980896,
+        "x1": 0.79247859880036,
+        "y1": 0.7176184220747515
+      },
+      "text": "point in one data set with its “nearest” point (either in a greedy or an optimal",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.7201340812625308,
+        "x1": 0.792429730783101,
+        "y1": 0.7327131213563861
+      },
+      "text": "matching sense) in the other, (2) estimating a transformation that minimizes the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.7352287805441654,
+        "x1": 0.7924623427048229,
+        "y1": 0.7478078206380208
+      },
+      "text": "sum of squared distances between the matched points, and (3) applying the trans-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.7503234798258,
+        "x1": 0.7924460866092856,
+        "y1": 0.7629025199196555
+      },
+      "text": "formation and repeating until convergence. Despite its efficiency, ICP suffers from",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.7654194314070422,
+        "x1": 0.7923319947485831,
+        "y1": 0.7779984715008976
+      },
+      "text": "sensitivity to initialization, often converging to local minima if the initial alignment",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.7805141306886769,
+        "x1": 0.2610585580464282,
+        "y1": 0.7930931707825324
+      },
+      "text": "is poor.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27023978638493157,
+        "y0": 0.7805141306886769,
+        "x1": 0.6329793493732129,
+        "y1": 0.7930931707825324
+      },
+      "text": "Additionally, it is vulnerable to noise and outliers.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6421605527790544,
+        "y0": 0.7805141306886769,
+        "x1": 0.7923972933900123,
+        "y1": 0.7930931707825324
+      },
+      "text": "Many variants of the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.7956088299703117,
+        "x1": 0.7924624424354703,
+        "y1": 0.808187870064167
+      },
+      "text": "ICP algorithm have been developed over the years to improve its accuracy, robust-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.8107035292519463,
+        "x1": 0.5101235582937602,
+        "y1": 0.8232825693458018
+      },
+      "text": "ness, and convergence properties [33, 32].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5230652054930045,
+        "y0": 0.8107035292519463,
+        "x1": 0.7924460616766238,
+        "y1": 0.8232825693458018
+      },
+      "text": "Our objective in (1.3) indeed tackles",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.206980512033101,
+        "y0": 0.8257982285335811,
+        "x1": 0.5590901094324449,
+        "y1": 0.8383772686274364
+      },
+      "text": "a problem similar to that of the ICP algorithm.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5711363748787275,
+        "y0": 0.8257982285335811,
+        "x1": 0.7925274917502808,
+        "y1": 0.8383772686274364
+      },
+      "text": "However, our proposed convex",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.026518400001805276,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

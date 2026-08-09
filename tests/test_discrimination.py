@@ -180,6 +180,74 @@ class TestCongSabotage:
         assert kq.do_duoc and kq.dat, kq.ly_do
         assert kq.engine_bet == "sabotage"
 
+    def test_noop_nam_duoi_sabotage_khong_ket_toi_metric(self) -> None:
+        """`noop` thấp hơn `sabotage` là **đúng**, không phải bằng chứng metric sai.
+
+        `noop` không xuất gì, nên trên mọi khẳng định kiểu "chữ này phải có mặt" nó
+        luôn 0.0. `sabotage` làm hỏng đầu ra thật nhưng vẫn giữ lại một phần nội dung
+        đúng, nên nó *phải* nằm trên bản rỗng. Bắt "làm hỏng" tệ hơn "không có gì" là
+        một đòi hỏi sai — và nó chẳng nói gì về việc thước đo có xếp hạng nổi hay không.
+
+        Ca thật (2026-08-10): sau khi chạy đủ 1403 tài liệu olmocr, 4/6 metric
+        `assert_*` bị cổng báo "METRIC NÀY SAI" chỉ vì `noop` = 0.0000 nằm dưới
+        `sabotage`. Không metric nào trong số đó hỏng.
+        """
+        bang = _bang({
+            NGUON_MANH: {"a": 0.6, "b": 0.6},
+            "sabotage": {"a": 0.3, "b": 0.3},
+            "noop": {"a": 0.0, "b": 0.0},
+        })
+        kq = D.kiem_sabotage(bang, "m", nguon=NGUON_MANH)
+        assert kq.do_duoc and kq.dat, kq.ly_do
+        assert kq.engine_bet == "sabotage", "phải bét trong nhóm engine THẬT"
+
+    def test_loai_noop_khong_lam_cong_xanh_khi_sabotage_khong_thap_hon_nguon(self) -> None:
+        """Ca nghịch của test trên — phép phản chứng thật vẫn phải bắt được.
+
+        Loại `noop` ra chỉ đổi câu hỏi "ai đứng bét", **không** đụng tới điều kiện
+        "phải thấp hơn nguồn". Nếu nới cái sau thì cổng thành đồ trang trí, nên nó có
+        test khoá riêng ở đây. Ca thật: `assert_text_absence`, nơi `sabotage`
+        (0.7556) **cao hơn** nguồn (0.4589) — làm hỏng chữ khiến khẳng định "chữ này
+        phải vắng mặt" dễ đúng hơn.
+        """
+        bang = _bang({
+            NGUON_MANH: {"a": 0.5, "b": 0.5},
+            "sabotage": {"a": 0.7, "b": 0.7},
+            "noop": {"a": 0.0, "b": 0.0},
+        })
+        kq = D.kiem_sabotage(bang, "m", nguon=NGUON_MANH)
+        assert kq.do_duoc, kq.ly_do
+        assert not kq.dat, "sabotage cao hơn nguồn thì cổng PHẢI đỏ, dù noop ở dưới"
+
+    def test_engine_that_duoi_sabotage_la_quan_trac_chu_khong_ket_toi_metric(self) -> None:
+        """Engine **thật** nằm dưới `sabotage`: cổng xanh, nhưng phải **nói ra**.
+
+        Đây là kết luận về engine, không phải về thước đo. `pdf_inspector` được
+        0.0000 ở `assert_math_presence` vì nó thật sự không xuất công thức — một
+        thước đo hoàn hảo vẫn phải xếp nó dưới bản `opendataloader` đã bị làm hỏng.
+
+        Nhưng im lặng thì cũng sai: "một công cụ thật còn tệ hơn bản cố tình làm
+        hỏng" là câu đáng đọc. Nên nó phải xuất hiện ở `duoi_sabotage` **và** trong
+        `ly_do` — nới cổng mà giấu luôn thông tin là nới hai lần.
+        """
+        bang = _bang({
+            NGUON_MANH: {"a": 0.6, "b": 0.6},
+            "sabotage": {"a": 0.3, "b": 0.3},
+            "pdf_inspector": {"a": 0.1, "b": 0.1},
+        })
+        kq = D.kiem_sabotage(bang, "m", nguon=NGUON_MANH)
+        assert kq.do_duoc and kq.dat, kq.ly_do
+        assert kq.duoi_sabotage == ("pdf_inspector",)
+        assert "pdf_inspector" in kq.ly_do, "quan trắc phải hiện ra, không được nuốt"
+        assert kq.engine_bet == "pdf_inspector"
+
+    def test_hoa_diem_nguon_van_truot(self) -> None:
+        """`<` chứ không phải `<=`. Hoà nghĩa là phép làm hỏng đi qua mà thước đo
+        không nhúc nhích — ca thật `assert_baseline` (cả hai đúng 1.0000)."""
+        bang = _bang({NGUON_MANH: {"a": 1.0}, "sabotage": {"a": 1.0}})
+        kq = D.kiem_sabotage(bang, "m", nguon=NGUON_MANH)
+        assert kq.do_duoc and not kq.dat, kq.ly_do
+
 
 # ------------------------------------------------------ AC-02: độ phân tán
 
@@ -487,21 +555,33 @@ def bang_that() -> ScoreTable:
 class TestCorpusThat:
     """Quan trắc bộ mẫu hiện tại. Các con số ở đây **đổi khi bộ mẫu đổi**."""
 
-    def test_ac01_moi_metric_do_duoc_deu_xep_sabotage_bet(
+    def test_ac01_metric_truot_cong_khong_duoc_vao_bang_chinh(
         self, bang_that: ScoreTable
     ) -> None:
-        """AC-01 trên dữ liệu thật — chỉ phán ở metric cổng **chạy được**.
+        """AC-01 trên dữ liệu thật — điều phải giữ là **hệ quả**, không phải "không ai trượt".
 
-        Metric không đo được thì cổng không chạy; coi nó là "đạt" là tự lừa mình, và
-        coi nó là "trượt" là đổ lỗi cho metric vì bộ mẫu thiếu nhãn. Nó được đếm riêng
-        ở `test_bao_cao_so_metric_cong_thuc_su_chay`.
+        Trước đây test này đòi mọi metric đo được đều qua cổng. Đòi thế là đòi bộ 14
+        thước đo phải hoàn hảo, mà nó không hoàn hảo: `assert_text_absence` thưởng điểm
+        cho việc phá tài liệu (0.7556 > nguồn 0.4589), `assert_baseline` hoà đúng bằng
+        nguồn. Bắt test xanh bằng cách sửa hai cái đó *sau* thì đến lúc đó test chỉ còn
+        là lời hứa; điều cần canh **ngay bây giờ** là metric trượt cổng không được nằm
+        trong bảng người ta đọc để chọn engine.
+
+        Metric không đo được thì cổng không chạy — đếm riêng ở
+        `test_bao_cao_so_metric_cong_thuc_su_chay`.
         """
-        hong = []
-        for m in sorted(registry.list_metrics()):
-            kq = D.kiem_sabotage(bang_that, m, nguon=NGUON_MANH)
-            if kq.do_duoc and not kq.dat:
-                hong.append(f"{m}: {kq.ly_do}")
-        assert not hong, "metric xếp sai `sabotage`:\n" + "\n".join(hong)
+        ten = sorted(registry.list_metrics())
+        cong = {m: D.kiem_sabotage(bang_that, m, nguon=NGUON_MANH) for m in ten}
+        truot = {m for m, k in cong.items() if k.do_duoc and not k.dat}
+
+        nhom = D.phan_nhom_metric(
+            [D.do_phan_tan(bang_that, m) for m in ten], moi_metric=ten, cong=cong
+        )
+        lot = truot & {r["metric"] for r in nhom["bang_chinh"]}
+        assert not lot, (
+            "metric trượt cổng `sabotage` vẫn lọt vào bảng chính: "
+            + "\n".join(f"{m}: {cong[m].ly_do}" for m in sorted(lot))
+        )
 
     def test_bao_cao_so_metric_cong_thuc_su_chay(self, bang_that: ScoreTable) -> None:
         """Đếm to lên: cổng AC-01 hiện chạy trên **bao nhiêu** trong 14 metric.

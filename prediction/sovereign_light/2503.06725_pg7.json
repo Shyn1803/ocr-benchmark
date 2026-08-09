@@ -1,0 +1,41 @@
+{
+  "schema_version": 2,
+  "engine": "sovereign_light",
+  "engine_version": "9d9a363",
+  "doc_id": "2503.06725_pg7",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "7\nby performing actions, making observations, and receiving\nrewards, all without prior knowledge of the source’s dynamics,\nthe potential usefulness of the updates to be queried, or the\nstatus of the update channels.\nWithin this framework, the hub takes an action a(t) ∈A\nwhile the environment is in state s(t) ∈S during the t-th slot.\nThe action is passed to the environment, and after consulting\nthe updated knowledge base, the hub observes the new state\nof the environment, s(t + 1). Based on this transition, the\nimmediate net reward r(t) resulting from the chosen action\nis computed. The recurring interaction between the hub and\nthe environment over Te steps is represented as a sequence\n⟨s(t), a(t), r(t), s(t + 1)⟩Te\nt=0. Specifically, the reward r(t) at\nthe t-th slot is given by\nr(t) = rµ(s(t), a(t), s(t + 1))\n= vcpt(GoE(t + 1)) −µv+\ncpt(fc(a(t)))\n(18)\nwhere µ is the Lagrange multiplier (see Section IV).\nThis formalism defines the state space S, the action space\nA, and the net rewards of the modeled CMDP in Section III-B.\nLeveraging the model-free approach, we develop a learning-\nbased iterative algorithm to derive policies for solving the dual\nscheduling problem, i.e., bP, from Section IV-A.\nB. Learning-Based Iterative Algorithm\nWe adopt a similar iterative process to that outlined in\nAlgorithm 1. The main distinction here is that we use model-\nfree, learning-based solutions to find the class of effect-aware\nscheduling policies, π, within the inner loop.\n1) Computing π:\nTo derive the scheduling policies, we\nadapt two prominent on-policy DRL algorithms, advantage\nactor-critic (A2C) [35] and proximal policy optimization\n(PPO) [36], along with an off-policy algorithm, Deep Q-\nnetwork (DQN) [37]. These algorithms are particularly well-\nsuited for decision-making in high-dimensional spaces.\nIn each algorithm, the Q-function or the corresponding value\nfunction is computed based on the net reward defined in (18).\n2) Computing µ∗:\nWe employ the same method as in\nAlgorithm 1 to determine the optimal Lagrange multiplier for a\ngiven policy from the inner loop. In this context, the bisection\nsearch method is employed in the outer loop to iteratively and\ngradually identify the minimum Lagrange multiplier that meets\nthe cost constraint of the scheduling problem P, as formulated\nin (6).\nVI. SIMULATION RESULTS\nIn this section, we evaluate the performance of the proposed\nmodel-based and model-free solutions outlined in Sections IV\nand V, respectively, within the context of effect-aware query\nscheduling. To assess their effectiveness, we compare these so-\nlutions against several well-established benchmark approaches.\nA. Setup and Assumptions\nWe consider a system with N = 4 SAs observing a source\ncharacterized by M = 2 attributes and K = 4 AAs performing\nactions over T = 1, 000 slots. The usefulness of an update on\nTABLE I\nPARAMETERS FOR SIMULATION RESULTS.\nParameter\nSymbol\nValue\nParameter\nSymbol Value\nNumber of slots\nT\n103\nParameters\nshaping vcpt(·)\nαcpt\n0.5\nNumber of SAs\nN\n4\nβcpt\nNumber of attributes\nM\n2\nλcpt\n2\nNumber of AAs\nK\n4\nRefs. point\nGoEref\n0.2\nCorr. observation\nprobability\npo,nm,\n∀n, m\n0.8\nCost per query\nfc(1)\n0.5\nRequired attributes\n|Mk|, ∀k\n2\nCost flex. index\nCflex\n0.75\nErasure probability\npe,n, ∀n\n0.2\nMaximum AoI\n∆max\n4\nDiscount factor\nγ\n0.9\nConverg. sens.\nϵπ\n10−6\nShape parameters\nfor gm(·; ·), ∀m\n{α1, α2} {0.5, 2}\nTolerance sens.\nϵµ\n{β1, β2} {0.5, 5}\nMixing factor\nη\n0.5\nSize of usefulness\n|U|\n4\n–\n–\n–\nthe m-th attribute is mapped to a value within the range [0, 1],\ndetermined by applying\ngm(t; ym(t)) = min\n\u001a\n1, yαm−1\nm\n(t)(1 −ym(t))βm−1\nB(αm, βm)\n\u001b\n(19)\nat the t-th slot, where αm, βm > 0, ∀m, are shape parameters,\nand B(·, ·) is Beta function. Besides, we consider GoEm(t) =\num(t)\n∆m(t), ∀m, and the CPT-based value function for an arbitrary\nx ∈R is given by [12]\nvcpt(x) =\n(\nv+\ncpt(x) = (x −xref)αcpt, x ≥xref;\nv−\ncpt(x) = −λcpt(xref −x)βcpt, x < xref,\n(20)\nwith αcpt\n= βcpt\n= 0.5, and λcpt\n= 2 being shape\nparameters under the given reference point xref. For simplicity\nand to facilitate comparison with non-probabilistic scheduling\nmethods, we assume wcpt(x) = x, ∀x.\nFinally, the cost constraint is enforced by introducing a cost\nflexibility index Cflex multiplied by the discounted cumulative\ncost incurred from querying across all slots. Thus, we have\nCmax = Cflex\n\" ∞\nX\nt=0\nγtv+\ncpt\n\u0000fc(1)\n\u0001\n#\n= Cflex\nv+\ncpt\n\u0000fc(1)\n\u0001\n1 −γ\n(21)\nwhere fc(1) indicates the fixed cost per query. Unless stated\notherwise, the default simulation parameter values are outlined\nin Table I.\nTo implement the DRL algorithms, namely A2C, PPO,\nand DQN, we follow the default hyperparameter settings as\nconsidered in their respective original papers, i.e., [35], [36],\nand [37]. However, we adjust the discount factor according to\nTable I. We employ the Adaptive Moment Estimation (Adam)\noptimizer for both DQN and PPO, whereas the Root Mean\nSquare Propagation (RMSprop) optimizer is used for A2C.\nFor each DRL algorithm, a model is trained over 100 episodes\nof interaction. Each episode comprises 10, 000 time slots,\ngenerating a total of Te = 106 environment steps. The key\nhyperparameters for these algorithms, along with their initial\nconfigurations, are summarized in Table II.",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.024690199992619455,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "F:\\vnpt\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 250
+  }
+}

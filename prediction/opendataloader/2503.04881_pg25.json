@@ -1,0 +1,889 @@
+{
+  "schema_version": 2,
+  "engine": "opendataloader",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.04881_pg25",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "25\n\n# 3. Non-uniform mesh spacing\n\nWe have emperically found it advantageous to use the following non-uniform mesh structure for evolving the subextremal Q0 = 0.999 and extremal Q0 = 1 cases studied in this paper.\n\nFor the sub-extremal grid, we space cells evenly in VEF from VEF = VEF,0 to VEF = 1000, and then logarithmically from VEF = 1000 to VEF = 10000, before adding a single point at vMRT = π/2 (null infinity). In the exterior, we then space evenly in UEF from UEF = UEF,0 to UEF = 950, before adding a single point at uMRT = 0 (the horizon) and then reflecting the grid across the horizon into the black hole interior. Due to the exponential sensitivity of the horizon redshift effect (Eq. 12), we cannot go past UEF = 950 before hitting machine precision (we use quadruple precision floating point arithmetic).\n\nFor the extremal grid, we use the same spacing in V . But for U, we space evenly in UEF from UEF = UEF,0 to UEF = 1500, and then logarithmically from UEF = 1500 to UEF = 105, before adding a single point at uMRT = 0 (the horizon) and reflecting the grid across the horizon into the interior. Since there is no redshift effect of the extremal horizon, we can to push much larger values of UEF with quadruple precision floating point arithmetic and still obtain convergent solutions.\n\n# 4. Convergence\n\nHere, we demonstrate convergence of our code. To do so, we need to compare the code output at (at least) three different grid resolutions. Since we use a non-uniform mesh, the way we define “different” resolutions here is we choose one specific mesh as our base “low” resolution mesh, then define each successively higher resolution meshes as the immediately lower resolution mesh with each cell cut into quarters (as measured in compactified MRT coordinates). In other words, we double the resolution at each step. Consequently, for a second order accurate evolution scheme as we employ, in the convergent regime we expect global truncation error to drop by a factor of four per doubling step.\n\nFor our low resolution mesh, we construct it as described above with the exterior portion of the mesh having 20000 cells in the V direction and 10000 cells in the U direction. We then runs simulations at twice and four times this resolution. For some quantity Φ output from these simulations, we compute the point-wise convergence parameter C (see e.g. [41])\n\n- Φ0 − Φ1\n\n- Φ1 − Φ2\n\n\nC ≡\n\n, (D9)\n\nwhere Φ0 is the field from the low resolution run, with Φ1,Φ2 getting progressively finer. For second order convergence, we expect C → 4.\n\nThe convergence factor C on the future horizon and at null infinity is plotted in Figure 14 for a representative set of parameters.\n\nP on Horizon\n\n10\n\n<table>\n  <tr>\n    <td> </td>\n    <td colspan=\"5\" rowspan=\"3\"> </td>\n  </tr>\n  <tr>\n    <td> </td>\n  </tr>\n  <tr>\n    <td> </td>\n  </tr>\n  <tr>\n    <td> </td>\n    <td colspan=\"5\" rowspan=\"2\"> </td>\n  </tr>\n  <tr>\n    <td> </td>\n  </tr>\n  <tr>\n    <td colspan=\"2\"> </td>\n    <td> </td>\n    <td> </td>\n    <td> </td>\n    <td> </td>\n  </tr>\n</table>\n\n\n8\n\n6\n\n4\n\n2\n\n0\n\n200 400 600 800\n\nVEF\n\nConvergence of Matter Fields\n\nQ on Horizon\n\nP on Null Infinity\n\n10\n\n10\n\n<table>\n  <tr>\n    <td> </td>\n    <td colspan=\"5\" rowspan=\"3\"> </td>\n  </tr>\n  <tr>\n    <td> </td>\n  </tr>\n  <tr>\n    <td> </td>\n  </tr>\n  <tr>\n    <td> </td>\n    <td colspan=\"5\" rowspan=\"2\"> </td>\n  </tr>\n  <tr>\n    <td> </td>\n  </tr>\n  <tr>\n    <td colspan=\"2\"> </td>\n    <td> </td>\n    <td> </td>\n    <td> </td>\n    <td> </td>\n  </tr>\n</table>\n\n\n<table>\n  <tr>\n    <td> </td>\n    <td colspan=\"5\" rowspan=\"3\"> </td>\n  </tr>\n  <tr>\n    <td> </td>\n  </tr>\n  <tr>\n    <td> </td>\n  </tr>\n  <tr>\n    <td> </td>\n    <td colspan=\"5\" rowspan=\"2\"> </td>\n  </tr>\n  <tr>\n    <td> </td>\n  </tr>\n  <tr>\n    <td colspan=\"2\"> </td>\n    <td> </td>\n    <td> </td>\n    <td> </td>\n    <td> </td>\n  </tr>\n</table>\n\n\n8\n\n8\n\n6\n\n6\n\n4\n\n4\n\n2\n\n2\n\n0\n\n0\n\n200 400 600 800\n\n200 400 600 800\n\nUEF\n\nVEF\n\nQ on Null Infinity\n\n10\n\n<table>\n  <tr>\n    <td> </td>\n    <td colspan=\"5\" rowspan=\"3\"> </td>\n  </tr>\n  <tr>\n    <td> </td>\n  </tr>\n  <tr>\n    <td> </td>\n  </tr>\n  <tr>\n    <td> </td>\n    <td colspan=\"5\" rowspan=\"2\"> </td>\n  </tr>\n  <tr>\n    <td> </td>\n  </tr>\n  <tr>\n    <td colspan=\"2\"> </td>\n    <td> </td>\n    <td> </td>\n    <td> </td>\n    <td> </td>\n  </tr>\n</table>\n\n\n8\n\n6\n\n4\n\n2\n\n0\n\n200 400 600 800\n\nUEF\n\nFIG. 14. Convergence factor for P and Q at the boundaries of the black hole exterior for the numerical simulation with Q0 = 1.0, eQ0 = 0.6, and ω˜ = 0.0. The idealized value C = 4 is shown as a black dashed line in each panel.\n\nWe see that in all cases, C is scattered around its idealized value of 4, with the scatter in that of Q typically being significantly smaller than that of P at a fixed resolution.\n\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9021764705882352,
+        "y0": 0.03618939393939402,
+        "x1": 0.9184558823529412,
+        "y1": 0.04876893939393945
+      },
+      "text": "25",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.3862287581699347,
+        "y0": 0.06983838383838381,
+        "x1": 0.6204640522875817,
+        "y1": 0.08116035353535356
+      },
+      "text": "3. Non-uniform mesh spacing",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.10171212121212125,
+        "x1": 0.9184542483660132,
+        "y1": 0.12969949494949495
+      },
+      "text": "We have emperically found it advantageous to use the following non-uniform mesh structure for evolving the subextremal Q0 = 0.999 and extremal Q0 = 1 cases studied in this paper.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.13109848484848485,
+        "x1": 0.9184624183006537,
+        "y1": 0.21600757575757568
+      },
+      "text": "For the sub-extremal grid, we space cells evenly in VEF from VEF = VEF,0 to VEF = 1000, and then logarithmically from VEF = 1000 to VEF = 10000, before adding a single point at vMRT = π/2 (null infinity). In the exterior, we then space evenly in UEF from UEF = UEF,0 to UEF = 950, before adding a single point at uMRT = 0 (the horizon) and then reflecting the grid across the horizon into the black hole interior. Due to the exponential sensitivity of the horizon redshift effect (Eq. 12), we cannot go past UEF = 950 before hitting machine precision (we use quadruple precision floating point arithmetic).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.2183484848484849,
+        "x1": 0.9184624183006537,
+        "y1": 0.28879166666666656
+      },
+      "text": "For the extremal grid, we use the same spacing in V . But for U, we space evenly in UEF from UEF = UEF,0 to UEF = 1500, and then logarithmically from UEF = 1500 to UEF = 105, before adding a single point at uMRT = 0 (the horizon) and reflecting the grid across the horizon into the interior. Since there is no redshift effect of the extremal horizon, we can to push much larger values of UEF with quadruple precision floating point arithmetic and still obtain convergent solutions.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.43991993464052287,
+        "y0": 0.3214078282828282,
+        "x1": 0.5667630718954249,
+        "y1": 0.33272979797979807
+      },
+      "text": "4. Convergence",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.353280303030303,
+        "x1": 0.9184640522875818,
+        "y1": 0.43818939393939393
+      },
+      "text": "Here, we demonstrate convergence of our code. To do so, we need to compare the code output at (at least) three different grid resolutions. Since we use a non-uniform mesh, the way we define “different” resolutions here is we choose one specific mesh as our base “low” resolution mesh, then define each successively higher resolution meshes as the immediately lower resolution mesh with each cell cut into quarters (as measured in compactified MRT coordinates). In other words, we double the resolution at each step. Consequently, for a second order accurate evolution scheme as we employ, in the convergent regime we expect global truncation error to drop by a factor of four per doubling step.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.44053030303030305,
+        "x1": 0.9184607843137255,
+        "y1": 0.49650757575757576
+      },
+      "text": "For our low resolution mesh, we construct it as described above with the exterior portion of the mesh having 20000 cells in the V direction and 10000 cells in the U direction. We then runs simulations at twice and four times this resolution. For some quantity Φ output from these simulations, we compute the point-wise convergence parameter C (see e.g. [41])",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.48768954248366014,
+        "y0": 0.5101010101010102,
+        "x1": 0.5448921568627451,
+        "y1": 0.5319255050505051
+      },
+      "text": "Φ0 − Φ1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.48768954248366014,
+        "y0": 0.5272386363636363,
+        "x1": 0.5448921568627451,
+        "y1": 0.5490631313131313
+      },
+      "text": "Φ1 − Φ2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45450980392156864,
+        "y0": 0.5186098484848485,
+        "x1": 0.4812124183006536,
+        "y1": 0.5404343434343435
+      },
+      "text": "C ≡",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.547658496732026,
+        "y0": 0.5189242424242424,
+        "x1": 0.9184558823529412,
+        "y1": 0.5315037878787878
+      },
+      "text": ", (D9)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.5529217171717171,
+        "x1": 0.9184591503267974,
+        "y1": 0.5888977272727273
+      },
+      "text": "where Φ0 is the field from the low resolution run, with Φ1,Φ2 getting progressively finer. For second order convergence, we expect C → 4.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.5819936868686869,
+        "x1": 0.9184607843137255,
+        "y1": 0.6093535353535353
+      },
+      "text": "The convergence factor C on the future horizon and at null infinity is plotted in Figure 14 for a representative set of parameters.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17667320261437908,
+        "y0": 0.642625,
+        "x1": 0.2361029411764706,
+        "y1": 0.6529002525252525
+      },
+      "text": "P on Horizon",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10783660130718953,
+        "y0": 0.6490770202020202,
+        "x1": 0.11683986928104576,
+        "y1": 0.6570467171717171
+      },
+      "text": "10",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "table",
+      "box": {
+        "page": 0,
+        "x0": 0.11861274509803921,
+        "y0": 0.6529128787878788,
+        "x1": 0.292578431372549,
+        "y1": 0.8062626262626262
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11233986928104574,
+        "y0": 0.6794027777777778,
+        "x1": 0.11684150326797386,
+        "y1": 0.6873724747474748
+      },
+      "text": "8",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11233986928104574,
+        "y0": 0.7097285353535354,
+        "x1": 0.11684150326797386,
+        "y1": 0.7176982323232324
+      },
+      "text": "6",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11233986928104574,
+        "y0": 0.7400542929292929,
+        "x1": 0.11684150326797386,
+        "y1": 0.7480252525252525
+      },
+      "text": "4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11233986928104574,
+        "y0": 0.7703813131313131,
+        "x1": 0.11684150326797386,
+        "y1": 0.77835101010101
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11233986928104574,
+        "y0": 0.8007070707070707,
+        "x1": 0.11684150326797386,
+        "y1": 0.8086767676767677
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.15272549019607845,
+        "y0": 0.8057159090909091,
+        "x1": 0.28890522875816993,
+        "y1": 0.813685606060606
+      },
+      "text": "200 400 600 800",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19841503267973856,
+        "y0": 0.8119154040404041,
+        "x1": 0.21387581699346406,
+        "y1": 0.8240757575757576
+      },
+      "text": "VEF",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41850326797385623,
+        "y0": 0.6244608585858585,
+        "x1": 0.5872875816993465,
+        "y1": 0.6369848484848485
+      },
+      "text": "Convergence of Matter Fields",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5880915032679738,
+        "y0": 0.6426679292929293,
+        "x1": 0.6491977124183007,
+        "y1": 0.6529431818181818
+      },
+      "text": "Q on Horizon",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37315522875817,
+        "y0": 0.642790404040404,
+        "x1": 0.45161928104575166,
+        "y1": 0.6530656565656565
+      },
+      "text": "P on Null Infinity",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3139248366013072,
+        "y0": 0.6490770202020202,
+        "x1": 0.3229297385620915,
+        "y1": 0.6570467171717171
+      },
+      "text": "10",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5200130718954248,
+        "y0": 0.6490770202020202,
+        "x1": 0.5290179738562092,
+        "y1": 0.6570467171717171
+      },
+      "text": "10",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "table",
+      "box": {
+        "page": 0,
+        "x0": 0.3247009803921569,
+        "y0": 0.6529128787878788,
+        "x1": 0.4986666666666667,
+        "y1": 0.8062626262626262
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "table",
+      "box": {
+        "page": 0,
+        "x0": 0.5307908496732026,
+        "y0": 0.6529128787878788,
+        "x1": 0.7047565359477124,
+        "y1": 0.8062626262626262
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31842810457516335,
+        "y0": 0.6794027777777778,
+        "x1": 0.3229297385620915,
+        "y1": 0.6873724747474748
+      },
+      "text": "8",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5245179738562091,
+        "y0": 0.6794027777777778,
+        "x1": 0.5290196078431373,
+        "y1": 0.6873724747474748
+      },
+      "text": "8",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31842810457516335,
+        "y0": 0.7097285353535354,
+        "x1": 0.3229297385620915,
+        "y1": 0.7176982323232324
+      },
+      "text": "6",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5245179738562091,
+        "y0": 0.7097285353535354,
+        "x1": 0.5290196078431373,
+        "y1": 0.7176982323232324
+      },
+      "text": "6",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31842810457516335,
+        "y0": 0.7400542929292929,
+        "x1": 0.3229297385620915,
+        "y1": 0.7480252525252525
+      },
+      "text": "4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5245179738562091,
+        "y0": 0.7400542929292929,
+        "x1": 0.5290196078431373,
+        "y1": 0.7480252525252525
+      },
+      "text": "4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31842810457516335,
+        "y0": 0.7703813131313131,
+        "x1": 0.3229297385620915,
+        "y1": 0.77835101010101
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5245179738562091,
+        "y0": 0.7703813131313131,
+        "x1": 0.5290196078431373,
+        "y1": 0.77835101010101
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31842810457516335,
+        "y0": 0.8007070707070707,
+        "x1": 0.3229297385620915,
+        "y1": 0.8086767676767677
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5245179738562091,
+        "y0": 0.8007070707070707,
+        "x1": 0.5290196078431373,
+        "y1": 0.8086767676767677
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.3588153594771242,
+        "y0": 0.8057159090909091,
+        "x1": 0.49499346405228756,
+        "y1": 0.813685606060606
+      },
+      "text": "200 400 600 800",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.5649035947712419,
+        "y0": 0.8057159090909091,
+        "x1": 0.7010816993464053,
+        "y1": 0.813685606060606
+      },
+      "text": "200 400 600 800",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4042516339869281,
+        "y0": 0.8119154040404041,
+        "x1": 0.4201960784313726,
+        "y1": 0.8240757575757576
+      },
+      "text": "UEF",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6105931372549019,
+        "y0": 0.8119154040404041,
+        "x1": 0.6260539215686274,
+        "y1": 0.8240757575757576
+      },
+      "text": "VEF",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7845735294117647,
+        "y0": 0.642790404040404,
+        "x1": 0.8647140522875818,
+        "y1": 0.6530656565656565
+      },
+      "text": "Q on Null Infinity",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7261029411764706,
+        "y0": 0.6490770202020202,
+        "x1": 0.735107843137255,
+        "y1": 0.6570467171717171
+      },
+      "text": "10",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "table",
+      "box": {
+        "page": 0,
+        "x0": 0.7368790849673204,
+        "y0": 0.6529128787878788,
+        "x1": 0.91084477124183,
+        "y1": 0.8062626262626262
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7306062091503267,
+        "y0": 0.6794027777777778,
+        "x1": 0.735107843137255,
+        "y1": 0.6873724747474748
+      },
+      "text": "8",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7306062091503267,
+        "y0": 0.7097285353535354,
+        "x1": 0.735107843137255,
+        "y1": 0.7176982323232324
+      },
+      "text": "6",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7306062091503267,
+        "y0": 0.7400542929292929,
+        "x1": 0.735107843137255,
+        "y1": 0.7480252525252525
+      },
+      "text": "4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7306062091503267,
+        "y0": 0.7703813131313131,
+        "x1": 0.735107843137255,
+        "y1": 0.77835101010101
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7306062091503267,
+        "y0": 0.8007070707070707,
+        "x1": 0.735107843137255,
+        "y1": 0.8086767676767677
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.7709934640522876,
+        "y0": 0.8057159090909091,
+        "x1": 0.907171568627451,
+        "y1": 0.813685606060606
+      },
+      "text": "200 400 600 800",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8164297385620914,
+        "y0": 0.8119154040404041,
+        "x1": 0.832374183006536,
+        "y1": 0.8240757575757576
+      },
+      "text": "UEF",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.8421590909090909,
+        "x1": 0.9184509803921569,
+        "y1": 0.8747045454545455
+      },
+      "text": "FIG. 14. Convergence factor for P and Q at the boundaries of the black hole exterior for the numerical simulation with Q0 = 1.0, eQ0 = 0.6, and ω˜ = 0.0. The idealized value C = 4 is shown as a black dashed line in each panel.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823529411764706,
+        "y0": 0.8868510101010101,
+        "x1": 0.9184558823529412,
+        "y1": 0.9142108585858586
+      },
+      "text": "We see that in all cases, C is scattered around its idealized value of 4, with the scatter in that of Q typically being significantly smaller than that of P at a fixed resolution.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [
+    {
+      "html": "<table><tr><td></td><td rowspan=\"3\" colspan=\"5\"></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td><td rowspan=\"2\" colspan=\"5\"></td></tr><tr><td></td></tr><tr><td colspan=\"2\"></td><td></td><td></td><td></td><td></td></tr></table>",
+      "box": {
+        "page": 0,
+        "x0": 0.11861274509803921,
+        "y0": 0.6529128787878788,
+        "x1": 0.292578431372549,
+        "y1": 0.8062626262626262
+      },
+      "n_rows": 6,
+      "n_cols": 6
+    },
+    {
+      "html": "<table><tr><td></td><td rowspan=\"3\" colspan=\"5\"></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td><td rowspan=\"2\" colspan=\"5\"></td></tr><tr><td></td></tr><tr><td colspan=\"2\"></td><td></td><td></td><td></td><td></td></tr></table>",
+      "box": {
+        "page": 0,
+        "x0": 0.3247009803921569,
+        "y0": 0.6529128787878788,
+        "x1": 0.4986666666666667,
+        "y1": 0.8062626262626262
+      },
+      "n_rows": 6,
+      "n_cols": 6
+    },
+    {
+      "html": "<table><tr><td></td><td rowspan=\"3\" colspan=\"5\"></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td><td rowspan=\"2\" colspan=\"5\"></td></tr><tr><td></td></tr><tr><td colspan=\"2\"></td><td></td><td></td><td></td><td></td></tr></table>",
+      "box": {
+        "page": 0,
+        "x0": 0.5307908496732026,
+        "y0": 0.6529128787878788,
+        "x1": 0.7047565359477124,
+        "y1": 0.8062626262626262
+      },
+      "n_rows": 6,
+      "n_cols": 6
+    },
+    {
+      "html": "<table><tr><td></td><td rowspan=\"3\" colspan=\"5\"></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td><td rowspan=\"2\" colspan=\"5\"></td></tr><tr><td></td></tr><tr><td colspan=\"2\"></td><td></td><td></td><td></td><td></td></tr></table>",
+      "box": {
+        "page": 0,
+        "x0": 0.7368790849673204,
+        "y0": 0.6529128787878788,
+        "x1": 0.91084477124183,
+        "y1": 0.8062626262626262
+      },
+      "n_rows": 6,
+      "n_cols": 6
+    }
+  ],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 1.298564600001555,
+  "model_load_seconds": null,
+  "peak_rss_mb": 280.80859375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "opendataloader_version": "2.5.0",
+    "table_method": "cluster",
+    "include_header_footer": true,
+    "reading_order": "xycut",
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "F:\\vnpt\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe"
+  }
+}

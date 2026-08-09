@@ -1,0 +1,2558 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "031a888e402c82517f213222ae97147dd7dc_page_1_pg1",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "# Modified DISTBIC algorithm for speaker change detection\n\n*Petra Zochov* *a, Vlasta Radov ´ a ´*\n\nDepartment of Cybernetics University of West Bohemia, Pilsen, Czech Republic pzochova@kky.zcu.cz,radova@kky.zcu.cz\n\n**Abstract** stream at first (e.g.possible speaker changes are at every si- lence location). The paper deals with the problem of automatic speaker change In this paper,we are interested in the metric-based ap- detection. A metric-based algorithm, called MDISTBIC, which proach, because it does not require any other information or means Modified DISTBIC, is proposed in this paper.The al- things except the speech signal itself (i.e. neither speaker gorithm originates from the DISTBIC algorithm and modifies model, nor speech recognizer). We focus on the DISTBIC algo- it in order to reach a higher efficiency. Both the DISTBIC and rithm introduced in [3]. This algorithm is efficient in detecting the MDISTBIC methods are tested in a number of experiments. speaker changes that are relatively close one another, however As the results show, the MDISTBIC algorithm is more efficient at the price that a lot of false speaker changes is detected. We than the DISTBIC algorithm in a majority of tests. will try to modify the algorithm in this paper and thereby to improve its efficiency.\n\n**1.Introduction** Thepaperisorganizedasfollows: In Section2the\nDISTBIC algorithm is briefly described. Next, in Section 3 the The aim of automatic speaker change detection is to extract ho- modifications of the DISTBIC algorithm are introduced. Exper- mogeneous segments containing the longest possible utterances iments are described and their results are presented in Section 4. produced by a single speaker. Many efforts have been devoted Finally, a conclusion is given in Section 5. to this problem in the last years, mainly due to the large number of possible applications, e.g.:\n\n**2.DISTBIC algorithm**\n- ** a reliable speaker change detection algorithm could be very helpful for annotators who manually annotate a\nThe DISTBIC algorithm is based on a two-step analysis [3]: the large amount of speech data in order to organize an first pass uses a distance computation to determine the speaker archive of audio documents (e.g.recordings of various changes candidates and the second pass uses Bayesian Informa- sessions or meetings, broadcast news, etc.); tion Criterion (BIC) to validate or discard these candidates.\n\n- ** performance of a speech recognition system that rec-\n**2.1.Firststep: detectionofspeakerchangecandidate**\nognizes conversations or news broadcasts could be im- **points** proved, when a speaker change detection system would detect the change of the speaker and parameters of the The first step relies on a distance-based segmentation defined speech recognition system would be adapted accord- from the likelihoods of adjacent windows.In each window, ingly; the data are assumed to result from a single multi-dimensional\n\n- ** in speaker recognition systems it is supposed that the in-Gaussian process.The question is, whether the data from the put speech belongs only to one speaker.It may cause\ntwo adjacent windows together fit better with a single multi- problems in many real situations (e.g.in conversations dimensional Gaussian or whether a two-window representation or broadcast news), where the speech stream is continu- justifies the data better.In order to answer this question, the ous and there is no information about the beginning and Kullback-Leibler distance can be used for example. ending of the speech segment of one speaker. A speaker A symmetric Kullback-Leibler distance KL2 between a change detection system could help to eliminate such vector *X* coming from the multi-dimensional Gaussian pro- problems. cess *N* (*µX,* Σ*X*) and a vector *Y* resulting from the multi- dimensional Gaussian process *N* (*µY,* Σ*Y*) can be computed as There are three main speaker change detection approaches [1], [2]. In the*metric-based approach* the speaker changes are KL 2(*X, Y*) = <u>1</u> (*µY − µX*) T (Σ *−* *X* 1 + Σ *−* *Y* 1 )(*µY − µX*)+ determined as the moments in which a distance measure com-2 () puted between two adjacent windows shifted along the speech + <u>1</u> tr (Σ¹ 2 Σ *−*21 )(Σ¹ 2 Σ *−*12 ) T + signal reaches a local maximum. In the*model-based approach* 2 *X Y X Y* it is assumed that a model of each speaker the voice of which is <u>1</u> ( *−*<u>1 1</u>*−*<u>1 1</u>T ) + 2 tr (Σ 2 Σ²)(Σ 2 Σ²) *− d,* contained in an utterance has been trained before the speaker *X Y X Y* change detection algorithm starts.The speaker changes are\n\n(1)\nthen detected as the instants when it is necessary to change the speaker model in order it match the speech signal.The last where tr denotes the trace of a matrix, and*d* is the dimension of approach is the*decoder-guided* approach.Here, the speaker the vectors *X* and *Y*. changes are determined according to information provided by The KL2 distance is computed for two adjacent windows a speech recognition system which decodes the spoken audio *W₁* and *W₂* of the same size (2 s) shifted by a fixed step\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "Modified DISTBIC algorithm for speaker change detection",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "Petra Zochov",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47263071895424835,
+        "y0": 0.14612374040815568,
+        "x1": 0.4742320440953074,
+        "y1": 0.1612247505573311
+      },
+      "text": "a, Vlasta Radov ´",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5966993344375511,
+        "y0": 0.14612374040815568,
+        "x1": 0.5982843037524255,
+        "y1": 0.1612247505573311
+      },
+      "text": "a ´",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "Department of Cybernetics",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "University of West Bohemia, Pilsen, Czech Republic",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "pzochova@kky.zcu.cz,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "radova@kky.zcu.cz",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "Abstract",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "stream at first (e.g.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "possible speaker changes are at every si-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "lence location).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "The paper deals with the problem of automatic speaker change",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "In this paper,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "we are interested in the metric-based ap-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "detection. A metric-based algorithm, called MDISTBIC, which",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "proach, because it does not require any other information or",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "means Modified DISTBIC, is proposed in this paper.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "The al-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803442861519,
+        "y0": 0.3165655051819002,
+        "x1": 0.5544819052702461,
+        "y1": 0.3278912630948153
+      },
+      "text": "things except the speech signal itself (i.e.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5699302324282578,
+        "y0": 0.3165655051819002,
+        "x1": 0.577214708515242,
+        "y1": 0.3278912630948153
+      },
+      "text": "neither speaker",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "gorithm originates from the DISTBIC algorithm and modifies",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "model, nor speech recognizer). We focus on the DISTBIC algo-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "it in order to reach a higher efficiency. Both the DISTBIC and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "rithm introduced in [3]. This algorithm is efficient in detecting",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "the MDISTBIC methods are tested in a number of experiments.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "speaker changes that are relatively close one another, however",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "As the results show, the MDISTBIC algorithm is more efficient",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "at the price that a lot of false speaker changes is detected. We",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "than the DISTBIC algorithm in a majority of tests.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "will try to modify the algorithm in this paper and thereby to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "improve its efficiency.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "1.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "Introduction",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "The",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "paper",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "organized",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "follows:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "In",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "Section",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "DISTBIC algorithm is briefly described. Next, in Section 3 the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "The aim of automatic speaker change detection is to extract ho-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "modifications of the DISTBIC algorithm are introduced. Exper-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "mogeneous segments containing the longest possible utterances",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "iments are described and their results are presented in Section 4.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "produced by a single speaker. Many efforts have been devoted",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "Finally, a conclusion is given in Section 5.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "to this problem in the last years, mainly due to the large number",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "of possible applications, e.g.:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "2.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "DISTBIC algorithm",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11915029887280433,
+        "y0": 0.5029417878449565,
+        "x1": 0.12668392704982384,
+        "y1": 0.5142675457578717
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "a reliable speaker change detection algorithm could be",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "very helpful for annotators who manually annotate a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "The DISTBIC algorithm is based on a two-step analysis [3]: the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "large amount of speech data in order to organize an",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "first pass uses a distance computation to determine the speaker",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "archive of audio documents (e.g.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "recordings of various",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "changes candidates and the second pass uses Bayesian Informa-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "sessions or meetings, broadcast news, etc.);",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "tion Criterion (BIC) to validate or discard these candidates.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11915029887280433,
+        "y0": 0.5700125272827918,
+        "x1": 0.12668392704982384,
+        "y1": 0.5813382851957071
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "performance of a speech recognition system that rec-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "2.1.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "First",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "step:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "detection",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "speaker",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "change",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "candidate",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "ognizes conversations or news broadcasts could be im-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "points",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "proved, when a speaker change detection system would",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "detect the change of the speaker and parameters of the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "The first step relies on a distance-based segmentation defined",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13482022752948836,
+        "y0": 0.6226009419470122,
+        "x1": 0.17731046988294016,
+        "y1": 0.6339266998599273
+      },
+      "text": "speech recognition system would be adapted accord-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "from the likelihoods of adjacent windows.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "In each window,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "ingly;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "the data are assumed to result from a single multi-dimensional",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11915029887280433,
+        "y0": 0.650239849331403,
+        "x1": 0.12668392704982384,
+        "y1": 0.6615656072443181
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "in speaker recognition systems it is supposed that the in-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "Gaussian process.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "The question is, whether the data from the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "put speech belongs only to one speaker.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "It may cause",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "two adjacent windows together fit better with a single multi-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "problems in many real situations (e.g.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "in conversations",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "dimensional Gaussian or whether a two-window representation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "or broadcast news), where the speech stream is continu-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "justifies the data better.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "In order to answer this question, the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "ous and there is no information about the beginning and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "Kullback-Leibler distance can be used for example.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "ending of the speech segment of one speaker. A speaker",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5353921129812602,
+        "y0": 0.7144948797996598,
+        "x1": 0.577882355334712,
+        "y1": 0.725820637712575
+      },
+      "text": "A symmetric Kullback-Leibler distance KL2 between a",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "change detection system could help to eliminate such",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "vector",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5537581100962521,
+        "y0": 0.7276388238174747,
+        "x1": 0.566201802172692,
+        "y1": 0.7389645817303898
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "coming from the multi-dimensional Gaussian pro-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "problems.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "cess",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5422548780254289,
+        "y0": 0.7407827678352896,
+        "x1": 0.5542881784875409,
+        "y1": 0.7521085257482047
+      },
+      "text": "N",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5558823230219823,
+        "y0": 0.7407827678352896,
+        "x1": 0.5617450888639961,
+        "y1": 0.7521085257482047
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5617319742838541,
+        "y0": 0.7407827678352896,
+        "x1": 0.5708045710146038,
+        "y1": 0.7521085257482047
+      },
+      "text": "µ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5708005817887051,
+        "y0": 0.7458206469362432,
+        "x1": 0.5805816151737387,
+        "y1": 0.7533711520108309
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5821568108851614,
+        "y0": 0.7407827678352896,
+        "x1": 0.5863340290543301,
+        "y1": 0.7521085257482047
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5888398114372703,
+        "y0": 0.7407827678352896,
+        "x1": 0.5997151892169629,
+        "y1": 0.7521085257482047
+      },
+      "text": "Σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5997221703622856,
+        "y0": 0.7458206469362432,
+        "x1": 0.6095032037473193,
+        "y1": 0.7533711520108309
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6110783994587419,
+        "y0": 0.7407827678352896,
+        "x1": 0.6237908157647825,
+        "y1": 0.7521085257482047
+      },
+      "text": ") and a vector",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7084640303468392,
+        "y0": 0.7407827678352896,
+        "x1": 0.7171995374891493,
+        "y1": 0.7521085257482047
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "resulting from the multi-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "dimensional Gaussian process",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6906535329382404,
+        "y0": 0.7539393311799174,
+        "x1": 0.7026868334003523,
+        "y1": 0.7652650890928326
+      },
+      "text": "N",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7042646221086091,
+        "y0": 0.7539393311799174,
+        "x1": 0.7101273879506229,
+        "y1": 0.7652650890928326
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7101306291966657,
+        "y0": 0.7539393311799174,
+        "x1": 0.7192032259274153,
+        "y1": 0.7652650890928326
+      },
+      "text": "µ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7191992367015165,
+        "y0": 0.7589645909540581,
+        "x1": 0.7262931773865146,
+        "y1": 0.7665150960286459
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7296404371074602,
+        "y0": 0.7539393311799174,
+        "x1": 0.7338176552766289,
+        "y1": 0.7652650890928326
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7363234376595691,
+        "y0": 0.7539393311799174,
+        "x1": 0.7471988154392616,
+        "y1": 0.7652650890928326
+      },
+      "text": "Σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7472057965845843,
+        "y0": 0.7589645909540581,
+        "x1": 0.7542997372695823,
+        "y1": 0.7665150960286459
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.757646996990528,
+        "y0": 0.7539393311799174,
+        "x1": 0.7669770483877144,
+        "y1": 0.7652650890928326
+      },
+      "text": ") can be computed as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "There are three main speaker change detection approaches",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "[1], [2]. In the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "metric-based approach",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "the speaker changes are",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "KL",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.545539157842499,
+        "y0": 0.7803913475287081,
+        "x1": 0.5589355269288705,
+        "y1": 0.7917171054416232
+      },
+      "text": "2(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.558937870599086,
+        "y0": 0.7803913475287081,
+        "x1": 0.5871083378012664,
+        "y1": 0.7917171054416232
+      },
+      "text": "X, Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5904574924045138,
+        "y0": 0.7803913475287081,
+        "x1": 0.6122082978292228,
+        "y1": 0.7917171054416232
+      },
+      "text": ") =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6141666586882149,
+        "y0": 0.7730681113522462,
+        "x1": 0.6217002619325726,
+        "y1": 0.7843938692651614
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6236437629250919,
+        "y0": 0.7803914053271515,
+        "x1": 0.6295065287671058,
+        "y1": 0.7917171632400667
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6294934141869638,
+        "y0": 0.7803914053271515,
+        "x1": 0.6385660109177135,
+        "y1": 0.7917171632400667
+      },
+      "text": "µ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6385783775179994,
+        "y0": 0.7854292844281052,
+        "x1": 0.6456723182029973,
+        "y1": 0.7929797895026929
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6523528753542432,
+        "y0": 0.7803914053271515,
+        "x1": 0.67649083355673,
+        "y1": 0.7917171632400667
+      },
+      "text": "− µ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6764868443308313,
+        "y0": 0.7854292844281052,
+        "x1": 0.686267877715865,
+        "y1": 0.7929797895026929
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6878430734272876,
+        "y0": 0.7803914053271515,
+        "x1": 0.6937058392693015,
+        "y1": 0.7917171632400667
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7004737604677288,
+        "y0": 0.7803914053271515,
+        "x1": 0.7172119040894352,
+        "y1": 0.7917171632400667
+      },
+      "text": "(Σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.717205770654616,
+        "y0": 0.7787247420561434,
+        "x1": 0.7266154569738051,
+        "y1": 0.7862752471307312
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.717205770654616,
+        "y0": 0.7868434196770793,
+        "x1": 0.7269868040396497,
+        "y1": 0.794393924751667
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7266175513174019,
+        "y0": 0.7787247420561434,
+        "x1": 0.7325877769320619,
+        "y1": 0.7862752471307312
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7367482403524561,
+        "y0": 0.7803914053271515,
+        "x1": 0.76267621408101,
+        "y1": 0.7917171632400667
+      },
+      "text": "+ Σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7626796049230239,
+        "y0": 0.7787247420561434,
+        "x1": 0.772089291242213,
+        "y1": 0.7862752471307312
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7626796049230239,
+        "y0": 0.7868434196770793,
+        "x1": 0.7697735456080218,
+        "y1": 0.794393924751667
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7720750297596252,
+        "y0": 0.7787247420561434,
+        "x1": 0.7780452553742851,
+        "y1": 0.7862752471307312
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7788560655381944,
+        "y0": 0.7803914053271515,
+        "x1": 0.7905815473568985,
+        "y1": 0.7917171632400667
+      },
+      "text": ")(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7905717737534467,
+        "y0": 0.7803914053271515,
+        "x1": 0.7996443704841962,
+        "y1": 0.7917171632400667
+      },
+      "text": "µ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7996403812582976,
+        "y0": 0.7854292844281052,
+        "x1": 0.8067343219432955,
+        "y1": 0.7929797895026929
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8134312349207261,
+        "y0": 0.7803914053271515,
+        "x1": 0.8375691931232129,
+        "y1": 0.7917171632400667
+      },
+      "text": "− µ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8375652038973141,
+        "y0": 0.7854292844281052,
+        "x1": 0.847346187417024,
+        "y1": 0.7929797895026929
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8489050771675858,
+        "y0": 0.7803914053271515,
+        "x1": 0.8664786145578023,
+        "y1": 0.7917171632400667
+      },
+      "text": ")+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "determined as the moments in which a distance measure com-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6141666586882149,
+        "y0": 0.7880681753158569,
+        "x1": 0.6217002619325726,
+        "y1": 0.7993939332287721
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6535130419762306,
+        "y0": 0.7935858651845142,
+        "x1": 0.6645936155630872,
+        "y1": 0.8049116230974294
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8003267774394914,
+        "y0": 0.793585884450662,
+        "x1": 0.8114073510263481,
+        "y1": 0.8049116423635772
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "puted between two adjacent windows shifted along the speech",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6155554079541973,
+        "y0": 0.8095201831875425,
+        "x1": 0.6272662293677237,
+        "y1": 0.8208459411004577
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6325652178596047,
+        "y0": 0.8021969470110807,
+        "x1": 0.6400988211039624,
+        "y1": 0.8135227049239958
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "tr",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6645914713541666,
+        "y0": 0.8095202024536904,
+        "x1": 0.6888257693621068,
+        "y1": 0.8208459603666055
+      },
+      "text": "(Σ¹",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6832843356662326,
+        "y0": 0.8106565710270044,
+        "x1": 0.6888258192274306,
+        "y1": 0.8169444498389659
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.692679760502834,
+        "y0": 0.8095202217198382,
+        "x1": 0.7035551382825266,
+        "y1": 0.8208459796327533
+      },
+      "text": "Σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7035457636016647,
+        "y0": 0.8061490052878255,
+        "x1": 0.7129554499208538,
+        "y1": 0.8136995103624132
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7149019428327972,
+        "y0": 0.8106565710270044,
+        "x1": 0.7204434263939951,
+        "y1": 0.8169444498389659
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7149019926981209,
+        "y0": 0.8044570907197818,
+        "x1": 0.7204434762593188,
+        "y1": 0.8107449695317432
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7232189303130107,
+        "y0": 0.8095202217198382,
+        "x1": 0.7533028795828227,
+        "y1": 0.8208459796327533
+      },
+      "text": ")(Σ¹",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7477614458869485,
+        "y0": 0.8106565710270044,
+        "x1": 0.7533029294481465,
+        "y1": 0.8169444498389659
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7571568707235499,
+        "y0": 0.8095202217198382,
+        "x1": 0.7680322485032425,
+        "y1": 0.8208459796327533
+      },
+      "text": "Σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7680228738223805,
+        "y0": 0.8061490052878255,
+        "x1": 0.7774325601415697,
+        "y1": 0.8136995103624132
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7793791029188368,
+        "y0": 0.8044570907197818,
+        "x1": 0.7849205864800347,
+        "y1": 0.8107449695317432
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7793791029188368,
+        "y0": 0.8106565710270044,
+        "x1": 0.7849205864800347,
+        "y1": 0.8169444498389659
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7876960903990502,
+        "y0": 0.8095202217198382,
+        "x1": 0.7935588562410641,
+        "y1": 0.8208459796327533
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8139215606489992,
+        "y0": 0.8095202217198382,
+        "x1": 0.8256323820625255,
+        "y1": 0.8208459796327533
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "signal reaches a local maximum. In the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "model-based approach",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.632565367455576,
+        "y0": 0.8171969724423958,
+        "x1": 0.6400989706999336,
+        "y1": 0.8285227303553109
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6813235314063777,
+        "y0": 0.8164646595415443,
+        "x1": 0.6911045647914114,
+        "y1": 0.824015164616132
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7035457137363409,
+        "y0": 0.8164646595415443,
+        "x1": 0.7106396544213388,
+        "y1": 0.824015164616132
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7458006416270936,
+        "y0": 0.8164646595415443,
+        "x1": 0.7555816750121273,
+        "y1": 0.824015164616132
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7680228738223805,
+        "y0": 0.8164646595415443,
+        "x1": 0.7751168145073785,
+        "y1": 0.824015164616132
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "it is assumed that a model of each speaker the voice of which is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.632565367455576,
+        "y0": 0.834393955240346,
+        "x1": 0.6400989706999336,
+        "y1": 0.8457197131532611
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6535130419762306,
+        "y0": 0.825782834881484,
+        "x1": 0.6645936155630872,
+        "y1": 0.8371085927943991
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6813234815410539,
+        "y0": 0.8383585943116082,
+        "x1": 0.6907331678602431,
+        "y1": 0.845909099386196
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6926797106375102,
+        "y0": 0.8366540507836775,
+        "x1": 0.6982211941987081,
+        "y1": 0.8429419295956391
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.713823555341733,
+        "y0": 0.8366540315175297,
+        "x1": 0.7193650389029309,
+        "y1": 0.8429419103294912
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7448856129365808,
+        "y0": 0.8383585750454604,
+        "x1": 0.75429529925577,
+        "y1": 0.8459090801200482
+      },
+      "text": "−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7562581479938981,
+        "y0": 0.8366540315175297,
+        "x1": 0.761799631555096,
+        "y1": 0.8429419103294912
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7773856368719363,
+        "y0": 0.8366540315175297,
+        "x1": 0.7829271204331342,
+        "y1": 0.8429419103294912
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "T",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7985130758846507,
+        "y0": 0.8257828156153361,
+        "x1": 0.8095936494715074,
+        "y1": 0.8371085735282513
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6155555575501686,
+        "y0": 0.8417171914168078,
+        "x1": 0.642042471692453,
+        "y1": 0.853042949329723
+      },
+      "text": "+ 2 tr",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6645914713541666,
+        "y0": 0.8417171817837339,
+        "x1": 0.6813296149758732,
+        "y1": 0.8530429396966491
+      },
+      "text": "(Σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.692679760502834,
+        "y0": 0.8428535310909001,
+        "x1": 0.6982212440640319,
+        "y1": 0.8491414099028616
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7009967479830473,
+        "y0": 0.8417171625175861,
+        "x1": 0.7193649890376073,
+        "y1": 0.8530429204305013
+      },
+      "text": "Σ²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7223039016224979,
+        "y0": 0.8417171625175861,
+        "x1": 0.7448901506810407,
+        "y1": 0.8530429204305013
+      },
+      "text": ")(Σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7562581479938981,
+        "y0": 0.8428535310909001,
+        "x1": 0.761799631555096,
+        "y1": 0.8491414099028616
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7645588295132506,
+        "y0": 0.8417171625175861,
+        "x1": 0.7829271204331342,
+        "y1": 0.8530429204305013
+      },
+      "text": "Σ²",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7858823888442096,
+        "y0": 0.8417171625175861,
+        "x1": 0.7917451546862234,
+        "y1": 0.8530429204305013
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8129411585190717,
+        "y0": 0.8417171625175861,
+        "x1": 0.83998117883221,
+        "y1": 0.8530429204305013
+      },
+      "text": "− d,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "contained in an utterance has been trained before the speaker",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6813235314063777,
+        "y0": 0.8486616099723662,
+        "x1": 0.6911045647914114,
+        "y1": 0.8562121150469539
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7118627012165544,
+        "y0": 0.8486616099723662,
+        "x1": 0.7189566419015523,
+        "y1": 0.8562121150469539
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7448856129365808,
+        "y0": 0.8486616099723662,
+        "x1": 0.7546666463216146,
+        "y1": 0.8562121150469539
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7754411884382659,
+        "y0": 0.8486616099723662,
+        "x1": 0.7825351291232638,
+        "y1": 0.8562121150469539
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "change detection algorithm starts.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "The speaker changes are",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "(1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "then detected as the instants when it is necessary to change the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "speaker model in order it match the speech signal.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "The last",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "where tr denotes the trace of a matrix, and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7592156104792177,
+        "y0": 0.8837499919563833,
+        "x1": 0.7670130511514501,
+        "y1": 0.8950757498692985
+      },
+      "text": "d",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "is the dimension of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "approach is the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "decoder-guided",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "approach.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "Here, the speaker",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "the vectors",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5783006256701899,
+        "y0": 0.8968939359741982,
+        "x1": 0.5907443177466299,
+        "y1": 0.9082196938871133
+      },
+      "text": "X",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6203594332426982,
+        "y0": 0.8968939359741982,
+        "x1": 0.6290949403850081,
+        "y1": 0.9082196938871133
+      },
+      "text": "Y",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "changes are determined according to information provided by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "The KL2 distance is computed for two adjacent windows",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "a speech recognition system which decodes the spoken audio",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803442861519,
+        "y0": 0.923181814376754,
+        "x1": 0.5311662761214512,
+        "y1": 0.9345075722896692
+      },
+      "text": "W₁",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5666502908943525,
+        "y0": 0.923181814376754,
+        "x1": 0.5868525286905126,
+        "y1": 0.9345075722896692
+      },
+      "text": "W₂",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "of the same size (2 s) shifted by a fixed step",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.02586709999013692,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": "136/238 item không có bề rộng (width=0) — giữ chữ, bỏ hộp",
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}

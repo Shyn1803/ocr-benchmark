@@ -1,0 +1,263 @@
+{
+  "schema_version": 2,
+  "engine": "opendataloader",
+  "engine_version": "2.5.0",
+  "doc_id": "02ef468d6658a2cc7878397e68640fe0357f_page_5_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "![](<02ef468d6658a2cc7878397e68640fe0357f_page_5_pg1_images/imageFile1.png>)\n\nFig. 4. Reputation checking during the publication process\n\n![](<02ef468d6658a2cc7878397e68640fe0357f_page_5_pg1_images/imageFile2.png>)\n\nFig. 5. Publication of accounts between modiﬁed KAD clients inside a tolerance zone\n\n- B. Other Services\n\nWhen a peer is connected to the network, services (publication of contents, search, data download...) are achieved by sending requests to the other peers. In Kademlia [13] this is done in two phases. Firstly, Kademlia REQ are sent to ﬁnd nodes which are potentially able to deliver the service (according to their place in the DHT). This phase is general and only concerns the iteration mechanism used to ﬁnd several peers in a part of the P2P network. In the second step, when the nodes are found, a speciﬁc request is sent to ask for a particular service. The reputation checking must be done before the speciﬁc request for three reasons. Firstly, a peer can be a bridge and search contacts for other uncontrolled peers. Secondly, the real services are provided by the speciﬁc requests. Controlling the reputation at this point allows to revoke independently the different services. Finally, checking the reputation for Kademlia REQ would increase the overhead for no advantage. The ﬁgure 4 presents the running of a publication request and includes the reputation checking. The other requests (search, data download) follow the same scheme.\n\nHowever, inserting the revocation mechanism into the search function is not relevant for several reasons. Firstly, it is not a service through which a peer can damage the network. Then, searching is useless when the other services are inactive behind. Finally, it would also introduce overhead to the network and unnecessary delay for all users.\n\n- C. Implementation\n\n\nWe have implemented the revocation mechanism in KAD. To do that, we have introduced different modiﬁcations in the KAD client:\n\n- • our modiﬁed client can manage a new kind of information called ”Account”;\n- • the associated requests search/store Account were written, which partially behave like existing requests on keywords, ﬁles or notes;\n- • new functions were added in the UDPListener, where all network’s requests are processed. In fact, these functions do the service-oriented revocation, searching for the reputation and checking it.\n\n\n• KadID and userID allocation were cheated to control the place of the peers in the DHT.\n\nWe have tested that the reputation storage and retrieval and the revocation of services work ﬁne on the modiﬁed peers. However, as our implementation deﬁnes new data types and messages to manage the accounts, we can just test our revocation mechanism on a few peers. Presently, as we test the mechanism with few resources, we have deﬁned the KadID and UserID of modiﬁed peers to place them in the same tolerance zone. In this way, we are sure that the accounts can be stored (ﬁgure 5) when using the KAD publication mechanism. That is enough to verify the mechanism, but without the real number of replicated peers, performance measures would be wrong. That is why we are going to scale up our testbed on EmanicsLab to measure performances and compare the results with the evaluation presented in section V.\n\nV. ANALYSIS AND DISCUSSIONS A. Performances Evaluation\n\nThe thesis [2] has led a performance evaluation of the KAD network which allows us to discuss some a priori performance results. The average delay needed to store information in the network is about 200 seconds. This time is needed to ﬁnd ten peers (for the replication) with a KadID close to the hash of the information to store. This delay will occur the ﬁrst time that a peer connects itself to the network and periodically later to maintain the account in the network despite the churn. The delay to retrieve the information ﬂuctuates and depends on the replication. The more replication there is, the more robust the stored information is and the quicker it is retrieved. The information is retrieved linearly, so the more a peer waits, the more results are returned. A 100 seconds delay seems to be sufﬁcient to retrieve enough information to guess the real reputation of a peer. This delay could seem huge because it appears prior to each service of the network, except the search as explained. But in fact, 100 seconds to bootstrap are not penalising, the publication process is entirely transparent for the user and 100 seconds preceding a download\n\n",
+  "blocks": [
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.10169771241830065,
+        "y0": 0.06818055555555558,
+        "x1": 0.46852777777777777,
+        "y1": 0.24873611111111116
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12352941176470587,
+        "y0": 0.2720037878787879,
+        "x1": 0.4466977124183007,
+        "y1": 0.2811212121212121
+      },
+      "text": "Fig. 4. Reputation checking during the publication process",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.5499836601307189,
+        "y0": 0.06818055555555558,
+        "x1": 0.8797630718954248,
+        "y1": 0.24502777777777784
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097598039215686,
+        "y0": 0.268294191919192,
+        "x1": 0.919985294117647,
+        "y1": 0.28873232323232334
+      },
+      "text": "Fig. 5. Publication of accounts between modiﬁed KAD clients inside a tolerance zone",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.0799983660130719,
+        "y0": 0.3128497474747475,
+        "x1": 0.2000702614379085,
+        "y1": 0.324044191919192
+      },
+      "text": "B. Other Services When a peer is connected to the network, services (publication of contents, search, data download...) are achieved by sending requests to the other peers. In Kademlia [13] this is done in two phases. Firstly, Kademlia REQ are sent to ﬁnd nodes which are potentially able to deliver the service (according to their place in the DHT). This phase is general and only concerns the iteration mechanism used to ﬁnd several peers in a part of the P2P network. In the second step, when the nodes are found, a speciﬁc request is sent to ask for a particular service. The reputation checking must be done before the speciﬁc request for three reasons. Firstly, a peer can be a bridge and search contacts for other uncontrolled peers. Secondly, the real services are provided by the speciﬁc requests. Controlling the reputation at this point allows to revoke independently the different services. Finally, checking the reputation for Kademlia REQ would increase the overhead for no advantage. The ﬁgure 4 presents the running of a publication request and includes the reputation checking. The other requests (search, data download) follow the same scheme. However, inserting the revocation mechanism into the search function is not relevant for several reasons. Firstly, it is not a service through which a peer can damage the network. Then, searching is useless when the other services are inactive behind. Finally, it would also introduce overhead to the network and unnecessary delay for all users.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.0799983660130719,
+        "y0": 0.7174545454545455,
+        "x1": 0.2052483660130719,
+        "y1": 0.7286502525252525
+      },
+      "text": "C. Implementation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0799983660130719,
+        "y0": 0.7364090909090909,
+        "x1": 0.4902238562091503,
+        "y1": 0.7779962121212121
+      },
+      "text": "We have implemented the revocation mechanism in KAD. To do that, we have introduced different modiﬁcations in the KAD client:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.09627777777777777,
+        "y0": 0.7840833333333334,
+        "x1": 0.4902205882352941,
+        "y1": 0.810574494949495
+      },
+      "text": "• our modiﬁed client can manage a new kind of information called ”Account”;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.09627777777777777,
+        "y0": 0.8142727272727273,
+        "x1": 0.4902205882352941,
+        "y1": 0.8558585858585859
+      },
+      "text": "• the associated requests search/store Account were written, which partially behave like existing requests on keywords, ﬁles or notes;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.09627777777777777,
+        "y0": 0.8595580808080808,
+        "x1": 0.4902205882352941,
+        "y1": 0.9162386363636363
+      },
+      "text": "• new functions were added in the UDPListener, where all network’s requests are processed. In fact, these functions do the service-oriented revocation, searching for the reputation and checking it.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5260375816993464,
+        "y0": 0.3197676767676767,
+        "x1": 0.9199787581699347,
+        "y1": 0.3462601010101011
+      },
+      "text": "• KadID and userID allocation were cheated to control the place of the peers in the DHT.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097598039215686,
+        "y0": 0.35327398989898995,
+        "x1": 0.919985294117647,
+        "y1": 0.5760050505050505
+      },
+      "text": "We have tested that the reputation storage and retrieval and the revocation of services work ﬁne on the modiﬁed peers. However, as our implementation deﬁnes new data types and messages to manage the accounts, we can just test our revocation mechanism on a few peers. Presently, as we test the mechanism with few resources, we have deﬁned the KadID and UserID of modiﬁed peers to place them in the same tolerance zone. In this way, we are sure that the accounts can be stored (ﬁgure 5) when using the KAD publication mechanism. That is enough to verify the mechanism, but without the real number of replicated peers, performance measures would be wrong. That is why we are going to scale up our testbed on EmanicsLab to measure performances and compare the results with the evaluation presented in section V.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097598039215686,
+        "y0": 0.5914141414141414,
+        "x1": 0.8288709150326797,
+        "y1": 0.6240063131313132
+      },
+      "text": "V. ANALYSIS AND DISCUSSIONS A. Performances Evaluation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097598039215686,
+        "y0": 0.6331338383838384,
+        "x1": 0.919985294117647,
+        "y1": 0.9162462121212122
+      },
+      "text": "The thesis [2] has led a performance evaluation of the KAD network which allows us to discuss some a priori performance results. The average delay needed to store information in the network is about 200 seconds. This time is needed to ﬁnd ten peers (for the replication) with a KadID close to the hash of the information to store. This delay will occur the ﬁrst time that a peer connects itself to the network and periodically later to maintain the account in the network despite the churn. The delay to retrieve the information ﬂuctuates and depends on the replication. The more replication there is, the more robust the stored information is and the quicker it is retrieved. The information is retrieved linearly, so the more a peer waits, the more results are returned. A 100 seconds delay seems to be sufﬁcient to retrieve enough information to guess the real reputation of a peer. This delay could seem huge because it appears prior to each service of the network, except the search as explained. But in fact, 100 seconds to bootstrap are not penalising, the publication process is entirely transparent for the user and 100 seconds preceding a download",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.10169771241830065,
+        "y0": 0.06818055555555558,
+        "x1": 0.46852777777777777,
+        "y1": 0.24873611111111116
+      },
+      "source_id": "02ef468d6658a2cc7878397e68640fe0357f_page_5_pg1_images/imageFile1.png",
+      "file": "000.png",
+      "sha256": "f9afa6f098913f3c25f2a589b2da1057f5f20adc0a12fdb1c4428634f626af3b"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.5499836601307189,
+        "y0": 0.06818055555555558,
+        "x1": 0.8797630718954248,
+        "y1": 0.24502777777777784
+      },
+      "source_id": "02ef468d6658a2cc7878397e68640fe0357f_page_5_pg1_images/imageFile2.png",
+      "file": "001.png",
+      "sha256": "1eb0b0214ca366d05b73c81f21b25aec35e51ac3b556cd25c44665e0b8264023"
+    }
+  ],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 1.220687100023497,
+  "model_load_seconds": null,
+  "peak_rss_mb": 112.26953125,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "opendataloader_version": "2.5.0",
+    "table_method": "cluster",
+    "include_header_footer": true,
+    "reading_order": "xycut",
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "F:\\vnpt\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe"
+  }
+}

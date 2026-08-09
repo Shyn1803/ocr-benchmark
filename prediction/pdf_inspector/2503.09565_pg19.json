@@ -1,0 +1,2668 @@
+{
+  "schema_version": 2,
+  "engine": "pdf_inspector",
+  "engine_version": "0.2.6",
+  "doc_id": "2503.09565_pg19",
+  "capabilities": [
+    "block_bbox",
+    "scan_label",
+    "text_md"
+  ],
+  "text_md": "With these lemmas at hand, we now prove our main theorem by an inductive argument. In particular, we show that the following two families of Gaussian processes, introduced in Section 4, remain non-degenerate throughout training:\n\nb*W* *l* *δx* *l−* *s* 1 (*ξi*) *{Z*0*}i∈*[*m*]*,s∈*[*t*]*,*2*≤l≤L,* (C.1) b*W* *l⊤dhl* *s* (*ξi*) *{Z*0*}i∈*[*m*]*,s∈*[*t*]*,*2*≤l≤L.* (C.2)\n\nRecall that a Gaussian process is non-degenerate if its covariance matrix *C* at any finite collection of points satisfies det(*C*) *̸*= 0 (Adler and Taylor, 2009). Using the filtration framework introduced in Section 4, our proof follows the natural flow of computation in the network, proceeding layer by layer and separately handling forward and backward passes. We break this into four key steps, each building upon the results of previous steps:\n\nb*W* 2 *δx*1*s*(*ξi*)\n\n- Step 1: prove non-degeneracy for the features in the first hidden layer *Z*0. This forms our base case as it only depends on the input data and network initialization, providing the foundation for our inductive argument.\nb*W* *l* *δx* *l−* *s* 1 (*ξi*)\n\n- Step 2: prove non-degeneracy for the features in remaining layers *Z*0, 3 *≤ l ≤ L*. This step leverages the non-degeneracy established in Step 1 and shows how it propagates through deeper layers of the network.\nb*W* *L⊤dhL* *s*(*ξi*)\n\n- Step 3: prove non-degeneracy for the gradients in the last layer *Z*0. Here we transition from analyzing forward features to backward gradients, showing how the established feature properties ensure meaningful gradient flow.\nb*W* *l⊤dhl* *s* (*ξi*)\n\n- Step 4: prove non-degeneracy for the gradients in remaining layers *Z*0, 2 *≤ l ≤ L −* 1. Finally, we complete our analysis by showing how gradient non-degeneracy propagates backward through the network, ensuring effective training dynamics at all layers. The proof proceeds by induction on the time step *t*, where at each step we verify these properties hold across all layers. This structure allows us to carefully track how the non-degeneracy property is maintained as information flows both forward and backward through the network during training. This systematic proof structure allows us to establish the global property of non-degeneracy by carefully tracking local changes at each layer and time step. We now proceed with the detailed proof. *Proof of Theorem 4.5.* Considering Trajectory Until Error Signals Vanish. Throughout this proof, we focus on the training trajectory up to the time when all error signals ˚*χt,i*become zero. This is because once the error signals vanish, there are no further parameter updates, and the training dynamics remain static thereafter. Our analysis ensures that up to this point, the Gaussian processes governing the feature and gradient updates remain non-degenerate, thereby maintaining the linear independence of features across all layers. Connecting *Z*b\n*Wδx* to *h* *l* and *x* *l*. Recall from Section 3 that each pre-activation *h* *l*\n\n(*ξ*) and\npost-activation *x* *l*\n\n(*ξ*) can be decomposed into a primary Gaussian increment plus lower-order\n(history-dependent) terms in the infinite-width limit: Because these additional terms do not alter the essential covariance structure when conditioned on past information (they vanish or become deterministic in the limit), the linear (in)dependence\n",
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14532025655110678,
+        "y0": 0.09069659493186255,
+        "x1": 0.8553936403561262,
+        "y1": 0.1047461923926768
+      },
+      "text": "With these lemmas at hand, we now prove our main theorem by an inductive argument.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.865066428589665,
+        "y0": 0.09069659493186255,
+        "x1": 0.8817209480634702,
+        "y1": 0.1047461923926768
+      },
+      "text": "In",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.10805186599191996,
+        "x1": 0.8840974296619689,
+        "y1": 0.12185352980488473
+      },
+      "text": "particular, we show that the following two families of Gaussian processes, introduced in Section 4,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.12518675158722237,
+        "x1": 0.46016069798687703,
+        "y1": 0.13896086721709278
+      },
+      "text": "remain non-degenerate throughout training:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3990669998468137,
+        "y0": 0.1549215846591525,
+        "x1": 0.4089600556816151,
+        "y1": 0.16869570028902303
+      },
+      "text": "b",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40925490934085224,
+        "y0": 0.15642662301208032,
+        "x1": 0.4223039913800807,
+        "y1": 0.16648988049439706
+      },
+      "text": "W",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42423203412224264,
+        "y0": 0.1553906527432528,
+        "x1": 0.42814870597490295,
+        "y1": 0.16293812761403093
+      },
+      "text": "l",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4290931552064185,
+        "y0": 0.15642662301208032,
+        "x1": 0.4434836393867443,
+        "y1": 0.16648988049439706
+      },
+      "text": "δx",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4434918671651603,
+        "y0": 0.15442850132181185,
+        "x1": 0.4568210177951389,
+        "y1": 0.16197597619258997
+      },
+      "text": "l−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4434918671651603,
+        "y0": 0.16053710320983272,
+        "x1": 0.4491959615470537,
+        "y1": 0.16808457808061084
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4568203196806066,
+        "y0": 0.15442850132181185,
+        "x1": 0.4627881517597273,
+        "y1": 0.16197597619258997
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4636030010148591,
+        "y0": 0.15642662301208032,
+        "x1": 0.4689815246980954,
+        "y1": 0.16648988049439706
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4689853643280229,
+        "y0": 0.15642662301208032,
+        "x1": 0.475067138671875,
+        "y1": 0.16648988049439706
+      },
+      "text": "ξ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47506703894122754,
+        "y0": 0.16047653044113008,
+        "x1": 0.4794135000191483,
+        "y1": 0.1680240053119082
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48023368486391954,
+        "y0": 0.15642662301208032,
+        "x1": 0.48561220854715587,
+        "y1": 0.16648988049439706
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3868986890206929,
+        "y0": 0.1584039023428252,
+        "x1": 0.4079689574397467,
+        "y1": 0.17217801797269572
+      },
+      "text": "{Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42230882831648286,
+        "y0": 0.16206614176432288,
+        "x1": 0.4282766603956036,
+        "y1": 0.169613616635101
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.486428104974086,
+        "y0": 0.15840266930936564,
+        "x1": 0.4953407836116217,
+        "y1": 0.17217678493923616
+      },
+      "text": "}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.495341481726154,
+        "y0": 0.16491652076894592,
+        "x1": 0.5092725566789216,
+        "y1": 0.17497977825126265
+      },
+      "text": "i∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5092760971169067,
+        "y0": 0.16491652076894592,
+        "x1": 0.5131178712533191,
+        "y1": 0.17497977825126265
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5131208631727431,
+        "y0": 0.16491652076894592,
+        "x1": 0.5253494861079198,
+        "y1": 0.17497977825126265
+      },
+      "text": "m",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5253594093073427,
+        "y0": 0.16491652076894592,
+        "x1": 0.5292011834437551,
+        "y1": 0.17497977825126265
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5292025298074959,
+        "y0": 0.16491652076894592,
+        "x1": 0.5486663120244842,
+        "y1": 0.17497977825126265
+      },
+      "text": ",s∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5486698524624694,
+        "y0": 0.16491652076894592,
+        "x1": 0.5525116265988818,
+        "y1": 0.17497977825126265
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5525146185183057,
+        "y0": 0.16491652076894592,
+        "x1": 0.5575024473900888,
+        "y1": 0.17497977825126265
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5575113732830371,
+        "y0": 0.16491652076894592,
+        "x1": 0.5613531474194495,
+        "y1": 0.17497977825126265
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5613544937831904,
+        "y0": 0.16491652076894592,
+        "x1": 0.5651962679196028,
+        "y1": 0.17497977825126265
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5651976142833436,
+        "y0": 0.16491652076894592,
+        "x1": 0.5721128376480801,
+        "y1": 0.17497977825126265
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5721159292981516,
+        "y0": 0.16491652076894592,
+        "x1": 0.6073290756325317,
+        "y1": 0.17497977825126265
+      },
+      "text": "≤l≤L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6081502577837776,
+        "y0": 0.15840266930936564,
+        "x1": 0.6130878722745609,
+        "y1": 0.17217678493923616
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8438365662020016,
+        "y0": 0.15840266930936564,
+        "x1": 0.8843891418058109,
+        "y1": 0.17217678493923616
+      },
+      "text": "(C.1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3990669749141519,
+        "y0": 0.17975241246849605,
+        "x1": 0.4089600307489532,
+        "y1": 0.19352652809836646
+      },
+      "text": "b",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40925488440819036,
+        "y0": 0.18125745082142375,
+        "x1": 0.4223039913800807,
+        "y1": 0.19132070830374048
+      },
+      "text": "W",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42423203412224264,
+        "y0": 0.18022148055259624,
+        "x1": 0.437559539196538,
+        "y1": 0.18776895542337435
+      },
+      "text": "l⊤",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4383741889903748,
+        "y0": 0.18125745082142375,
+        "x1": 0.4534548591164982,
+        "y1": 0.19132070830374048
+      },
+      "text": "dh",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45346732544743157,
+        "y0": 0.18022148055259624,
+        "x1": 0.45738399730009194,
+        "y1": 0.18776895542337435
+      },
+      "text": "l",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45346732544743157,
+        "y0": 0.1862883904967645,
+        "x1": 0.45917141982932497,
+        "y1": 0.1938358653675426
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.45999020844503163,
+        "y0": 0.18125745082142375,
+        "x1": 0.46536873212826796,
+        "y1": 0.19132070830374048
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46537092620251225,
+        "y0": 0.18125745082142375,
+        "x1": 0.4714527005463644,
+        "y1": 0.19132070830374048
+      },
+      "text": "ξ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47145260081571694,
+        "y0": 0.1853073582504735,
+        "x1": 0.4757990618936377,
+        "y1": 0.19285483312125162
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4766192467384089,
+        "y0": 0.18125745082142375,
+        "x1": 0.4819977704216452,
+        "y1": 0.19132070830374048
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.38689866408803103,
+        "y0": 0.18323349711870907,
+        "x1": 0.4079689325070849,
+        "y1": 0.19700761274857959
+      },
+      "text": "{Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4223104738721661,
+        "y0": 0.1868969695736663,
+        "x1": 0.42827830595128674,
+        "y1": 0.19444444444444442
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.48281531240425857,
+        "y0": 0.18323349711870907,
+        "x1": 0.4917279910417943,
+        "y1": 0.19700761274857959
+      },
+      "text": "}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4917270934659671,
+        "y0": 0.18974734857828934,
+        "x1": 0.5056581684187347,
+        "y1": 0.19981060606060608
+      },
+      "text": "i∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.505663354412403,
+        "y0": 0.18974734857828934,
+        "x1": 0.5095051285488154,
+        "y1": 0.19981060606060608
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5095064749125562,
+        "y0": 0.18974734857828934,
+        "x1": 0.5217350978477329,
+        "y1": 0.19981060606060608
+      },
+      "text": "m",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5217466666028391,
+        "y0": 0.18974734857828934,
+        "x1": 0.5255884407392515,
+        "y1": 0.19981060606060608
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5255897871029922,
+        "y0": 0.18974734857828934,
+        "x1": 0.5450519237642973,
+        "y1": 0.19981060606060608
+      },
+      "text": ",s∈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5450571097579657,
+        "y0": 0.18974734857828934,
+        "x1": 0.548898883894378,
+        "y1": 0.19981060606060608
+      },
+      "text": "[",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5489002302581188,
+        "y0": 0.18974734857828934,
+        "x1": 0.5538880591299019,
+        "y1": 0.19981060606060608
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5538969850228503,
+        "y0": 0.18974734857828934,
+        "x1": 0.5577387591592626,
+        "y1": 0.19981060606060608
+      },
+      "text": "]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5577401055230035,
+        "y0": 0.18974734857828934,
+        "x1": 0.5615818796594159,
+        "y1": 0.19981060606060608
+      },
+      "text": ",",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5615848715788399,
+        "y0": 0.18974734857828934,
+        "x1": 0.5685000949435763,
+        "y1": 0.19981060606060608
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5685031865936478,
+        "y0": 0.18974734857828934,
+        "x1": 0.6037146873723448,
+        "y1": 0.19981060606060608
+      },
+      "text": "≤l≤L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6045358695235907,
+        "y0": 0.18323349711870907,
+        "x1": 0.609473484014374,
+        "y1": 0.19700761274857959
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8438365662020016,
+        "y0": 0.18323349711870907,
+        "x1": 0.8843891418058109,
+        "y1": 0.19700761274857959
+      },
+      "text": "(C.2)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.21417793601450297,
+        "x1": 0.6822426989187602,
+        "y1": 0.22795205164437338
+      },
+      "text": "Recall that a Gaussian process is non-degenerate if its covariance matrix",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6887156667273029,
+        "y0": 0.21417793601450297,
+        "x1": 0.7014429428998161,
+        "y1": 0.22795205164437338
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7086764566259447,
+        "y0": 0.21417793601450297,
+        "x1": 0.8821688384012459,
+        "y1": 0.22795205164437338
+      },
+      "text": "at any finite collection",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.2312727311644891,
+        "x1": 0.2889983233283548,
+        "y1": 0.24506062209004098
+      },
+      "text": "of points satisfies det(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2890147040872013,
+        "y0": 0.23128650646017057,
+        "x1": 0.30174198025971455,
+        "y1": 0.24506062209004098
+      },
+      "text": "C",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3030294031878702,
+        "y0": 0.2312727311644891,
+        "x1": 0.3099525551390804,
+        "y1": 0.24506062209004098
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": null,
+      "text": "̸",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3149297377642463,
+        "y0": 0.2312727311644891,
+        "x1": 0.8818423202614379,
+        "y1": 0.24506062209004098
+      },
+      "text": "= 0 (Adler and Taylor, 2009). Using the filtration framework introduced",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.24839384387237862,
+        "x1": 0.8823107551125919,
+        "y1": 0.262167959502249
+      },
+      "text": "in Section 4, our proof follows the natural flow of computation in the network, proceeding layer by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.2655011042199954,
+        "x1": 0.8816459506165748,
+        "y1": 0.2792752198498658
+      },
+      "text": "layer and separately handling forward and backward passes. We break this into four key steps, each",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.28260844163220333,
+        "x1": 0.45406446269914214,
+        "y1": 0.29638255726207385
+      },
+      "text": "building upon the results of previous steps:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7060424704956852,
+        "y0": 0.30755540578052254,
+        "x1": 0.7159355013978248,
+        "y1": 0.32132952141039295
+      },
+      "text": "b",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7162287095013786,
+        "y0": 0.3097498639665469,
+        "x1": 0.729277816473269,
+        "y1": 0.31981312144886365
+      },
+      "text": "W",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7312058592154309,
+        "y0": 0.3087138936977194,
+        "x1": 0.7371736912945517,
+        "y1": 0.3162613685684975
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7379885405496834,
+        "y0": 0.3097498639665469,
+        "x1": 0.7523920395795036,
+        "y1": 0.31981312144886365
+      },
+      "text": "δx",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7523888481987847,
+        "y0": 0.3087138936977194,
+        "x1": 0.7583566802779055,
+        "y1": 0.3162613685684975
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7523888481987847,
+        "y0": 0.31478080364188765,
+        "x1": 0.758092942580678,
+        "y1": 0.32232827851266577
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7591715295330371,
+        "y0": 0.3097498639665469,
+        "x1": 0.7645500532162735,
+        "y1": 0.31981312144886365
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7645522472905177,
+        "y0": 0.3097498639665469,
+        "x1": 0.7706340216343699,
+        "y1": 0.31981312144886365
+      },
+      "text": "ξ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7706355674594056,
+        "y0": 0.31379977139559656,
+        "x1": 0.7749820285373263,
+        "y1": 0.3213472462663747
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7758006176917381,
+        "y0": 0.3097498639665469,
+        "x1": 0.7811791413749745,
+        "y1": 0.31981312144886365
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.3110377234641952,
+        "x1": 0.12650624443502986,
+        "y1": 0.32481183909406564
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1354215659347235,
+        "y0": 0.3107622416332515,
+        "x1": 0.695803785635755,
+        "y1": 0.32481183909406564
+      },
+      "text": "Step 1: prove non-degeneracy for the features in the first hidden layer",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7027859157986112,
+        "y0": 0.3110377234641952,
+        "x1": 0.7149427825329351,
+        "y1": 0.32481183909406564
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7292842989653544,
+        "y0": 0.31538938271878947,
+        "x1": 0.7352521310444751,
+        "y1": 0.3229368575895676
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7819967332229115,
+        "y0": 0.3107622416332515,
+        "x1": 0.7870330810546875,
+        "y1": 0.32481183909406564
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7963785408369077,
+        "y0": 0.3107622416332515,
+        "x1": 0.8822694666245404,
+        "y1": 0.32481183909406564
+      },
+      "text": "This forms",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1354215659347235,
+        "y0": 0.32786957904545944,
+        "x1": 0.881622127458161,
+        "y1": 0.3419191765062737
+      },
+      "text": "our base case as it only depends on the input data and network initialization, providing the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1354215659347235,
+        "y0": 0.3452523982886112,
+        "x1": 0.43977122836642796,
+        "y1": 0.3590265139184817
+      },
+      "text": "foundation for our inductive argument.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6614199370340584,
+        "y0": 0.37178269299593836,
+        "x1": 0.6713130178015216,
+        "y1": 0.3855568086258089
+      },
+      "text": "b",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6716078215954351,
+        "y0": 0.37397711264966715,
+        "x1": 0.6846569285673254,
+        "y1": 0.3840403701319839
+      },
+      "text": "W",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6865849713094874,
+        "y0": 0.37294114238083964,
+        "x1": 0.6905016431621477,
+        "y1": 0.38048861725161776
+      },
+      "text": "l",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6914460923936632,
+        "y0": 0.37397711264966715,
+        "x1": 0.7058495914234835,
+        "y1": 0.3840403701319839
+      },
+      "text": "δx",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7058464000427646,
+        "y0": 0.3719777579259391,
+        "x1": 0.7191755506727431,
+        "y1": 0.3795252327967171
+      },
+      "text": "l−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7058464000427646,
+        "y0": 0.37808759284741955,
+        "x1": 0.7115504944246579,
+        "y1": 0.38563506771819756
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7191748525582108,
+        "y0": 0.3719777579259391,
+        "x1": 0.7251426846373314,
+        "y1": 0.3795252327967171
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7259575338924632,
+        "y0": 0.37397711264966715,
+        "x1": 0.7313360575756995,
+        "y1": 0.3840403701319839
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7313382516499438,
+        "y0": 0.37397711264966715,
+        "x1": 0.737420025993796,
+        "y1": 0.3840403701319839
+      },
+      "text": "ξ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7374199262631485,
+        "y0": 0.3780269815464212,
+        "x1": 0.7417663873410693,
+        "y1": 0.38557445641719934
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7425865721858405,
+        "y0": 0.37397711264966715,
+        "x1": 0.7479650958690768,
+        "y1": 0.3840403701319839
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.3752637776461515,
+        "x1": 0.12650624443502986,
+        "y1": 0.3890378932760219
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1354215659347235,
+        "y0": 0.3750571662729437,
+        "x1": 0.6517331615772123,
+        "y1": 0.3890378932760219
+      },
+      "text": "Step 2: prove non-degeneracy for the features in remaining layers",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6581650278926675,
+        "y0": 0.3752637391138558,
+        "x1": 0.6703218946269914,
+        "y1": 0.3890378547437263
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6846634110594108,
+        "y0": 0.3796166314019097,
+        "x1": 0.6906312431385314,
+        "y1": 0.3871641062726878
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7487810421613307,
+        "y0": 0.3750571662729437,
+        "x1": 0.7687734965405433,
+        "y1": 0.3890378932760219
+      },
+      "text": ", 3",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7737434736264297,
+        "y0": 0.3752637776461515,
+        "x1": 0.834116368511923,
+        "y1": 0.3890378932760219
+      },
+      "text": "≤ l ≤ L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8341257930581086,
+        "y0": 0.3750571662729437,
+        "x1": 0.8823066661560458,
+        "y1": 0.3890378932760219
+      },
+      "text": ". This",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1354215659347235,
+        "y0": 0.39209686626087537,
+        "x1": 0.8816950305614596,
+        "y1": 0.4061464637216895
+      },
+      "text": "step leverages the non-degeneracy established in Step 1 and shows how it propagates through",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1354215659347235,
+        "y0": 0.40947968550402714,
+        "x1": 0.3602345909168518,
+        "y1": 0.42325380113389754
+      },
+      "text": "deeper layers of the network.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.635910133910335,
+        "y0": 0.43442664965234623,
+        "x1": 0.6458032146777982,
+        "y1": 0.44820076528221675
+      },
+      "text": "b",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6460980184717116,
+        "y0": 0.4366210693060749,
+        "x1": 0.6591471254436019,
+        "y1": 0.44668432678839176
+      },
+      "text": "W",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6610751681857638,
+        "y0": 0.4355850990372475,
+        "x1": 0.6787458432266136,
+        "y1": 0.4431325739080255
+      },
+      "text": "L⊤",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6795604930204504,
+        "y0": 0.4366210693060749,
+        "x1": 0.6946411631465738,
+        "y1": 0.44668432678839176
+      },
+      "text": "dh",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6946536294775072,
+        "y0": 0.4355850990372475,
+        "x1": 0.7029167624080882,
+        "y1": 0.4431325739080255
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6946536294775072,
+        "y0": 0.44165200898141577,
+        "x1": 0.7003577238594005,
+        "y1": 0.44919948385219377
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7037337060068168,
+        "y0": 0.4366210693060749,
+        "x1": 0.709112229690053,
+        "y1": 0.44668432678839176
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7091144237642973,
+        "y0": 0.4366210693060749,
+        "x1": 0.7151961981081495,
+        "y1": 0.44668432678839176
+      },
+      "text": "ξ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7151960983775021,
+        "y0": 0.4406709382028291,
+        "x1": 0.7195425594554228,
+        "y1": 0.4482184130736072
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7203627443001941,
+        "y0": 0.4366210693060749,
+        "x1": 0.7257412679834303,
+        "y1": 0.44668432678839176
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.43790769577026367,
+        "x1": 0.12650624443502986,
+        "y1": 0.4516818114001342
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1354215659347235,
+        "y0": 0.43790769577026367,
+        "x1": 0.6262560202405344,
+        "y1": 0.4516818114001342
+      },
+      "text": "Step 3: prove non-degeneracy for the gradients in the last layer",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6326552247689441,
+        "y0": 0.43790769577026367,
+        "x1": 0.644812091503268,
+        "y1": 0.4516818114001342
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6591536079356873,
+        "y0": 0.4422605880583176,
+        "x1": 0.665121440014808,
+        "y1": 0.4498080629290957
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7265588099660437,
+        "y0": 0.43790769577026367,
+        "x1": 0.8821969624438317,
+        "y1": 0.4516818114001342
+      },
+      "text": ". Here we transition",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1354215659347235,
+        "y0": 0.45474082291728324,
+        "x1": 0.8816949308308122,
+        "y1": 0.46879042037809737
+      },
+      "text": "from analyzing forward features to backward gradients, showing how the established feature",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1354215659347235,
+        "y0": 0.4721236036281393,
+        "x1": 0.472177704954459,
+        "y1": 0.48589771925800973
+      },
+      "text": "properties ensure meaningful gradient flow.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6775866240457772,
+        "y0": 0.4970705677764584,
+        "x1": 0.6874796549479166,
+        "y1": 0.5108446834063289
+      },
+      "text": "b",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6877745086071538,
+        "y0": 0.49926371586443197,
+        "x1": 0.7008236155790442,
+        "y1": 0.5093269733467487
+      },
+      "text": "W",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7027516084558824,
+        "y0": 0.4982289786290641,
+        "x1": 0.7160807590858609,
+        "y1": 0.5057764534998421
+      },
+      "text": "l⊤",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7168937633240146,
+        "y0": 0.4992636773321364,
+        "x1": 0.7319744334501379,
+        "y1": 0.5093269348144531
+      },
+      "text": "dh",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7319868997810712,
+        "y0": 0.49822894009676844,
+        "x1": 0.7359035716337317,
+        "y1": 0.5057764149675466
+      },
+      "text": "l",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7319868997810712,
+        "y0": 0.5042958500409367,
+        "x1": 0.7376909941629647,
+        "y1": 0.5118433249117148
+      },
+      "text": "s",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7385097827786714,
+        "y0": 0.4992636387998407,
+        "x1": 0.7438883064619077,
+        "y1": 0.5093268962821575
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7438905005361519,
+        "y0": 0.4992636387998407,
+        "x1": 0.7499722748800041,
+        "y1": 0.5093268962821575
+      },
+      "text": "ξ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7499721751493567,
+        "y0": 0.50331477926235,
+        "x1": 0.7543186362272774,
+        "y1": 0.5108622541331281
+      },
+      "text": "i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7551388210720487,
+        "y0": 0.4992636387998407,
+        "x1": 0.7605173447552849,
+        "y1": 0.5093268962821575
+      },
+      "text": ")",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.5005516524266715,
+        "x1": 0.12650624443502986,
+        "y1": 0.5143257680565421
+      },
+      "text": "•",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1354215659347235,
+        "y0": 0.5002761705957277,
+        "x1": 0.6675493452284071,
+        "y1": 0.5143257680565421
+      },
+      "text": "Step 4: prove non-degeneracy for the gradients in remaining layers",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6743317149043863,
+        "y0": 0.500551613894376,
+        "x1": 0.6864885816387102,
+        "y1": 0.5143257295242464
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7008300482058057,
+        "y0": 0.5049044676501342,
+        "x1": 0.7067978802849265,
+        "y1": 0.5124519425209122
+      },
+      "text": "0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7613349864685458,
+        "y0": 0.5002761705957277,
+        "x1": 0.7818258946238,
+        "y1": 0.5143257680565421
+      },
+      "text": ", 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7873562083524817,
+        "y0": 0.5005516524266715,
+        "x1": 0.8674695382710376,
+        "y1": 0.5143257680565421
+      },
+      "text": "≤ l ≤ L −",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8716698939504187,
+        "y0": 0.5002761705957277,
+        "x1": 0.8857971390867545,
+        "y1": 0.5143257680565421
+      },
+      "text": "1.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1354215659347235,
+        "y0": 0.517660222872339,
+        "x1": 0.8817205616072112,
+        "y1": 0.5314343385022096
+      },
+      "text": "Finally, we complete our analysis by showing how gradient non-degeneracy propagates backward",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1354215659347235,
+        "y0": 0.5347675602845472,
+        "x1": 0.6879710901796429,
+        "y1": 0.5485416759144176
+      },
+      "text": "through the network, ensuring effective training dynamics at all layers.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11700490565081827,
+        "y0": 0.5631267000930478,
+        "x1": 0.5064472497678271,
+        "y1": 0.5769696861806541
+      },
+      "text": "The proof proceeds by induction on the time step",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5127696118323631,
+        "y0": 0.5631955705507837,
+        "x1": 0.5192045323988971,
+        "y1": 0.5769696861806541
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5192058787626379,
+        "y0": 0.5631267000930478,
+        "x1": 0.881991517310049,
+        "y1": 0.5769696861806541
+      },
+      "text": ", where at each step we verify these properties",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.5803029079629918,
+        "x1": 0.8822595932904411,
+        "y1": 0.5940770235928623
+      },
+      "text": "hold across all layers. This structure allows us to carefully track how the non-degeneracy property",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.5974114784086593,
+        "x1": 0.8851222617953431,
+        "y1": 0.6111855940385298
+      },
+      "text": "is maintained as information flows both forward and backward through the network during training.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11700490565081827,
+        "y0": 0.6142433339899236,
+        "x1": 0.882278355118496,
+        "y1": 0.6282929314507378
+      },
+      "text": "This systematic proof structure allows us to establish the global property of non-degeneracy by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.6313506714021317,
+        "x1": 0.5978292826733558,
+        "y1": 0.6454002688629459
+      },
+      "text": "carefully tracking local changes at each layer and time step.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6075929130604064,
+        "y0": 0.6313506714021317,
+        "x1": 0.8816294950597426,
+        "y1": 0.6454002688629459
+      },
+      "text": "We now proceed with the detailed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.6487334521129877,
+        "x1": 0.16320859373005386,
+        "y1": 0.6625075677428582
+      },
+      "text": "proof.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.6771627532111274,
+        "x1": 0.28951886744281047,
+        "y1": 0.6909368688409978
+      },
+      "text": "Proof of Theorem 4.5.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29854247149299173,
+        "y0": 0.6771627532111274,
+        "x1": 0.8822287515877119,
+        "y1": 0.6909368688409978
+      },
+      "text": "Considering Trajectory Until Error Signals Vanish. Throughout this",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.6939945895262438,
+        "x1": 0.7648559271120557,
+        "y1": 0.7080441869870581
+      },
+      "text": "proof, we focus on the training trajectory up to the time when all error signals ˚",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7516045663871017,
+        "y0": 0.6942700713571877,
+        "x1": 0.7627453772850286,
+        "y1": 0.7080441869870581
+      },
+      "text": "χ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7627565471175449,
+        "y0": 0.7000465880740773,
+        "x1": 0.7762875027126737,
+        "y1": 0.710109845556394
+      },
+      "text": "t,i",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7832140455058977,
+        "y0": 0.6939945895262438,
+        "x1": 0.8857232386769812,
+        "y1": 0.7080441869870581
+      },
+      "text": "become zero.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11700490565081827,
+        "y0": 0.711101926938452,
+        "x1": 0.8816418741263595,
+        "y1": 0.7251515243992661
+      },
+      "text": "This is because once the error signals vanish, there are no further parameter updates, and the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.7284847269154558,
+        "x1": 0.8815411337060866,
+        "y1": 0.7422588425453263
+      },
+      "text": "training dynamics remain static thereafter. Our analysis ensures that up to this point, the Gaussian",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.7455933166272712,
+        "x1": 0.8816245085273693,
+        "y1": 0.7593674322571418
+      },
+      "text": "processes governing the feature and gradient updates remain non-degenerate, thereby maintaining",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.7627006347733315,
+        "x1": 0.5218542261061325,
+        "y1": 0.7764747504032019
+      },
+      "text": "the linear independence of features across all layers.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14532025655110678,
+        "y0": 0.7795324710884479,
+        "x1": 0.24892034094318066,
+        "y1": 0.7935820685492622
+      },
+      "text": "Connecting",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25679247987036613,
+        "y0": 0.7798079529193916,
+        "x1": 0.26894934660469005,
+        "y1": 0.7935820685492622
+      },
+      "text": "Z",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2600490096347784,
+        "y0": 0.7763256352357191,
+        "x1": 0.2699420654695798,
+        "y1": 0.7900997508655895
+      },
+      "text": "b",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27023529850579553,
+        "y0": 0.7785200741555955,
+        "x1": 0.2996022592183032,
+        "y1": 0.7885833316379123
+      },
+      "text": "Wδx",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3082238490285437,
+        "y0": 0.7795324710884479,
+        "x1": 0.3268056881973167,
+        "y1": 0.7935820685492622
+      },
+      "text": "to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33460784114264197,
+        "y0": 0.7798079529193916,
+        "x1": 0.3448752359627119,
+        "y1": 0.7935820685492622
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3448790755926394,
+        "y0": 0.7785200741555955,
+        "x1": 0.34900737587922537,
+        "y1": 0.7885833316379123
+      },
+      "text": "l",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3577744976367826,
+        "y0": 0.7795324710884479,
+        "x1": 0.3911381640465431,
+        "y1": 0.7935820685492622
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.39896896462035336,
+        "y0": 0.7798079529193916,
+        "x1": 0.4091472251742494,
+        "y1": 0.7935820685492622
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.40915687411439183,
+        "y0": 0.7785200741555955,
+        "x1": 0.41328517440097784,
+        "y1": 0.7885833316379123
+      },
+      "text": "l",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41425490535162635,
+        "y0": 0.7795324710884479,
+        "x1": 0.4200549156837214,
+        "y1": 0.7935820685492622
+      },
+      "text": ".",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4305032468309589,
+        "y0": 0.7795324710884479,
+        "x1": 0.8010307760799632,
+        "y1": 0.7935820685492622
+      },
+      "text": "Recall from Section 3 that each pre-activation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8081503475413603,
+        "y0": 0.7798079529193916,
+        "x1": 0.8184177174287683,
+        "y1": 0.7935820685492622
+      },
+      "text": "h",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8184199613683364,
+        "y0": 0.7785200741555955,
+        "x1": 0.8225482616549223,
+        "y1": 0.7885833316379123
+      },
+      "text": "l",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8235195882959303,
+        "y0": 0.7795324710884479,
+        "x1": 0.8305741353751788,
+        "y1": 0.7935820685492622
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8305898928174785,
+        "y0": 0.7798079529193916,
+        "x1": 0.8383796043645323,
+        "y1": 0.7935820685492622
+      },
+      "text": "ξ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8392091638901654,
+        "y0": 0.7795324710884479,
+        "x1": 0.8823183346417994,
+        "y1": 0.7935820685492622
+      },
+      "text": ") and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.7966397892345082,
+        "x1": 0.23581077226626326,
+        "y1": 0.8106893866953224
+      },
+      "text": "post-activation",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24432353100745507,
+        "y0": 0.7969152710654519,
+        "x1": 0.2545017915613511,
+        "y1": 0.8106893866953224
+      },
+      "text": "x",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25451144050149355,
+        "y0": 0.7956273923016558,
+        "x1": 0.25863974078807955,
+        "y1": 0.8056906497839725
+      },
+      "text": "l",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.25960947173872806,
+        "y0": 0.7966397892345082,
+        "x1": 0.2666640188179764,
+        "y1": 0.8106893866953224
+      },
+      "text": "(",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2666797263949525,
+        "y0": 0.7969152710654519,
+        "x1": 0.2744693880766825,
+        "y1": 0.8106893866953224
+      },
+      "text": "ξ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27529902240030124,
+        "y0": 0.7966397892345082,
+        "x1": 0.8821903802210989,
+        "y1": 0.8106893866953224
+      },
+      "text": ") can be decomposed into a primary Gaussian increment plus lower-order",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11556208990757762,
+        "y0": 0.8140226084776598,
+        "x1": 0.5287709952959048,
+        "y1": 0.8277967241075304
+      },
+      "text": "(history-dependent) terms in the infinite-width limit:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14532025655110678,
+        "y0": 0.8311311885564014,
+        "x1": 0.8816220027948517,
+        "y1": 0.844905304186272
+      },
+      "text": "Because these additional terms do not alter the essential covariance structure when conditioned",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.8481283139700841,
+        "x1": 0.8814996457567402,
+        "y1": 0.8620126223323321
+      },
+      "text": "on past information (they vanish or become deterministic in the limit), the linear (in)dependence",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.491086623247932,
+        "y0": 0.8953167934610387,
+        "x1": 0.5089119306576797,
+        "y1": 0.9090909090909091
+      },
+      "text": "19",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": {
+    "is_scanned": false,
+    "api": "classify_pdf",
+    "confidence": 1.0,
+    "pages_needing_ocr": [],
+    "reason": "pdf_type=text_based"
+  },
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.028009300003759563,
+  "model_load_seconds": null,
+  "peak_rss_mb": 0.0234375,
+  "rss_scope": "process+children",
+  "failed": false,
+  "error": "1/188 item không có bề rộng (width=0) — giữ chữ, bỏ hộp",
+  "config_fingerprint": {
+    "pdf_inspector_version": "0.2.6",
+    "scan_label_api": "classify_pdf",
+    "page_size_source": "pypdf MediaBox",
+    "subtract_mediabox_origin": true,
+    "zero_width_policy": "box=None, giữ text"
+  }
+}
