@@ -24,7 +24,11 @@ marker = ["marker-pdf==1.10.2"]
 # engine KHÔNG có kích thước trang (đã kiểm mọi node của 24 tài liệu), mà không có
 # kích thước thì không chuẩn hoá được toạ độ.
 opendataloader = ["opendataloader-pdf==2.5.0", "pypdf>=5"]
-pdfinspector = ["pdf-inspector==0.2.6"]
+# `pypdf` cũng bắt buộc ở đây, không chỉ ở extra opendataloader: `pdf_inspector.py:119`
+# import nó để lấy kích thước trang. Thiếu nó thì adapter không ném lúc import mà **hỏng
+# lúc chạy** — `OcrResult.failed=True` với `ModuleNotFoundError`, tức engine trông như
+# engine tồi chứ không như môi trường thiếu gói.
+pdfinspector = ["pdf-inspector==0.2.6", "pypdf>=5"]
 # `Distance` đã bị bỏ (B2/AC-02): bản gốc TEDS dùng nó, nhưng nó chỉ có sdist (phải
 # biên dịch khi cài), không còn được bảo trì, và `rapidfuzz` — vốn đã nằm đây — cho
 # **cùng** kết quả trên 6000 cặp ngẫu nhiên. `apted` là thuần Python nên giữ.

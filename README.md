@@ -12,7 +12,7 @@ và mọi câu trong tài liệu đánh giá cuối cùng phải truy được v
 
 ```bash
 py -3 -m venv .venv
-.venv/Scripts/python.exe -m pip install -e ".[dev]"
+.venv/Scripts/python.exe -m pip install -e ".[dev,metrics,perf]"
 .venv/Scripts/python.exe -m pytest
 ```
 
@@ -20,8 +20,50 @@ py -3 -m venv .venv
 (`.[marker]`, `.[opendataloader]`, `.[pdfinspector]`) vì marker kéo theo torch + model
 Surya vài GB và opendataloader cần Java 11+.
 
-Thêm `.[perf]` (`psutil`) trước khi lấy số bộ nhớ để công bố. Thiếu nó thì cột RSS hiện
-`—` chứ không hiện 0, nhưng engine gọi tiến trình con sẽ **không đo được** — xem bẫy 13.
+`.[metrics]` và `.[perf]` không phải tuỳ chọn nếu bạn muốn biết mình đang chạy bao nhiêu
+test: chỉ `.[dev]` thì phần lớn test metric **skip lặng lẽ**. Có đủ hai extra: **632 passed,
+13 skipped**. Thiếu `psutil` (`.[perf]`) thì cột RSS hiện `—` chứ không hiện 0, nhưng engine
+gọi tiến trình con sẽ **không đo được** — xem bẫy 13.
+
+### Bốn venv engine
+
+Mỗi engine một venv, **cố ý không gộp**: `.venv` phải sạch engine thì test AST cấm import
+engine ở cấp cao nhất mới có nghĩa, và hai chế độ của A7 chỉ phân biệt được khi
+`marker_available` khác nhau giữa hai môi trường (bẫy 7c).
+
+```bash
+# 1. pdf-inspector — nhanh, wheel native
+.venv-pi/Scripts/python.exe   -m pip install -e ".[dev,metrics,perf,pdfinspector]"
+
+# 2. OpenDataLoader — cần JRE; setup_java.py tải Temurin bỏ túi vào .tools/ (~49 MB, kiểm SHA-256)
+.venv-odl/Scripts/python.exe  -m pip install -e ".[dev,metrics,perf,opendataloader]"
+.venv/Scripts/python.exe scripts/setup_java.py      # in ra JAVA_HOME cần export
+
+# 3. Marker — torch + Surya, ~3.5 GB, tải lâu
+.venv-marker/Scripts/python.exe -m pip install -e ".[dev,metrics,perf,marker]"
+
+# 4. Sovereign (A7 chế độ `light`) — bao đóng import của BE, KHÔNG torch
+.venv-sov/Scripts/python.exe  -m pip install -e ".[dev,metrics,perf]"
+.venv-sov/Scripts/python.exe  -m pip install httpx pydantic pydantic-settings cachetools \
+    psycopg2-binary pycryptodome pymupdf==1.25.1 "pdfminer.six>=20221105" mammoth==1.8.0 \
+    openpyxl==3.1.5 python-docx==1.2.0
+```
+
+Bao đóng của `.venv-sov` là **11 gói cài tay**, không có file requirements nào sinh ra nó:
+`app/services/openrouter_document_parser.py` import `fitz` **lười, bên trong hàm**, nên dò
+bằng cách import dần sẽ không bao giờ lộ ra — nhưng `_co_be()` trong
+`tests/test_sovereign_adapter.py:46` lại đòi đúng `fitz`. Thiếu nó thì test cần BE **skip**
+chứ không đỏ, và `light` chạy được nhưng suy thoái âm thầm. Cài đủ thì
+`pytest tests/test_sovereign_adapter.py` ra **24 passed, 0 skipped**.
+
+Xác minh nhanh từng venv (số tính tới 2026-08-09):
+
+| venv | Lệnh | Kỳ vọng |
+|---|---|---|
+| `.venv` | `-m pytest` | 632 passed, 13 skipped |
+| `.venv-pi` | `-m pytest tests/test_pdf_inspector_adapter.py` | 48 passed |
+| `.venv-odl` | `-m pytest tests/test_opendataloader_adapter.py` | 49 passed (cần `JAVA_HOME`) |
+| `.venv-sov` | `-m pytest tests/test_sovereign_adapter.py` | 24 passed, 0 skipped |
 
 Trên console dùng codepage không phải UTF-8 (cp932, cp1258…), các script trong `scripts/`
 chết ngay ở `print()` đầu tiên với `UnicodeEncodeError`. Đặt `PYTHONIOENCODING=utf-8` trước
