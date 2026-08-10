@@ -38,7 +38,8 @@ class Metric(abc.ABC):
 
     Điểm luôn quy ước **cao hơn là tốt hơn** và nằm trong [0,1]. Metric bản chất là
     tỉ lệ lỗi (CER, WER) phải trả `1 - err` trong `_compute()`, không trả `err` —
-    nếu không, test `sabotage` đứng bét ở C2 sẽ phải biết chiều của từng metric.
+    nếu không, cổng C2 (`sabotage` phải thấp hơn engine nguồn của nó, D-010) sẽ phải
+    biết chiều của từng metric.
     """
 
     name: ClassVar[str]

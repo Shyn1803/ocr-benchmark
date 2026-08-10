@@ -30,8 +30,10 @@ from ocr_bench.metrics.nid import NidMetric
 from ocr_bench.metrics.teds import TedsMetric, TedsStructMetric
 
 # Hai engine giả đăng ký sẵn. Chúng không đo engine nào cả — chúng đo *bộ thước*:
-# `noop` không làm gì, `sabotage` làm hỏng đầu ra engine khác, và cả hai phải đứng
-# bét mọi metric. Metric nào không xếp được như vậy thì metric đó sai (cổng C2).
+# `noop` không làm gì, `sabotage` làm hỏng đầu ra engine khác.
+# ⚠️ Phát biểu cũ "cả hai phải đứng bét mọi metric, chỗ nào không xếp được thì metric
+# đó sai" đã bị bác ở D-010 (2026-08-10): `noop` là sàn theo cấu tạo nên bị LOẠI khỏi
+# cổng C2; điều kiện đạt là `sabotage` thấp hơn chính engine nguồn của nó, so ngặt.
 registry.register_adapter(NoopAdapter)
 registry.register_adapter(SabotageAdapter)
 
