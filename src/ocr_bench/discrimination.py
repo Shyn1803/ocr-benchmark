@@ -7,8 +7,13 @@ bình thường.
 
 Hai phép đo, hai câu hỏi khác nhau — đừng gộp:
 
-* **Cổng `sabotage`** (`kiem_sabotage`): engine bị cố tình làm hỏng có bị xếp bét
-  không. Metric nào không xếp nó bét thì metric đó **sai**.
+* **Cổng `sabotage`** (`kiem_sabotage`): engine bị cố tình làm hỏng có bị chấm thấp
+  hơn **chính nguồn** của nó không. Không đạt thì metric đó **chưa được falsify** —
+  cẩn thận, đó không đồng nghĩa với "metric sai": phép phá hiện có chỉ xoá chứ không
+  bao giờ chèn, nên nó bất lực trước metric được thưởng khi văn bản ngắn đi
+  (`assert_text_absence`, `assert_baseline`). Xem D-010 và TASK-097.
+  "Có đứng bét toàn bảng không" **không** phải điều kiện đạt — nó trộn phép làm hỏng
+  với chênh lệch năng lực giữa các engine.
 * **Độ phân tán** (`do_phan_tan`): các engine **thật** có chênh nhau đủ để nói lên
   điều gì không. Chênh dưới `NGUONG_PHAN_TAN` thì metric ấy không đáng nằm ở bảng
   chính.

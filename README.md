@@ -516,18 +516,24 @@ khi thiếu — bỏ ảnh là bỏ cả `.json` đi kèm, hoặc sinh lại c�
 | **B5 — bộ khẳng định olmOCR** | **xong** — 35 test, coverage 96%; **sáu** metric riêng cho sáu loại (AC-02 cấm gộp), chấm tách theo loại × theo tầng bằng `scripts/score_assertions.py`; xem bẫy 11 và 12 |
 | **B6 — tốc độ / bộ nhớ / tỉ lệ hỏng** | **xong** — 27 test, coverage 100% (`perf`) & 95% (`rss`); perf **không** kế thừa `Metric`; schema prediction lên bản 2, nâng 718 file tại chỗ không chạy lại engine; xem bẫy 13 |
 | **C1 — tự kiểm từng thước đo** | **xong** — identity / đơn điệu / bất biến Unicode cho cả 14 metric; danh sách đối chiếu lấy từ **registry**, nên đăng ký metric mới mà quên fixture là `pytest` đỏ ngay |
-| **C2 — thước đo có phân biệt được không** | **xong về code, cổng CHƯA QUA** — `results/c2_discrimination.md`: chỉ **3/14** metric có cổng `sabotage` chạy được (3/3 đạt), 11/14 thiếu nhãn nên cổng không chạy. Bảng chính còn `img_f1`, `img_iou` |
-| **D1 — chạy toàn bộ, lưu lịch sử** | **xong** — `history/2026-08-07/` và `history/2026-08-07-sau-sua-nhan/`, mỗi bản 5 file kèm version từng engine. Chạy lại từ `prediction/` ra **đúng cùng số** (chỉ khác `generated_at`) |
+| **C2 — thước đo có phân biệt được không** | **xong, cổng ĐÃ QUA** — `results/c2_discrimination.md`: **9/14** metric có cổng chạy được, **7/9 đạt**; **5 metric vào bảng chính** (`assert_math_presence`, `assert_reading_order`, `assert_table_relation`, `img_f1`, `img_iou`). 2 metric trượt cổng (`assert_baseline`, `assert_text_absence`) — xem ghi chú dưới. 7 metric chưa đủ nhãn |
+| **D1 — chạy toàn bộ, lưu lịch sử** | **xong** — bản công bố hiện hành `history/2026-08-10/` (commit `5d0d5ad`, `git.dirty: false`); các bản `history/2026-08-07*` giữ làm lịch sử. Chạy lại từ `prediction/` ra **đúng cùng số** (chỉ khác `generated_at`) |
 | **D2 — đọc tay 20 ca hỏng nặng nhất** | **xong** — `results/failure-analysis.md`: 9 engine hỏng · 2 nhãn sai · 2 metric đo sai; nhãn sửa qua overlay `ground-truth/doclaynet/fixes.json`, **không** sửa `layout_coco.json` |
-| **D3 — viết tài liệu đánh giá** | **CHƯA LÀM — bị chặn bởi cổng C2.** Xem `.claude/tasks/TASK-086/review.md` |
+| **D3 — viết tài liệu đánh giá** | **xong** — `.claude/context/DANH-GIA-OCR-ENGINE.md` (450 dòng, 9 mục theo đề cương §9). TASK-089 `VERDICT: PASS` |
 
-### Vì sao D3 chưa viết được
+### Cổng C2 nói gì, sau khi được định nghĩa lại
 
-Cổng §5 của kế hoạch đòi `sabotage` đứng bét ở **mọi** metric. Hiện 11/14 metric không có
-đủ nhãn để cổng chạy — đó là vấn đề **bộ mẫu**, không phải metric hỏng. Thêm nữa
-`scripts/c2_report.py` dựng `sabotage` từ `opendataloader`, còn `scripts/d1_report.py`
-công bố `sabotage` dựng từ `noop` (41 tài liệu): hai báo cáo đang nói về hai quần thể khác
-nhau dưới cùng một cái tên. Phải thống nhất trước khi công bố lại.
+Phát biểu cũ — *"metric nào không xếp `sabotage` **đứng bét toàn bảng** thì metric đó sai"* —
+**đã bị bác** (commit `5d0d5ad`, chốt thành **D-010** ở `.claude/context/DECISIONS.md`). Nó trộn
+hai câu hỏi khác nhau: *phép làm hỏng có bị phạt không* và *engine nào giỏi hơn engine nào*.
+`assert_math_presence` từng báo đỏ chỉ vì `pdf_inspector` thật sự chấm 0,0000 — nó không sinh
+công thức. Cổng hiện tại: **`sabotage` phải thấp hơn chính nguồn của nó** (`opendataloader`),
+và `noop` — vốn là sàn theo cấu tạo — bị loại khỏi tập so sánh.
+
+Hai metric trượt cổng (`assert_baseline` hoà 1,0000; `assert_text_absence` 0,7556 so với nguồn
+0,4589) **không hỏng**. `adapters/sabotage.py::_corrupt_text` **chỉ xoá, không bao giờ chèn**,
+nên nó không thể thử được metric mà văn bản ngắn đi lại có lợi. Đo trên 138 tài liệu:
+`fail→pass` **146** so với `pass→fail` **4**. Cần một falsifier theo hướng chèn — **TASK-097**.
 
 ## Cảnh báo dữ liệu
 

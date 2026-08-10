@@ -1,12 +1,26 @@
 """Engine giả `sabotage` — cái cân để kiểm tra chính bộ thước đo.
 
 Nó không đọc PDF. Nó lấy kết quả của một engine khác rồi **cố tình làm hỏng**: xáo
-dòng, cắt còn một nửa, xô lệch bbox, xén bớt hàng trong bảng. Vì thế nó không bao
-giờ có thể tốt hơn nguồn.
+dòng, cắt còn một nửa, xô lệch bbox, xén bớt hàng trong bảng.
 
-Đó là toàn bộ công dụng của nó: **metric nào không xếp `sabotage` đứng bét thì metric
-đó sai.** Một metric viết hỏng vẫn cho ra bảng xếp hạng trông rất thuyết phục — không
-nhìn bằng mắt mà phát hiện được. C2 (TASK-086) dùng adapter này làm cổng cứng.
+Công dụng của nó: **metric nào không chấm `sabotage` thấp hơn chính nguồn của nó thì
+metric đó chưa được falsify.** Một metric viết hỏng vẫn cho ra bảng xếp hạng trông rất
+thuyết phục — không nhìn bằng mắt mà phát hiện được. C2 (TASK-086) dùng adapter này
+làm cổng cứng.
+
+⚠️ Phát biểu cũ — *"metric nào không xếp `sabotage` **đứng bét toàn bảng**"* — đã bị bác
+(D-010, 2026-08-10). Nó trộn hai câu hỏi: *phép làm hỏng có bị phạt không* và *engine nào
+giỏi hơn engine nào*. `assert_math_presence` từng báo đỏ chỉ vì `pdf_inspector` thật sự
+chấm 0,0000 (nó không sinh công thức). So sánh đúng là **với nguồn**, và `noop` — vốn là
+sàn theo cấu tạo — bị loại khỏi tập so sánh.
+
+**Giới hạn của chính adapter này:** mọi phép ở đây **chỉ xoá, không bao giờ chèn**. Nên
+nó **không thể** falsify metric nào được thưởng khi văn bản ngắn đi: `assert_text_absence`
+(xoá chữ làm chuỗi cấm biến mất ⇒ khẳng định lật sang đạt) và `assert_baseline`
+(`_keep_half` trả `max(1, ...)` phần tử nên đầu ra không bao giờ rỗng, và xoá thì không
+sinh được U+FFFD ⇒ luôn hoà 1,0000). Hai metric đó **không hỏng** — falsifier thiếu năng
+lực. Bản chèn (`sabotage_insert`) là TASK-097, làm thành engine **thứ hai**, không sửa
+engine này.
 
 Hai ràng buộc bắt buộc:
 
