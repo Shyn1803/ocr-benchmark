@@ -535,6 +535,16 @@ Hai metric trượt cổng (`assert_baseline` hoà 1,0000; `assert_text_absence`
 nên nó không thể thử được metric mà văn bản ngắn đi lại có lợi. Đo trên 138 tài liệu:
 `fail→pass` **146** so với `pass→fail` **4**. Cần một falsifier theo hướng chèn — **TASK-097**.
 
+**Chèn chỉ cứu được một trong hai** (**D-010(c)**). `assert_text_absence` có 823 khẳng định và
+chèn đúng là phép phá nó cần. `assert_baseline` thì không: nó chỉ có **9** khẳng định, và **cả
+9** mang `check_disallowed_characters: false`, nên nhánh U+FFFD trong `BaselineMetric._dat` là
+mã chết trên corpus này — thước đo rút gọn còn đúng *"đầu ra không rỗng"*, mà engine duy nhất
+trượt nổi điều kiện đó là `noop`, đã bị loại khỏi tập so sánh. Không phép phá nào với tới được
+nó, nên nó **rút khỏi mẫu số cổng**, xuống mục *"không kiểm được, kèm lý do"*: tiêu đề thành
+**7/8** ở bản chấm của TASK-097. Lý do thứ hai, độc lập: 9 khẳng định trên 138 tài liệu là cỡ
+mẫu không kết luận được gì. Con số **7/9** ở bảng trên đúng với bản chấm 2026-08-10 và chỉ đổi
+khi chạy lại `scripts/c2_report.py` — `results/` là thư mục sinh ra, **không sửa tay**.
+
 ## Cảnh báo dữ liệu
 
 Bộ mẫu hiện tại là dữ liệu công khai. **Nếu** về sau đưa tài liệu thật của khách vào,

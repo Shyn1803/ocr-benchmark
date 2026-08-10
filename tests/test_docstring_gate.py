@@ -23,7 +23,11 @@ import re
 from pathlib import Path
 
 GOC = Path(__file__).resolve().parents[1]
-THU_MUC_QUET = ("src", "results", "scripts")
+# Quét cả `tests/` (test cũng là tài liệu — docstring test là chỗ luật hay được nhắc lại)
+# và `README.md` — file được đọc nhiều nhất repo, cũng là chỗ trích lại luật cũ ở dòng 526.
+# `docs/` chưa tồn tại; để sẵn, `_quet` bỏ qua thư mục không có.
+THU_MUC_QUET = ("src", "results", "scripts", "docs", "tests")
+FILE_LE_QUET = ("README.md",)
 DUOI_FILE = (".py", ".md")
 
 # Dạng **khẳng định** của luật đã chết. Chỉ bắt dạng khẳng định, không bắt mọi lần
@@ -54,23 +58,26 @@ def _co_dau_hieu_bac(dong: list[str], i: int) -> bool:
 
 def _quet(goc: Path) -> list[tuple[Path, int, str]]:
     """Trả về mọi dòng nhắc lại luật cũ mà **không** kèm dấu hiệu bác bỏ."""
-    vi_pham: list[tuple[Path, int, str]] = []
+    ung_vien: list[Path] = []
     for thu_muc in THU_MUC_QUET:
         d = goc / thu_muc
-        if not d.is_dir():
+        if d.is_dir():
+            ung_vien.extend(sorted(d.rglob("*")))
+    ung_vien.extend(goc / ten for ten in FILE_LE_QUET if (goc / ten).is_file())
+
+    vi_pham: list[tuple[Path, int, str]] = []
+    for f in ung_vien:
+        if f.suffix not in DUOI_FILE or "__pycache__" in f.parts:
             continue
-        for f in sorted(d.rglob("*")):
-            if f.suffix not in DUOI_FILE or "__pycache__" in f.parts:
-                continue
-            if f.resolve() == Path(__file__).resolve():
-                continue
-            try:
-                dong = f.read_text(encoding="utf-8").splitlines()
-            except (UnicodeDecodeError, OSError):
-                continue
-            for i, noi_dung in enumerate(dong):
-                if any(m.search(noi_dung) for m in MAU_CAM) and not _co_dau_hieu_bac(dong, i):
-                    vi_pham.append((f.relative_to(goc), i + 1, noi_dung.strip()))
+        if f.resolve() == Path(__file__).resolve():
+            continue
+        try:
+            dong = f.read_text(encoding="utf-8").splitlines()
+        except (UnicodeDecodeError, OSError):
+            continue
+        for i, noi_dung in enumerate(dong):
+            if any(m.search(noi_dung) for m in MAU_CAM) and not _co_dau_hieu_bac(dong, i):
+                vi_pham.append((f.relative_to(goc), i + 1, noi_dung.strip()))
     return vi_pham
 
 
