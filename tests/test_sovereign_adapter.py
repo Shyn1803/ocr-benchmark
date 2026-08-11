@@ -15,8 +15,10 @@ Test cần BE thật đánh dấu ``needs_be``.
 
 from __future__ import annotations
 
+import importlib
 import json
 import os
+import sys
 from functools import lru_cache
 from pathlib import Path
 from types import SimpleNamespace as NS
@@ -32,7 +34,7 @@ from ocr_bench.adapters.sovereign import (
     kiem_config,
 )
 from ocr_bench.profiles import EngineProfile, ProfileConfigError, load_profile_catalog
-from ocr_bench.types import Capability
+from ocr_bench.types import Capability, FailureKind
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = load_profile_catalog(ROOT / "configs" / "profiles.json")
@@ -247,7 +249,11 @@ def test_fingerprint_khong_rong_va_du_truong():
         "be_commit",
         "be_dirty",
         "marker_version",
+        "marker_package_available",
+        "marker_model_cache_ready",
         "marker_model_cache",
+        "marker_runtime_loaded",
+        "marker_runtime_device",
         "python",
     ):
         assert truong in fp, truong
@@ -314,7 +320,11 @@ def test_sovereign_profile_rejects_catalog_drift():
 
 
 def test_sovereign_default_refuses_marker_environment(monkeypatch):
-    monkeypatch.setattr(sov, "marker_san_sang", lambda: True)
+    monkeypatch.setattr(
+        sov,
+        "marker_runtime_state",
+        lambda: _marker_state(package_available=True, model_cache_ready=True),
+    )
     adapter = SovereignAdapter.from_profile(CATALOG["sovereign_default"])
 
     with pytest.raises(sov.ProfileEnvironmentError, match="marker_available"):
@@ -322,7 +332,11 @@ def test_sovereign_default_refuses_marker_environment(monkeypatch):
 
 
 def test_sovereign_scan_requires_marker(monkeypatch):
-    monkeypatch.setattr(sov, "marker_san_sang", lambda: False)
+    monkeypatch.setattr(
+        sov,
+        "marker_runtime_state",
+        lambda: _marker_state(package_available=False, model_cache_ready=False),
+    )
     adapter = SovereignAdapter.from_profile(CATALOG["sovereign_scan"])
 
     with pytest.raises(sov.ProfileEnvironmentError, match="marker_available"):
@@ -369,7 +383,13 @@ def _profile_adapter(
     adapter._preflight_complete = True
     adapter._hardware = "cpu"
     adapter._hardware_verified = True
-    adapter._marker_available = name.endswith("_scan")
+    is_scan = name.endswith("_scan")
+    adapter._marker_state = sov.MarkerRuntimeState(
+        package_available=is_scan,
+        model_cache_ready=is_scan,
+        runtime_loaded=False,
+        runtime_device=None,
+    )
     return adapter
 
 
@@ -426,6 +446,166 @@ def test_sovereign_raw_fingerprint_and_error_redact_seeded_secrets(
     assert openrouter.encode() not in serialized
     assert groq.encode() not in serialized
     assert b"<redacted>" in serialized
+
+
+@pytest.mark.parametrize(
+    "env_name",
+    [
+        "OPENROUTER_API_KEY",
+        "GROQ_API_KEY",
+        "OPENROUTER_API_URL",
+        "GDOC_PARSER_URL",
+    ],
+)
+def test_sovereign_pipeline_exception_hides_opaque_env_secret_from_traceback(
+    tmp_path, monkeypatch, env_name
+):
+    """The exception wrapper must hide exact secrets generic regexes cannot detect."""
+    secret = f"opaque-value-for-{env_name.lower()}-94731"
+    monkeypatch.setenv(env_name, secret)
+    adapter = _profile_adapter("sovereign_default", {"success": True})
+
+    def fail_pipeline(_data, _suffix, **_kwargs):
+        raise RuntimeError(f"backend exploded with {secret}")
+
+    adapter._pipeline = fail_pipeline
+    result = adapter.execute(_pdf(tmp_path))
+    serialized = json.dumps(
+        {
+            "error": result.error,
+            "fingerprint": result.config_fingerprint,
+        },
+        sort_keys=True,
+    )
+
+    assert result.failed is True
+    assert secret not in serialized
+    assert "<redacted>" in serialized
+
+
+@pytest.mark.parametrize(
+    ("raised", "expected"),
+    [
+        (TimeoutError, FailureKind.TIMEOUT),
+        (MemoryError, FailureKind.OOM),
+        (FileNotFoundError, FailureKind.ENVIRONMENT_ERROR),
+        (ImportError, FailureKind.ENVIRONMENT_ERROR),
+        (RuntimeError, FailureKind.ENGINE_ERROR),
+    ],
+)
+def test_sovereign_sanitized_wrapper_keeps_failure_taxonomy(
+    tmp_path, monkeypatch, raised, expected
+):
+    """Hiding the backend exception must not collapse every crash into ENGINE_ERROR.
+
+    Task 2 fixed the taxonomy at the adapter boundary; a timeout, an OOM and a missing
+    dependency each drive a different reading of the fail-rate column. Redaction is a
+    property of the *message*, not a reason to throw the classification away.
+    """
+    secret = "opaque-taxonomy-secret-55192"
+    monkeypatch.setenv("OPENROUTER_API_KEY", secret)
+    adapter = _profile_adapter("sovereign_default", {"success": True})
+
+    def fail_pipeline(_data, _suffix, **_kwargs):
+        raise raised(f"backend died holding {secret}")
+
+    adapter._pipeline = fail_pipeline
+    result = adapter.execute(_pdf(tmp_path))
+    serialized = json.dumps(
+        {"error": result.error, "fingerprint": result.config_fingerprint},
+        sort_keys=True,
+    )
+
+    assert result.failed is True
+    assert result.failure_kind is expected
+    assert secret not in serialized
+    assert "<redacted>" in serialized
+
+
+def _marker_state(**changes):
+    defaults = {
+        "package_available": True,
+        "model_cache_ready": True,
+        "marker_available": True,
+        "runtime_loaded": False,
+        "runtime_device": None,
+    }
+    return NS(**{**defaults, **changes})
+
+
+def test_sovereign_scan_cpu_rejects_preloaded_cuda_runtime():
+    adapter = SovereignAdapter.from_profile(CATALOG["sovereign_scan"])
+
+    with pytest.raises(sov.ProfileEnvironmentError, match="cuda|runtime_device"):
+        adapter._validate_marker_runtime(
+            _marker_state(runtime_loaded=True, runtime_device="cuda:0")
+        )
+    assert adapter._hardware_verified is False
+
+
+def test_sovereign_default_rejects_loaded_marker_without_package_or_cache():
+    adapter = SovereignAdapter.from_profile(CATALOG["sovereign_default"])
+
+    with pytest.raises(sov.ProfileEnvironmentError, match="runtime_loaded"):
+        adapter._validate_marker_runtime(
+            _marker_state(
+                package_available=False,
+                model_cache_ready=False,
+                marker_available=False,
+                runtime_loaded=True,
+                runtime_device="cpu",
+            )
+        )
+
+
+@pytest.mark.parametrize(
+    ("package_available", "cache_ready", "marker_available"),
+    [(False, True, False), (True, False, False), (True, True, True)],
+)
+def test_marker_probe_keeps_package_and_cache_signals_separate(
+    monkeypatch, package_available, cache_ready, marker_available
+):
+    service = NS(
+        _surya_models_cached=lambda: cache_ready,
+        _model_refs=None,
+        _device_str=None,
+    )
+    monkeypatch.setattr(sov, "_load_marker_service", lambda: service, raising=False)
+    monkeypatch.setattr(
+        sov.importlib.util,
+        "find_spec",
+        lambda name: object() if name == "marker" and package_available else None,
+    )
+
+    state = sov.marker_runtime_state()
+
+    assert state.package_available is package_available
+    assert state.model_cache_ready is cache_ready
+    assert state.marker_available is marker_available
+    assert state.runtime_loaded is False
+    assert state.runtime_device is None
+
+
+def test_sovereign_pipeline_dynamic_import_creates_no_bytecode(tmp_path, monkeypatch):
+    module_name = "sovereign_be_dynamic_fixture"
+    module_file = tmp_path / f"{module_name}.py"
+    module_file.write_text("VALUE = 'loaded'\n", encoding="utf-8")
+    monkeypatch.syspath_prepend(str(tmp_path))
+    sys.modules.pop(module_name, None)
+    adapter = _profile_adapter("sovereign_default", {"success": True})
+
+    def importing_pipeline(_data, _suffix, **_kwargs):
+        loaded = importlib.import_module(module_name)
+        return {"success": True, "fullText": loaded.VALUE}
+
+    adapter._pipeline = importing_pipeline
+    try:
+        result = adapter.run(_pdf(tmp_path))
+    finally:
+        sys.modules.pop(module_name, None)
+
+    assert result.text_md == "loaded"
+    assert not list(tmp_path.rglob("*.pyc"))
 
 
 def test_sovereign_be_discovery_handles_nested_worktree(monkeypatch, tmp_path):

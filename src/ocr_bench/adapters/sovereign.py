@@ -56,14 +56,16 @@ import json
 import os
 import subprocess
 import sys
+import threading
 import time
 from collections.abc import Mapping
+from contextlib import contextmanager
 from dataclasses import dataclass
 from importlib.metadata import PackageNotFoundError, version as package_version
 from pathlib import Path
 from typing import Any, Callable, ClassVar, Literal
 
-from ocr_bench.adapters.base import Adapter
+from ocr_bench.adapters.base import Adapter, classify_exception
 from ocr_bench.profiles import EngineProfile, ProfileConfigError
 from ocr_bench.secrets import sanitize_secret_text
 from ocr_bench.types import Capability, FailureKind, OcrResult, RawArtifact
@@ -71,6 +73,7 @@ from ocr_bench.types import Capability, FailureKind, OcrResult, RawArtifact
 __all__ = [
     "SovereignAdapter",
     "ProfileEnvironmentError",
+    "SanitizedPipelineError",
     "VuotTran",
     "ENV_CUONG_BUC",
     "duong_dan_be",
@@ -82,6 +85,20 @@ __all__ = [
 
 class ProfileEnvironmentError(RuntimeError):
     """The installed Sovereign runtime does not match its frozen profile."""
+
+
+class SanitizedPipelineError(RuntimeError):
+    """Adapter-owned error whose message and traceback contain no BE exception.
+
+    Giấu exception gốc **không** được làm mất phân loại thất bại của nó: ``failure_kind``
+    được tính từ exception gốc trước khi nó bị vứt, rồi ``classify_exception`` đọc lại
+    ở biên adapter (Task 2). Thiếu trường này thì mọi timeout/OOM/thiếu dependency của
+    BE đều hiện ra là ``ENGINE_ERROR``.
+    """
+
+    def __init__(self, message: str, failure_kind: FailureKind) -> None:
+        super().__init__(message)
+        self.failure_kind = failure_kind
 
 
 class VuotTran(BaseException):
@@ -119,7 +136,13 @@ _PROFILE_ENVIRONMENTS = {
     "sovereign_default": {"marker_available": False},
     "sovereign_scan": {"marker_available": True},
 }
-_SECRET_ENV_NAMES = ("OPENROUTER_API_KEY", "GROQ_API_KEY")
+_SECRET_ENV_NAMES = (
+    "OPENROUTER_API_KEY",
+    "GROQ_API_KEY",
+    "OPENROUTER_API_URL",
+    "GDOC_PARSER_URL",
+)
+_BE_EXECUTION_LOCK = threading.RLock()
 
 
 @dataclass(frozen=True, slots=True)
@@ -130,6 +153,26 @@ class SovereignIdentity:
     config: Mapping[str, object]
     environment: Mapping[str, object]
     profile_config_sha256: str
+
+
+@dataclass(frozen=True, slots=True)
+class MarkerRuntimeState:
+    package_available: bool
+    model_cache_ready: bool
+    runtime_loaded: bool
+    runtime_device: str | None
+
+    @property
+    def marker_available(self) -> bool:
+        return self.package_available and self.model_cache_ready
+
+
+UNKNOWN_MARKER_STATE = MarkerRuntimeState(
+    package_available=False,
+    model_cache_ready=False,
+    runtime_loaded=False,
+    runtime_device=None,
+)
 
 
 LEGACY_IDENTITY = SovereignIdentity(
@@ -160,6 +203,18 @@ def _tu_env(ten: str, thu_cong: Any, mac_dinh: Any, kieu: Callable[[str], Any]) 
         return kieu(gia_tri)
     except ValueError as exc:
         raise ValueError(f"{ten}={gia_tri!r} không đọc được thành {kieu.__name__}") from exc
+
+
+@contextmanager
+def _be_read_only():
+    """Serialize BE imports/calls and suppress Python bytecode writes within them."""
+    with _BE_EXECUTION_LOCK:
+        previous = sys.dont_write_bytecode
+        sys.dont_write_bytecode = True
+        try:
+            yield
+        finally:
+            sys.dont_write_bytecode = previous
 
 
 def duong_dan_be() -> Path:
@@ -245,25 +300,109 @@ def kiem_config(
     }
 
 
-def marker_san_sang() -> bool:
-    """Cache model Surya có sẵn không — phân biệt chế độ ``light`` và ``full``.
+def _load_marker_service() -> Any:
+    """Import the exact BE Marker module without allowing `.pyc` writes."""
+    goc = duong_dan_be()
+    if not (goc / "app" / "services" / "marker_ocr_service.py").is_file():
+        raise FileNotFoundError("Sovereign BE marker_ocr_service.py is missing")
+    if str(goc) not in sys.path:
+        sys.path.insert(0, str(goc))
+    with _be_read_only():
+        from app.services import marker_ocr_service  # noqa: PLC0415
 
-    Không được ném: ``Adapter.execute()`` gọi ``config_fingerprint()`` trong cả nhánh bắt
-    lỗi, ném ở đó thì lỗi gốc bị nuốt (bài học A5 lỗi #3).
-    """
+    return marker_ocr_service
+
+
+def _normalize_device(value: object) -> str | None:
+    if value is None:
+        return None
+    device = str(value).strip().lower()
+    return device or None
+
+
+def _model_ref_devices(value: object) -> set[str]:
+    """Read a bounded sample of cached model refs without moving or clearing models."""
+    devices: set[str] = set()
+    pending: list[tuple[object, int]] = [(value, 0)]
+    seen: set[int] = set()
+    while pending and len(seen) < 64:
+        current, depth = pending.pop()
+        marker = id(current)
+        if marker in seen:
+            continue
+        seen.add(marker)
+        if (device := _normalize_device(getattr(current, "device", None))) is not None:
+            devices.add(device)
+        parameters = getattr(current, "parameters", None)
+        if callable(parameters):
+            try:
+                first = next(iter(parameters()), None)
+            except BaseException:  # probe must stay fail-closed and read-only
+                first = None
+            if first is not None and (
+                device := _normalize_device(getattr(first, "device", None))
+            ) is not None:
+                devices.add(device)
+        if depth >= 2:
+            continue
+        if isinstance(current, Mapping):
+            pending.extend((nested, depth + 1) for nested in list(current.values())[:32])
+        elif isinstance(current, (list, tuple)):
+            pending.extend((nested, depth + 1) for nested in current[:32])
+    return devices
+
+
+def marker_runtime_state() -> MarkerRuntimeState:
+    """Probe package, cache, and already-loaded BE runtime as separate signals."""
     try:
-        goc = duong_dan_be()
-        if not (goc / "app" / "services" / "marker_ocr_service.py").is_file():
-            return False
-        if str(goc) not in sys.path:
-            sys.path.insert(0, str(goc))
-        if importlib.util.find_spec("marker") is None:
-            return False
-        from app.services.marker_ocr_service import _surya_models_cached  # noqa: PLC0415
+        package_available = importlib.util.find_spec("marker") is not None
+    except BaseException:
+        package_available = False
 
-        return bool(_surya_models_cached())
-    except BaseException:  # noqa: BLE001 — cố ý: hàm này tuyệt đối không được ném
-        return False
+    try:
+        with _be_read_only():
+            service = _load_marker_service()
+    except BaseException:
+        return MarkerRuntimeState(
+            package_available=package_available,
+            model_cache_ready=False,
+            runtime_loaded=False,
+            runtime_device=None,
+        )
+
+    with _be_read_only():
+        try:
+            cache_ready = bool(service._surya_models_cached())
+        except BaseException:
+            cache_ready = False
+        model_refs = getattr(service, "_model_refs", None)
+        configured_device = _normalize_device(
+            getattr(service, "_device_str", None)
+        )
+        model_devices = (
+            _model_ref_devices(model_refs) if model_refs is not None else set()
+        )
+
+    runtime_loaded = model_refs is not None or configured_device is not None
+    observed_devices = set(model_devices)
+    if configured_device is not None:
+        observed_devices.add(configured_device)
+    runtime_device = None
+    if len(observed_devices) == 1:
+        runtime_device = next(iter(observed_devices))
+    elif len(observed_devices) > 1:
+        runtime_device = "conflict:" + ",".join(sorted(observed_devices))
+    return MarkerRuntimeState(
+        package_available=package_available,
+        model_cache_ready=cache_ready,
+        runtime_loaded=runtime_loaded,
+        runtime_device=runtime_device,
+    )
+
+
+def marker_san_sang() -> bool:
+    """Backward-compatible availability predicate derived from separate probes."""
+    return marker_runtime_state().marker_available
 
 
 def _kiem_pipeline_module(module: Any) -> None:
@@ -289,22 +428,26 @@ def nap_pipeline(*, marker_enabled: bool | None = None) -> Callable[..., dict]:
     của docstring module.
     """
     _ap_env(marker_enabled=marker_enabled)
-    goc = duong_dan_be()
-    if not (goc / "app" / "services" / "openrouter_document_parser.py").is_file():
-        raise VuotTran(
-            f"không thấy pipeline BE ở {goc}. Đặt SOVEREIGN_BE_PATH trỏ đúng thư mục."
-        )
-    if str(goc) not in sys.path:
-        sys.path.insert(0, str(goc))
+    with _be_read_only():
+        goc = duong_dan_be()
+        if not (
+            goc / "app" / "services" / "openrouter_document_parser.py"
+        ).is_file():
+            raise VuotTran(
+                f"không thấy pipeline BE ở {goc}. "
+                "Đặt SOVEREIGN_BE_PATH trỏ đúng thư mục."
+            )
+        if str(goc) not in sys.path:
+            sys.path.insert(0, str(goc))
 
-    from app.config import get_settings  # noqa: PLC0415
+        from app.config import get_settings  # noqa: PLC0415
 
-    kiem_config(get_settings, marker_enabled=marker_enabled)
+        kiem_config(get_settings, marker_enabled=marker_enabled)
 
-    from app.services import openrouter_document_parser as parser  # noqa: PLC0415
+        from app.services import openrouter_document_parser as parser  # noqa: PLC0415
 
-    _kiem_pipeline_module(parser)
-    return parser.extract_text_from_document
+        _kiem_pipeline_module(parser)
+        return parser.extract_text_from_document
 
 
 def _plain(value: object) -> object:
@@ -422,7 +565,7 @@ class SovereignAdapter(Adapter):
         self._config: dict[str, object] | None = None
         expected = identity.environment.get("marker_available")
         self._marker_expected = expected if isinstance(expected, bool) else None
-        self._marker_available = False
+        self._marker_state = UNKNOWN_MARKER_STATE
         self._preflight_complete = identity.profile == "legacy"
         self._hardware: Literal["cpu"] = "cpu"
         self._hardware_verified = False
@@ -477,8 +620,25 @@ class SovereignAdapter(Adapter):
     def preflight(self) -> dict[str, object]:
         """Bind one profile to a matching, local-only BE runtime before execution."""
         _ap_env(marker_enabled=self._marker_enabled)
-        marker_available = marker_san_sang()
-        self._marker_available = marker_available
+        state = marker_runtime_state()
+        self._marker_state = state
+        self._validate_marker_runtime(state)
+
+        pipeline = nap_pipeline(marker_enabled=self._marker_enabled)
+        with _be_read_only():
+            from app.config import get_settings  # noqa: PLC0415
+
+            self._config = kiem_config(
+                get_settings, marker_enabled=self._marker_enabled
+            )
+        self._pipeline = pipeline
+        self._preflight_complete = True
+        return self.config_fingerprint()
+
+    def _validate_marker_runtime(self, state: MarkerRuntimeState) -> None:
+        marker_available = bool(
+            state.package_available and state.model_cache_ready
+        )
         if (
             self._marker_expected is not None
             and marker_available is not self._marker_expected
@@ -488,15 +648,20 @@ class SovereignAdapter(Adapter):
                 f"profile requires {self._marker_expected}"
             )
 
-        pipeline = nap_pipeline(marker_enabled=self._marker_enabled)
-        from app.config import get_settings  # noqa: PLC0415
-
-        self._config = kiem_config(
-            get_settings, marker_enabled=self._marker_enabled
-        )
-        self._pipeline = pipeline
-        self._preflight_complete = True
-        return self.config_fingerprint()
+        runtime_device = _normalize_device(state.runtime_device)
+        if runtime_device is not None and not runtime_device.startswith("cpu"):
+            raise ProfileEnvironmentError(
+                f"{self.name}: cached Marker runtime_device={runtime_device!r}; "
+                "CPU profile requires an already-loaded CPU runtime"
+            )
+        if state.runtime_loaded and runtime_device is None:
+            raise ProfileEnvironmentError(
+                f"{self.name}: Marker runtime_loaded=True but device is unverified"
+            )
+        if self.profile == "default" and state.runtime_loaded:
+            raise ProfileEnvironmentError(
+                f"{self.name}: default profile rejects Marker runtime_loaded=True"
+            )
 
     def configure_hardware(self, hardware: str) -> str:
         if hardware not in {"cpu", "gpu"}:
@@ -519,11 +684,12 @@ class SovereignAdapter(Adapter):
             )
         if self._pipeline is None:
             self._pipeline = nap_pipeline(marker_enabled=self._marker_enabled)
-            from app.config import get_settings  # noqa: PLC0415
+            with _be_read_only():
+                from app.config import get_settings  # noqa: PLC0415
 
-            self._config = kiem_config(
-                get_settings, marker_enabled=self._marker_enabled
-            )
+                self._config = kiem_config(
+                    get_settings, marker_enabled=self._marker_enabled
+                )
         return self._pipeline
 
     def version(self) -> str:
@@ -537,7 +703,8 @@ class SovereignAdapter(Adapter):
         API hay không, Marker có sẵn hay không. Thiếu ``marker_available`` thì hai lượt
         chạy chênh nhau hàng chục lần thời gian trông như cùng một thứ.
         """
-        co_marker = self._marker_available
+        marker_state = self._marker_state
+        co_marker = marker_state.marker_available
         git = _be_git_metadata()
         safe_config = {
             **_plain(self.identity.config),
@@ -547,7 +714,11 @@ class SovereignAdapter(Adapter):
             **safe_config,
             "mode": "full" if co_marker else "light",
             "marker_available": co_marker,
-            "marker_model_cache": co_marker,
+            "marker_package_available": marker_state.package_available,
+            "marker_model_cache_ready": marker_state.model_cache_ready,
+            "marker_model_cache": marker_state.model_cache_ready,
+            "marker_runtime_loaded": marker_state.runtime_loaded,
+            "marker_runtime_device": marker_state.runtime_device,
             "marker_version": _marker_version(),
             "be_commit": git["commit"],
             "be_dirty": git["dirty"],
@@ -595,7 +766,14 @@ class SovereignAdapter(Adapter):
         du_lieu = base64.b64encode(doc_path.read_bytes()).decode("ascii")
 
         t0 = time.perf_counter()
-        ket = pipeline(du_lieu, duoi)
+        try:
+            with _be_read_only():
+                ket = pipeline(du_lieu, duoi)
+        except Exception as exc:
+            safe_error = _sanitize_runtime_text(
+                f"{type(exc).__name__}: {exc}", self._sensitive_values
+            )
+            raise SanitizedPipelineError(safe_error, classify_exception(exc)) from None
         giay = time.perf_counter() - t0
 
         self._da_chay += 1

@@ -29,7 +29,16 @@ class AdapterOutputError(ValueError):
 
 
 def classify_exception(exc: BaseException) -> FailureKind:
-    """Phân loại lỗi engine tại một biên chung, trước khi message bị stringify."""
+    """Phân loại lỗi engine tại một biên chung, trước khi message bị stringify.
+
+    Adapter phải giấu exception gốc (vì message/traceback của backend có thể mang
+    secret) thì khai `failure_kind` trên chính exception đã làm sạch. Không có đường
+    này, cái giá của redaction là toàn bộ taxonomy: timeout, OOM và thiếu dependency
+    dồn hết vào `ENGINE_ERROR` và cột fail-rate mất nghĩa. Chỉ nhận đúng kiểu
+    `FailureKind` — một chuỗi trùng tên không được tự phong.
+    """
+    if isinstance(khai_bao := getattr(exc, "failure_kind", None), FailureKind):
+        return khai_bao
     if isinstance(exc, AdapterOutputError):
         return FailureKind.ADAPTER_ERROR
     if isinstance(exc, TimeoutError):

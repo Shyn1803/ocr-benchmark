@@ -55,6 +55,26 @@ def test_classify_exception_at_adapter_boundary(exc: Exception, expected: Failur
     assert base_module.classify_exception(exc) is expected
 
 
+def test_classify_exception_honours_declared_failure_kind():
+    """Adapter bọc lại lỗi backend (để giấu secret) vẫn phải khai đúng loại thất bại.
+
+    Không có đường này thì mọi adapter muốn sanitize message đều buộc phải đánh đổi
+    taxonomy — timeout, OOM và thiếu dependency dồn hết thành `ENGINE_ERROR`.
+    """
+
+    class DaLamSach(RuntimeError):
+        failure_kind = FailureKind.TIMEOUT
+
+    assert base_module.classify_exception(DaLamSach("<redacted>")) is FailureKind.TIMEOUT
+
+
+def test_classify_exception_ignores_non_failure_kind_attribute():
+    class Gia(RuntimeError):
+        failure_kind = "timeout"
+
+    assert base_module.classify_exception(Gia("x")) is FailureKind.ENGINE_ERROR
+
+
 def test_execute_records_classified_failure_kind():
     class QuaHan(Adapter):
         name: ClassVar[str] = "qua_han"
