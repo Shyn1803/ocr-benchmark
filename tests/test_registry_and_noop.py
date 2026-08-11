@@ -45,6 +45,8 @@ def test_execute_bien_exception_thanh_failed_chu_khong_nem():
 
     r = Exploding().execute(Path("x.pdf"))
     assert r.failed is True
+    assert r.engine_family == "exploding"
+    assert r.profile == "legacy"
     assert "hết RAM" in (r.error or "")
     assert r.seconds is not None
 

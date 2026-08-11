@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 from collections.abc import Mapping
 from dataclasses import dataclass
+from html.parser import HTMLParser
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from types import SimpleNamespace
@@ -121,6 +122,91 @@ _LABEL_MAP: dict[str, BlockType] = {
     "handwritten_text": BlockType.TEXT,
     "title": BlockType.TITLE,
 }
+
+_VOID_HTML_ELEMENTS = frozenset(
+    {
+        "area",
+        "base",
+        "br",
+        "col",
+        "embed",
+        "hr",
+        "img",
+        "input",
+        "link",
+        "meta",
+        "source",
+        "track",
+        "wbr",
+    }
+)
+
+
+class _MalformedTableHtml(ValueError):
+    pass
+
+
+class _TableHtmlValidator(HTMLParser):
+    """Require one balanced ``table`` root while accepting ordinary HTML content."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.stack: list[str] = []
+        self.saw_root = False
+        self.closed_root = False
+
+    def handle_starttag(
+        self, tag: str, attrs: list[tuple[str, str | None]]
+    ) -> None:
+        del attrs
+        if not self.stack:
+            if self.saw_root or tag != "table":
+                raise _MalformedTableHtml("HTML must have exactly one table root")
+            self.saw_root = True
+        if tag not in _VOID_HTML_ELEMENTS:
+            self.stack.append(tag)
+
+    def handle_startendtag(
+        self, tag: str, attrs: list[tuple[str, str | None]]
+    ) -> None:
+        if not self.stack:
+            raise _MalformedTableHtml("table root cannot be self-closing")
+        del tag, attrs
+
+    def handle_endtag(self, tag: str) -> None:
+        if not self.stack or self.stack[-1] != tag:
+            raise _MalformedTableHtml(f"unmatched closing tag {tag}")
+        self.stack.pop()
+        if not self.stack:
+            if tag != "table":
+                raise _MalformedTableHtml("root element is not table")
+            self.closed_root = True
+
+    def handle_data(self, data: str) -> None:
+        if not self.stack and data.strip():
+            raise _MalformedTableHtml("non-whitespace content outside table root")
+
+    def handle_comment(self, data: str) -> None:
+        del data
+        if not self.stack:
+            raise _MalformedTableHtml("comment outside table root")
+
+    def handle_decl(self, decl: str) -> None:
+        raise _MalformedTableHtml(f"declaration is not table content: {decl}")
+
+    def handle_pi(self, data: str) -> None:
+        raise _MalformedTableHtml(f"processing instruction is not table content: {data}")
+
+
+def _validate_table_html(html: str, *, self_ref: str) -> None:
+    parser = _TableHtmlValidator()
+    try:
+        parser.feed(html)
+        parser.close()
+    except (AssertionError, _MalformedTableHtml, ValueError) as exc:
+        raise AdapterOutputError(f"Docling table {self_ref} trả HTML lỗi") from exc
+    if parser.stack or not parser.saw_root or not parser.closed_root:
+        raise AdapterOutputError(f"Docling table {self_ref} trả HTML chưa đóng")
 
 
 def _canonical_json_bytes(value: object, *, label: str) -> bytes:
@@ -279,8 +365,9 @@ def build_result(
                 n_cols = int(item.data.num_cols)
             except (AttributeError, RuntimeError, TypeError, ValueError) as exc:
                 raise AdapterOutputError(f"Docling table {self_ref} bị lỗi") from exc
-            if not isinstance(html, str) or not html.lstrip().startswith("<table"):
+            if not isinstance(html, str):
                 raise AdapterOutputError(f"Docling table {self_ref} không trả HTML table")
+            _validate_table_html(html, self_ref=self_ref)
             tables.append(
                 OcrTable(html=html, box=box, n_rows=n_rows, n_cols=n_cols)
             )

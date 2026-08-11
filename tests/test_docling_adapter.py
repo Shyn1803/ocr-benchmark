@@ -17,7 +17,7 @@ import pytest
 from ocr_bench.adapters.base import AdapterOutputError
 from ocr_bench.prediction import load_prediction, save_prediction
 from ocr_bench.profiles import EngineProfile, ProfileConfigError, load_profile_catalog
-from ocr_bench.types import BlockType
+from ocr_bench.types import BlockType, FailureKind
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -218,6 +218,41 @@ def test_docling_malformed_output_raises_adapter_output_error(mutate, match):
         module.build_result(document, identity=module.DEFAULT_IDENTITY)
 
 
+@pytest.mark.parametrize(
+    "html",
+    [
+        "<table",
+        "<tablex></tablex>",
+        "<table><tr><td>A</td></tr>",
+        "<table></table><table></table>",
+        "<table><tr><td>A</tr></td></table>",
+    ],
+)
+def test_docling_rejects_malformed_or_multiple_table_roots(html: str):
+    """A table-looking prefix must not publish malformed HTML to TEDS."""
+    module = _docling_module()
+    document = FakeDocument()
+    document.items[2].export_to_html = lambda **_kwargs: html
+
+    with pytest.raises(AdapterOutputError, match="table"):
+        module.build_result(document, identity=module.DEFAULT_IDENTITY)
+
+
+def test_docling_accepts_structured_table_html_with_attributes_and_entities():
+    """The strict validator still accepts ordinary Docling table structure."""
+    module = _docling_module()
+    document = FakeDocument()
+    html = (
+        '<table class="data"><thead><tr><th rowspan="2">A &amp; B</th></tr></thead>'
+        "<tbody><tr><td>C</td></tr></tbody></table>"
+    )
+    document.items[2].export_to_html = lambda **_kwargs: html
+
+    result = module.build_result(document, identity=module.DEFAULT_IDENTITY)
+
+    assert result.tables[0].html == html
+
+
 def test_docling_profiles_bind_exact_publication_identity_and_catalog_config():
     """Profile construction must not collapse default and scan into one registry name."""
     module = _docling_module()
@@ -397,6 +432,31 @@ def test_docling_result_keeps_adapter_owned_hardware_evidence(fake_docling_api):
     )
     assert result.config_fingerprint["hardware"] == "gpu"
     assert result.config_fingerprint["device"] == "gpu"
+    assert type(result.config_fingerprint["hardware_evidence_version"]) is int
+    assert result.config_fingerprint["hardware_evidence_version"] == 1
+
+
+@pytest.mark.parametrize("hardware", ["cpu", "gpu"])
+def test_docling_execute_failure_keeps_profile_identity_and_hardware_evidence(
+    fake_docling_api, monkeypatch, hardware
+):
+    """A failed profile run remains attributable to the exact configured engine."""
+    adapter = fake_docling_api.DoclingAdapter.from_profile(CATALOG["docling_scan"])
+    adapter.configure_hardware(hardware)
+
+    def fail(_path: Path):
+        raise RuntimeError("engine failed")
+
+    monkeypatch.setattr(adapter, "run", fail)
+    result = adapter.execute(Path("broken.pdf"))
+
+    assert result.failed is True
+    assert result.failure_kind is FailureKind.ENGINE_ERROR
+    assert result.engine == "docling_scan"
+    assert result.engine_family == "docling"
+    assert result.profile == "scan"
+    assert result.config_fingerprint["hardware"] == hardware
+    assert result.config_fingerprint["device"] == hardware
     assert type(result.config_fingerprint["hardware_evidence_version"]) is int
     assert result.config_fingerprint["hardware_evidence_version"] == 1
 

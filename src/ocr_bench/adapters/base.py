@@ -101,6 +101,8 @@ class Adapter(abc.ABC):
             trace = sanitize_secret_text(traceback.format_exc(limit=5))
             return OcrResult(
                 engine=self.name,
+                engine_family=getattr(self, "engine_family", self.name),
+                profile=getattr(self, "profile", "legacy"),
                 engine_version=self.version(),
                 doc_id=doc_id,
                 capabilities=self.capabilities,
