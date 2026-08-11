@@ -11,7 +11,14 @@ import unicodedata
 import pytest
 
 from ocr_bench.metrics.cer import CerMetric, WerMetric
-from ocr_bench.types import AnnotationGT, AssertionGT, Capability, NAReason, OcrResult
+from ocr_bench.types import (
+    AnnotationGT,
+    AssertionGT,
+    Capability,
+    FailureKind,
+    NAReason,
+    OcrResult,
+)
 
 jiwer = pytest.importorskip("jiwer", reason="cần extra `metrics`")
 
@@ -27,6 +34,7 @@ def _kq(text: str | None, *, caps=TEXT, failed=False, error=None) -> OcrResult:
         text_md=text,
         failed=failed,
         error=error,
+        failure_kind=FailureKind.ENGINE_ERROR if failed else None,
     )
 
 

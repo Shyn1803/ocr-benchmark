@@ -63,10 +63,12 @@ from ocr_bench.types import (
     Box,
     BlockType,
     Capability,
+    FailureKind,
     OcrBlock,
     OcrImage,
     OcrResult,
     OcrTable,
+    RawArtifact,
     ScanLabel,
 )
 
@@ -81,7 +83,7 @@ __all__ = [
     "run_engines_cached",
 ]
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 """Tăng khi đổi *hình dạng* file. Prediction schema cũ sẽ bị từ chối thẳng chứ không
 được cố nạp — nạp một nửa rồi chấm là đúng thứ AC-04 cấm.
 
@@ -97,6 +99,7 @@ Lịch sử:
   Đây là lý do bản nâng cấp là script chứ không phải "sinh lại": repo đang giữ hơn
   một nghìn file prediction, riêng marker mất khoảng 3 tiếng để chạy lại — đúng cái
   giá mà module này tồn tại để khỏi phải trả.
+* **3** — thêm danh tính family/profile, raw artifact sidecar và taxonomy lỗi.
 """
 
 _IMAGE_NAME = re.compile(r"^[A-Za-z0-9._-]+$")
@@ -122,10 +125,13 @@ _ResultKeys = frozenset(
     {
         "schema_version",
         "engine",
+        "engine_family",
+        "profile",
         "engine_version",
         "doc_id",
         "capabilities",
         "text_md",
+        "raw_artifacts",
         "blocks",
         "images",
         "tables",
@@ -137,6 +143,7 @@ _ResultKeys = frozenset(
         "rss_scope",
         "failed",
         "error",
+        "failure_kind",
         "config_fingerprint",
     }
 )
@@ -243,6 +250,19 @@ def _jsonable_fingerprint(fp: dict[str, object], doc_id: str) -> dict[str, Any]:
     return dict(fp)
 
 
+def _check_sidecar_name(name: object, where: str) -> str:
+    """Sidecar chỉ được là một tên file ASCII, không phải đường dẫn."""
+    if not isinstance(name, str):
+        raise ValueError(f"{where}={name!r} không hợp lệ; phải là một tên file an toàn")
+    try:
+        _check_name(name, where)
+    except ValueError as exc:
+        raise ValueError(f"{where}={name!r} không hợp lệ — {exc}") from None
+    if not _IMAGE_NAME.fullmatch(name):
+        raise ValueError(f"{where}={name!r} không hợp lệ; phải là một tên file an toàn")
+    return name
+
+
 def save_prediction(result: OcrResult, root: Path) -> Path:
     """Ghi một `OcrResult`. Trả về đường dẫn file JSON.
 
@@ -268,9 +288,34 @@ def save_prediction(result: OcrResult, root: Path) -> Path:
             entry["sha256"] = hashlib.sha256(im.data).hexdigest()
         images.append(entry)
 
+    raw_artifacts: list[dict[str, str]] = []
+    raw_dir = path.with_name(f"{result.doc_id}.raw")
+    seen_raw_names: set[str] = set()
+    for i, artifact in enumerate(result.raw_artifacts):
+        name = _check_sidecar_name(artifact.name, f"raw_artifacts[{i}].name")
+        portable_name = name.casefold()
+        if portable_name in seen_raw_names:
+            raise ValueError(
+                f"{result.doc_id}: raw_artifacts có tên trùng {name!r}; "
+                "ghi tiếp sẽ đè bytes của artifact trước"
+            )
+        seen_raw_names.add(portable_name)
+        raw_dir.mkdir(parents=True, exist_ok=True)
+        (raw_dir / name).write_bytes(artifact.data)
+        raw_artifacts.append(
+            {
+                "name": artifact.name,
+                "media_type": artifact.media_type,
+                "file": name,
+                "sha256": artifact.sha256,
+            }
+        )
+
     payload = {
         "schema_version": SCHEMA_VERSION,
         "engine": result.engine,
+        "engine_family": result.engine_family,
+        "profile": result.profile,
         "engine_version": result.engine_version,
         "doc_id": result.doc_id,
         # Nguyên văn, sắp xếp cho ổn định giữa các lần chạy. Nạp lại phải dựng đúng
@@ -278,6 +323,7 @@ def save_prediction(result: OcrResult, root: Path) -> Path:
         # mà không tìm thấy ảnh nào khác hẳn engine không bao giờ biết tìm ảnh.
         "capabilities": sorted(c.value for c in result.capabilities),
         "text_md": result.text_md,
+        "raw_artifacts": raw_artifacts,
         "blocks": [_block_to_json(b) for b in result.blocks],
         "images": images,
         "tables": [_table_to_json(t) for t in result.tables],
@@ -291,6 +337,9 @@ def save_prediction(result: OcrResult, root: Path) -> Path:
         "rss_scope": result.rss_scope,
         "failed": result.failed,
         "error": result.error,
+        "failure_kind": (
+            result.failure_kind.value if result.failure_kind is not None else None
+        ),
         "config_fingerprint": _jsonable_fingerprint(
             result.config_fingerprint, result.doc_id
         ),
@@ -430,6 +479,35 @@ def _image_from_json(d: Any, path: Path, img_dir: Path, where: str) -> OcrImage:
     )
 
 
+def _raw_artifact_from_json(
+    d: Any, path: Path, raw_dir: Path, where: str
+) -> RawArtifact:
+    if not isinstance(d, dict):
+        raise PredictionSchemaError(f"{path}: {where} phải là object")
+    _exact_keys(d, frozenset({"name", "media_type", "file", "sha256"}), path, where)
+    try:
+        name = _check_sidecar_name(d["name"], f"{where}.name")
+        file_name = _check_sidecar_name(d["file"], f"{where}.file")
+    except ValueError as exc:
+        raise PredictionSchemaError(f"{path}: {exc}") from None
+    if not isinstance(d["media_type"], str) or not d["media_type"]:
+        raise PredictionSchemaError(f"{path}: {where}.media_type phải là chuỗi không rỗng")
+    blob = raw_dir / file_name
+    if not blob.is_file():
+        raise PredictionSchemaError(
+            f"{path}: {where} trỏ tới {blob} nhưng file không có. "
+            "JSON và thư mục raw artifact đã đi lệch nhau — sinh lại prediction."
+        )
+    data = blob.read_bytes()
+    got = hashlib.sha256(data).hexdigest()
+    if got != d["sha256"]:
+        raise PredictionSchemaError(
+            f"{path}: {where} sha256 lệch ({got} ≠ {d['sha256']}) ở {blob}. "
+            "Không thể audit output nguyên bản nếu sidecar thuộc lần chạy khác."
+        )
+    return RawArtifact(name=name, media_type=d["media_type"], data=data)
+
+
 def _scan_label_from_json(d: Any, path: Path, where: str) -> ScanLabel | None:
     if d is None:
         return None
@@ -472,6 +550,12 @@ def _page_sizes_from_json(
     return tuple(out)
 
 
+def _required_string(value: Any, path: Path, where: str) -> str:
+    if not isinstance(value, str) or not value:
+        raise PredictionSchemaError(f"{path}: {where} phải là chuỗi không rỗng")
+    return value
+
+
 def load_prediction(path: Path) -> OcrResult:
     """Nạp một file prediction. Ném :class:`PredictionSchemaError` nếu có gì lệch."""
     path = Path(path)
@@ -508,15 +592,27 @@ def load_prediction(path: Path) -> OcrResult:
     capabilities = frozenset(
         _enum_from_json(Capability, c, path, "capabilities[]") for c in caps
     )
+    raw_artifacts = raw["raw_artifacts"]
+    if not isinstance(raw_artifacts, list):
+        raise PredictionSchemaError(f"{path}: raw_artifacts phải là list")
 
     img_dir = path.with_name(f"{doc_id}.images")
+    raw_dir = path.with_name(f"{doc_id}.raw")
     try:
         return OcrResult(
             engine=raw["engine"],
+            engine_family=_required_string(
+                raw["engine_family"], path, "engine_family"
+            ),
+            profile=_required_string(raw["profile"], path, "profile"),
             engine_version=raw["engine_version"],
             doc_id=doc_id,
             capabilities=capabilities,
             text_md=raw["text_md"],
+            raw_artifacts=tuple(
+                _raw_artifact_from_json(a, path, raw_dir, f"raw_artifacts[{i}]")
+                for i, a in enumerate(raw_artifacts)
+            ),
             blocks=tuple(
                 _block_from_json(b, path, f"blocks[{i}]")
                 for i, b in enumerate(raw["blocks"])
@@ -537,6 +633,13 @@ def load_prediction(path: Path) -> OcrResult:
             rss_scope=raw["rss_scope"],
             failed=raw["failed"],
             error=raw["error"],
+            failure_kind=(
+                None
+                if raw["failure_kind"] is None
+                else _enum_from_json(
+                    FailureKind, raw["failure_kind"], path, "failure_kind"
+                )
+            ),
             config_fingerprint=raw["config_fingerprint"],
         )
     except ValueError as exc:

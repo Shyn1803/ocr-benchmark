@@ -8,12 +8,14 @@ chúng chỉ làm bảng xếp hạng sai một cách rất thuyết phục.
 from __future__ import annotations
 
 import pytest
+import ocr_bench.types as types_module
 
 from ocr_bench.types import (
     AnnotationGT,
     AssertionGT,
     Box,
     Capability,
+    FailureKind,
     MetricResult,
     NAReason,
     OcrBlock,
@@ -171,13 +173,89 @@ def test_failed_phai_co_error():
         )
 
 
+def test_failed_result_requires_failure_kind():
+    """Thiếu taxonomy làm các lỗi khác bản chất bị gộp thành một fail-rate mù."""
+    with pytest.raises(ValueError, match="failure_kind"):
+        OcrResult(
+            engine="marker_scan",
+            engine_family="marker",
+            profile="scan",
+            engine_version="1.10.2",
+            doc_id="x",
+            capabilities=frozenset(),
+            failed=True,
+            error="boom",
+        )
+
+
+def test_success_result_rejects_failure_kind():
+    with pytest.raises(ValueError, match="failed=False"):
+        OcrResult(
+            engine="marker_scan",
+            engine_version="1.10.2",
+            doc_id="x",
+            capabilities=frozenset(),
+            failure_kind=FailureKind.ENGINE_ERROR,
+        )
+
+
+def test_failed_result_requires_failure_kind_enum_not_raw_string():
+    with pytest.raises(ValueError, match="FailureKind"):
+        OcrResult(
+            engine="marker_scan",
+            engine_version="1.10.2",
+            doc_id="x",
+            capabilities=frozenset(),
+            failed=True,
+            error="boom",
+            failure_kind="engine_error",  # type: ignore[arg-type]
+        )
+
+
+def test_legacy_result_defaults_identity_without_imputing_failure_kind():
+    result = OcrResult(
+        engine="marker_scan",
+        engine_version="1.10.2",
+        doc_id="x",
+        capabilities=frozenset(),
+    )
+    assert result.engine_family == "marker_scan"
+    assert result.profile == "legacy"
+    assert result.failure_kind is None
+
+
+@pytest.mark.parametrize(
+    "identity",
+    [
+        {"engine_family": ""},
+        {"profile": ""},
+    ],
+)
+def test_result_rejects_empty_explicit_identity(identity: dict[str, str]):
+    with pytest.raises(ValueError, match=next(iter(identity))):
+        OcrResult(
+            engine="marker_scan",
+            engine_version="1.10.2",
+            doc_id="x",
+            capabilities=frozenset(),
+            **identity,
+        )
+
+
+def test_raw_artifact_hashes_exact_bytes_and_is_frozen():
+    artifact = types_module.RawArtifact("marker.json", "application/json", b"{}")
+    assert artifact.sha256 == "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    with pytest.raises((AttributeError, TypeError)):
+        artifact.data = b"changed"
+
+
 def test_failed_thi_khong_bi_kiem_nang_luc():
     """Engine hỏng giữa chừng có thể trả về mảnh dữ liệu dở dang — không được biến
     nó thành ValueError, vì thế FailRate sẽ mất luôn ca đó."""
     r = OcrResult(
         engine="x", engine_version="1", doc_id="d",
         capabilities=frozenset(), text_md="dở dang",
-        failed=True, error="OOM",
+        failed=True, error="OOM", failure_kind=FailureKind.OOM,
     )
     assert r.failed and r.text_md == "dở dang"
 

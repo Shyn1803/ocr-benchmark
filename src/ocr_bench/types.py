@@ -19,11 +19,14 @@ Ba quy tắc bất di bất dịch, chốt ở A0 (xem `.claude/context/OCR-BENC
 from __future__ import annotations
 
 import enum
+import hashlib
 from dataclasses import dataclass, field
 from typing import ClassVar, Literal, get_args
 
 __all__ = [
     "Capability",
+    "FailureKind",
+    "RawArtifact",
     "RssScope",
     "YAxis",
     "Box",
@@ -82,6 +85,17 @@ class Capability(str, enum.Enum):
     HEADING_LEVEL = "heading_level"
     SECTION_HIERARCHY = "section_hierarchy"
     SCAN_LABEL = "scan_label"
+
+
+class FailureKind(str, enum.Enum):
+    """Nhóm lỗi ổn định để báo cáo fail-rate theo nguyên nhân, không theo message."""
+
+    UNSUPPORTED = "unsupported"
+    ENVIRONMENT_ERROR = "environment_error"
+    TIMEOUT = "timeout"
+    OOM = "oom"
+    ENGINE_ERROR = "engine_error"
+    ADAPTER_ERROR = "adapter_error"
 
 
 YAxis = Literal["down", "up"]
@@ -254,6 +268,19 @@ class ScanLabel:
 
 
 @dataclass(frozen=True, slots=True)
+class RawArtifact:
+    """Output nguyên bản của engine, lưu sidecar để audit cách normalize."""
+
+    name: str
+    media_type: str
+    data: bytes
+
+    @property
+    def sha256(self) -> str:
+        return hashlib.sha256(self.data).hexdigest()
+
+
+@dataclass(frozen=True, slots=True)
 class OcrResult:
     """Kết quả một engine chạy trên một tài liệu.
 
@@ -265,7 +292,10 @@ class OcrResult:
     engine_version: str
     doc_id: str
     capabilities: frozenset[Capability]
+    engine_family: str | None = None
+    profile: str = "legacy"
     text_md: str | None = None
+    raw_artifacts: tuple[RawArtifact, ...] = ()
     blocks: tuple[OcrBlock, ...] = ()
     images: tuple[OcrImage, ...] = ()
     tables: tuple[OcrTable, ...] = ()
@@ -296,13 +326,28 @@ class OcrResult:
     """
     failed: bool = False
     error: str | None = None
+    failure_kind: FailureKind | None = None
     config_fingerprint: dict[str, object] = field(default_factory=dict)
     """Config mà engine đã chạy. A7 bắt buộc ghi lại — người đọc phải biết baseline
     Sovereign được đo ở chế độ nào (``ocr_use_vision_api`` bật hay tắt)."""
 
     def __post_init__(self) -> None:
+        if self.engine_family is None:
+            object.__setattr__(self, "engine_family", self.engine)
+        if not isinstance(self.engine_family, str) or not self.engine_family:
+            raise ValueError("engine_family phải là chuỗi không rỗng")
+        if not isinstance(self.profile, str) or not self.profile:
+            raise ValueError("profile phải là chuỗi không rỗng")
         if self.failed and not self.error:
             raise ValueError("failed=True thì phải có error")
+        if self.failed and self.failure_kind is None:
+            raise ValueError("failed=True thì phải có failure_kind")
+        if self.failure_kind is not None and not isinstance(
+            self.failure_kind, FailureKind
+        ):
+            raise ValueError("failure_kind phải là một giá trị FailureKind")
+        if not self.failed and self.failure_kind is not None:
+            raise ValueError("failed=False thì không được có failure_kind")
         # Ba kiểm tra dưới đây KHÔNG nằm trong nhánh `not failed`: một lượt chạy hỏng
         # vẫn có số giờ và số nhớ, và số đó vẫn phải tự mô tả được.
         if self.peak_rss_mb is not None and self.rss_scope is None:

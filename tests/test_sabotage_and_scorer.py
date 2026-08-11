@@ -13,6 +13,7 @@ from typing import ClassVar
 import pytest
 
 from ocr_bench import registry
+import ocr_bench.adapters.base as base_module
 from ocr_bench.adapters.base import Adapter
 from ocr_bench.adapters.noop import NoopAdapter
 from ocr_bench.adapters.sabotage import SabotageAdapter
@@ -24,6 +25,7 @@ from ocr_bench.types import (
     BlockType,
     Box,
     Capability,
+    FailureKind,
     MetricResult,
     NAReason,
     OcrBlock,
@@ -35,6 +37,45 @@ from ocr_bench.types import (
 DOC = Path("pdfs/mau.pdf")
 VAN_BAN = "\n".join(f"dòng số {i} có nội dung riêng" for i in range(10))
 BANG = "<table>" + "".join(f"<tr><td>ô {i}</td></tr>" for i in range(6)) + "</table>"
+
+
+@pytest.mark.parametrize(
+    "exc, expected",
+    [
+        (TimeoutError("quá hạn"), FailureKind.TIMEOUT),
+        (MemoryError("hết RAM"), FailureKind.OOM),
+        (ImportError("thiếu package"), FailureKind.ENVIRONMENT_ERROR),
+        (FileNotFoundError("thiếu binary"), FailureKind.ENVIRONMENT_ERROR),
+        (RuntimeError("engine hỏng"), FailureKind.ENGINE_ERROR),
+    ],
+)
+def test_classify_exception_at_adapter_boundary(exc: Exception, expected: FailureKind):
+    assert base_module.classify_exception(exc) is expected
+
+
+def test_execute_records_classified_failure_kind():
+    class QuaHan(Adapter):
+        name: ClassVar[str] = "qua_han"
+        capabilities: ClassVar[frozenset[Capability]] = frozenset()
+
+        def run(self, doc_path: Path) -> OcrResult:
+            raise TimeoutError("quá hạn")
+
+    result = QuaHan().execute(DOC)
+    assert result.failed is True
+    assert result.failure_kind is FailureKind.TIMEOUT
+
+
+def test_adapter_output_error_is_distinct_from_engine_error():
+    class MappingHong(Adapter):
+        name: ClassVar[str] = "mapping_hong"
+        capabilities: ClassVar[frozenset[Capability]] = frozenset()
+
+        def run(self, doc_path: Path) -> OcrResult:
+            raise base_module.AdapterOutputError("raw output thiếu trường pages")
+
+    result = MappingHong().execute(DOC)
+    assert result.failure_kind is FailureKind.ADAPTER_ERROR
 
 
 class TotAdapter(Adapter):

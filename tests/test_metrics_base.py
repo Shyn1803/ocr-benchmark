@@ -13,6 +13,7 @@ from ocr_bench.types import (
     AnnotationGT,
     AssertionGT,
     Capability,
+    FailureKind,
     MetricResult,
     NAReason,
     OcrResult,
@@ -70,7 +71,14 @@ def test_thieu_nang_luc_ra_na_chu_khong_ra_0():
 
 
 def test_engine_hong_ra_na_rieng_mot_loai():
-    r = AlwaysOne().score(GT, _result(failed=True, error="boom"))
+    r = AlwaysOne().score(
+        GT,
+        _result(
+            failed=True,
+            error="boom",
+            failure_kind=FailureKind.ENGINE_ERROR,
+        ),
+    )
     assert r.value is None
     assert r.na_reason is NAReason.ENGINE_FAILED
 

@@ -58,7 +58,7 @@ from pathlib import Path
 from typing import Any, Callable, ClassVar
 
 from ocr_bench.adapters.base import Adapter
-from ocr_bench.types import Capability, OcrResult
+from ocr_bench.types import Capability, FailureKind, OcrResult
 
 __all__ = [
     "SovereignAdapter",
@@ -342,5 +342,6 @@ class SovereignAdapter(Adapter):
             error=None
             if thanh_cong
             else f"{ket.get('error_code') or 'ocr.failed'}: {ket.get('message') or 'không rõ'}",
+            failure_kind=None if thanh_cong else FailureKind.ENGINE_ERROR,
             config_fingerprint=self.config_fingerprint(),
         )

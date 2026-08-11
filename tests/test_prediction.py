@@ -13,10 +13,12 @@ Hai câu hỏi, không phải một:
 from __future__ import annotations
 
 import json
+import io
 from pathlib import Path
 from typing import ClassVar
 
 import pytest
+from scripts import migrate_predictions as migration
 
 from ocr_bench.adapters.base import Adapter
 from ocr_bench.adapters.noop import NoopAdapter
@@ -37,12 +39,14 @@ from ocr_bench.types import (
     BlockType,
     Box,
     Capability,
+    FailureKind,
     MetricResult,
     NAReason,
     OcrBlock,
     OcrImage,
     OcrResult,
     OcrTable,
+    RawArtifact,
     ScanLabel,
     TextPresence,
 )
@@ -125,6 +129,115 @@ def test_round_trip_giu_nguyen_moi_kenh(tmp_path: Path):
     assert lai == goc
 
 
+def test_schema_v3_round_trip_keeps_profile_and_raw_artifact(tmp_path: Path):
+    result = OcrResult(
+        engine="marker_scan",
+        engine_family="marker",
+        profile="scan",
+        engine_version="1.10.2",
+        doc_id="x",
+        capabilities=frozenset({Capability.TEXT_MD}),
+        text_md="xin chào",
+        raw_artifacts=(RawArtifact("marker.json", "application/json", b"{}"),),
+        config_fingerprint={"force_ocr": True},
+    )
+    path = save_prediction(result, tmp_path)
+    got = load_prediction(path)
+    assert got == result
+    assert (tmp_path / "marker_scan" / "x.raw" / "marker.json").read_bytes() == b"{}"
+
+
+def test_raw_artifact_json_is_metadata_only_and_deterministic(tmp_path: Path):
+    result = OcrResult(
+        engine="marker_scan",
+        engine_family="marker",
+        profile="scan",
+        engine_version="1.10.2",
+        doc_id="x",
+        capabilities=frozenset(),
+        raw_artifacts=(RawArtifact("marker.json", "application/json", b"{}"),),
+    )
+    path = save_prediction(result, tmp_path)
+    first = path.read_bytes()
+    assert json.loads(first)["raw_artifacts"] == [
+        {
+            "name": "marker.json",
+            "media_type": "application/json",
+            "file": "marker.json",
+            "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        }
+    ]
+    assert save_prediction(result, tmp_path).read_bytes() == first
+
+
+def test_sha256_raw_artifact_lech_thi_nem(tmp_path: Path):
+    result = OcrResult(
+        engine="marker_scan",
+        engine_version="1",
+        doc_id="x",
+        capabilities=frozenset(),
+        raw_artifacts=(RawArtifact("marker.json", "application/json", b"{}"),),
+    )
+    path = save_prediction(result, tmp_path)
+    (tmp_path / "marker_scan" / "x.raw" / "marker.json").write_bytes(b"tampered")
+    with pytest.raises(PredictionSchemaError, match="raw_artifacts\\[0\\].*sha256 lệch"):
+        load_prediction(path)
+
+
+def test_raw_artifact_path_traversal_bi_chan_khi_ghi_va_doc(tmp_path: Path):
+    unsafe = OcrResult(
+        engine="marker_scan",
+        engine_version="1",
+        doc_id="x",
+        capabilities=frozenset(),
+        raw_artifacts=(RawArtifact("../marker.json", "application/json", b"{}"),),
+    )
+    with pytest.raises(ValueError, match="raw_artifacts\\[0\\].name"):
+        save_prediction(unsafe, tmp_path)
+
+    safe = OcrResult(
+        engine="marker_scan",
+        engine_version="1",
+        doc_id="x",
+        capabilities=frozenset(),
+        raw_artifacts=(RawArtifact("marker.json", "application/json", b"{}"),),
+    )
+    path = save_prediction(safe, tmp_path)
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    raw["raw_artifacts"][0]["file"] = "../../../outside.json"
+    path.write_text(json.dumps(raw), encoding="utf-8")
+    with pytest.raises(PredictionSchemaError, match="raw_artifacts\\[0\\].file.*không hợp lệ"):
+        load_prediction(path)
+
+
+@pytest.mark.parametrize("name", ["CON", "trail."])
+def test_raw_artifact_rejects_unsafe_windows_names(tmp_path: Path, name: str):
+    result = OcrResult(
+        engine="marker_scan",
+        engine_version="1",
+        doc_id="x",
+        capabilities=frozenset(),
+        raw_artifacts=(RawArtifact(name, "application/octet-stream", b"x"),),
+    )
+    with pytest.raises(ValueError, match="raw_artifacts\\[0\\].name"):
+        save_prediction(result, tmp_path)
+
+
+def test_raw_artifact_names_cannot_collide_case_insensitively(tmp_path: Path):
+    result = OcrResult(
+        engine="marker_scan",
+        engine_version="1",
+        doc_id="x",
+        capabilities=frozenset(),
+        raw_artifacts=(
+            RawArtifact("RAW.json", "application/json", b"first"),
+            RawArtifact("raw.json", "application/json", b"second"),
+        ),
+    )
+    with pytest.raises(ValueError, match="tên trùng"):
+        save_prediction(result, tmp_path)
+
+
 def test_round_trip_giu_dung_kieu_chu_khong_chi_gia_tri(tmp_path: Path):
     """JSON không có tuple, không có frozenset, không có enum.
 
@@ -155,6 +268,7 @@ def test_ket_qua_hong_giu_nguyen_error_va_khong_can_kenh_nao(tmp_path: Path):
         capabilities=frozenset({Capability.TEXT_MD}),
         failed=True,
         error="RuntimeError: hết RAM",
+        failure_kind=FailureKind.OOM,
         seconds=3.0,
         config_fingerprint={"traceback": "Traceback...\n  line 1"},
     )
@@ -307,6 +421,79 @@ def _sua(path: Path, **thay) -> Path:
     return path
 
 
+def _ha_xuong_v2(path: Path) -> Path:
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    raw["schema_version"] = 2
+    for field in ("engine_family", "profile", "raw_artifacts", "failure_kind"):
+        raw.pop(field)
+    path.write_text(
+        json.dumps(raw, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    return path
+
+
+def test_migration_v2_dry_run_reports_without_writing(tmp_path: Path, capsys):
+    path = _ha_xuong_v2(save_prediction(ket_qua_day_du(), tmp_path))
+    before = path.read_bytes()
+    assert migration.main([str(tmp_path), "--dry-run"]) == 0
+    assert path.read_bytes() == before
+    assert "v2 → v3" in capsys.readouterr().out
+
+
+def test_migration_cli_reconfigures_cp1252_console_for_vietnamese_output(
+    tmp_path: Path, monkeypatch
+):
+    _ha_xuong_v2(save_prediction(ket_qua_day_du(), tmp_path))
+    stdout_bytes = io.BytesIO()
+    stderr_bytes = io.BytesIO()
+    stdout = io.TextIOWrapper(stdout_bytes, encoding="cp1252")
+    stderr = io.TextIOWrapper(stderr_bytes, encoding="cp1252")
+    monkeypatch.setattr(migration.sys, "stdout", stdout)
+    monkeypatch.setattr(migration.sys, "stderr", stderr)
+    assert migration.main([str(tmp_path), "--dry-run"]) == 0
+    stdout.flush()
+    assert "sẽ nâng v2 → v3" in stdout_bytes.getvalue().decode("utf-8")
+
+
+def test_migration_v2_writes_strict_v3_and_warns_for_legacy_failure(
+    tmp_path: Path, capsys
+):
+    legacy = OcrResult(
+        engine="marker_scan",
+        engine_family="marker",
+        profile="scan",
+        engine_version="1",
+        doc_id="x",
+        capabilities=frozenset(),
+        failed=True,
+        error="RuntimeError: boom",
+        failure_kind=FailureKind.ADAPTER_ERROR,
+    )
+    path = _ha_xuong_v2(save_prediction(legacy, tmp_path))
+    assert migration.main([str(tmp_path)]) == 0
+    got = load_prediction(path)
+    assert got.engine_family == "marker_scan"
+    assert got.profile == "legacy"
+    assert got.raw_artifacts == ()
+    assert got.failure_kind is FailureKind.ENGINE_ERROR
+    assert "CẢNH BÁO" in capsys.readouterr().err
+
+
+def test_migration_refuses_v2_with_extra_v3_field_instead_of_overwriting(
+    tmp_path: Path, capsys
+):
+    path = _ha_xuong_v2(save_prediction(ket_qua_day_du(), tmp_path))
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    raw["engine_family"] = "must-not-be-overwritten"
+    path.write_text(json.dumps(raw), encoding="utf-8")
+    before = path.read_bytes()
+    assert migration.nang_mot(path, thu=False) == "bo"
+    assert path.read_bytes() == before
+    assert "khoá lệch schema 2" in capsys.readouterr().err
+
+
 def test_schema_version_khac_thi_nem_kem_cach_sinh_lai(tmp_path: Path):
     path = _sua(save_prediction(ket_qua_day_du(), tmp_path), schema_version=99)
     with pytest.raises(PredictionSchemaError, match="schema_version=99"):
@@ -320,7 +507,17 @@ def test_thieu_schema_version_cung_bi_tu_choi(tmp_path: Path):
 
 
 @pytest.mark.parametrize(
-    "truong", ["engine_version", "config_fingerprint", "capabilities", "failed"]
+    "truong",
+    [
+        "engine_family",
+        "profile",
+        "engine_version",
+        "config_fingerprint",
+        "capabilities",
+        "raw_artifacts",
+        "failed",
+        "failure_kind",
+    ],
 )
 def test_thieu_truong_bat_buoc_thi_nem(tmp_path: Path, truong: str):
     """AC-03 nằm ở đây: `engine_version` và `config_fingerprint` **bắt buộc**.
@@ -341,6 +538,22 @@ def test_truong_la_cung_bi_tu_choi(tmp_path: Path):
     """
     path = _sua(save_prediction(ket_qua_day_du(), tmp_path), kenh_moi=["gì đó"])
     with pytest.raises(PredictionSchemaError, match="kenh_moi"):
+        load_prediction(path)
+
+
+@pytest.mark.parametrize("field", ["engine_family", "profile"])
+@pytest.mark.parametrize("value", [None, ""])
+def test_prediction_v3_identity_phai_la_chuoi_explicit_khong_rong(
+    tmp_path: Path, field: str, value: object
+):
+    path = _sua(save_prediction(ket_qua_day_du(), tmp_path), **{field: value})
+    with pytest.raises(PredictionSchemaError, match=field):
+        load_prediction(path)
+
+
+def test_raw_artifacts_phai_la_list(tmp_path: Path):
+    path = _sua(save_prediction(ket_qua_day_du(), tmp_path), raw_artifacts={})
+    with pytest.raises(PredictionSchemaError, match="raw_artifacts phải là list"):
         load_prediction(path)
 
 

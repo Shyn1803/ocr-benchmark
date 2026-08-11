@@ -22,6 +22,7 @@ from ocr_bench.types import (
     AssertionGT,
     Box,
     Capability,
+    FailureKind,
     NAReason,
     OcrImage,
     OcrResult,
@@ -233,7 +234,7 @@ def test_engine_hong_thi_engine_failed() -> None:
     kq = OcrResult(
         engine="giả", engine_version="0", doc_id="d1",
         capabilities=frozenset({Capability.IMAGE_BBOX}),
-        failed=True, error="hết RAM",
+        failed=True, error="hết RAM", failure_kind=FailureKind.OOM,
     )
     r = ImgF1Metric().score(_gt(_b(0.1, 0.1, 0.3, 0.3)), kq)
     assert r.value is None and r.na_reason is NAReason.ENGINE_FAILED

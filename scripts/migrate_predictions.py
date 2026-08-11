@@ -1,12 +1,12 @@
-"""Nâng file prediction từ schema 1 lên 2 — tại chỗ, không chạy lại engine.
+"""Nâng file prediction schema 1/2 lên 3 — tại chỗ, không chạy lại engine.
 
     py -3 scripts/migrate_predictions.py prediction
-    py -3 scripts/migrate_predictions.py prediction --thu        # xem trước, không ghi
+    py -3 scripts/migrate_predictions.py prediction --dry-run    # xem trước, không ghi
 
-Schema 2 (B6/TASK-084) thêm hai trường: `model_load_seconds` và `rss_scope`. Cả hai
-đều là **số đo mới**, không suy được từ file cũ — và cũng không nên suy: file bản 1
-được ghi ra bởi một `execute()` chưa hề đo bộ nhớ, nên giá trị đúng của chúng là
-"không đo", tức `null`. Script này chỉ thêm hai khoá null và tăng `schema_version`.
+Schema 3 thêm identity `engine_family`/`profile`, raw artifact metadata và failure
+taxonomy. Prediction v2 chưa có raw sidecar nên `raw_artifacts=[]`; identity legacy
+được ghi rõ bằng `engine_family=engine`, `profile="legacy"`. Với ca lỗi cũ, message
+không đủ tin cậy để suy timeout/OOM nên script gán bảo thủ `engine_error` và cảnh báo.
 
 ## Vì sao là script chứ không phải "chạy lại cho sạch"
 
@@ -30,10 +30,10 @@ import json
 import sys
 from pathlib import Path
 
-# Trường thêm ở schema 2 → giá trị mặc định khi nâng cấp.
+# Trường thêm ở schema 2 → giá trị mặc định khi nâng từ v1.
 THEM_V2 = {"model_load_seconds": None, "rss_scope": None}
 
-DICH = 2
+DICH = 3
 
 # Thứ tự khoá đúng như `save_prediction()` dựng payload. Chỉ `setdefault` rồi ghi thì
 # hai khoá mới rơi xuống cuối file; lần chạy engine thật kế tiếp sẽ ghi lại theo thứ
@@ -42,10 +42,13 @@ DICH = 2
 THU_TU = (
     "schema_version",
     "engine",
+    "engine_family",
+    "profile",
     "engine_version",
     "doc_id",
     "capabilities",
     "text_md",
+    "raw_artifacts",
     "blocks",
     "images",
     "tables",
@@ -57,8 +60,20 @@ THU_TU = (
     "rss_scope",
     "failed",
     "error",
+    "failure_kind",
     "config_fingerprint",
 )
+THEM_V3 = frozenset({"engine_family", "profile", "raw_artifacts", "failure_kind"})
+KHOA_V2 = frozenset(THU_TU) - THEM_V3
+KHOA_V1 = KHOA_V2 - frozenset(THEM_V2)
+
+
+def _ensure_utf8_console() -> None:
+    """Windows có thể mở stdout/stderr bằng cp1252 và làm CLI nổ khi in tiếng Việt."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if callable(reconfigure):
+            reconfigure(encoding="utf-8")
 
 
 def nang_mot(path: Path, *, thu: bool) -> str:
@@ -75,20 +90,45 @@ def nang_mot(path: Path, *, thu: bool) -> str:
     ver = raw.get("schema_version")
     if ver == DICH:
         return "da_moi"
-    if ver != 1:
+    if ver not in {1, 2}:
         # Không đoán. Bản lạ có thể là bản mới hơn script này, và ghi đè nó là làm
         # mất dữ liệu mà không có đường phục hồi.
-        print(f"  BỎ   {path}: schema_version={ver!r}, script chỉ nâng 1→2", file=sys.stderr)
+        print(
+            f"  BỎ   {path}: schema_version={ver!r}, script chỉ nâng 1/2→3",
+            file=sys.stderr,
+        )
         return "bo"
 
-    for k, v in THEM_V2.items():
-        raw.setdefault(k, v)
+    khoa_dung = KHOA_V1 if ver == 1 else KHOA_V2
+    if set(raw) != khoa_dung:
+        print(
+            f"  BỎ   {path}: khoá lệch schema {ver} "
+            f"({sorted(set(raw) ^ khoa_dung)})",
+            file=sys.stderr,
+        )
+        return "bo"
+
+    if ver == 1:
+        for k, v in THEM_V2.items():
+            raw.setdefault(k, v)
+    raw["engine_family"] = raw["engine"]
+    raw["profile"] = "legacy"
+    raw["raw_artifacts"] = []
+    if raw.get("failed"):
+        raw["failure_kind"] = "engine_error"
+        print(
+            f"  CẢNH BÁO  {path}: prediction lỗi v{ver} được gán "
+            "failure_kind=engine_error vì schema cũ không lưu taxonomy",
+            file=sys.stderr,
+        )
+    else:
+        raw["failure_kind"] = None
     raw["schema_version"] = DICH
     if set(raw) != set(THU_TU):
         # Không tự ý sắp lại một file có khoá lạ: sắp theo THU_TU sẽ **vứt** khoá
         # không có trong danh sách, im lặng.
         print(
-            f"  BỎ   {path}: khoá lệch schema 2 "
+            f"  BỎ   {path}: khoá lệch schema 3 "
             f"({sorted(set(raw) ^ set(THU_TU))})",
             file=sys.stderr,
         )
@@ -96,7 +136,7 @@ def nang_mot(path: Path, *, thu: bool) -> str:
     raw = {k: raw[k] for k in THU_TU}
 
     if thu:
-        return "se_nang"
+        return f"se_nang_v{ver}"
     # Giữ đúng khuôn `save_prediction()`: indent 2, không escape unicode, newline "\n",
     # có dòng trắng cuối. Lệch khuôn thì `git diff` lần chạy sau sẽ đỏ toàn bộ file.
     path.write_text(
@@ -104,14 +144,17 @@ def nang_mot(path: Path, *, thu: bool) -> str:
         encoding="utf-8",
         newline="\n",
     )
-    return "da_nang"
+    return f"da_nang_v{ver}"
 
 
 def main(argv: list[str] | None = None) -> int:
+    _ensure_utf8_console()
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument("root", type=Path, help="thư mục prediction/")
     p.add_argument(
+        "--dry-run",
         "--thu",
+        dest="thu",
         action="store_true",
         help="chỉ báo sẽ nâng file nào, không ghi gì",
     )
@@ -131,9 +174,11 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     ten = {
-        "da_nang": "đã nâng lên schema 2",
-        "se_nang": "sẽ nâng (chạy lại không có --thu để ghi)",
-        "da_moi": "đã ở schema 2, không đụng",
+        "da_nang_v1": "đã nâng v1 → v3",
+        "da_nang_v2": "đã nâng v2 → v3",
+        "se_nang_v1": "sẽ nâng v1 → v3 (bỏ --dry-run để ghi)",
+        "se_nang_v2": "sẽ nâng v2 → v3 (bỏ --dry-run để ghi)",
+        "da_moi": "đã ở schema 3, không đụng",
         "bo": "bỏ qua (schema lạ)",
         "loi": "lỗi đọc",
     }

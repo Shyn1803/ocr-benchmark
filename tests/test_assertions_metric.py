@@ -33,6 +33,7 @@ from ocr_bench.types import (
     AssertionGT,
     Baseline,
     Capability,
+    FailureKind,
     MathPresence,
     NAReason,
     OcrResult,
@@ -54,6 +55,7 @@ def kq(text: str | None = "", *, failed: bool = False) -> OcrResult:
         text_md=text,
         failed=failed,
         error="hong" if failed else None,
+        failure_kind=FailureKind.ENGINE_ERROR if failed else None,
     )
 
 

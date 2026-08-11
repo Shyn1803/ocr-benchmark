@@ -23,7 +23,7 @@ from ocr_bench.metrics.perf import (
     perf_rows,
 )
 from ocr_bench.rss import DoRss, co_psutil
-from ocr_bench.types import Capability, OcrResult
+from ocr_bench.types import Capability, FailureKind, OcrResult
 
 
 def kq(doc_id: str = "d1", engine: str = "e", **kw) -> OcrResult:
@@ -38,6 +38,8 @@ def kq(doc_id: str = "d1", engine: str = "e", **kw) -> OcrResult:
         seconds=8.0,
     )
     base.update(kw)
+    if base.get("failed") and "failure_kind" not in base:
+        base["failure_kind"] = FailureKind.ENGINE_ERROR
     return OcrResult(**base)
 
 

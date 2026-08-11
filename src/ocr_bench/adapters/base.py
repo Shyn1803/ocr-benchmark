@@ -18,9 +18,26 @@ from pathlib import Path
 from typing import ClassVar
 
 from ocr_bench.rss import DoRss
-from ocr_bench.types import Capability, OcrResult
+from ocr_bench.types import Capability, FailureKind, OcrResult
 
-__all__ = ["Adapter"]
+__all__ = ["Adapter", "AdapterOutputError", "classify_exception"]
+
+
+class AdapterOutputError(ValueError):
+    """Adapter không thể normalize/map raw engine output sang canonical types."""
+
+
+def classify_exception(exc: BaseException) -> FailureKind:
+    """Phân loại lỗi engine tại một biên chung, trước khi message bị stringify."""
+    if isinstance(exc, AdapterOutputError):
+        return FailureKind.ADAPTER_ERROR
+    if isinstance(exc, TimeoutError):
+        return FailureKind.TIMEOUT
+    if isinstance(exc, MemoryError):
+        return FailureKind.OOM
+    if isinstance(exc, (ImportError, FileNotFoundError)):
+        return FailureKind.ENVIRONMENT_ERROR
+    return FailureKind.ENGINE_ERROR
 
 
 class Adapter(abc.ABC):
@@ -89,6 +106,7 @@ class Adapter(abc.ABC):
                 rss_scope=pham_vi,
                 failed=True,
                 error=f"{type(exc).__name__}: {exc}",
+                failure_kind=classify_exception(exc),
                 config_fingerprint={
                     **self.config_fingerprint(),
                     "traceback": traceback.format_exc(limit=5),
