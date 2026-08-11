@@ -88,7 +88,15 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     DICH.parent.mkdir(parents=True, exist_ok=True)
-    DICH.write_text(moi, encoding="utf-8")
+    # `newline="\n"`: mặc định trên Windows là dịch `\n` thành CRLF khi ghi, trong khi
+    # `.gitattributes` ép `*.json` về LF lúc checkout. Để lệch thì `--verify` xanh trên
+    # máy vừa sinh ra file và đỏ trên máy vừa clone — cổng chỉ nổ với người vô can.
+    #
+    # Chiều đọc thì ngược lại: `read_text` mặc định bật universal newlines, tức CRLF trên
+    # đĩa vẫn đọc ra `\n`. Nới ở chiều đọc mà siết ở chiều ghi là có chủ ý — một bản
+    # checkout lỡ thành CRLF vẫn so sánh đúng thay vì báo "lệch manifest" vì lý do
+    # không liên quan gì tới dữ liệu.
+    DICH.write_text(moi, encoding="utf-8", newline="\n")
     print(f"{DICH.relative_to(ROOT)} — {_tom_tat(manifest)}")
     return 0
 
