@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 import ocr_bench
-from ocr_bench.profiles import ProfileConfigError, load_profile_catalog
+from ocr_bench.profiles import EngineProfile, ProfileConfigError, load_profile_catalog
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,6 +18,44 @@ def test_package_exports_profile_catalog_api():
     assert ocr_bench.EngineProfile.__name__ == "EngineProfile"
     assert ocr_bench.ProfileConfigError.__name__ == "ProfileConfigError"
     assert ocr_bench.load_profile_catalog is load_profile_catalog
+
+
+def test_profile_fingerprint_is_stable_for_equivalent_key_order():
+    """Changing JSON key order must not create a distinct publication profile."""
+    first = EngineProfile(
+        name="marker_scan",
+        family="marker",
+        profile="scan",
+        adapter="marker",
+        config={"force_ocr": True, "options": {"languages": ["vi", "en"]}},
+        environment={"runner": {"host": "127.0.0.1", "port": 5002}},
+    )
+    reordered = EngineProfile(
+        name="marker_scan",
+        family="marker",
+        profile="scan",
+        adapter="marker",
+        config={"options": {"languages": ["vi", "en"]}, "force_ocr": True},
+        environment={"runner": {"port": 5002, "host": "127.0.0.1"}},
+    )
+
+    assert first.fingerprint == reordered.fingerprint
+    assert len(first.fingerprint) == 64
+
+
+def test_loaded_profile_json_is_deeply_immutable():
+    """Mutating nested profile data would invalidate its recorded fingerprint."""
+    profile = load_profile_catalog(ROOT / "configs" / "profiles.json")[
+        "opendataloader_scan"
+    ]
+    hybrid = profile.environment["hybrid_server"]
+
+    with pytest.raises(TypeError):
+        profile.config["hybrid_mode"] = "partial"  # type: ignore[index]
+    with pytest.raises(TypeError):
+        hybrid["host"] = "0.0.0.0"  # type: ignore[index]
+    with pytest.raises(AttributeError):
+        hybrid["ocr_languages"].append("fr")  # type: ignore[union-attr]
 
 
 def test_publication_profiles_are_exact_and_unique():
@@ -46,7 +84,7 @@ def test_publication_profiles_are_exact_and_unique():
     assert catalog["docling_scan"].config == {
         "do_ocr": True,
         "ocr_engine": "easyocr",
-        "ocr_languages": ["vi", "en"],
+        "ocr_languages": ("vi", "en"),
         "force_full_page_ocr": True,
         "table_mode": "accurate",
         "cell_matching": True,
@@ -67,7 +105,7 @@ def test_publication_profiles_are_exact_and_unique():
             "port": 5002,
             "force_ocr": True,
             "ocr_engine": "easyocr",
-            "ocr_languages": ["vi", "en"],
+            "ocr_languages": ("vi", "en"),
         }
     }
     assert catalog["marker_default"].config == {
