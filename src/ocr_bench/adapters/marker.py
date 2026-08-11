@@ -32,12 +32,16 @@ from __future__ import annotations
 
 import base64
 import io
+import json
 import re
+from collections.abc import Mapping
+from dataclasses import dataclass, replace
 from html import unescape
 from pathlib import Path
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Literal
 
-from ocr_bench.adapters.base import Adapter
+from ocr_bench.adapters.base import Adapter, AdapterOutputError
+from ocr_bench.profiles import EngineProfile, ProfileConfigError
 from ocr_bench.types import (
     Box,
     BlockType,
@@ -46,6 +50,7 @@ from ocr_bench.types import (
     OcrImage,
     OcrResult,
     OcrTable,
+    RawArtifact,
 )
 
 __all__ = [
@@ -209,7 +214,46 @@ def _box(
     )
 
 
-def build_result(
+@dataclass(frozen=True, slots=True)
+class MarkerIdentity:
+    name: str
+    engine_family: str
+    profile: str
+    config: Mapping[str, object]
+    profile_config_sha256: str
+
+
+DEFAULT_IDENTITY = MarkerIdentity(
+    name="marker",
+    engine_family="marker",
+    profile="legacy",
+    config={"force_ocr": False, "use_llm": False},
+    profile_config_sha256="legacy",
+)
+
+
+def _plain(value: object) -> object:
+    if isinstance(value, Mapping):
+        return {str(key): _plain(nested) for key, nested in value.items()}
+    if isinstance(value, tuple):
+        return [_plain(nested) for nested in value]
+    return value
+
+
+def _canonical_json_bytes(value: object, *, label: str) -> bytes:
+    try:
+        return json.dumps(
+            value,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        ).encode("utf-8")
+    except (OverflowError, TypeError, ValueError) as exc:
+        raise AdapterOutputError(f"Marker {label} is not JSON serializable") from exc
+
+
+def _build_result_unchecked(
     *,
     engine_version: str,
     doc_id: str,
@@ -312,6 +356,91 @@ def build_result(
     )
 
 
+def build_result(
+    *,
+    engine_version: str,
+    doc_id: str,
+    capabilities: frozenset[Capability],
+    markdown: str,
+    chunks: Any,
+    block_bboxes: dict[str, tuple[int, list[float]]],
+    config_fingerprint: dict[str, object],
+    identity: MarkerIdentity = DEFAULT_IDENTITY,
+    raw_json_bytes: bytes | None = None,
+) -> OcrResult:
+    """Validate and normalize Marker output, retaining deterministic audit data."""
+    blocks = getattr(chunks, "blocks", None)
+    page_info = getattr(chunks, "page_info", None)
+    if not isinstance(blocks, (list, tuple)) or not isinstance(page_info, Mapping):
+        raise AdapterOutputError("Marker output has malformed blocks/page_info mapping")
+    if not isinstance(markdown, str):
+        raise AdapterOutputError("Marker markdown output is not a string")
+    for index, block in enumerate(blocks):
+        required = ("id", "block_type", "html", "page", "bbox")
+        if any(not hasattr(block, key) for key in required):
+            raise AdapterOutputError(f"Marker block {index} is malformed")
+
+    try:
+        result = _build_result_unchecked(
+            engine_version=engine_version,
+            doc_id=doc_id,
+            capabilities=capabilities,
+            markdown=markdown,
+            chunks=chunks,
+            block_bboxes=block_bboxes,
+            config_fingerprint=config_fingerprint,
+        )
+    except AdapterOutputError:
+        raise
+    except (AttributeError, KeyError, TypeError, ValueError) as exc:
+        raise AdapterOutputError("Marker output cannot be mapped to canonical schema") from exc
+
+    trace = {
+        "blocks": {str(index): str(block.id) for index, block in enumerate(blocks)},
+        "schema_version": 1,
+    }
+    artifacts = [
+        RawArtifact(
+            "marker-map.json",
+            "application/json",
+            _canonical_json_bytes(trace, label="trace map"),
+        )
+    ]
+    if raw_json_bytes is not None:
+        try:
+            raw_output = json.loads(raw_json_bytes)
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise AdapterOutputError("Marker raw JSON is malformed") from exc
+        raw_blocks = raw_output.get("blocks") if isinstance(raw_output, dict) else None
+        if not isinstance(raw_blocks, list) or len(raw_blocks) != len(blocks):
+            raise AdapterOutputError(
+                "Marker raw JSON blocks do not match normalized chunks"
+            )
+        for index, (raw_block, block) in enumerate(zip(raw_blocks, blocks)):
+            if not isinstance(raw_block, dict) or str(raw_block.get("id")) != str(block.id):
+                raise AdapterOutputError(
+                    f"Marker raw JSON blocks[{index}] does not trace normalized chunk"
+                )
+        artifacts.insert(
+            0, RawArtifact("marker.json", "application/json", raw_json_bytes)
+        )
+    return replace(
+        result,
+        engine=identity.name,
+        engine_family=identity.engine_family,
+        profile=identity.profile,
+        raw_artifacts=tuple(artifacts),
+    )
+
+
+def _cuda_available() -> bool:
+    try:
+        import torch
+    except ImportError:
+        return False
+    return bool(torch.cuda.is_available())
+
+
 class MarkerAdapter(Adapter):
     name: ClassVar[str] = "marker"
     capabilities: ClassVar[frozenset[Capability]] = frozenset(
@@ -328,16 +457,65 @@ class MarkerAdapter(Adapter):
     # Khai cả hai: marker vừa đặt `OcrBlock.level` (từ `#`/`##` trong markdown) vừa
     # dựng được đường dẫn tổ tiên. Nó là engine duy nhất tới giờ có cây thật.
 
-    def __init__(self, *, force_ocr: bool = False) -> None:
+    def __init__(
+        self,
+        *,
+        force_ocr: bool = False,
+        identity: MarkerIdentity = DEFAULT_IDENTITY,
+    ) -> None:
+        self.identity = identity
+        self.name = identity.name
+        self.engine_family = identity.engine_family
+        self.profile = identity.profile
         self.force_ocr = force_ocr
+        self.use_llm = bool(identity.config.get("use_llm", False))
+        self._hardware: Literal["cpu", "gpu"] = "cpu"
         self._converter: Any = None
+
+    @classmethod
+    def from_profile(cls, profile: EngineProfile) -> "MarkerAdapter":
+        if profile.adapter != "marker" or profile.family != "marker":
+            raise ProfileConfigError(
+                f"MarkerAdapter does not accept {profile.name!r}/{profile.family!r}"
+            )
+        expected_configs: dict[str, tuple[str, dict[str, object]]] = {
+            "marker_default": ("default", {"force_ocr": False, "use_llm": False}),
+            "marker_scan": ("scan", {"force_ocr": True, "use_llm": False}),
+        }
+        expected = expected_configs.get(profile.name)
+        if expected is None or profile.profile != expected[0]:
+            raise ProfileConfigError(f"unsupported Marker profile: {profile.name!r}")
+        if _plain(profile.config) != expected[1]:
+            raise ProfileConfigError(f"{profile.name}: config does not match frozen Marker catalog")
+        if profile.environment:
+            raise ProfileConfigError(f"{profile.name}: environment must be empty")
+        identity = MarkerIdentity(
+            name=profile.name,
+            engine_family="marker",
+            profile=profile.profile,
+            config=profile.config,
+            profile_config_sha256=profile.fingerprint,
+        )
+        return cls(force_ocr=bool(profile.config["force_ocr"]), identity=identity)
+
+    def configure_hardware(self, hardware: str) -> str:
+        if hardware not in {"cpu", "gpu"}:
+            raise ValueError("Marker hardware must be 'cpu' or 'gpu'")
+        if hardware == "gpu" and not _cuda_available():
+            raise RuntimeError("Marker GPU requested but CUDA is not available")
+        self._hardware = hardware
+        self._converter = None
+        return hardware
 
     # ---- phần phải import marker ----------------------------------------
 
     def _marker_version(self) -> str:
-        from importlib.metadata import version
+        from importlib.metadata import PackageNotFoundError, version
 
-        return version("marker-pdf")
+        try:
+            return version("marker-pdf")
+        except PackageNotFoundError:
+            return "not-installed"
 
     def converter(self) -> Any:
         """Dựng `PdfConverter` một lần rồi giữ lại.
@@ -349,9 +527,10 @@ class MarkerAdapter(Adapter):
             from marker.converters.pdf import PdfConverter
             from marker.models import create_model_dict
 
+            device = "cuda" if self._hardware == "gpu" else "cpu"
             self._converter = PdfConverter(
-                artifact_dict=create_model_dict(),
-                config={"force_ocr": self.force_ocr} if self.force_ocr else None,
+                artifact_dict=create_model_dict(device=device),
+                config={"force_ocr": self.force_ocr, "use_llm": self.use_llm},
             )
         return self._converter
 
@@ -360,9 +539,13 @@ class MarkerAdapter(Adapter):
 
     def config_fingerprint(self) -> dict[str, object]:
         return {
+            **_plain(self.identity.config),
             "marker_version": self._marker_version(),
-            "force_ocr": self.force_ocr,
-            "use_llm": False,
+            "profile_config_sha256": self.identity.profile_config_sha256,
+            "hardware": self._hardware,
+            "device": self._hardware,
+            "hardware_evidence_version": 1,
+            "marker_model_device": "cuda" if self._hardware == "gpu" else "cpu",
             "image_extraction_mode": "highres",
         }
 
@@ -375,6 +558,12 @@ class MarkerAdapter(Adapter):
 
         markdown = conv.resolve_dependencies(MarkdownRenderer)(document).markdown
         chunks = conv.resolve_dependencies(ChunkRenderer)(document)
+        try:
+            raw_json_bytes = _canonical_json_bytes(
+                chunks.model_dump(mode="json"), label="block output"
+            )
+        except AttributeError as exc:
+            raise AdapterOutputError("Marker ChunkOutput lacks model_dump()") from exc
 
         block_bboxes = {
             str(b.id): (b.page_id, list(b.polygon.bbox))
@@ -389,4 +578,6 @@ class MarkerAdapter(Adapter):
             chunks=chunks,
             block_bboxes=block_bboxes,
             config_fingerprint=self.config_fingerprint(),
+            identity=self.identity,
+            raw_json_bytes=raw_json_bytes,
         )

@@ -9,7 +9,6 @@ import pytest
 
 from ocr_bench import registry
 from ocr_bench.adapters.base import Adapter
-from ocr_bench.adapters.marker import MarkerAdapter
 from ocr_bench.adapters.noop import NoopAdapter
 from ocr_bench.metrics.base import Metric
 from ocr_bench.profiles import EngineProfile, ProfileConfigError
@@ -307,13 +306,13 @@ def test_build_adapter_uses_registered_profile_factory():
 def test_build_adapter_rejects_legacy_adapter_without_profile_factory():
     """Using a legacy constructor would silently ignore publication configuration."""
     before = dict(registry._ADAPTERS)
-    registry.register_adapter(MarkerAdapter)
+    registry.register_adapter(NoopAdapter)
     profile = EngineProfile(
-        name="marker_default",
-        family="marker",
+        name="noop_default",
+        family="noop",
         profile="default",
-        adapter="marker",
-        config={"force_ocr": False},
+        adapter="noop",
+        config={},
         environment={},
     )
 

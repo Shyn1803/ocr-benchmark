@@ -18,6 +18,7 @@ from pathlib import Path
 
 import pytest
 
+from ocr_bench.adapters.base import AdapterOutputError
 from ocr_bench.adapters.opendataloader import (
     BLOCK_TYPE_MAP,
     OpenDataLoaderAdapter,
@@ -29,9 +30,11 @@ from ocr_bench.adapters.opendataloader import (
     node_khoi,
     node_phang,
 )
-from ocr_bench.types import BlockType, Capability
+from ocr_bench.profiles import EngineProfile, ProfileConfigError, load_profile_catalog
+from ocr_bench.types import BlockType, Capability, FailureKind
 
 ROOT = Path(__file__).resolve().parents[1]
+CATALOG = load_profile_catalog(ROOT / "configs" / "profiles.json")
 
 needs_odl = pytest.mark.skipif(
     __import__("importlib.util", fromlist=["util"]).find_spec("opendataloader_pdf")
@@ -527,6 +530,121 @@ def test_van_tay_khong_nem_khi_chua_cai_extra():
     """
     vt = OpenDataLoaderAdapter().config_fingerprint()
     assert isinstance(vt["opendataloader_version"], str)
+
+
+def test_opendataloader_profiles_bind_exact_identity_and_config():
+    default = OpenDataLoaderAdapter.from_profile(CATALOG["opendataloader_default"])
+    scan = OpenDataLoaderAdapter.from_profile(CATALOG["opendataloader_scan"])
+
+    assert (default.name, default.engine_family, default.profile) == (
+        "opendataloader_default", "opendataloader", "default"
+    )
+    assert (scan.name, scan.engine_family, scan.profile) == (
+        "opendataloader_scan", "opendataloader", "scan"
+    )
+    assert default.table_method == "cluster"
+    assert default.reading_order == "xycut"
+    assert scan.hybrid == "docling-fast"
+    assert scan.hybrid_mode == "full"
+    assert scan.hybrid_fallback is False
+    for adapter, source in ((default, CATALOG["opendataloader_default"]), (scan, CATALOG["opendataloader_scan"])):
+        fingerprint = adapter.config_fingerprint()
+        assert fingerprint["profile_config_sha256"] == source.fingerprint
+        assert fingerprint["hardware"] == "cpu"
+        assert fingerprint["device"] == "cpu"
+        assert type(fingerprint["hardware_evidence_version"]) is int
+        assert fingerprint["hardware_evidence_version"] == 1
+    scan_fingerprint = scan.config_fingerprint()
+    assert "table_method" not in scan_fingerprint
+    assert "reading_order" not in scan_fingerprint
+
+
+def test_opendataloader_rejects_changed_hybrid_environment():
+    source = CATALOG["opendataloader_scan"]
+    changed = EngineProfile(
+        name=source.name,
+        family=source.family,
+        profile=source.profile,
+        adapter=source.adapter,
+        config=source.config,
+        environment={"hybrid_server": {"host": "0.0.0.0", "port": 5002}},
+    )
+    with pytest.raises(ProfileConfigError, match="environment"):
+        OpenDataLoaderAdapter.from_profile(changed)
+
+
+def test_opendataloader_gpu_fails_when_runtime_cannot_prove_device():
+    adapter = OpenDataLoaderAdapter.from_profile(CATALOG["opendataloader_scan"])
+    with pytest.raises(RuntimeError, match="GPU.*verify|verify.*GPU"):
+        adapter.configure_hardware("gpu")
+
+
+def test_odl_scan_calls_hybrid_full_without_fallback(monkeypatch, tmp_path):
+    import ocr_bench.adapters.opendataloader as module
+
+    captured = {}
+
+    def fake_cli(inputs, out_dir, **kwargs):
+        captured.update(kwargs)
+        (out_dir / "sample.json").write_bytes(
+            b'{"file name":"sample.pdf","number of pages":1,"kids":'
+            b'[{"type":"paragraph","page number":1,"bounding box":[0,0,10,10],"content":"hello"}]}'
+        )
+        (out_dir / "sample.md").write_bytes(b"# raw markdown\n")
+
+    monkeypatch.setattr(module, "chay_cli", fake_cli)
+    monkeypatch.setattr(module, "kich_thuoc_trang", lambda _path: [(100.0, 100.0)])
+    adapter = OpenDataLoaderAdapter.from_profile(CATALOG["opendataloader_scan"])
+    result = adapter.run(tmp_path / "sample.pdf")
+
+    assert captured["hybrid"] == "docling-fast"
+    assert captured["hybrid_mode"] == "full"
+    assert captured["hybrid_fallback"] is False
+    assert captured["hybrid_url"] == "http://127.0.0.1:5002"
+    artifacts = {artifact.name: artifact.data for artifact in result.raw_artifacts}
+    assert artifacts["opendataloader.json"].startswith(b'{"file name"')
+    assert artifacts["opendataloader.md"] == b"# raw markdown\n"
+    assert b'"0"' in artifacts["opendataloader-map.json"]
+
+
+def test_opendataloader_malformed_document_mapping_is_adapter_error():
+    with pytest.raises(AdapterOutputError, match="OpenDataLoader"):
+        build_result(
+            engine_version="2.5.0",
+            doc_id="bad",
+            capabilities=OpenDataLoaderAdapter.capabilities,
+            doc={"kids": "not-a-list"},
+            markdown="",
+            trang=[(100.0, 100.0)],
+            anh_bytes={},
+            config_fingerprint={"hardware": "cpu", "device": "cpu", "hardware_evidence_version": 1},
+        )
+
+
+@pytest.mark.parametrize(
+    ("json_bytes", "markdown_bytes"),
+    [
+        (b"not-json", b"# valid"),
+        (b'{"number of pages":1,"kids":[]}', b"\xff"),
+    ],
+)
+def test_opendataloader_malformed_raw_files_are_adapter_failures(
+    monkeypatch, tmp_path, json_bytes, markdown_bytes
+):
+    import ocr_bench.adapters.opendataloader as module
+
+    def fake_cli(inputs, out_dir, **kwargs):
+        (out_dir / "sample.json").write_bytes(json_bytes)
+        (out_dir / "sample.md").write_bytes(markdown_bytes)
+
+    monkeypatch.setattr(module, "chay_cli", fake_cli)
+    monkeypatch.setattr(module, "kich_thuoc_trang", lambda _path: [(100.0, 100.0)])
+    result = OpenDataLoaderAdapter.from_profile(
+        CATALOG["opendataloader_default"]
+    ).execute(tmp_path / "sample.pdf")
+
+    assert result.failed is True
+    assert result.failure_kind is FailureKind.ADAPTER_ERROR
 
 
 # --------------------------------------------------------------------------

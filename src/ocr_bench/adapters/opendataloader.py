@@ -42,15 +42,19 @@ Chạy bằng venv riêng (`.venv-odl`) và cần JRE — dựng bằng `scripts
 
 from __future__ import annotations
 
+import json
 import os
 import shutil
 import sys
 import tempfile
+from collections.abc import Mapping
+from dataclasses import dataclass, replace
 from html import escape
 from pathlib import Path
-from typing import Any, ClassVar, Iterator
+from typing import Any, ClassVar, Iterator, Literal
 
-from ocr_bench.adapters.base import Adapter
+from ocr_bench.adapters.base import Adapter, AdapterOutputError
+from ocr_bench.profiles import EngineProfile, ProfileConfigError
 from ocr_bench.types import (
     Box,
     BlockType,
@@ -59,6 +63,7 @@ from ocr_bench.types import (
     OcrImage,
     OcrResult,
     OcrTable,
+    RawArtifact,
 )
 
 __all__ = [
@@ -203,9 +208,14 @@ def chay_cli(
     inputs: list[Path],
     out_dir: Path,
     *,
-    table_method: str = "cluster",
+    table_method: str | None = "cluster",
+    reading_order: str | None = "xycut",
     include_header_footer: bool = True,
     quiet: bool = True,
+    hybrid: str | None = None,
+    hybrid_mode: str | None = None,
+    hybrid_url: str | None = None,
+    hybrid_fallback: bool = False,
 ) -> None:
     """Gọi `.jar` của OpenDataLoader, ghi `json` + `md` vào `out_dir`.
 
@@ -226,10 +236,15 @@ def chay_cli(
             format=["json", "markdown"],
             markdown_with_html=True,  # bảng nhiều dòng gộp cần thẻ HTML
             table_method=table_method,
+            reading_order=reading_order,
             include_header_footer=include_header_footer,
             image_output="external",
             image_format="png",  # `OcrImage.data` là PNG theo hợp đồng
             quiet=quiet,
+            hybrid=hybrid,
+            hybrid_mode=hybrid_mode,
+            hybrid_url=hybrid_url,
+            hybrid_fallback=hybrid_fallback,
         )
     finally:
         os.environ["PATH"] = moi_truong
@@ -316,7 +331,50 @@ def bang_sang_html(node: dict) -> str:
     return "<table>" + "".join(dong_html) + "</table>"
 
 
-def build_result(
+@dataclass(frozen=True, slots=True)
+class OpenDataLoaderIdentity:
+    name: str
+    engine_family: str
+    profile: str
+    config: Mapping[str, object]
+    environment: Mapping[str, object]
+    profile_config_sha256: str
+
+
+DEFAULT_IDENTITY = OpenDataLoaderIdentity(
+    name="opendataloader",
+    engine_family="opendataloader",
+    profile="legacy",
+    config={"parser": "java", "table_method": "cluster", "reading_order": "xycut"},
+    environment={},
+    profile_config_sha256="legacy",
+)
+
+
+def _plain(value: object) -> object:
+    if isinstance(value, Mapping):
+        return {str(key): _plain(nested) for key, nested in value.items()}
+    if isinstance(value, tuple):
+        return [_plain(nested) for nested in value]
+    return value
+
+
+def _canonical_json_bytes(value: object, *, label: str) -> bytes:
+    try:
+        return json.dumps(
+            value,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        ).encode("utf-8")
+    except (OverflowError, TypeError, ValueError) as exc:
+        raise AdapterOutputError(
+            f"OpenDataLoader {label} is not JSON serializable"
+        ) from exc
+
+
+def _build_result_unchecked(
     *,
     engine_version: str,
     doc_id: str,
@@ -405,6 +463,107 @@ def build_result(
     )
 
 
+def _node_paths(value: object, path: str = "") -> dict[int, str]:
+    paths: dict[int, str] = {}
+    if isinstance(value, dict):
+        paths[id(value)] = path or "/"
+        for key, nested in value.items():
+            escaped = str(key).replace("~", "~0").replace("/", "~1")
+            paths.update(_node_paths(nested, f"{path}/{escaped}"))
+    elif isinstance(value, list):
+        for index, nested in enumerate(value):
+            paths.update(_node_paths(nested, f"{path}/{index}"))
+    return paths
+
+
+def build_result(
+    *,
+    engine_version: str,
+    doc_id: str,
+    capabilities: frozenset[Capability],
+    doc: dict,
+    markdown: str,
+    trang: list[tuple[float, float]],
+    anh_bytes: dict[str, bytes],
+    config_fingerprint: dict[str, object],
+    identity: OpenDataLoaderIdentity = DEFAULT_IDENTITY,
+    raw_json_bytes: bytes | None = None,
+    raw_markdown_bytes: bytes | None = None,
+) -> OcrResult:
+    """Validate and normalize ODL output while retaining exact engine files."""
+    if not isinstance(doc, dict) or not isinstance(doc.get("kids"), list):
+        raise AdapterOutputError(
+            "OpenDataLoader document has malformed kids mapping"
+        )
+    if not isinstance(markdown, str):
+        raise AdapterOutputError("OpenDataLoader markdown output is not a string")
+    for node in node_phang(doc):
+        if not isinstance(node.get("type"), str):
+            raise AdapterOutputError(
+                "OpenDataLoader node has malformed type mapping"
+            )
+
+    try:
+        result = _build_result_unchecked(
+            engine_version=engine_version,
+            doc_id=doc_id,
+            capabilities=capabilities,
+            doc=doc,
+            markdown=markdown,
+            trang=trang,
+            anh_bytes=anh_bytes,
+            config_fingerprint=config_fingerprint,
+        )
+    except AdapterOutputError:
+        raise
+    except (AttributeError, KeyError, TypeError, ValueError) as exc:
+        raise AdapterOutputError(
+            "OpenDataLoader output cannot be mapped to canonical schema"
+        ) from exc
+
+    paths = _node_paths(doc)
+    emitted = [
+        node
+        for node in node_khoi(doc)
+        if (page := _so_trang(node)) is not None and page < len(trang)
+    ]
+    trace = {
+        "blocks": {
+            str(index): paths[id(node)] for index, node in enumerate(emitted)
+        },
+        "schema_version": 1,
+    }
+    if raw_json_bytes is None:
+        raw_json_bytes = _canonical_json_bytes(doc, label="raw JSON")
+    else:
+        try:
+            decoded = json.loads(raw_json_bytes)
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise AdapterOutputError("OpenDataLoader raw JSON is malformed") from exc
+        if decoded != doc:
+            raise AdapterOutputError(
+                "OpenDataLoader raw JSON does not match parsed document"
+            )
+    if raw_markdown_bytes is None:
+        raw_markdown_bytes = markdown.encode("utf-8")
+    artifacts = (
+        RawArtifact("opendataloader.json", "application/json", raw_json_bytes),
+        RawArtifact("opendataloader.md", "text/markdown", raw_markdown_bytes),
+        RawArtifact(
+            "opendataloader-map.json",
+            "application/json",
+            _canonical_json_bytes(trace, label="trace map"),
+        ),
+    )
+    return replace(
+        result,
+        engine=identity.name,
+        engine_family=identity.engine_family,
+        profile=identity.profile,
+        raw_artifacts=artifacts,
+    )
+
+
 class OpenDataLoaderAdapter(Adapter):
     name: ClassVar[str] = "opendataloader"
     capabilities: ClassVar[frozenset[Capability]] = frozenset(
@@ -424,10 +583,97 @@ class OpenDataLoaderAdapter(Adapter):
     # `section_hierarchy` vẫn để rỗng. Xem docstring `Capability`.
 
     def __init__(
-        self, *, table_method: str = "cluster", include_header_footer: bool = True
+        self,
+        *,
+        table_method: str = "cluster",
+        include_header_footer: bool = True,
+        identity: OpenDataLoaderIdentity = DEFAULT_IDENTITY,
     ) -> None:
-        self.table_method = table_method
+        self.identity = identity
+        self.name = identity.name
+        self.engine_family = identity.engine_family
+        self.profile = identity.profile
+        config = _plain(identity.config)
+        assert isinstance(config, dict)
+        if identity.profile == "scan":
+            self.table_method = config.get("table_method")
+            self.reading_order = config.get("reading_order")
+        else:
+            self.table_method = str(config.get("table_method", table_method))
+            self.reading_order = str(config.get("reading_order", "xycut"))
+        self.hybrid = config.get("hybrid")
+        self.hybrid_mode = config.get("hybrid_mode")
+        self.hybrid_fallback = bool(config.get("hybrid_fallback", False))
         self.include_header_footer = include_header_footer
+        self._hardware: Literal["cpu"] = "cpu"
+
+    @classmethod
+    def from_profile(cls, profile: EngineProfile) -> "OpenDataLoaderAdapter":
+        if profile.adapter != "opendataloader" or profile.family != "opendataloader":
+            raise ProfileConfigError(
+                f"OpenDataLoaderAdapter does not accept {profile.name!r}/{profile.family!r}"
+            )
+        expected: dict[str, tuple[str, dict[str, object], dict[str, object]]] = {
+            "opendataloader_default": (
+                "default",
+                {
+                    "parser": "java",
+                    "table_method": "cluster",
+                    "reading_order": "xycut",
+                },
+                {},
+            ),
+            "opendataloader_scan": (
+                "scan",
+                {
+                    "hybrid": "docling-fast",
+                    "hybrid_mode": "full",
+                    "hybrid_fallback": False,
+                },
+                {
+                    "hybrid_server": {
+                        "host": "127.0.0.1",
+                        "port": 5002,
+                        "force_ocr": True,
+                        "ocr_engine": "easyocr",
+                        "ocr_languages": ["vi", "en"],
+                    }
+                },
+            ),
+        }
+        wanted = expected.get(profile.name)
+        if wanted is None or profile.profile != wanted[0]:
+            raise ProfileConfigError(
+                f"unsupported OpenDataLoader profile: {profile.name!r}"
+            )
+        if _plain(profile.config) != wanted[1]:
+            raise ProfileConfigError(
+                f"{profile.name}: config does not match frozen OpenDataLoader catalog"
+            )
+        if _plain(profile.environment) != wanted[2]:
+            raise ProfileConfigError(
+                f"{profile.name}: environment does not match frozen OpenDataLoader catalog"
+            )
+        identity = OpenDataLoaderIdentity(
+            name=profile.name,
+            engine_family="opendataloader",
+            profile=profile.profile,
+            config=profile.config,
+            environment=profile.environment,
+            profile_config_sha256=profile.fingerprint,
+        )
+        return cls(identity=identity)
+
+    def configure_hardware(self, hardware: str) -> str:
+        if hardware not in {"cpu", "gpu"}:
+            raise ValueError("OpenDataLoader hardware must be 'cpu' or 'gpu'")
+        if hardware == "gpu":
+            raise RuntimeError(
+                "OpenDataLoader 2.5.0 cannot verify GPU device through its Java CLI "
+                "or hybrid /health endpoint"
+            )
+        self._hardware = "cpu"
+        return "cpu"
 
     @staticmethod
     def _odl_version() -> str:
@@ -449,16 +695,31 @@ class OpenDataLoaderAdapter(Adapter):
         return self._odl_version()
 
     def config_fingerprint(self) -> dict[str, object]:
-        return {
+        config = _plain(self.identity.config)
+        assert isinstance(config, dict)
+        fingerprint = {
+            **config,
             "opendataloader_version": self._odl_version(),
-            "table_method": self.table_method,
+            "profile_config_sha256": self.identity.profile_config_sha256,
+            "hardware": "cpu",
+            "device": "cpu",
+            "hardware_evidence_version": 1,
+            "device_evidence": (
+                "java-cpu-only"
+                if self.profile != "scan"
+                else "hybrid-launcher-cuda-visible-devices-empty"
+            ),
             "include_header_footer": self.include_header_footer,
-            "reading_order": "xycut",  # mặc định của engine, ghi lại cho rõ
             "image_output": "external",
             "image_format": "png",
             "markdown_with_html": True,
             "java": self._java_de_ghi(),
         }
+        if self.table_method is not None:
+            fingerprint["table_method"] = self.table_method
+        if self.reading_order is not None:
+            fingerprint["reading_order"] = self.reading_order
+        return fingerprint
 
     @staticmethod
     def _java_de_ghi() -> str:
@@ -474,20 +735,41 @@ class OpenDataLoaderAdapter(Adapter):
             return f"không tìm thấy: {exc}"
 
     def run(self, doc_path: Path) -> OcrResult:
-        import json  # noqa: PLC0415
-
         with tempfile.TemporaryDirectory(prefix="odl-") as tmp:
             ra = Path(tmp)
-            chay_cli(
-                [doc_path],
-                ra,
-                table_method=self.table_method,
-                include_header_footer=self.include_header_footer,
-            )
+            kwargs: dict[str, object] = {
+                "table_method": self.table_method,
+                "reading_order": self.reading_order,
+                "include_header_footer": self.include_header_footer,
+            }
+            if self.profile == "scan":
+                environment = _plain(self.identity.environment)
+                assert isinstance(environment, dict)
+                server = environment["hybrid_server"]
+                assert isinstance(server, dict)
+                kwargs.update(
+                    hybrid=self.hybrid,
+                    hybrid_mode=self.hybrid_mode,
+                    hybrid_fallback=self.hybrid_fallback,
+                    hybrid_url=f"http://{server['host']}:{server['port']}",
+                )
+            chay_cli([doc_path], ra, **kwargs)
             stem = doc_path.stem
-            doc = json.loads((ra / f"{stem}.json").read_text(encoding="utf-8"))
+            raw_json_bytes = (ra / f"{stem}.json").read_bytes()
+            try:
+                doc = json.loads(raw_json_bytes)
+            except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+                raise AdapterOutputError(
+                    "OpenDataLoader emitted malformed JSON"
+                ) from exc
             md_path = ra / f"{stem}.md"
-            markdown = md_path.read_text(encoding="utf-8") if md_path.exists() else ""
+            raw_markdown_bytes = md_path.read_bytes() if md_path.exists() else b""
+            try:
+                markdown = raw_markdown_bytes.decode("utf-8")
+            except UnicodeDecodeError as exc:
+                raise AdapterOutputError(
+                    "OpenDataLoader emitted non-UTF-8 markdown"
+                ) from exc
             anh_bytes = {
                 str(p.relative_to(ra)).replace("\\", "/"): p.read_bytes()
                 for p in ra.rglob("*_images/*")
@@ -503,4 +785,7 @@ class OpenDataLoaderAdapter(Adapter):
             trang=kich_thuoc_trang(doc_path),
             anh_bytes=anh_bytes,
             config_fingerprint=self.config_fingerprint(),
+            identity=self.identity,
+            raw_json_bytes=raw_json_bytes,
+            raw_markdown_bytes=raw_markdown_bytes,
         )

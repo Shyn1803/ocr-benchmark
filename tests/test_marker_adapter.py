@@ -18,6 +18,7 @@ from pathlib import Path
 
 import pytest
 
+from ocr_bench.adapters.base import AdapterOutputError
 from ocr_bench.adapters.marker import (
     BLOCK_TYPE_MAP,
     MarkerAdapter,
@@ -27,9 +28,11 @@ from ocr_bench.adapters.marker import (
     map_block_type,
     page_index,
 )
+from ocr_bench.profiles import EngineProfile, ProfileConfigError, load_profile_catalog
 from ocr_bench.types import BlockType, Capability
 
 ROOT = Path(__file__).resolve().parents[1]
+CATALOG = load_profile_catalog(ROOT / "configs" / "profiles.json")
 
 
 # --------------------------------------------------------------------------
@@ -669,6 +672,117 @@ def test_van_tay_noi_ra_che_do_chay():
     assert a.force_ocr is True
     b = MarkerAdapter()
     assert b.force_ocr is False
+
+
+@pytest.mark.parametrize(
+    ("name", "force_ocr"),
+    [("marker_default", False), ("marker_scan", True)],
+)
+def test_marker_profile_controls_force_ocr(name, force_ocr):
+    adapter = MarkerAdapter.from_profile(CATALOG[name])
+
+    assert (adapter.name, adapter.engine_family, adapter.profile) == (
+        name,
+        "marker",
+        CATALOG[name].profile,
+    )
+    assert adapter.force_ocr is force_ocr
+    assert adapter.use_llm is False
+    fingerprint = adapter.config_fingerprint()
+    assert fingerprint["profile_config_sha256"] == CATALOG[name].fingerprint
+    assert fingerprint["hardware"] == "cpu"
+    assert fingerprint["device"] == "cpu"
+    assert type(fingerprint["hardware_evidence_version"]) is int
+    assert fingerprint["hardware_evidence_version"] == 1
+
+
+def test_marker_rejects_config_outside_frozen_profile():
+    source = CATALOG["marker_default"]
+    changed = EngineProfile(
+        name=source.name,
+        family=source.family,
+        profile=source.profile,
+        adapter=source.adapter,
+        config={"force_ocr": True, "use_llm": False},
+        environment=source.environment,
+    )
+
+    with pytest.raises(ProfileConfigError, match="config"):
+        MarkerAdapter.from_profile(changed)
+
+
+def test_marker_hardware_gpu_requires_real_cuda(monkeypatch):
+    import ocr_bench.adapters.marker as module
+
+    adapter = MarkerAdapter.from_profile(CATALOG["marker_scan"])
+    monkeypatch.setattr(module, "_cuda_available", lambda: False)
+    with pytest.raises(RuntimeError, match="CUDA"):
+        adapter.configure_hardware("gpu")
+
+    monkeypatch.setattr(module, "_cuda_available", lambda: True)
+    assert adapter.configure_hardware("gpu") == "gpu"
+    assert adapter.config_fingerprint()["device"] == "gpu"
+
+
+def test_marker_raw_json_and_trace_are_attached_to_profile_result():
+    block = FakeBlock(
+        block_type="Text",
+        html="<p>a</p>",
+        page=0,
+        bbox=[0, 0, 1, 1],
+        id="/page/0/Text/7",
+    )
+    adapter = MarkerAdapter.from_profile(CATALOG["marker_default"])
+    result = build_result(
+        engine_version="1.10.2",
+        doc_id="tai-lieu",
+        capabilities=adapter.capabilities,
+        markdown="# Heading",
+        chunks=FakeChunks([block], {0: {"bbox": [0, 0, 100, 200]}}),
+        block_bboxes={},
+        config_fingerprint=adapter.config_fingerprint(),
+        identity=adapter.identity,
+        raw_json_bytes=b'{"blocks":[{"id":"/page/0/Text/7"}]}',
+    )
+
+    assert (result.engine, result.engine_family, result.profile) == (
+        "marker_default",
+        "marker",
+        "default",
+    )
+    artifacts = {artifact.name: artifact.data for artifact in result.raw_artifacts}
+    assert artifacts["marker.json"] == b'{"blocks":[{"id":"/page/0/Text/7"}]}'
+    assert b'"0":"/page/0/Text/7"' in artifacts["marker-map.json"]
+
+
+def test_marker_malformed_block_mapping_raises_adapter_output_error():
+    with pytest.raises(AdapterOutputError, match="Marker"):
+        build_result(
+            engine_version="1.10.2",
+            doc_id="tai-lieu",
+            capabilities=MarkerAdapter.capabilities,
+            markdown="# Heading",
+            chunks=FakeChunks("not-a-block-list", {0: {"bbox": [0, 0, 100, 200]}}),
+            block_bboxes={},
+            config_fingerprint={"hardware": "cpu", "device": "cpu", "hardware_evidence_version": 1},
+        )
+
+
+def test_marker_raw_json_must_trace_the_chunks_being_normalized():
+    block = FakeBlock(
+        block_type="Text", html="<p>a</p>", page=0, bbox=[0, 0, 1, 1]
+    )
+    with pytest.raises(AdapterOutputError, match="raw JSON.*blocks"):
+        build_result(
+            engine_version="1.10.2",
+            doc_id="tai-lieu",
+            capabilities=MarkerAdapter.capabilities,
+            markdown="# Heading",
+            chunks=FakeChunks([block], {0: {"bbox": [0, 0, 100, 200]}}),
+            block_bboxes={},
+            config_fingerprint={"hardware": "cpu", "device": "cpu", "hardware_evidence_version": 1},
+            raw_json_bytes=b'{"blocks":[]}',
+        )
 
 
 # --------------------------------------------------------------------------
