@@ -7,6 +7,7 @@ kiểm rằng cổng bắt được.
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import ClassVar
 
@@ -18,6 +19,7 @@ from ocr_bench.adapters.base import Adapter
 from ocr_bench.adapters.noop import NoopAdapter
 from ocr_bench.adapters.sabotage import SabotageAdapter
 from ocr_bench.metrics.base import Metric
+from ocr_bench.prediction import save_prediction
 from ocr_bench.scorer import ScoreTable, run_bench, run_engines, score_results
 from ocr_bench.types import (
     AnnotationGT,
@@ -76,6 +78,41 @@ def test_adapter_output_error_is_distinct_from_engine_error():
 
     result = MappingHong().execute(DOC)
     assert result.failure_kind is FailureKind.ADAPTER_ERROR
+
+
+def test_execute_and_prediction_redact_secrets_from_error_and_traceback(tmp_path: Path):
+    secrets = (
+        "bearer-live-123",
+        "sk-live_abcdef123",
+        "api-value-456",
+        "access-value-789",
+        "token-value-012",
+        "secret-value-345",
+        "password-value-678",
+    )
+
+    class LoBiMat(Adapter):
+        name: ClassVar[str] = "lo_bi_mat"
+        capabilities: ClassVar[frozenset[Capability]] = frozenset()
+
+        def run(self, doc_path: Path) -> OcrResult:
+            raise RuntimeError(
+                "Authorization: Bearer bearer-live-123 "
+                "sk-live_abcdef123 api_key=api-value-456 "
+                "access_token:access-value-789 token=token-value-012 "
+                "secret:secret-value-345 password=password-value-678"
+            )
+
+    result = LoBiMat().execute(DOC)
+    path = save_prediction(result, tmp_path)
+    persisted = path.read_text(encoding="utf-8")
+    loaded = json.loads(persisted)
+    assert "<redacted>" in loaded["error"]
+    assert "<redacted>" in loaded["config_fingerprint"]["traceback"]
+    for secret in secrets:
+        assert secret not in result.error
+        assert secret not in result.config_fingerprint["traceback"]
+        assert secret not in persisted
 
 
 class TotAdapter(Adapter):

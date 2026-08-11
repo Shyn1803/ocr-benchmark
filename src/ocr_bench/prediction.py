@@ -59,6 +59,11 @@ from collections.abc import Iterable, Sequence
 from pathlib import Path
 from typing import Any, Literal
 
+from ocr_bench.secrets import (
+    contains_secret_pattern,
+    is_secret_bearing_key,
+    sanitize_secret_text,
+)
 from ocr_bench.types import (
     Box,
     BlockType,
@@ -237,16 +242,47 @@ def _jsonable_fingerprint(fp: dict[str, object], doc_id: str) -> dict[str, Any]:
     `config_fingerprint` khai kiểu `dict[str, object]` nên adapter nhét gì vào cũng
     được. Để tới lúc đọc mới phát hiện thì đã mất 3 tiếng chạy engine.
     """
-    for k, v in fp.items():
-        if not isinstance(k, str):
-            raise ValueError(f"{doc_id}: khoá config_fingerprint phải là str, gặp {k!r}")
-        try:
-            json.dumps(v)
-        except TypeError as exc:
+    def validate(value: object, where: str, *, key: str | None = None) -> None:
+        if (
+            key is not None
+            and is_secret_bearing_key(key)
+            and isinstance(value, str)
+            and value not in {"", "<redacted>"}
+        ):
             raise ValueError(
-                f"{doc_id}: config_fingerprint[{k!r}] không JSON hoá được ({exc}). "
-                "Adapter phải quy về str/số/bool/list/dict trước khi trả về."
-            ) from None
+                f"{doc_id}: {where} chứa secret thô dưới khoá {key!r}; "
+                "chỉ lưu boolean/None/chuỗi rỗng hoặc '<redacted>'."
+            )
+        if isinstance(value, str):
+            if contains_secret_pattern(value):
+                raise ValueError(
+                    f"{doc_id}: {where} chứa credential pattern; redaction trước khi lưu."
+                )
+            return
+        if isinstance(value, dict):
+            for nested_key, nested_value in value.items():
+                if not isinstance(nested_key, str):
+                    raise ValueError(
+                        f"{doc_id}: khoá {where} phải là str, gặp {nested_key!r}"
+                    )
+                validate(
+                    nested_value,
+                    f"{where}[{nested_key!r}]",
+                    key=nested_key,
+                )
+            return
+        if isinstance(value, (list, tuple)):
+            for i, nested_value in enumerate(value):
+                validate(nested_value, f"{where}[{i}]")
+
+    validate(fp, "config_fingerprint")
+    try:
+        json.dumps(fp)
+    except TypeError as exc:
+        raise ValueError(
+            f"{doc_id}: config_fingerprint không JSON hoá được ({exc}). "
+            "Adapter phải quy về str/số/bool/list/dict trước khi trả về."
+        ) from None
     return dict(fp)
 
 
@@ -269,7 +305,7 @@ def save_prediction(result: OcrResult, root: Path) -> Path:
     Ảnh có bytes được ghi ra `<doc_id>.images/NNN.png` kèm sha256 trong JSON.
     """
     path = prediction_path(root, result.engine, result.doc_id)
-    path.parent.mkdir(parents=True, exist_ok=True)
+    sidecar_writes: list[tuple[Path, bytes]] = []
 
     images: list[dict[str, Any]] = []
     img_dir = path.with_name(f"{result.doc_id}.images")
@@ -281,9 +317,8 @@ def save_prediction(result: OcrResult, root: Path) -> Path:
             "sha256": None,
         }
         if im.data is not None:
-            img_dir.mkdir(parents=True, exist_ok=True)
             name = f"{i:03d}.png"
-            (img_dir / name).write_bytes(im.data)
+            sidecar_writes.append((img_dir / name, im.data))
             entry["file"] = name
             entry["sha256"] = hashlib.sha256(im.data).hexdigest()
         images.append(entry)
@@ -300,8 +335,14 @@ def save_prediction(result: OcrResult, root: Path) -> Path:
                 "ghi tiếp sẽ đè bytes của artifact trước"
             )
         seen_raw_names.add(portable_name)
-        raw_dir.mkdir(parents=True, exist_ok=True)
-        (raw_dir / name).write_bytes(artifact.data)
+        if not isinstance(artifact.media_type, str) or not artifact.media_type:
+            raise ValueError(
+                f"{result.doc_id}: raw_artifacts[{i}].media_type "
+                "phải là chuỗi không rỗng"
+            )
+        if not isinstance(artifact.data, bytes):
+            raise ValueError(f"{result.doc_id}: raw_artifacts[{i}].data phải là bytes")
+        sidecar_writes.append((raw_dir / name, artifact.data))
         raw_artifacts.append(
             {
                 "name": artifact.name,
@@ -336,7 +377,7 @@ def save_prediction(result: OcrResult, root: Path) -> Path:
         # là một con số không so sánh được (xem `types.OcrResult.rss_scope`).
         "rss_scope": result.rss_scope,
         "failed": result.failed,
-        "error": result.error,
+        "error": sanitize_secret_text(result.error),
         "failure_kind": (
             result.failure_kind.value if result.failure_kind is not None else None
         ),
@@ -344,8 +385,17 @@ def save_prediction(result: OcrResult, root: Path) -> Path:
             result.config_fingerprint, result.doc_id
         ),
     }
+    serialized = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
+
+    # Mọi validation ở trên phải hoàn tất trước side effect đầu tiên. Nếu một raw
+    # artifact trùng tên hoặc fingerprint không an toàn, prediction/sidecar cũ phải
+    # còn nguyên thay vì bị ghi đè nửa chừng rồi mới ném.
+    path.parent.mkdir(parents=True, exist_ok=True)
+    for sidecar_path, data in sidecar_writes:
+        sidecar_path.parent.mkdir(parents=True, exist_ok=True)
+        sidecar_path.write_bytes(data)
     path.write_text(
-        json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
+        serialized,
         encoding="utf-8",
         newline="\n",
     )
@@ -479,9 +529,9 @@ def _image_from_json(d: Any, path: Path, img_dir: Path, where: str) -> OcrImage:
     )
 
 
-def _raw_artifact_from_json(
-    d: Any, path: Path, raw_dir: Path, where: str
-) -> RawArtifact:
+def _raw_artifact_metadata_from_json(
+    d: Any, path: Path, where: str
+) -> tuple[str, str, str, str]:
     if not isinstance(d, dict):
         raise PredictionSchemaError(f"{path}: {where} phải là object")
     _exact_keys(d, frozenset({"name", "media_type", "file", "sha256"}), path, where)
@@ -492,6 +542,18 @@ def _raw_artifact_from_json(
         raise PredictionSchemaError(f"{path}: {exc}") from None
     if not isinstance(d["media_type"], str) or not d["media_type"]:
         raise PredictionSchemaError(f"{path}: {where}.media_type phải là chuỗi không rỗng")
+    if not isinstance(d["sha256"], str):
+        raise PredictionSchemaError(f"{path}: {where}.sha256 phải là chuỗi")
+    return name, d["media_type"], file_name, d["sha256"]
+
+
+def _raw_artifact_from_json(
+    metadata: tuple[str, str, str, str],
+    path: Path,
+    raw_dir: Path,
+    where: str,
+) -> RawArtifact:
+    name, media_type, file_name, expected_sha256 = metadata
     blob = raw_dir / file_name
     if not blob.is_file():
         raise PredictionSchemaError(
@@ -500,12 +562,12 @@ def _raw_artifact_from_json(
         )
     data = blob.read_bytes()
     got = hashlib.sha256(data).hexdigest()
-    if got != d["sha256"]:
+    if got != expected_sha256:
         raise PredictionSchemaError(
-            f"{path}: {where} sha256 lệch ({got} ≠ {d['sha256']}) ở {blob}. "
+            f"{path}: {where} sha256 lệch ({got} ≠ {expected_sha256}) ở {blob}. "
             "Không thể audit output nguyên bản nếu sidecar thuộc lần chạy khác."
         )
-    return RawArtifact(name=name, media_type=d["media_type"], data=data)
+    return RawArtifact(name=name, media_type=media_type, data=data)
 
 
 def _scan_label_from_json(d: Any, path: Path, where: str) -> ScanLabel | None:
@@ -595,6 +657,24 @@ def load_prediction(path: Path) -> OcrResult:
     raw_artifacts = raw["raw_artifacts"]
     if not isinstance(raw_artifacts, list):
         raise PredictionSchemaError(f"{path}: raw_artifacts phải là list")
+    raw_metadata = tuple(
+        _raw_artifact_metadata_from_json(a, path, f"raw_artifacts[{i}]")
+        for i, a in enumerate(raw_artifacts)
+    )
+    seen_raw_names: set[str] = set()
+    seen_raw_files: set[str] = set()
+    for i, (name, _media_type, file_name, _sha256) in enumerate(raw_metadata):
+        for field, value, seen in (
+            ("name", name, seen_raw_names),
+            ("file", file_name, seen_raw_files),
+        ):
+            portable_value = value.casefold()
+            if portable_value in seen:
+                raise PredictionSchemaError(
+                    f"{path}: raw_artifacts[{i}].{field}={value!r} có tên trùng "
+                    "không phân biệt hoa/thường"
+                )
+            seen.add(portable_value)
 
     img_dir = path.with_name(f"{doc_id}.images")
     raw_dir = path.with_name(f"{doc_id}.raw")
@@ -611,7 +691,7 @@ def load_prediction(path: Path) -> OcrResult:
             text_md=raw["text_md"],
             raw_artifacts=tuple(
                 _raw_artifact_from_json(a, path, raw_dir, f"raw_artifacts[{i}]")
-                for i, a in enumerate(raw_artifacts)
+                for i, a in enumerate(raw_metadata)
             ),
             blocks=tuple(
                 _block_from_json(b, path, f"blocks[{i}]")

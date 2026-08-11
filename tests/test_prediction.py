@@ -194,6 +194,7 @@ def test_raw_artifact_path_traversal_bi_chan_khi_ghi_va_doc(tmp_path: Path):
     )
     with pytest.raises(ValueError, match="raw_artifacts\\[0\\].name"):
         save_prediction(unsafe, tmp_path)
+    assert not (tmp_path / "marker_scan").exists()
 
     safe = OcrResult(
         engine="marker_scan",
@@ -236,6 +237,102 @@ def test_raw_artifact_names_cannot_collide_case_insensitively(tmp_path: Path):
     )
     with pytest.raises(ValueError, match="tên trùng"):
         save_prediction(result, tmp_path)
+
+
+def test_raw_collision_preflight_does_not_overwrite_existing_sidecars_or_json(
+    tmp_path: Path,
+):
+    existing = OcrResult(
+        engine="marker_scan",
+        engine_version="1",
+        doc_id="x",
+        capabilities=frozenset(),
+        raw_artifacts=(RawArtifact("RAW.json", "application/json", b"existing"),),
+    )
+    path = save_prediction(existing, tmp_path)
+    sidecar = tmp_path / "marker_scan" / "x.raw" / "RAW.json"
+    json_before = path.read_bytes()
+    sidecar_before = sidecar.read_bytes()
+    collision = OcrResult(
+        engine="marker_scan",
+        engine_version="2",
+        doc_id="x",
+        capabilities=frozenset(),
+        raw_artifacts=(
+            RawArtifact("RAW.json", "application/json", b"overwritten"),
+            RawArtifact("raw.json", "application/json", b"collision"),
+        ),
+    )
+
+    with pytest.raises(ValueError, match="tên trùng"):
+        save_prediction(collision, tmp_path)
+    assert sidecar.read_bytes() == sidecar_before
+    assert path.read_bytes() == json_before
+
+
+def test_jsonability_preflight_does_not_overwrite_existing_sidecars_or_json(
+    tmp_path: Path,
+):
+    existing = OcrResult(
+        engine="marker_scan",
+        engine_version="1",
+        doc_id="x",
+        capabilities=frozenset(),
+        raw_artifacts=(RawArtifact("raw.json", "application/json", b"existing"),),
+    )
+    path = save_prediction(existing, tmp_path)
+    sidecar = tmp_path / "marker_scan" / "x.raw" / "raw.json"
+    json_before = path.read_bytes()
+    sidecar_before = sidecar.read_bytes()
+    invalid = OcrResult(
+        engine="marker_scan",
+        engine_version="2",
+        doc_id="x",
+        capabilities=frozenset(),
+        raw_artifacts=(RawArtifact("raw.json", "application/json", b"overwritten"),),
+        config_fingerprint={"not_json": object()},
+    )
+
+    with pytest.raises(ValueError, match="không JSON hoá được"):
+        save_prediction(invalid, tmp_path)
+    assert sidecar.read_bytes() == sidecar_before
+    assert path.read_bytes() == json_before
+
+
+def test_raw_metadata_preflight_rejects_empty_media_type_before_mkdir(tmp_path: Path):
+    invalid = OcrResult(
+        engine="marker_scan",
+        engine_version="1",
+        doc_id="x",
+        capabilities=frozenset(),
+        raw_artifacts=(RawArtifact("raw.json", "", b"data"),),
+    )
+    with pytest.raises(ValueError, match="media_type"):
+        save_prediction(invalid, tmp_path)
+    assert not (tmp_path / "marker_scan").exists()
+
+
+@pytest.mark.parametrize("field", ["name", "file"])
+def test_load_rejects_case_insensitive_raw_metadata_collisions(
+    tmp_path: Path, field: str
+):
+    result = OcrResult(
+        engine="marker_scan",
+        engine_version="1",
+        doc_id="x",
+        capabilities=frozenset(),
+        raw_artifacts=(
+            RawArtifact("A.json", "application/json", b"same"),
+            RawArtifact("B.json", "application/json", b"same"),
+        ),
+    )
+    path = save_prediction(result, tmp_path)
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    raw["raw_artifacts"][1][field] = "a.JSON"
+    path.write_text(json.dumps(raw), encoding="utf-8")
+
+    with pytest.raises(PredictionSchemaError, match=rf"{field}.*tên trùng"):
+        load_prediction(path)
 
 
 def test_round_trip_giu_dung_kieu_chu_khong_chi_gia_tri(tmp_path: Path):
@@ -799,6 +896,67 @@ def test_fingerprint_khoa_khong_phai_chuoi_thi_nem(tmp_path: Path):
     )
     with pytest.raises(ValueError, match="khoá config_fingerprint"):
         save_prediction(xau, tmp_path)
+
+
+@pytest.mark.parametrize(
+    "fingerprint",
+    [
+        {"nested": {"OPENROUTER_API_KEY": "raw-api-key"}},
+        {"nested": ["Authorization: Bearer bearer-secret-123"]},
+        {"nested": {"note": "sk-live_nested_456"}},
+        {"nested": {"note": "password:nested-password-789"}},
+        {"nested": {"note": "OPENROUTER_API_KEY=env-api-key-999"}},
+    ],
+)
+def test_fingerprint_rejects_nested_raw_secrets(
+    tmp_path: Path, fingerprint: dict[str, object]
+):
+    result = OcrResult(
+        engine="e",
+        engine_version="1",
+        doc_id="d",
+        capabilities=frozenset(),
+        config_fingerprint=fingerprint,
+    )
+    with pytest.raises(ValueError, match="secret|credential|bí mật"):
+        save_prediction(result, tmp_path)
+
+
+def test_fingerprint_allows_safe_secret_metadata(tmp_path: Path):
+    result = OcrResult(
+        engine="e",
+        engine_version="1",
+        doc_id="d",
+        capabilities=frozenset(),
+        config_fingerprint={
+            "api_key_present": False,
+            "nested": {
+                "OPENROUTER_API_KEY": "",
+                "access_token": None,
+                "token": "<redacted>",
+                "secret_present": True,
+            },
+        },
+    )
+    assert load_prediction(save_prediction(result, tmp_path)) == result
+
+
+def test_save_prediction_redacts_secret_from_manually_created_error(tmp_path: Path):
+    result = OcrResult(
+        engine="e",
+        engine_version="1",
+        doc_id="d",
+        capabilities=frozenset(),
+        failed=True,
+        error="Bearer manual-bearer sk-manual_123 token=manual-token",
+        failure_kind=FailureKind.ENGINE_ERROR,
+    )
+    path = save_prediction(result, tmp_path)
+    persisted = path.read_text(encoding="utf-8")
+    assert "<redacted>" in persisted
+    assert "manual-bearer" not in persisted
+    assert "sk-manual_123" not in persisted
+    assert "manual-token" not in persisted
 
 
 # ---------------------------------------------------------------------------

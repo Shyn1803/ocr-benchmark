@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import ClassVar
 
 from ocr_bench.rss import DoRss
+from ocr_bench.secrets import sanitize_secret_text
 from ocr_bench.types import Capability, FailureKind, OcrResult
 
 __all__ = ["Adapter", "AdapterOutputError", "classify_exception"]
@@ -96,6 +97,8 @@ class Adapter(abc.ABC):
         except Exception as exc:  # noqa: BLE001 - cố ý bắt tất cả
             giay = time.perf_counter() - t0
             rss, pham_vi = do_rss.ket_qua
+            error = sanitize_secret_text(f"{type(exc).__name__}: {exc}")
+            trace = sanitize_secret_text(traceback.format_exc(limit=5))
             return OcrResult(
                 engine=self.name,
                 engine_version=self.version(),
@@ -105,11 +108,11 @@ class Adapter(abc.ABC):
                 peak_rss_mb=rss,
                 rss_scope=pham_vi,
                 failed=True,
-                error=f"{type(exc).__name__}: {exc}",
+                error=error,
                 failure_kind=classify_exception(exc),
                 config_fingerprint={
                     **self.config_fingerprint(),
-                    "traceback": traceback.format_exc(limit=5),
+                    "traceback": trace,
                 },
             )
         if result.seconds is None:
