@@ -9,8 +9,10 @@ import pytest
 
 from ocr_bench import registry
 from ocr_bench.adapters.base import Adapter
+from ocr_bench.adapters.marker import MarkerAdapter
 from ocr_bench.adapters.noop import NoopAdapter
 from ocr_bench.metrics.base import Metric
+from ocr_bench.profiles import EngineProfile, ProfileConfigError
 from ocr_bench.types import AnnotationGT, Capability, OcrResult
 
 
@@ -261,3 +263,94 @@ def test_clear_chi_dung_trong_test():
     assert registry.list_adapters() == []
     registry.register_adapter(NoopAdapter)
     assert registry.list_adapters() == ["noop"]
+
+
+def test_build_adapter_uses_registered_profile_factory():
+    """Skipping ``from_profile`` would lose the frozen publication identity."""
+
+    class ProfiledFake(Adapter):
+        name: ClassVar[str] = "profiled_fake"
+        capabilities: ClassVar[frozenset[Capability]] = frozenset()
+
+        @classmethod
+        def from_profile(cls, profile: EngineProfile) -> "ProfiledFake":
+            adapter = cls()
+            adapter.name = profile.name
+            return adapter
+
+        def run(self, doc_path: Path) -> OcrResult:  # pragma: no cover
+            raise NotImplementedError
+
+    before = dict(registry._ADAPTERS)
+    registry.register_adapter(ProfiledFake)
+    try:
+        profile = EngineProfile(
+            name="marker_scan",
+            family="marker",
+            profile="scan",
+            adapter="profiled_fake",
+            config={"force_ocr": True},
+            environment={},
+        )
+
+        built = registry.build_adapter(profile)
+
+        assert isinstance(built, ProfiledFake)
+        assert built.name == "marker_scan"
+    finally:
+        registry._ADAPTERS.clear()
+        registry._ADAPTERS.update(before)
+
+
+def test_build_adapter_rejects_legacy_adapter_without_profile_factory():
+    """Using a legacy constructor would silently ignore publication configuration."""
+    before = dict(registry._ADAPTERS)
+    registry.register_adapter(MarkerAdapter)
+    profile = EngineProfile(
+        name="marker_default",
+        family="marker",
+        profile="default",
+        adapter="marker",
+        config={"force_ocr": False},
+        environment={},
+    )
+
+    try:
+        with pytest.raises(ProfileConfigError, match="from_profile"):
+            registry.build_adapter(profile)
+    finally:
+        registry._ADAPTERS.clear()
+        registry._ADAPTERS.update(before)
+
+
+def test_build_adapter_rejects_mismatched_profile_name():
+    """A returned legacy name would merge two profile result sets."""
+
+    class WrongName(Adapter):
+        name: ClassVar[str] = "wrong_name"
+        capabilities: ClassVar[frozenset[Capability]] = frozenset()
+
+        @classmethod
+        def from_profile(cls, profile: EngineProfile) -> "WrongName":
+            return cls()
+
+        def run(self, doc_path: Path) -> OcrResult:  # pragma: no cover
+            raise NotImplementedError
+
+    before = dict(registry._ADAPTERS)
+    registry.register_adapter(WrongName)
+    try:
+        profile = EngineProfile(
+            name="marker_scan",
+            family="marker",
+            profile="scan",
+            adapter="wrong_name",
+            config={"force_ocr": True},
+            environment={},
+        )
+
+        with pytest.raises(ProfileConfigError, match="cần 'marker_scan'"):
+            registry.build_adapter(profile)
+    finally:
+        registry._ADAPTERS.clear()
+        registry._ADAPTERS.update(before)

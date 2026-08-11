@@ -9,11 +9,13 @@ from __future__ import annotations
 
 from ocr_bench.adapters.base import Adapter
 from ocr_bench.metrics.base import Metric
+from ocr_bench.profiles import EngineProfile, ProfileConfigError
 from ocr_bench.types import Capability
 
 __all__ = [
     "register_adapter",
     "get_adapter",
+    "build_adapter",
     "list_adapters",
     "register_metric",
     "get_metric",
@@ -69,6 +71,27 @@ def get_adapter(name: str) -> type[Adapter]:
         raise KeyError(
             f"chưa có adapter {name!r}; hiện có: {sorted(_ADAPTERS)}"
         ) from None
+
+
+def build_adapter(profile: EngineProfile) -> Adapter:
+    """Construct a publication adapter from its frozen profile.
+
+    Legacy adapters remain available through :func:`get_adapter`; they must opt
+    in by defining ``from_profile`` before they can participate in publication
+    runs, where ignoring catalog values would make results irreproducible.
+    """
+    cls = get_adapter(profile.adapter)
+    from_profile = getattr(cls, "from_profile", None)
+    if not callable(from_profile):
+        raise ProfileConfigError(
+            f"adapter {profile.adapter!r} không hỗ trợ from_profile(profile)"
+        )
+    adapter = from_profile(profile)
+    if adapter.name != profile.name:
+        raise ProfileConfigError(
+            f"adapter trả name={adapter.name!r}, cần {profile.name!r}"
+        )
+    return adapter
 
 
 def get_metric(name: str) -> type[Metric]:

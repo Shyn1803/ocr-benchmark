@@ -28,6 +28,7 @@ from ocr_bench.metrics.heading import HeadingMetric
 from ocr_bench.metrics.imgf1 import ImgF1Metric, ImgIouMetric
 from ocr_bench.metrics.nid import NidMetric
 from ocr_bench.metrics.teds import TedsMetric, TedsStructMetric
+from ocr_bench.profiles import EngineProfile, ProfileConfigError, load_profile_catalog
 
 # Hai engine giả đăng ký sẵn. Chúng không đo engine nào cả — chúng đo *bộ thước*:
 # `noop` không làm gì, `sabotage` làm hỏng đầu ra engine khác.
@@ -92,4 +93,10 @@ registry.register_metric(MathPresenceMetric)
 registry.register_metric(TableRelationMetric)
 registry.register_metric(BaselineMetric)
 
-__all__ = ["__version__", "registry"]
+__all__ = [
+    "__version__",
+    "registry",
+    "EngineProfile",
+    "ProfileConfigError",
+    "load_profile_catalog",
+]

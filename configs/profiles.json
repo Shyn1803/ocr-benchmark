@@ -1,0 +1,114 @@
+{
+  "catalog_version": 1,
+  "profiles": [
+    {
+      "name": "docling_default",
+      "family": "docling",
+      "profile": "default",
+      "adapter": "docling",
+      "config": {
+        "do_ocr": true,
+        "ocr_engine": "easyocr",
+        "force_full_page_ocr": false,
+        "table_mode": "default",
+        "cell_matching": false
+      },
+      "environment": {}
+    },
+    {
+      "name": "docling_scan",
+      "family": "docling",
+      "profile": "scan",
+      "adapter": "docling",
+      "config": {
+        "do_ocr": true,
+        "ocr_engine": "easyocr",
+        "ocr_languages": ["vi", "en"],
+        "force_full_page_ocr": true,
+        "table_mode": "accurate",
+        "cell_matching": true
+      },
+      "environment": {}
+    },
+    {
+      "name": "opendataloader_default",
+      "family": "opendataloader",
+      "profile": "default",
+      "adapter": "opendataloader",
+      "config": {
+        "parser": "java",
+        "table_method": "cluster",
+        "reading_order": "xycut"
+      },
+      "environment": {}
+    },
+    {
+      "name": "opendataloader_scan",
+      "family": "opendataloader",
+      "profile": "scan",
+      "adapter": "opendataloader",
+      "config": {
+        "hybrid": "docling-fast",
+        "hybrid_mode": "full",
+        "hybrid_fallback": false
+      },
+      "environment": {
+        "hybrid_server": {
+          "host": "127.0.0.1",
+          "port": 5002,
+          "force_ocr": true,
+          "ocr_engine": "easyocr",
+          "ocr_languages": ["vi", "en"]
+        }
+      }
+    },
+    {
+      "name": "marker_default",
+      "family": "marker",
+      "profile": "default",
+      "adapter": "marker",
+      "config": {
+        "force_ocr": false,
+        "use_llm": false
+      },
+      "environment": {}
+    },
+    {
+      "name": "marker_scan",
+      "family": "marker",
+      "profile": "scan",
+      "adapter": "marker",
+      "config": {
+        "force_ocr": true,
+        "use_llm": false
+      },
+      "environment": {}
+    },
+    {
+      "name": "sovereign_default",
+      "family": "sovereign",
+      "profile": "default",
+      "adapter": "sovereign",
+      "config": {
+        "ocr_use_vision_api": false,
+        "api_enabled": false
+      },
+      "environment": {
+        "marker_available": false
+      }
+    },
+    {
+      "name": "sovereign_scan",
+      "family": "sovereign",
+      "profile": "scan",
+      "adapter": "sovereign",
+      "config": {
+        "ocr_use_vision_api": false,
+        "api_enabled": false
+      },
+      "environment": {
+        "marker_available": true
+      }
+    }
+  ]
+}
