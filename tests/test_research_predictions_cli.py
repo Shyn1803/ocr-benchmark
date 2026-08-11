@@ -338,6 +338,12 @@ def test_default_publication_requires_verified_non_provisional_manifest(
 
     monkeypatch.setattr(runner, "load_profile_catalog", lambda _path: {profile.name: profile})
     monkeypatch.setattr(runner.registry, "build_adapter", forbidden_build)
+    # Trước Task 7 `datasets/manifest.json` chưa tồn tại, nên test này xanh nhờ **sự vắng
+    # mặt tình cờ** của một file. Task 7 sinh ra đúng file đó và test đổi ý nghĩa lúc
+    # nào không hay: nó bắt đầu chạy qua cổng manifest rồi đỏ ở một cổng khác. Trỏ thẳng
+    # vào một đường dẫn không tồn tại để nó kiểm đúng thứ tên nó nói — chế độ publication
+    # phải dừng trước khi dựng adapter khi manifest mặc định không có.
+    monkeypatch.setattr(runner, "PUBLICATION_DATASET_MANIFEST", tmp_path / "khong-co.json")
 
     assert runner.main(["--out", str(tmp_path)]) == 2
     error = capsys.readouterr().err
@@ -1116,6 +1122,34 @@ def test_cpu_probe_does_not_turn_missing_identity_into_unknown(monkeypatch):
     monkeypatch.setattr(preflight, "_ram_bytes", lambda: 1024)
 
     assert preflight.collect_system_metadata()["cpu"] is None
+
+
+def test_ram_probe_works_on_the_machine_that_will_run_the_publication():
+    """`ram_bytes` phải đo được **ở đây**, không chỉ ở nơi có psutil.
+
+    `publication_preflight` chặn khi thiếu CPU/RAM. Trước đó hai nhánh duy nhất là psutil
+    và `os.sysconf` — psutil không nằm trong dependency, `os.sysconf` không tồn tại trên
+    Windows, nên trên máy chạy bench này mọi lần công bố đều bị chặn bởi một khiếm khuyết
+    của *đầu dò*, không phải của môi trường. Lỗi đó nấp được lâu vì một cổng phía trước
+    (`datasets/manifest.json` chưa tồn tại) đỏ trước và che mất.
+    """
+    import ocr_bench.preflight as preflight
+
+    ram = preflight.collect_system_metadata()["ram_bytes"]
+    assert isinstance(ram, int)
+    # Chặn cả 0 lẫn giá trị vô lý: một API trả 0 vì gọi sai vẫn là "có số".
+    assert ram > 1 << 30
+
+
+def test_ram_probe_reports_nothing_rather_than_guessing(monkeypatch):
+    """Không đo được thì trả `None` để cổng chặn — không bịa một con số mặc định."""
+    import ocr_bench.preflight as preflight
+
+    monkeypatch.setitem(sys.modules, "psutil", None)  # import psutil -> ImportError
+    monkeypatch.delattr(preflight.os, "sysconf", raising=False)
+    monkeypatch.setattr(preflight, "_ram_bytes_windows", lambda: None)
+
+    assert preflight._ram_bytes() is None
 
 
 @pytest.mark.parametrize(

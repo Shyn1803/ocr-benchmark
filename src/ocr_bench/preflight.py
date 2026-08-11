@@ -9,6 +9,7 @@ import os
 import platform
 import re
 import subprocess
+import sys
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -368,18 +369,54 @@ def _gpu_name() -> str | None:
     return "; ".join(names) if completed.returncode == 0 and names else None
 
 
+def _ram_bytes_windows() -> int | None:
+    """RAM vật lý trên Windows, không cần psutil.
+
+    Windows không có `os.sysconf`, nên khi psutil vắng mặt thì hai nhánh cũ đều trượt và
+    `ram_bytes` về `None` — `publication_preflight` coi đó là "không thu thập đủ CPU/RAM"
+    và chặn toàn bộ lần công bố. Máy chạy bench này là Windows, nên nhánh thiếu đó không
+    phải trường hợp hiếm mà là trường hợp mặc định.
+    """
+    if sys.platform != "win32":
+        return None
+    try:
+        import ctypes  # noqa: PLC0415
+
+        class _MEMORYSTATUSEX(ctypes.Structure):
+            _fields_ = [
+                ("dwLength", ctypes.c_ulong),
+                ("dwMemoryLoad", ctypes.c_ulong),
+                ("ullTotalPhys", ctypes.c_ulonglong),
+                ("ullAvailPhys", ctypes.c_ulonglong),
+                ("ullTotalPageFile", ctypes.c_ulonglong),
+                ("ullAvailPageFile", ctypes.c_ulonglong),
+                ("ullTotalVirtual", ctypes.c_ulonglong),
+                ("ullAvailVirtual", ctypes.c_ulonglong),
+                ("ullAvailExtendedVirtual", ctypes.c_ulonglong),
+            ]
+
+        trang_thai = _MEMORYSTATUSEX()
+        trang_thai.dwLength = ctypes.sizeof(_MEMORYSTATUSEX)
+        if not ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(trang_thai)):
+            return None
+        return int(trang_thai.ullTotalPhys) or None
+    except (ImportError, AttributeError, OSError, ValueError):
+        return None
+
+
 def _ram_bytes() -> int | None:
     try:
         import psutil  # noqa: PLC0415
 
         return int(psutil.virtual_memory().total)
     except (ImportError, OSError):
-        if hasattr(os, "sysconf"):
-            try:
-                return int(os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES"))
-            except (OSError, ValueError):
-                pass
-    return None
+        pass
+    if hasattr(os, "sysconf"):
+        try:
+            return int(os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES"))
+        except (OSError, ValueError):
+            pass
+    return _ram_bytes_windows()
 
 
 def collect_system_metadata() -> dict[str, object]:
