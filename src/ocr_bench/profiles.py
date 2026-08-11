@@ -17,9 +17,6 @@ class ProfileConfigError(ValueError):
     """The publication profile catalog is invalid or an adapter violates it."""
 
 
-_SECRET_KEY_PARTS = frozenset({"api_key", "password", "secret", "token"})
-
-
 def _freeze_json(value: object) -> object:
     """Recursively freeze JSON-compatible values retained by a profile."""
     if isinstance(value, Mapping):
@@ -36,13 +33,11 @@ def _freeze_json(value: object) -> object:
     raise ProfileConfigError(f"giá trị profile không phải JSON: {type(value).__name__}")
 
 
-def _canonical_json(value: object, *, key: str | None = None) -> object:
-    """Return JSON data suitable for deterministic, secret-safe hashing."""
-    if key is not None and any(part in key.lower() for part in _SECRET_KEY_PARTS):
-        return "<redacted>"
+def _canonical_json(value: object) -> object:
+    """Return JSON data suitable for deterministic hashing."""
     if isinstance(value, Mapping):
         return {
-            nested_key: _canonical_json(nested, key=nested_key)
+            nested_key: _canonical_json(nested)
             for nested_key, nested in value.items()
         }
     if isinstance(value, tuple):
@@ -67,9 +62,8 @@ class EngineProfile:
     def fingerprint(self) -> str:
         """Canonical SHA-256 of profile identity, config, and environment.
 
-        Key ordering does not affect the digest. Values under keys that look
-        secret-bearing are redacted before hashing so a fingerprint is safe to
-        write into a publication artifact.
+        Key ordering does not affect the digest. The catalog validation boundary
+        forbids secret values, so every retained value remains in the digest.
         """
         payload = _canonical_json(
             {

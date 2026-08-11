@@ -43,6 +43,46 @@ def test_profile_fingerprint_is_stable_for_equivalent_key_order():
     assert len(first.fingerprint) == 64
 
 
+def test_profile_fingerprint_changes_for_every_configured_value():
+    """Colliding config or environment values would merge distinct runs."""
+    baseline = EngineProfile(
+        name="marker_scan",
+        family="marker",
+        profile="scan",
+        adapter="marker",
+        config={"force_ocr": True, "access_token": "first"},
+        environment={"runner": {"host": "127.0.0.1"}},
+    )
+    changed_config = EngineProfile(
+        name="marker_scan",
+        family="marker",
+        profile="scan",
+        adapter="marker",
+        config={"force_ocr": False, "access_token": "first"},
+        environment={"runner": {"host": "127.0.0.1"}},
+    )
+    changed_environment = EngineProfile(
+        name="marker_scan",
+        family="marker",
+        profile="scan",
+        adapter="marker",
+        config={"force_ocr": True, "access_token": "first"},
+        environment={"runner": {"host": "127.0.0.2"}},
+    )
+    changed_token_named_value = EngineProfile(
+        name="marker_scan",
+        family="marker",
+        profile="scan",
+        adapter="marker",
+        config={"force_ocr": True, "access_token": "second"},
+        environment={"runner": {"host": "127.0.0.1"}},
+    )
+
+    assert changed_config.fingerprint != baseline.fingerprint
+    assert changed_environment.fingerprint != baseline.fingerprint
+    assert changed_token_named_value.fingerprint != baseline.fingerprint
+
+
 def test_loaded_profile_json_is_deeply_immutable():
     """Mutating nested profile data would invalidate its recorded fingerprint."""
     profile = load_profile_catalog(ROOT / "configs" / "profiles.json")[
