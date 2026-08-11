@@ -5,11 +5,21 @@ from __future__ import annotations
 import importlib.util
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 
 ROOT = Path(__file__).resolve().parents[1]
+VERSIONS = {
+    "docling": "2.91.0",
+    "easyocr": "1.7.2",
+    "fastapi": "0.136.1",
+    "opendataloader-pdf": "2.5.0",
+    "pypdf": "5.0.0",
+    "python-multipart": "0.0.28",
+    "uvicorn": "0.46.0",
+}
 
 
 def _launcher():
@@ -19,6 +29,44 @@ def _launcher():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+class FakePsProcess:
+    def __init__(self, pid, *, create_time=1234.5, children=(), connections=()):
+        self.pid = pid
+        self._create_time = create_time
+        self._children = list(children)
+        self._connections = list(connections)
+
+    def create_time(self):
+        return self._create_time
+
+    def children(self, recursive=False):
+        assert recursive is True
+        return list(self._children)
+
+    def net_connections(self, kind="inet"):
+        assert kind == "inet"
+        return list(self._connections)
+
+    def is_running(self):
+        return True
+
+
+def _connection(pid, host="127.0.0.1", port=5002):
+    return SimpleNamespace(pid=pid, laddr=(host, port), status="LISTEN")
+
+
+def _fake_psutil(root, *children):
+    processes = {process.pid: process for process in (root, *children)}
+    return SimpleNamespace(
+        CONN_LISTEN="LISTEN",
+        Process=lambda pid: processes[pid],
+    )
+
+
+def _ok_report():
+    return {"missing": [], "incompatible": [], "versions": dict(VERSIONS)}
 
 
 def test_hybrid_command_is_loopback_forced_ocr_easyocr_vietnamese_english():
@@ -38,23 +86,76 @@ def test_hybrid_launcher_rejects_public_bind():
         module.server_config(host="0.0.0.0", port=5002)
 
 
-def test_check_only_reports_exact_missing_dependencies(monkeypatch, capsys):
+def test_check_only_rejects_missing_and_incompatible_versions(monkeypatch, capsys):
     module = _launcher()
-    monkeypatch.setattr(
-        module,
-        "dependency_report",
-        lambda: {"missing": ["docling[easyocr]", "python-multipart"], "versions": {"opendataloader-pdf": "2.5.0"}},
-    )
+    installed = dict(VERSIONS)
+    installed.update({"opendataloader-pdf": "2.5.1", "fastapi": "0.100.0"})
+    installed.pop("python-multipart")
+    monkeypatch.setattr(module, "_distribution_version", installed.get)
 
     assert module.main(["--check-only"]) == 2
     output = json.loads(capsys.readouterr().out)
-    assert output["missing"] == ["docling[easyocr]", "python-multipart"]
+    assert output["missing"] == ["python-multipart>=0.0.28"]
+    assert output["incompatible"] == [
+        {
+            "installed": "0.100.0",
+            "requirement": "fastapi>=0.136.1",
+        },
+        {
+            "installed": "2.5.1",
+            "requirement": "opendataloader-pdf[hybrid]==2.5.0",
+        },
+    ]
+    assert output["versions"]["easyocr"] == "1.7.2"
 
 
-def test_ready_server_writes_deterministic_manifest_and_is_cleaned_up(monkeypatch, tmp_path):
+def test_stale_healthy_server_is_refused_before_spawn(monkeypatch, tmp_path):
+    module = _launcher()
+    monkeypatch.setattr(module, "dependency_report", _ok_report)
+    monkeypatch.setattr(module, "_load_psutil", lambda: SimpleNamespace())
+    monkeypatch.setattr(module, "_health_payload", lambda *_args, **_kwargs: {"status": "ok"})
+    spawned = False
+
+    def forbidden_spawn(*_args, **_kwargs):
+        nonlocal spawned
+        spawned = True
+        raise AssertionError("must reject stale listener before Popen")
+
+    monkeypatch.setattr(module.subprocess, "Popen", forbidden_spawn)
+
+    assert module.main(["--manifest", str(tmp_path / "manifest.json")]) == 2
+    assert spawned is False
+
+
+def test_listener_ownership_accepts_child_and_rejects_foreign_process():
+    module = _launcher()
+    child = FakePsProcess(4243, connections=[_connection(4243)])
+    root = FakePsProcess(4242, children=[child])
+    psutil = _fake_psutil(root, child)
+
+    assert module.listener_pids_owned_by_tree(
+        psutil, pid=4242, host="127.0.0.1", port=5002
+    ) == [4243]
+
+    foreign = FakePsProcess(9999, connections=[_connection(9999)])
+    with pytest.raises(RuntimeError, match="owned"):
+        module.require_owned_listener(
+            _fake_psutil(root, child, foreign),
+            pid=4242,
+            host="127.0.0.1",
+            port=5002,
+            observed_listener_pids=[9999],
+        )
+
+
+def test_owned_ready_server_writes_canonical_manifest_and_cleans_up(
+    monkeypatch, tmp_path
+):
     module = _launcher()
 
     class FakeProcess:
+        pid = 4242
+
         def __init__(self):
             self.terminated = False
             self.waited = False
@@ -69,8 +170,14 @@ def test_ready_server_writes_deterministic_manifest_and_is_cleaned_up(monkeypatc
             self.waited = True
             return 0
 
+    child = FakePsProcess(4243, connections=[_connection(4243)])
+    root = FakePsProcess(4242, children=[child])
+    psutil = _fake_psutil(root, child)
     process = FakeProcess()
-    monkeypatch.setattr(module, "dependency_report", lambda: {"missing": [], "versions": {"opendataloader-pdf": "2.5.0", "docling": "2.91.0"}})
+    monkeypatch.setattr(module, "dependency_report", _ok_report)
+    monkeypatch.setattr(module, "_load_psutil", lambda: psutil)
+    monkeypatch.setattr(module, "ensure_endpoint_free", lambda **_kwargs: None)
+    monkeypatch.setattr(module, "_health_payload", lambda *_args, **_kwargs: {"status": "ok"})
     spawned = {}
 
     def fake_popen(command, *, env):
@@ -79,14 +186,31 @@ def test_ready_server_writes_deterministic_manifest_and_is_cleaned_up(monkeypatc
         return process
 
     monkeypatch.setattr(module.subprocess, "Popen", fake_popen)
-    monkeypatch.setattr(module, "wait_until_ready", lambda **kwargs: {"status": "ok"})
     monkeypatch.setattr(module, "serve_until_interrupted", lambda _process: None)
     manifest = tmp_path / "run-manifest.json"
 
     assert module.main(["--manifest", str(manifest)]) == 0
-    payload = json.loads(manifest.read_text(encoding="utf-8"))
-    assert payload["server_config"] == module.server_config(host="127.0.0.1", port=5002)
-    assert payload["versions"]["opendataloader-pdf"] == "2.5.0"
-    assert payload["health"] == {"status": "ok"}
+    raw = manifest.read_bytes()
+    payload = json.loads(raw)
+    assert raw == (
+        json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        + "\n"
+    ).encode("utf-8")
+    assert payload["manifest_schema_version"] == 1
+    assert payload["launcher_version"] == 1
+    assert payload["pid"] == 4242
+    assert payload["process_create_time"] == 1234.5
+    assert payload["listener_pids"] == [4243]
+    assert payload["host"] == "127.0.0.1"
+    assert payload["port"] == 5002
+    assert payload["url"] == "http://127.0.0.1:5002"
+    assert payload["config"] == module.server_config()
+    assert payload["config"]["device_enforcement_method"] == (
+        "CUDA_VISIBLE_DEVICES-empty-before-spawn"
+    )
+    assert payload["versions"] == VERSIONS
+    assert len(payload["run_id"]) == 64
     assert spawned["env"]["CUDA_VISIBLE_DEVICES"] == ""
+    assert module.MANIFEST_ENV in module.os.environ
+    assert Path(module.os.environ[module.MANIFEST_ENV]) == manifest.resolve()
     assert process.terminated and process.waited

@@ -42,11 +42,14 @@ Chạy bằng venv riêng (`.venv-odl`) và cần JRE — dựng bằng `scripts
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
 import sys
 import tempfile
+import urllib.error
+import urllib.request
 from collections.abc import Mapping
 from dataclasses import dataclass, replace
 from html import escape
@@ -78,6 +81,39 @@ __all__ = [
     "chu_cua_node",
     "build_result",
 ]
+
+HYBRID_MANIFEST_ENV = "OCR_BENCH_ODL_HYBRID_MANIFEST"
+HYBRID_HOST = "127.0.0.1"
+HYBRID_PORT = 5002
+HYBRID_URL = "http://127.0.0.1:5002"
+HYBRID_SERVER_CONFIG = {
+    "device": "cpu",
+    "device_enforcement": {"CUDA_VISIBLE_DEVICES": ""},
+    "device_enforcement_method": "CUDA_VISIBLE_DEVICES-empty-before-spawn",
+    "force_ocr": True,
+    "health_url": f"{HYBRID_URL}/health",
+    "host": HYBRID_HOST,
+    "ocr_engine": "easyocr",
+    "ocr_languages": ["vi", "en"],
+    "port": HYBRID_PORT,
+}
+HYBRID_ARGV_TAIL = [
+    "-m", "opendataloader_pdf.hybrid_server",
+    "--host", HYBRID_HOST,
+    "--port", str(HYBRID_PORT),
+    "--force-ocr",
+    "--ocr-engine", "easyocr",
+    "--ocr-lang", "vi,en",
+]
+HYBRID_VERSION_SPECS = {
+    "docling": ">=2.91.0",
+    "easyocr": ">=0",
+    "fastapi": ">=0.136.1",
+    "opendataloader-pdf": "==2.5.0",
+    "pypdf": ">=5",
+    "python-multipart": ">=0.0.28",
+    "uvicorn": ">=0.46.0",
+}
 
 # 8 `type` quan sát được trên 24 tài liệu → `BlockType` của bench.
 # `text block` là khung gom nhiều đoạn, không phải một khối nội dung — nó được đi
@@ -374,6 +410,192 @@ def _canonical_json_bytes(value: object, *, label: str) -> bytes:
         ) from exc
 
 
+def _load_psutil() -> Any:
+    try:
+        import psutil  # noqa: PLC0415
+    except ImportError as exc:
+        raise RuntimeError(
+            "psutil is required to validate OpenDataLoader hybrid process ownership"
+        ) from exc
+    return psutil
+
+
+def _health_payload(url: str, *, timeout: float = 0.5) -> object | None:
+    try:
+        with urllib.request.urlopen(url, timeout=timeout) as response:
+            return json.loads(response.read())
+    except (OSError, urllib.error.URLError, json.JSONDecodeError):
+        return None
+
+
+def _hybrid_connection_address(connection: object) -> tuple[str, int] | None:
+    address = getattr(connection, "laddr", None)
+    if not address:
+        return None
+    try:
+        return str(address[0]), int(address[1])
+    except (IndexError, TypeError, ValueError):
+        return None
+
+
+def _owned_hybrid_listener_pids(psutil: Any, process: Any) -> list[int]:
+    processes = [process, *process.children(recursive=True)]
+    listen_status = getattr(psutil, "CONN_LISTEN", "LISTEN")
+    owned: set[int] = set()
+    for candidate in processes:
+        for connection in candidate.net_connections(kind="inet"):
+            if (
+                getattr(connection, "status", None) == listen_status
+                and _hybrid_connection_address(connection)
+                == (HYBRID_HOST, HYBRID_PORT)
+            ):
+                owned.add(int(candidate.pid))
+    return sorted(owned)
+
+
+def _validate_hybrid_versions(versions: object) -> dict[str, str]:
+    if not isinstance(versions, dict):
+        raise RuntimeError("OpenDataLoader hybrid manifest versions are malformed")
+    # Lazy because the default Java profile must remain importable without this extra.
+    try:
+        from packaging.specifiers import SpecifierSet  # noqa: PLC0415
+        from packaging.version import InvalidVersion, Version  # noqa: PLC0415
+    except ImportError as exc:
+        raise RuntimeError(
+            "packaging is required to validate OpenDataLoader hybrid versions"
+        ) from exc
+    validated: dict[str, str] = {}
+    for distribution, specifier in HYBRID_VERSION_SPECS.items():
+        installed = versions.get(distribution)
+        if not isinstance(installed, str):
+            raise RuntimeError(
+                f"OpenDataLoader hybrid manifest versions missing {distribution}"
+            )
+        try:
+            accepted = Version(installed) in SpecifierSet(specifier)
+        except InvalidVersion:
+            accepted = False
+        if not accepted:
+            raise RuntimeError(
+                f"OpenDataLoader hybrid manifest version {distribution}={installed!r} "
+                f"does not satisfy {specifier}"
+            )
+        validated[distribution] = installed
+    return validated
+
+
+def _validated_hybrid_manifest() -> dict[str, object]:
+    manifest_value = os.environ.get(HYBRID_MANIFEST_ENV)
+    if not manifest_value:
+        raise RuntimeError(
+            f"{HYBRID_MANIFEST_ENV} must point to the owned hybrid launcher manifest"
+        )
+    manifest_path = Path(manifest_value)
+    try:
+        raw = manifest_path.read_bytes()
+        payload = json.loads(raw)
+    except FileNotFoundError as exc:
+        raise RuntimeError(
+            f"OpenDataLoader hybrid manifest is missing: {manifest_path}"
+        ) from exc
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError("OpenDataLoader hybrid manifest is malformed") from exc
+    if not isinstance(payload, dict):
+        raise RuntimeError("OpenDataLoader hybrid manifest root is malformed")
+    try:
+        canonical_raw = _canonical_json_bytes(payload, label="hybrid manifest") + b"\n"
+    except AdapterOutputError as exc:
+        raise RuntimeError("OpenDataLoader hybrid manifest is malformed") from exc
+    if raw != canonical_raw:
+        raise RuntimeError("OpenDataLoader hybrid manifest is not canonical/tamper-safe")
+
+    if payload.get("manifest_schema_version") != 1 or payload.get("launcher_version") != 1:
+        raise RuntimeError("OpenDataLoader hybrid manifest schema/version is unsupported")
+    if payload.get("host") != HYBRID_HOST or payload.get("port") != HYBRID_PORT:
+        raise RuntimeError("OpenDataLoader hybrid manifest endpoint is not catalog-locked")
+    if payload.get("url") != HYBRID_URL:
+        raise RuntimeError("OpenDataLoader hybrid manifest URL is not catalog-locked")
+    if payload.get("config") != HYBRID_SERVER_CONFIG:
+        raise RuntimeError("OpenDataLoader hybrid manifest config is not catalog-locked")
+    argv = payload.get("argv")
+    if (
+        not isinstance(argv, list)
+        or not argv
+        or not isinstance(argv[0], str)
+        or not argv[0]
+        or argv[1:] != HYBRID_ARGV_TAIL
+    ):
+        raise RuntimeError("OpenDataLoader hybrid manifest argv is not catalog-locked")
+    if payload.get("health") != {"status": "ok"}:
+        raise RuntimeError("OpenDataLoader hybrid manifest health evidence is invalid")
+    run_id = payload.get("run_id")
+    if (
+        not isinstance(run_id, str)
+        or len(run_id) != 64
+        or any(character not in "0123456789abcdef" for character in run_id)
+    ):
+        raise RuntimeError("OpenDataLoader hybrid manifest run_id is malformed")
+    versions = _validate_hybrid_versions(payload.get("versions"))
+
+    pid = payload.get("pid")
+    create_time = payload.get("process_create_time")
+    listener_pids = payload.get("listener_pids")
+    if not isinstance(pid, int) or isinstance(pid, bool) or pid <= 0:
+        raise RuntimeError("OpenDataLoader hybrid manifest pid is malformed")
+    if not isinstance(create_time, (int, float)) or isinstance(create_time, bool):
+        raise RuntimeError("OpenDataLoader hybrid manifest process_create_time is malformed")
+    if (
+        not isinstance(listener_pids, list)
+        or not listener_pids
+        or any(not isinstance(item, int) or isinstance(item, bool) for item in listener_pids)
+    ):
+        raise RuntimeError("OpenDataLoader hybrid manifest listener evidence is malformed")
+
+    try:
+        psutil = _load_psutil()
+        process = psutil.Process(pid)
+        if not process.is_running():
+            raise RuntimeError("OpenDataLoader hybrid manifest process is no longer alive")
+        if abs(float(process.create_time()) - float(create_time)) > 0.001:
+            raise RuntimeError("OpenDataLoader hybrid manifest process create_time is stale")
+        if list(process.cmdline()) != argv:
+            raise RuntimeError(
+                "OpenDataLoader hybrid manifest argv does not match the live process"
+            )
+        owned = _owned_hybrid_listener_pids(psutil, process)
+    except RuntimeError:
+        raise
+    except Exception as exc:  # psutil's exception set is platform-specific
+        raise RuntimeError(
+            "OpenDataLoader hybrid manifest process ownership cannot be verified"
+        ) from exc
+    expected_listeners = sorted(set(listener_pids))
+    if not owned or owned != expected_listeners:
+        raise RuntimeError(
+            "OpenDataLoader hybrid manifest listener ownership does not match live process"
+        )
+    if _health_payload(f"{HYBRID_URL}/health") != {"status": "ok"}:
+        raise RuntimeError("OpenDataLoader hybrid manifest server is not ready")
+    run_seed = dict(payload)
+    del run_seed["run_id"]
+    expected_run_id = hashlib.sha256(
+        _canonical_json_bytes(run_seed, label="hybrid run seed") + b"\n"
+    ).hexdigest()
+    if run_id != expected_run_id:
+        raise RuntimeError("OpenDataLoader hybrid manifest run_id is tampered")
+
+    return {
+        "manifest_path": str(manifest_path.resolve()),
+        "manifest_sha256": hashlib.sha256(raw).hexdigest(),
+        "run_id": run_id,
+        "pid": pid,
+        "process_create_time": float(create_time),
+        "listener_pids": owned,
+        "versions": versions,
+        "config": dict(HYBRID_SERVER_CONFIG),
+    }
+
+
 def _build_result_unchecked(
     *,
     engine_version: str,
@@ -606,6 +828,7 @@ class OpenDataLoaderAdapter(Adapter):
         self.hybrid_fallback = bool(config.get("hybrid_fallback", False))
         self.include_header_footer = include_header_footer
         self._hardware: Literal["cpu"] = "cpu"
+        self._hybrid_evidence: dict[str, object] | None = None
 
     @classmethod
     def from_profile(cls, profile: EngineProfile) -> "OpenDataLoaderAdapter":
@@ -672,8 +895,19 @@ class OpenDataLoaderAdapter(Adapter):
                 "OpenDataLoader 2.5.0 cannot verify GPU device through its Java CLI "
                 "or hybrid /health endpoint"
             )
+        if self.profile == "scan":
+            self._hybrid_evidence = _validated_hybrid_manifest()
         self._hardware = "cpu"
         return "cpu"
+
+    def _refresh_hybrid_evidence(self) -> dict[str, object]:
+        try:
+            evidence = _validated_hybrid_manifest()
+        except Exception:
+            self._hybrid_evidence = None
+            raise
+        self._hybrid_evidence = evidence
+        return evidence
 
     @staticmethod
     def _odl_version() -> str:
@@ -695,6 +929,13 @@ class OpenDataLoaderAdapter(Adapter):
         return self._odl_version()
 
     def config_fingerprint(self) -> dict[str, object]:
+        if self.profile == "scan" and self._hybrid_evidence is not None:
+            try:
+                self._hybrid_evidence = _validated_hybrid_manifest()
+            except RuntimeError:
+                # Failure records must remain constructible and must not retain stale
+                # CPU ownership claims after the launcher evidence becomes invalid.
+                self._hybrid_evidence = None
         config = _plain(self.identity.config)
         assert isinstance(config, dict)
         fingerprint = {
@@ -702,13 +943,9 @@ class OpenDataLoaderAdapter(Adapter):
             "opendataloader_version": self._odl_version(),
             "profile_config_sha256": self.identity.profile_config_sha256,
             "hardware": "cpu",
-            "device": "cpu",
+            "device": "cpu" if self.profile != "scan" else "unverified",
             "hardware_evidence_version": 1,
-            "device_evidence": (
-                "java-cpu-only"
-                if self.profile != "scan"
-                else "hybrid-launcher-cuda-visible-devices-empty"
-            ),
+            "device_evidence": "java-cpu-only" if self.profile != "scan" else "none",
             "include_header_footer": self.include_header_footer,
             "image_output": "external",
             "image_format": "png",
@@ -719,6 +956,37 @@ class OpenDataLoaderAdapter(Adapter):
             fingerprint["table_method"] = self.table_method
         if self.reading_order is not None:
             fingerprint["reading_order"] = self.reading_order
+        if self.profile == "scan" and self._hybrid_evidence is not None:
+            evidence = self._hybrid_evidence
+            versions = evidence["versions"]
+            config_evidence = evidence["config"]
+            assert isinstance(versions, dict)
+            assert isinstance(config_evidence, dict)
+            fingerprint.update(
+                {
+                    "device": "cpu",
+                    "device_evidence": "owned-hybrid-launcher-manifest",
+                    "force_ocr": config_evidence["force_ocr"],
+                    "ocr_engine": config_evidence["ocr_engine"],
+                    "ocr_languages": list(config_evidence["ocr_languages"]),
+                    "cpu_enforcement": dict(config_evidence["device_enforcement"]),
+                    "cpu_enforcement_method": config_evidence[
+                        "device_enforcement_method"
+                    ],
+                    "opendataloader_version": versions["opendataloader-pdf"],
+                    "docling_version": versions["docling"],
+                    "easyocr_version": versions["easyocr"],
+                    "hybrid_server_versions": {
+                        name: versions[name]
+                        for name in ("fastapi", "python-multipart", "uvicorn")
+                    },
+                    "hybrid_manifest_sha256": evidence["manifest_sha256"],
+                    "hybrid_manifest_run_id": evidence["run_id"],
+                    "hybrid_process_pid": evidence["pid"],
+                    "hybrid_process_create_time": evidence["process_create_time"],
+                    "hybrid_listener_pids": list(evidence["listener_pids"]),
+                }
+            )
         return fingerprint
 
     @staticmethod
@@ -743,6 +1011,7 @@ class OpenDataLoaderAdapter(Adapter):
                 "include_header_footer": self.include_header_footer,
             }
             if self.profile == "scan":
+                self._refresh_hybrid_evidence()
                 environment = _plain(self.identity.environment)
                 assert isinstance(environment, dict)
                 server = environment["hybrid_server"]
@@ -763,7 +1032,11 @@ class OpenDataLoaderAdapter(Adapter):
                     "OpenDataLoader emitted malformed JSON"
                 ) from exc
             md_path = ra / f"{stem}.md"
-            raw_markdown_bytes = md_path.read_bytes() if md_path.exists() else b""
+            if not md_path.is_file():
+                raise AdapterOutputError(
+                    "OpenDataLoader Markdown output is missing"
+                )
+            raw_markdown_bytes = md_path.read_bytes()
             try:
                 markdown = raw_markdown_bytes.decode("utf-8")
             except UnicodeDecodeError as exc:

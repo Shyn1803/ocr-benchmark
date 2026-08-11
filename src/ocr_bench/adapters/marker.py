@@ -395,8 +395,21 @@ def build_result(
     except (AttributeError, KeyError, TypeError, ValueError) as exc:
         raise AdapterOutputError("Marker output cannot be mapped to canonical schema") from exc
 
+    page_ids = {int(page_id) for page_id in page_info}
+    emitted_blocks = [
+        block
+        for block in blocks
+        if page_index(block.id, block.page) in page_ids
+    ]
+    if len(emitted_blocks) != len(result.blocks):
+        raise AdapterOutputError(
+            "Marker trace mapping does not match emitted canonical blocks"
+        )
     trace = {
-        "blocks": {str(index): str(block.id) for index, block in enumerate(blocks)},
+        "blocks": {
+            str(index): str(block.id)
+            for index, block in enumerate(emitted_blocks)
+        },
         "schema_version": 1,
     }
     artifacts = [

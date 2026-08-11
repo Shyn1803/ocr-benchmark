@@ -14,6 +14,7 @@ from __future__ import annotations
 import ast
 import base64
 import io
+import json
 from pathlib import Path
 
 import pytest
@@ -783,6 +784,47 @@ def test_marker_raw_json_must_trace_the_chunks_being_normalized():
             config_fingerprint={"hardware": "cpu", "device": "cpu", "hardware_evidence_version": 1},
             raw_json_bytes=b'{"blocks":[]}',
         )
+
+
+def test_marker_trace_indexes_only_canonical_blocks_after_skips():
+    skipped = FakeBlock(
+        block_type="Text",
+        html="<p>skip</p>",
+        page=9,
+        bbox=[0, 0, 1, 1],
+        id="/page/9/Text/1",
+    )
+    emitted = FakeBlock(
+        block_type="Text",
+        html="<p>keep</p>",
+        page=0,
+        bbox=[0, 0, 1, 1],
+        id="/page/0/Text/2",
+    )
+    result = build_result(
+        engine_version="1.10.2",
+        doc_id="tai-lieu",
+        capabilities=MarkerAdapter.capabilities,
+        markdown="keep",
+        chunks=FakeChunks(
+            [skipped, emitted], {0: {"bbox": [0, 0, 100, 200]}}
+        ),
+        block_bboxes={},
+        config_fingerprint={"hardware": "cpu", "device": "cpu", "hardware_evidence_version": 1},
+        raw_json_bytes=(
+            b'{"blocks":[{"id":"/page/9/Text/1"},'
+            b'{"id":"/page/0/Text/2"}]}'
+        ),
+    )
+
+    trace = json.loads(
+        next(
+            artifact.data
+            for artifact in result.raw_artifacts
+            if artifact.name == "marker-map.json"
+        )
+    )
+    assert trace["blocks"] == {"0": "/page/0/Text/2"}
 
 
 # --------------------------------------------------------------------------
