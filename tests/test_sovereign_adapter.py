@@ -61,6 +61,27 @@ needs_be = pytest.mark.skipif(
 )
 
 
+@pytest.fixture(autouse=True)
+def _co_lap_trang_thai_toan_cuc():
+    """Trả `_SECRET_VALUES` và cache `.env` về đúng chỗ cũ sau mỗi test.
+
+    `_SECRET_VALUES` **chỉ lớn thêm** theo thiết kế (một profile không được làm mất khả
+    năng bịt của profile sau). Hệ quả trong test: một test seed chuỗi bí mật thì test
+    sau vẫn thấy nó, nên mọi khẳng định dạng `== 1` trở thành phụ thuộc thứ tự chạy —
+    xanh khi chạy riêng, đỏ khi chạy cả file, và không ai đọc ra vì sao.
+    """
+    with sov._SECRET_VALUES_LOCK:
+        anh_chup = set(sov._SECRET_VALUES)
+    cache_cu = sov._ENV_BE_CACHE
+    try:
+        yield
+    finally:
+        with sov._SECRET_VALUES_LOCK:
+            sov._SECRET_VALUES.clear()
+            sov._SECRET_VALUES.update(anh_chup)
+        sov._ENV_BE_CACHE = cache_cu
+
+
 def _settings(**kw):
     """Giả ``get_settings`` có ``@lru_cache`` y như bản thật (``config.py:319-321``)."""
     mac_dinh = {
@@ -593,6 +614,86 @@ def test_marker_probe_keeps_package_and_cache_signals_separate(
     assert state.runtime_device is None
 
 
+class _NoMinhBach:
+    """Đối tượng có `.device` và `.parameters` là property **ném**.
+
+    Không phải trường hợp bịa: predictor của Marker/Surya nạp lười, và một property
+    truy cập model chưa nạp (hoặc CUDA đã bị thu hồi) ném là chuyện bình thường.
+    """
+
+    @property
+    def device(self):
+        raise RuntimeError("thiết bị không đọc được")
+
+    @property
+    def parameters(self):
+        raise RuntimeError("model chưa nạp")
+
+
+class _LazyNoDict:
+    """Predictor nạp lười: chạm vào `.model` là **nạp model**."""
+
+    def __init__(self):
+        self.da_nap = False
+
+    def __getattr__(self, ten):
+        if ten == "model":
+            self.__dict__["da_nap"] = True
+            return NS(device="cuda:0")
+        raise AttributeError(ten)
+
+
+def test_model_ref_probe_stays_fail_closed_when_an_attribute_raises():
+    """Đầu dò thiết bị không được biến một tài liệu hỏng thành lượt chạy hỏng.
+
+    `marker_runtime_live()` được gọi từ `config_fingerprint()` **bên trong** except
+    handler của `execute()`. Ngoại lệ thoát ra từ đây không thành một dòng
+    `failed=True` mà giết cả lượt chạy 204 tài liệu — và thứ nó bảo vệ chỉ là *nhãn
+    thiết bị*, thông tin ít giá trị hơn nhiều so với 203 dòng còn lại.
+    """
+    assert sov._model_ref_devices(_NoMinhBach()) == set()
+    assert sov._model_ref_devices({"layout": _NoMinhBach()}) == set()
+    assert sov._model_ref_devices([_NoMinhBach(), NS(device="cpu")]) == {"cpu"}
+
+
+def test_model_ref_probe_does_not_load_a_lazy_model_to_read_its_device():
+    """Hỏi "model ở thiết bị nào" mà làm model được nạp là đã đổi thứ đang đo."""
+    predictor = _LazyNoDict()
+
+    assert sov._model_ref_devices({"layout": predictor}) == set()
+    assert predictor.da_nap is False
+
+
+def test_runtime_live_probe_stays_fail_closed_when_model_refs_raise(monkeypatch):
+    service = NS(_model_refs={"layout": _NoMinhBach()}, _device_str=None)
+    # Đầu dò đọc `sys.modules` chứ không import — nên test cũng phải đặt vào đúng đó.
+    monkeypatch.setitem(sys.modules, "app.services.marker_ocr_service", service)
+
+    assert sov.marker_runtime_live() == (True, None)
+
+
+def test_runtime_state_probe_stays_fail_closed_when_model_refs_raise(monkeypatch):
+    class _Service:
+        @staticmethod
+        def _surya_models_cached():
+            return True
+
+        @property
+        def _model_refs(self):
+            raise RuntimeError("BE sập giữa chừng")
+
+        _device_str = None
+
+    monkeypatch.setattr(sov, "_load_marker_service", lambda: _Service(), raising=False)
+    monkeypatch.setattr(sov.importlib.util, "find_spec", lambda name: None)
+
+    state = sov.marker_runtime_state()
+
+    assert state.runtime_loaded is False
+    assert state.runtime_device is None
+    assert state.model_cache_ready is True
+
+
 def test_sovereign_pipeline_dynamic_import_creates_no_bytecode(tmp_path, monkeypatch):
     module_name = "sovereign_be_dynamic_fixture"
     module_file = tmp_path / f"{module_name}.py"
@@ -799,14 +900,24 @@ def test_preflight_still_raises_its_own_environment_error_unchanged(monkeypatch)
 
     `configure_hardware` và runner bắt `ProfileEnvironmentError` theo kiểu; đổi kiểu
     thì cổng "profile này không khớp runtime" im lặng biến mất.
+
+    Lỗi phải được ném **từ trong** `_boc_loi_be()` mới kiểm được điều đó. Bản trước
+    dựng lỗi ở `_validate_marker_runtime()`, tức hai dòng *trước* khối được bọc — nó
+    xanh kể cả khi `_LOI_NOI_BO` bị xoá sạch, nên nó chứng minh đúng con số không.
     """
     adapter = SovereignAdapter.from_profile(CATALOG["sovereign_scan"])
     monkeypatch.setattr(
         sov, "marker_runtime_state", lambda: _marker_state(
-            package_available=False, model_cache_ready=False
+            package_available=True, model_cache_ready=True
         )
     )
-    with pytest.raises(sov.ProfileEnvironmentError):
+
+    def nap_hong(**_kwargs):
+        raise sov.ProfileEnvironmentError("runtime không khớp profile")
+
+    monkeypatch.setattr(sov, "nap_pipeline", nap_hong)
+
+    with pytest.raises(sov.ProfileEnvironmentError, match="runtime không khớp profile"):
         adapter.preflight()
 
 
@@ -872,3 +983,108 @@ def test_failure_classification_never_raises_from_a_hostile_engine():
     from ocr_bench.adapters.base import classify_exception  # noqa: PLC0415
 
     assert classify_exception(NoDoc()) is FailureKind.ENGINE_ERROR
+
+
+# --------------------------------------------------------------------------
+# Ngưỡng độ dài, parser `.env`, cổng thiết bị lúc chạy
+# --------------------------------------------------------------------------
+
+
+def test_short_secret_is_redacted_from_errors_but_not_from_the_scored_text(
+    tmp_path, monkeypatch
+):
+    """Ngưỡng 12 ký tự chỉ áp cho văn bản được chấm, không áp lúc thu thập.
+
+    `.env` thật của BE có `BIZFLY_KEY` 10 ký tự. Áp ngưỡng lúc thu thập thì nó không
+    bao giờ vào bộ thay-thế, nên nó lọt ra **cả** traceback lẫn thông điệp lỗi — nơi
+    bịt thừa không tốn gì. Áp ngưỡng ở `fullText` thì ngược lại: thay một chuỗi 3 ký tự
+    khỏi văn bản chấm điểm là làm tụt accuracy vì lý do không ai nhìn thấy.
+    """
+    ngan = "bf-key-99"  # 9 ký tự, dưới ngưỡng
+    monkeypatch.setenv("BIZFLY_KEY", ngan)
+
+    adapter = _profile_adapter("sovereign_default", {"success": True, "fullText": f"a {ngan} b"})
+    assert ngan in adapter._sensitive_values, "phải được thu thập dù ngắn"
+
+    ket = adapter.execute(_pdf(tmp_path))
+    assert ngan in (ket.text_md or ""), "văn bản chấm điểm không được đụng vào"
+    assert ket.config_fingerprint["scored_text_redactions"] == 0
+
+    assert ngan not in sov._sanitize_runtime_text(f"boom {ngan}", adapter._sensitive_values)
+
+
+def test_redaction_count_is_zero_on_the_failure_path(tmp_path, monkeypatch):
+    """Không có văn bản nào được chấm thì không có điểm nào bị lớp bịt làm giảm."""
+    secret = "opaque-failure-path-secret-70118"
+    monkeypatch.setenv("OPENROUTER_API_KEY", secret)
+    adapter = _profile_adapter(
+        "sovereign_default",
+        {"success": False, "error_code": "ocr.failed", "fullText": f"x {secret} y"},
+    )
+    ket = adapter.execute(_pdf(tmp_path))
+    assert ket.failed is True
+    assert ket.config_fingerprint["scored_text_redactions"] == 0
+
+
+def test_env_parser_reaches_the_values_a_naive_split_would_miss(tmp_path, monkeypatch):
+    """Ba dạng dòng dotenv hợp lệ; hụt dạng nào là chuỗi đó **lọt ra** artifact."""
+    goc = tmp_path / "be"
+    goc.mkdir()
+    (goc / ".env").write_text(
+        "\n".join(
+            (
+                "export API_KEY=ex-port-1234",
+                "GROQ_TOKEN=gq-5678   # ghi chú cuối dòng",
+                'DB_PASSWORD="quo-ted-90"',
+                "HASH_SECRET=pass#word-11",
+            )
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("SOVEREIGN_BE_PATH", str(goc))
+    monkeypatch.setattr(sov, "_ENV_BE_CACHE", None, raising=False)
+
+    doc = sov._doc_env_be()
+    assert doc["API_KEY"] == "ex-port-1234", "`export ` phải bị gỡ khỏi tên"
+    assert doc["GROQ_TOKEN"] == "gq-5678", "chú thích cuối dòng không phải một phần khoá"
+    assert doc["DB_PASSWORD"] == "quo-ted-90"
+    assert doc["HASH_SECRET"] == "pass#word-11", "`#` không có khoảng trắng trước là ký tự thường"
+
+
+def test_env_file_is_read_once_not_once_per_document(tmp_path, monkeypatch):
+    """`thu_thap_bi_mat()` chạy vài lần mỗi tài liệu; mỗi lần đọc lại là đọc khoá thật."""
+    goc = tmp_path / "be"
+    goc.mkdir()
+    (goc / ".env").write_text("API_KEY=abcdefghijkl", encoding="utf-8")
+    monkeypatch.setenv("SOVEREIGN_BE_PATH", str(goc))
+    monkeypatch.setattr(sov, "_ENV_BE_CACHE", None, raising=False)
+
+    dem = {"n": 0}
+    that = Path.read_text
+
+    def demdoc(self, *a, **k):
+        if self.name == ".env":
+            dem["n"] += 1
+        return that(self, *a, **k)
+
+    monkeypatch.setattr(Path, "read_text", demdoc)
+    for _ in range(5):
+        sov._doc_env_be()
+    assert dem["n"] == 1
+
+
+def test_secret_inventory_skips_values_that_would_corrupt_the_score(monkeypatch):
+    """Tên khớp `key` không có nghĩa giá trị là khoá — `SCHEDULER_HOT_KEYWORDS` là ví dụ thật."""
+    monkeypatch.setenv("SCHEDULER_HOT_KEYWORDS", "hợp đồng, quyết định, công văn")
+    monkeypatch.setenv("OPENROUTER_API_KEY", "sk-real-token-4417")
+    bi_mat = sov.thu_thap_bi_mat()
+    assert "sk-real-token-4417" in bi_mat
+    assert "hợp đồng, quyết định, công văn" not in bi_mat
+
+
+def test_run_refuses_to_publish_a_cpu_claim_next_to_a_non_cpu_runtime(tmp_path, monkeypatch):
+    """Thiết bị đọc lúc chạy khác CPU → dừng, không ghi ra dòng khai `device: "cpu"`."""
+    adapter = _profile_adapter("sovereign_scan", {"success": True, "fullText": "x"})
+    monkeypatch.setattr(sov, "marker_runtime_live", lambda: (True, "cuda:0"))
+    with pytest.raises(sov.ProfileEnvironmentError, match="cuda:0"):
+        adapter.run(_pdf(tmp_path))

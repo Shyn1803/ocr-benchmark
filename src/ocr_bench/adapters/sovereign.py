@@ -159,9 +159,14 @@ _SECRET_NAME_HINTS = (
     "dsn",
 )
 
-#: Giá trị ngắn hơn ngưỡng này không được thay khớp-chính-xác. `POSTGRES_PASSWORD=abc`
+#: Ngưỡng này chỉ áp cho **văn bản được chấm điểm** (`fullText`). `POSTGRES_PASSWORD=abc`
 #: mà đem thay mọi "abc" trong văn bản trích ra thì chỉ số chính xác tụt đi vì lý do
 #: không ai nhìn thấy — một kiểu hỏng tệ hơn cả rò rỉ, vì nó im lặng và làm sai số liệu.
+#:
+#: Nó **không** được áp lúc thu thập. Áp ở đó thì một khoá ngắn hơn 12 ký tự không bao
+#: giờ vào được bộ thay-thế, nên nó cũng không bị bịt trong traceback, thông điệp lỗi hay
+#: fingerprint — những chỗ mà bịt thừa hoàn toàn vô hại. `.env` thật của BE có
+#: `BIZFLY_KEY` 10 ký tự, tức đúng trường hợp này không phải giả định.
 _DO_DAI_BI_MAT_TOI_THIEU = 12
 
 _SECRET_VALUES_LOCK = threading.Lock()
@@ -173,26 +178,82 @@ def _co_ve_bi_mat(ten: str) -> bool:
     return ten in _SECRET_ENV_NAMES or any(g in t for g in _SECRET_NAME_HINTS)
 
 
+def _tach_gia_tri_env(tho: str) -> str:
+    """Gỡ nháy và chú thích cuối dòng theo đúng quy ước dotenv.
+
+    Parser ngây thơ (`strip().strip("'\"")`) sai ở ba chỗ, và cả ba đều làm **hụt**
+    chuỗi cần bịt chứ không thừa: `export A=b` cho tên `export A` nên `_co_ve_bi_mat`
+    không nhận ra; `A=b   # ghi chú` cho giá trị `b   # ghi chú` nên chuỗi thật `b`
+    không bao giờ khớp; `A="b"c` bị cắt cả hai đầu. Hụt một chuỗi ở đây nghĩa là nó
+    không nằm trong bộ thay-thế, tức nó **lọt ra** artifact.
+    """
+    tho = tho.strip()
+    if tho[:1] in ("'", '"'):
+        dau = tho[0]
+        het = tho.find(dau, 1)
+        if het != -1:
+            return tho[1:het]
+        return tho[1:]
+    # Chỉ cắt `#` khi có khoảng trắng đứng trước: `pass#word` là mật khẩu hợp lệ.
+    vi_tri = tho.find(" #")
+    if vi_tri == -1:
+        vi_tri = tho.find("	#")
+    if vi_tri != -1:
+        tho = tho[:vi_tri]
+    return tho.strip()
+
+
+_ENV_BE_CACHE: dict[str, str] | None = None
+
+
+def _dang_giong_bi_mat(gia_tri: str) -> bool:
+    """Loại những giá trị mà thay đi thì hỏng số liệu chứ không bảo vệ được gì.
+
+    Tên biến khớp `_SECRET_NAME_HINTS` không có nghĩa giá trị là khoá: gợi ý `key` khớp
+    luôn cả `SCHEDULER_HOT_KEYWORDS`, mà giá trị của biến đó là một danh sách từ khoá
+    tiếng Việt ngăn cách bởi dấu phẩy. Đem một cụm từ tự nhiên thay khỏi `fullText` là
+    làm sai điểm accuracy vì một lý do không liên quan gì tới OCR. Khoá thật là token
+    ASCII liền mạch; ràng buộc này cắt đúng lớp giá trị nguy hiểm mà không bỏ khoá nào.
+
+    Hôm nay chưa có va chạm nào (0/217 file ground-truth), nên đây là chặn trước.
+    """
+    if any(k.isspace() for k in gia_tri):
+        return False
+    return gia_tri.isascii()
+
+
 def _doc_env_be() -> dict[str, str]:
     """Đọc `.env` của BE **chỉ để biết chuỗi nào cần bịt**. Không ghi, không lan ra.
 
     Giá trị vào thẳng bộ thay-thế trong tiến trình và không bao giờ được ghi ra
     artifact, log hay fingerprint. Không đọc thì `_sensitive_values` rỗng trong lượt
     chạy thật, vì BE ghim `.env` theo đường dẫn chứ không theo `os.environ`.
+
+    Kết quả được nhớ: `thu_thap_bi_mat()` chạy 2-3 lần cho mỗi tài liệu, tức ~600 lần
+    đọc đĩa cho một lượt 204 tài liệu — và mỗi lần lại đọc một file chứa khoá thật vào
+    bộ nhớ. `.env` không đổi giữa chừng lượt chạy; đọc lại không cho thêm thông tin gì.
     """
+    global _ENV_BE_CACHE
+    if _ENV_BE_CACHE is not None:
+        return _ENV_BE_CACHE
     ra: dict[str, str] = {}
     try:
         p = duong_dan_be() / ".env"
         if not p.is_file():
+            _ENV_BE_CACHE = ra
             return ra
         for dong in p.read_text(encoding="utf-8", errors="replace").splitlines():
             dong = dong.strip()
             if not dong or dong.startswith("#") or "=" not in dong:
                 continue
             ten, _, gia_tri = dong.partition("=")
-            ra[ten.strip()] = gia_tri.strip().strip("'\"")
+            ten = ten.strip()
+            if ten.startswith("export "):
+                ten = ten[len("export ") :].strip()
+            ra[ten] = _tach_gia_tri_env(gia_tri)
     except BaseException:  # noqa: BLE001 - thu thập bí mật không được làm hỏng lượt chạy
         return {}
+    _ENV_BE_CACHE = ra
     return ra
 
 
@@ -213,7 +274,7 @@ def thu_thap_bi_mat() -> tuple[str, ...]:
     ung_vien += [v for t, v in _doc_env_be().items() if _co_ve_bi_mat(t)]
     with _SECRET_VALUES_LOCK:
         for gia_tri in ung_vien:
-            if gia_tri and len(gia_tri) >= _DO_DAI_BI_MAT_TOI_THIEU:
+            if gia_tri and _dang_giong_bi_mat(gia_tri):
                 _SECRET_VALUES.add(gia_tri)
         return tuple(sorted(_SECRET_VALUES, key=len, reverse=True))
 
@@ -409,18 +470,34 @@ def _model_ref_devices(value: object) -> set[str]:
             continue
         seen.add(marker)
         giu.append(current)
-        if (device := _normalize_device(getattr(current, "device", None))) is not None:
+        # `.device` và `.parameters` trên đối tượng lạ có thể là property — property nào
+        # cũng có thể ném. Hai dòng này trước đây là `getattr` trần trong khi nhánh
+        # duyệt xuống ở dưới đã được bọc, tức đầu dò chỉ fail-closed một nửa. Nửa còn
+        # lại đủ để giết cả lượt chạy 204 tài liệu, vì `marker_runtime_live()` được gọi
+        # từ `config_fingerprint()` **bên trong** except handler của `execute()`: một
+        # ngoại lệ ở đây không thành một dòng `failed=True` mà thành lỗi thoát ra ngoài.
+        try:
+            raw_device = getattr(current, "device", None)
+        except BaseException:  # noqa: BLE001 - đầu dò phải fail-closed
+            raw_device = None
+        if (device := _normalize_device(raw_device)) is not None:
             devices.add(device)
-        parameters = getattr(current, "parameters", None)
+        try:
+            parameters = getattr(current, "parameters", None)
+        except BaseException:  # noqa: BLE001 - đầu dò phải fail-closed
+            parameters = None
         if callable(parameters):
             try:
                 first = next(iter(parameters()), None)
             except BaseException:  # probe must stay fail-closed and read-only
                 first = None
-            if first is not None and (
-                device := _normalize_device(getattr(first, "device", None))
-            ) is not None:
-                devices.add(device)
+            if first is not None:
+                try:
+                    raw = getattr(first, "device", None)
+                except BaseException:  # noqa: BLE001 - đầu dò phải fail-closed
+                    raw = None
+                if (device := _normalize_device(raw)) is not None:
+                    devices.add(device)
         if depth >= 2:
             continue
         if isinstance(current, Mapping):
@@ -431,11 +508,18 @@ def _model_ref_devices(value: object) -> set[str]:
             # `_model_refs` thật là dict tên → **predictor**, và predictor giữ model ở
             # thuộc tính chứ không phải phần tử. Chỉ duyệt Mapping/list thì vòng lặp
             # dừng ngay tại predictor và không bao giờ nhìn thấy device thật.
+            #
+            # Đọc qua `vars()` chứ không phải `getattr()`: `getattr` kích hoạt property
+            # và `__getattr__`, mà đúng những thuộc tính này ở predictor thường là
+            # lazy-load — đầu dò hỏi "model đang ở thiết bị nào" sẽ **nạp model** để trả
+            # lời. Nạp model từ trong đầu dò là thay đổi trạng thái đang đo và có thể
+            # ghi cache vào BE read-only. `vars()` chỉ đọc `__dict__`, không chạy code lạ.
+            try:
+                khe = vars(current)
+            except TypeError:  # đối tượng không có __dict__ (slots, builtin)
+                khe = {}
             for ten in ("model", "models", "predictor", "processor"):
-                try:
-                    nested = getattr(current, ten, None)
-                except BaseException:  # noqa: BLE001 - probe phải fail-closed
-                    nested = None
+                nested = khe.get(ten)
                 if nested is not None:
                     pending.append((nested, depth + 1))
     return devices
@@ -464,13 +548,23 @@ def marker_runtime_state() -> MarkerRuntimeState:
             cache_ready = bool(service._surya_models_cached())
         except BaseException:
             cache_ready = False
-        model_refs = getattr(service, "_model_refs", None)
-        configured_device = _normalize_device(
-            getattr(service, "_device_str", None)
-        )
-        model_devices = (
-            _model_ref_devices(model_refs) if model_refs is not None else set()
-        )
+        # Cùng lý do như trong `_model_ref_devices`: ba dòng này đọc thuộc tính của một
+        # module BE mà ta không sở hữu. Không bọc thì một property ném ở đây làm hỏng
+        # preflight của cả profile, và thứ nó bảo vệ chỉ là *nhãn thiết bị*.
+        try:
+            model_refs = getattr(service, "_model_refs", None)
+        except BaseException:  # noqa: BLE001 - đầu dò phải fail-closed
+            model_refs = None
+        try:
+            configured_device = _normalize_device(getattr(service, "_device_str", None))
+        except BaseException:  # noqa: BLE001 - đầu dò phải fail-closed
+            configured_device = None
+        try:
+            model_devices = (
+                _model_ref_devices(model_refs) if model_refs is not None else set()
+            )
+        except BaseException:  # noqa: BLE001 - đầu dò phải fail-closed
+            model_devices = set()
 
     runtime_loaded = model_refs is not None or configured_device is not None
     observed_devices = set(model_devices)
@@ -499,14 +593,27 @@ def marker_runtime_live() -> tuple[bool, str | None]:
     trường mang tên "runtime" nhưng không bao giờ quan sát runtime. Ở đây chỉ đọc hai
     thuộc tính module — không nạp model, không đụng vào cache.
     """
+    # Đọc `sys.modules` chứ không `_load_marker_service()`: hàm này chạy **một lần cho
+    # mỗi tài liệu** qua `config_fingerprint()`. Module chưa nằm trong `sys.modules`
+    # nghĩa là chưa ai nạp Marker, tức runtime chắc chắn chưa sống — đi import để xác
+    # nhận điều đó vừa thừa vừa là tác dụng phụ (chèn `sys.path`, chạy code BE) trong
+    # một đầu dò chỉ được phép quan sát.
+    service = sys.modules.get("app.services.marker_ocr_service")
+    if service is None:
+        return (False, None)
     try:
         with _be_read_only():
-            service = _load_marker_service()
             model_refs = getattr(service, "_model_refs", None)
             device = _normalize_device(getattr(service, "_device_str", None))
+            # `_model_ref_devices` nằm **trong** cả `try` lẫn `_be_read_only()`. Trước
+            # đây nó ở ngoài cả hai: ngoài `try` nghĩa là một property ném trong lúc
+            # duyệt model ref sẽ thoát ra khỏi đầu dò — và vì hàm này được gọi từ
+            # `config_fingerprint()` bên trong except handler của `execute()`, nó biến
+            # một tài liệu hỏng thành một lượt chạy hỏng. Ngoài `_be_read_only()` nghĩa
+            # là một lazy import trong lúc duyệt có thể ghi `.pyc` vào BE read-only.
+            devices = set(_model_ref_devices(model_refs)) if model_refs is not None else set()
     except BaseException:  # noqa: BLE001 - probe không được phép làm hỏng lượt chạy
         return (False, None)
-    devices = set(_model_ref_devices(model_refs)) if model_refs is not None else set()
     if device is not None:
         devices.add(device)
     if len(devices) == 1:
@@ -615,16 +722,21 @@ def _be_git_metadata() -> dict[str, object]:
         return {"commit": "unknown", "dirty": None}
 
 
-def _sanitize_dem(value: str, exact_secrets: tuple[str, ...]) -> tuple[str, int]:
+def _sanitize_dem(
+    value: str, exact_secrets: tuple[str, ...], *, floor: int = 0
+) -> tuple[str, int]:
     """Làm sạch và **đếm** số lần thay khớp-chính-xác.
 
     Đếm để chỗ gọi có thể nói ra. Thay chuỗi trong `text_md` là can thiệp vào chính
     thứ đang được chấm điểm; im lặng thì điểm tụt mà không có dấu vết nào giải thích.
+
+    `floor` mặc định 0: traceback và thông điệp lỗi bịt **mọi** bí mật, kể cả ngắn, vì
+    ở đó bịt thừa không tốn gì. Chỉ chỗ gọi trên văn bản được chấm mới nâng ngưỡng lên.
     """
     sanitized = sanitize_secret_text(value) or ""
     dem = 0
     for secret in sorted(set(exact_secrets), key=len, reverse=True):
-        if secret and len(secret) >= _DO_DAI_BI_MAT_TOI_THIEU and secret in sanitized:
+        if secret and len(secret) >= floor and secret in sanitized:
             dem += sanitized.count(secret)
             sanitized = sanitized.replace(secret, "<redacted>")
     return sanitized, dem
@@ -924,6 +1036,23 @@ class SovereignAdapter(Adapter):
                 f"trần tổng thời gian: {self._tong_giay:.1f}s/{self.tran_giay_tong:.1f}s"
             )
 
+    def _kiem_thiet_bi_song(self) -> None:
+        """Chặn khi thiết bị **đọc lúc chạy** không phải CPU.
+
+        `_validate_marker_runtime()` chỉ soi ảnh chụp preflight, mà preflight luôn chạy
+        trước tài liệu đầu tiên — lúc đó Marker chưa nạp model nên `runtime_device` gần
+        như luôn `None` và cổng đó không có gì để chặn. Model nạp *trong* lượt chạy.
+        Không có kiểm tra ở đây thì `marker_runtime_device: "cuda:0"` nằm ngay cạnh
+        `device: "cpu"` trên đủ 204 dòng đã công bố, và cột `device` là cột người đọc
+        tin — đúng cái mà "không khai CPU/GPU nếu không chứng minh được" cấm.
+        """
+        _, thiet_bi = marker_runtime_live()
+        if thiet_bi is not None and not thiet_bi.startswith("cpu"):
+            raise ProfileEnvironmentError(
+                f"{self.name}: marker_runtime_device={thiet_bi!r} lúc chạy, "
+                "trong khi profile khai device='cpu'. Dừng thay vì công bố sai."
+            )
+
     def _kiem_tran_sau(self, giay: float, doc_id: str) -> None:
         if giay > self.tran_giay_moi_tai_lieu:
             raise VuotTran(
@@ -955,13 +1084,20 @@ class SovereignAdapter(Adapter):
         self._da_chay += 1
         self._tong_giay += giay
         self._kiem_tran_sau(giay, doc_path.stem)
+        self._kiem_thiet_bi_song()
 
         van_ban = ket.get("fullText") or ""
         if not isinstance(van_ban, str):
             van_ban = str(van_ban)
-        van_ban, so_lan_bit = _sanitize_dem(van_ban, self._sensitive_values)
-        self._text_redactions = so_lan_bit
+        # Chỉ **ở đây** mới nâng ngưỡng: đây là văn bản đem đi chấm điểm.
+        van_ban, so_lan_bit = _sanitize_dem(
+            van_ban, self._sensitive_values, floor=_DO_DAI_BI_MAT_TOI_THIEU
+        )
         thanh_cong = bool(ket.get("success"))
+        # Chỉ đếm khi văn bản **thật sự được chấm**. Trên nhánh thất bại `text_md` là
+        # `None`, không có điểm nào để lớp bịt làm giảm — đếm ở đó thì tên trường nói
+        # một đằng và con số nói một nẻo.
+        self._text_redactions = so_lan_bit if thanh_cong else 0
         raw_bytes = _canonical_response_bytes(thanh_cong, van_ban)
         error = None
         if not thanh_cong:
