@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import dataclasses
 import json
+import os
 import sys
 from collections.abc import Mapping, Sequence
 from datetime import datetime, timezone
@@ -14,12 +15,14 @@ from typing import Any, Literal
 import ocr_bench  # noqa: F401 -- import registers adapters
 from ocr_bench import registry
 from ocr_bench.prediction import (
+    PredictionSchemaError,
     load_prediction,
     prediction_path,
     save_prediction,
 )
 from ocr_bench.preflight import (
     CACHE_IDENTITY_KEY,
+    DatasetDocument,
     PreflightContext,
     PreflightError,
     build_cache_identity,
@@ -52,28 +55,12 @@ def discover_documents(
     *,
     limit: int | None = None,
     only: str | None = None,
-) -> list[Path]:
-    """Resolve checked PDFs from the legacy checksum manifest deterministically.
-
-    Task 7 can replace this boundary when its unified JSON dataset manifest lands.
-    """
-    del manifest_path  # existence/content is validated independently by preflight
-    checksums = Path(repo_root) / "checksums.sha256"
-    docs: list[Path] = []
-    for raw_line in checksums.read_text(encoding="utf-8-sig").splitlines():
-        line = raw_line.strip()
-        if not line or line.startswith("#"):
-            continue
-        parts = line.split(maxsplit=1)
-        if len(parts) != 2 or not parts[1].lower().endswith(".pdf"):
-            continue
-        path = (Path(repo_root) / parts[1].strip()).resolve()
-        if path.is_file():
-            docs.append(path)
-    docs.sort(key=lambda path: path.relative_to(repo_root).as_posix())
+) -> list[DatasetDocument]:
+    """Select only verified rows from the supplied dataset manifest."""
+    docs = list(verify_dataset_manifest(manifest_path, repo_root))
     if only:
         requested = set(_split_csv(only))
-        by_stem = {doc.stem: doc for doc in docs}
+        by_stem = {doc.doc_id: doc for doc in docs}
         missing = sorted(requested - set(by_stem))
         if missing:
             raise PreflightError(f"--only không có trong dataset: {', '.join(missing)}")
@@ -84,13 +71,6 @@ def discover_documents(
         docs = docs[:limit]
     if not docs:
         raise PreflightError("dataset manifest không trỏ tới PDF nào tồn tại")
-    duplicate_stems = sorted(
-        {doc.stem for doc in docs if sum(other.stem == doc.stem for other in docs) > 1}
-    )
-    if duplicate_stems:
-        raise PreflightError(
-            "doc_id trùng giữa các PDF: " + ", ".join(duplicate_stems[:5])
-        )
     return docs
 
 
@@ -101,7 +81,46 @@ def attach_cache_identity(
     fingerprint = dict(result.config_fingerprint)
     fingerprint[CACHE_IDENTITY_KEY] = dict(identity)
     fingerprint["profile_config_sha256"] = identity["profile_config_sha256"]
+    fingerprint["hardware"] = identity["hardware"]
+    fingerprint["device"] = identity["hardware"]
     return dataclasses.replace(result, config_fingerprint=fingerprint)
+
+
+def configure_process_hardware(hardware: Literal["cpu", "gpu"]) -> None:
+    """Set process-wide hardware intent before importing/constructing an engine."""
+    previous = os.environ.get("OCR_BENCH_HARDWARE")
+    if hardware == "cpu":
+        os.environ["CUDA_VISIBLE_DEVICES"] = ""
+    elif previous == "cpu" and os.environ.get("CUDA_VISIBLE_DEVICES") == "":
+        os.environ.pop("CUDA_VISIBLE_DEVICES", None)
+    os.environ["OCR_BENCH_HARDWARE"] = hardware
+
+
+def _configure_adapter_hardware(
+    profile: EngineProfile,
+    adapter: Any,
+    hardware: Literal["cpu", "gpu"],
+    mode: Mode,
+) -> None:
+    configure = getattr(adapter, "configure_hardware", None)
+    if not callable(configure):
+        if mode == "publication":
+            raise PreflightError(
+                f"{profile.name}: publication adapter thiếu configure_hardware(hardware)"
+            )
+        return
+    resolved = configure(hardware)
+    if resolved != hardware:
+        raise PreflightError(
+            f"{profile.name}: configure_hardware({hardware!r}) trả device={resolved!r}"
+        )
+    fingerprint = adapter.config_fingerprint()
+    for key in ("hardware", "device"):
+        claimed = fingerprint.get(key)
+        if claimed is not None and claimed != hardware:
+            raise PreflightError(
+                f"{profile.name}: adapter fingerprint {key}={claimed!r}, cần {hardware!r}"
+            )
 
 
 def _normalize_profile_identity(
@@ -109,15 +128,16 @@ def _normalize_profile_identity(
     profile: EngineProfile,
     *,
     doc: Path,
+    doc_id: str,
     engine_version: str,
 ) -> OcrResult:
     if result.engine != profile.name:
         raise PreflightError(
             f"{doc}: adapter trả engine={result.engine!r}, cần {profile.name!r}"
         )
-    if result.doc_id != doc.stem:
+    if result.doc_id not in {doc_id, doc.stem}:
         raise PreflightError(
-            f"{doc}: adapter trả doc_id={result.doc_id!r}, cần {doc.stem!r}"
+            f"{doc}: adapter trả doc_id={result.doc_id!r}, cần {doc_id!r}"
         )
     if result.engine_version != engine_version:
         raise PreflightError(
@@ -126,6 +146,7 @@ def _normalize_profile_identity(
         )
     return dataclasses.replace(
         result,
+        doc_id=doc_id,
         engine_family=profile.family,
         profile=profile.profile,
     )
@@ -136,6 +157,7 @@ def _verify_cached_result(
     profile: EngineProfile,
     *,
     doc: Path,
+    doc_id: str,
     engine_version: str,
 ) -> None:
     """Verify prediction payload identity independently of its embedded cache key."""
@@ -143,56 +165,113 @@ def _verify_cached_result(
         "engine": profile.name,
         "engine_family": profile.family,
         "profile": profile.profile,
-        "doc_id": doc.stem,
+        "doc_id": doc_id,
         "engine_version": engine_version,
     }
     for field, expected_value in expected.items():
         actual_value = getattr(cached, field)
         if actual_value != expected_value:
             raise PreflightError(
-                f"{profile.name}/{doc.stem}: cached {field}={actual_value!r}, "
+                f"{profile.name}/{doc_id}: cached {field}={actual_value!r}, "
                 f"cần {expected_value!r}"
             )
     verify_fingerprint(profile, cached.config_fingerprint)
 
 
+def _verify_result_hardware(
+    profile: EngineProfile,
+    result: OcrResult,
+    hardware: Literal["cpu", "gpu"],
+    *,
+    require_recorded: bool = False,
+) -> None:
+    for key in ("hardware", "device"):
+        claimed = result.config_fingerprint.get(key)
+        if claimed is None and require_recorded:
+            raise PreflightError(
+                f"{profile.name}: cached fingerprint thiếu {key}={hardware!r}"
+            )
+        if claimed is not None and claimed != hardware:
+            raise PreflightError(
+                f"{profile.name}: result fingerprint {key}={claimed!r}, cần {hardware!r}"
+            )
+
+
+def _verify_publication_perf(profile: EngineProfile, result: OcrResult) -> None:
+    missing = [
+        field
+        for field in ("seconds", "peak_rss_mb", "rss_scope")
+        if getattr(result, field) is None
+    ]
+    if missing:
+        raise PreflightError(
+            f"{profile.name}/{result.doc_id}: publication thiếu perf {', '.join(missing)}"
+        )
+
+
 def run_profile_predictions(
     profile: EngineProfile,
     adapter: Any,
-    docs: Sequence[Path],
+    docs: Sequence[Path | DatasetDocument],
     output_root: Path,
     *,
     hardware: Literal["cpu", "gpu"],
     mode: Mode,
     refresh: bool = False,
+    hardware_configured: bool = False,
 ) -> list[OcrResult]:
     """Run/resume one profile; publication cache drift is always fatal."""
     if mode == "publication" and refresh:
         raise PreflightError("publication không cho phép refresh cache")
+    if not hardware_configured:
+        _configure_adapter_hardware(profile, adapter, hardware, mode)
     engine_version = adapter.version()
     verify_fingerprint(profile, adapter.config_fingerprint())
     results: list[OcrResult] = []
-    for doc in docs:
+    for item in docs:
+        if isinstance(item, DatasetDocument):
+            doc = item.path
+            doc_id = item.doc_id
+            pdf_sha256 = item.pdf_sha256
+        else:
+            doc = Path(item)
+            doc_id = doc.stem
+            pdf_sha256 = None
         expected = build_cache_identity(
             doc,
             profile,
             engine_version=engine_version,
             hardware=hardware,
+            doc_id=doc_id,
+            pdf_sha256=pdf_sha256,
         )
-        path = prediction_path(output_root, profile.name, doc.stem)
+        path = prediction_path(output_root, profile.name, doc_id)
         if path.is_file() and not refresh:
-            cached = load_prediction(path)
             try:
+                cached = load_prediction(path)
                 _verify_cached_result(
                     cached,
                     profile,
                     doc=doc,
+                    doc_id=doc_id,
                     engine_version=engine_version,
                 )
                 verify_cached_identity(profile, cached.config_fingerprint, expected)
-            except PreflightError:
+                _verify_result_hardware(
+                    profile,
+                    cached,
+                    hardware,
+                    require_recorded=mode == "publication",
+                )
                 if mode == "publication":
-                    raise
+                    _verify_publication_perf(profile, cached)
+            except (PredictionSchemaError, PreflightError, OSError, ValueError) as exc:
+                if mode == "publication":
+                    if isinstance(exc, PreflightError):
+                        raise
+                    raise PreflightError(
+                        f"{path}: publication cache không hợp lệ: {exc}"
+                    ) from None
             else:
                 results.append(cached)
                 continue
@@ -201,9 +280,13 @@ def run_profile_predictions(
             result,
             profile,
             doc=doc,
+            doc_id=doc_id,
             engine_version=engine_version,
         )
         verify_fingerprint(profile, result.config_fingerprint)
+        _verify_result_hardware(profile, result, hardware)
+        if mode == "publication":
+            _verify_publication_perf(profile, result)
         result = attach_cache_identity(result, expected)
         save_prediction(result, output_root)
         results.append(result)
@@ -251,7 +334,7 @@ def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
         catalog = load_profile_catalog(PROFILE_CATALOG)
-        requested = sorted(catalog) if args.profiles is None else _split_csv(args.profiles)
+        requested = list(catalog) if args.profiles is None else _split_csv(args.profiles)
         selected = verify_profile_selection(catalog, requested, mode=args.mode)
 
         dataset_manifest = args.dataset_manifest.resolve()
@@ -273,23 +356,24 @@ def main(argv: list[str] | None = None) -> int:
                 dataset_validator=verify_dataset_manifest,
             )
             run_root = args.out.resolve()
+            docs: list[DatasetDocument] = list(context.documents)
         else:
-            if not dataset_manifest.is_file():
-                raise PreflightError(f"dataset manifest không tồn tại: {dataset_manifest}")
+            docs = discover_documents(
+                dataset_manifest,
+                ROOT,
+                limit=args.limit,
+                only=args.only,
+            )
             context = _calibration_context(args.hardware)
             run_root = args.out.resolve() / "calibration"
 
-        docs = discover_documents(
-            dataset_manifest,
-            ROOT,
-            limit=args.limit,
-            only=args.only,
-        )
+        configure_process_hardware(args.hardware)
 
         # Construction happens only after every publication preflight guard passes.
         adapters: list[tuple[EngineProfile, Any]] = []
         for profile in selected.values():
             adapter = registry.build_adapter(profile)
+            _configure_adapter_hardware(profile, adapter, args.hardware, args.mode)
             verify_fingerprint(profile, adapter.config_fingerprint())
             adapters.append((profile, adapter))
 
@@ -318,6 +402,7 @@ def main(argv: list[str] | None = None) -> int:
                     hardware=args.hardware,
                     mode=args.mode,
                     refresh=args.refresh,
+                    hardware_configured=True,
                 )
             )
         failed = sum(result.failed for result in total)

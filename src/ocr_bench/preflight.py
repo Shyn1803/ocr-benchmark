@@ -7,6 +7,7 @@ import importlib.metadata
 import json
 import os
 import platform
+import re
 import subprocess
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
@@ -17,6 +18,7 @@ from ocr_bench.profiles import EngineProfile
 
 __all__ = [
     "CACHE_IDENTITY_KEY",
+    "DatasetDocument",
     "PreflightContext",
     "PreflightError",
     "build_cache_identity",
@@ -35,7 +37,6 @@ __all__ = [
 
 Hardware = Literal["cpu", "gpu"]
 CACHE_IDENTITY_KEY = "publication_cache"
-_HASH_LENGTH = 64
 _DEPENDENCIES = (
     "ocr-bench",
     "Pillow",
@@ -52,10 +53,20 @@ class PreflightError(RuntimeError):
 
 
 @dataclass(frozen=True, slots=True)
+class DatasetDocument:
+    """One locally resolved PDF whose bytes match a supplied manifest row."""
+
+    doc_id: str
+    path: Path
+    pdf_sha256: str
+
+
+@dataclass(frozen=True, slots=True)
 class PreflightContext:
     git: dict[str, object]
     system: dict[str, object]
     dependencies: dict[str, str | None]
+    documents: tuple[DatasetDocument, ...] = ()
 
 
 def sha256_file(path: Path) -> str:
@@ -172,9 +183,12 @@ def verify_profile_selection(
         if extra:
             details.append(f"thừa {', '.join(extra)}")
         raise PreflightError(
-            "publication bắt buộc chạy toàn bộ profile catalog (" + "; ".join(details) + ")"
+            "publication bắt buộc chạy toàn bộ profile catalog ("
+            + "; ".join(details)
+            + ")"
         )
-    return {name: catalog[name] for name in selected}
+    order = list(catalog) if mode == "publication" else list(selected)
+    return {name: catalog[name] for name in order}
 
 
 def verify_no_config_overrides(overrides: Mapping[str, object] | None) -> None:
@@ -230,32 +244,88 @@ def _safe_manifest_target(repo_root: Path, relative: str) -> Path:
     return candidate
 
 
-def verify_dataset_manifest(manifest_path: Path, repo_root: Path) -> None:
-    """Validate current legacy manifest/checksum files; Task 7 may inject stricter validation."""
+def _manifest_pdf(row: Mapping[str, object], doc_id: str, repo_root: Path) -> Path:
+    explicit = next(
+        (
+            row[key]
+            for key in ("pdf_path", "path", "local_pdf")
+            if key in row and row[key] is not None
+        ),
+        None,
+    )
+    if explicit is not None:
+        if not isinstance(explicit, str) or not explicit.strip():
+            raise PreflightError(
+                f"{doc_id}: pdf_path phải là chuỗi tương đối không rỗng"
+            )
+        candidate = _safe_manifest_target(repo_root, explicit)
+        if candidate.suffix.lower() != ".pdf":
+            raise PreflightError(f"{doc_id}: pdf_path không phải PDF: {explicit!r}")
+        if not candidate.is_file():
+            raise PreflightError(f"{doc_id}: missing PDF: {explicit!r}")
+        return candidate
+
+    pdf_root = repo_root / "pdfs"
+    search_root = pdf_root if pdf_root.is_dir() else repo_root
+    matches = sorted(
+        path.resolve()
+        for path in search_root.rglob("*.pdf")
+        if path.stem == doc_id
+    )
+    if not matches:
+        raise PreflightError(f"{doc_id}: missing local PDF")
+    if len(matches) != 1:
+        raise PreflightError(
+            f"{doc_id}: ambiguous local PDF ({len(matches)} matches); add explicit pdf_path"
+        )
+    return matches[0]
+
+
+def verify_dataset_manifest(
+    manifest_path: Path, repo_root: Path
+) -> tuple[DatasetDocument, ...]:
+    """Resolve exactly the PDFs declared by the supplied per-document JSON manifest."""
     manifest_path = Path(manifest_path)
-    if not manifest_path.is_file() or not manifest_path.read_bytes().strip():
-        raise PreflightError(f"dataset manifest không tồn tại hoặc rỗng: {manifest_path}")
-    checksums = Path(repo_root) / "checksums.sha256"
-    if not checksums.is_file():
-        raise PreflightError(f"thiếu checksum manifest: {checksums}")
-    for line_number, raw_line in enumerate(
-        checksums.read_text(encoding="utf-8-sig").splitlines(), start=1
-    ):
-        line = raw_line.strip()
-        if not line or line.startswith("#"):
-            continue
-        parts = line.split(maxsplit=1)
-        if len(parts) != 2 or len(parts[0]) != _HASH_LENGTH:
-            raise PreflightError(f"{checksums}:{line_number}: dòng checksum không hợp lệ")
-        expected, relative = parts
-        target = _safe_manifest_target(Path(repo_root), relative.strip())
-        if not target.is_file():
-            raise PreflightError(f"checksum thiếu file: {relative.strip()}")
-        actual = sha256_file(target)
+    repo_root = Path(repo_root).resolve()
+    if not manifest_path.is_file():
+        raise PreflightError(f"dataset manifest không tồn tại: {manifest_path}")
+    try:
+        raw = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise PreflightError(f"dataset manifest JSON không hợp lệ: {exc}") from None
+    if not isinstance(raw, Mapping) or not isinstance(raw.get("documents"), list):
+        raise PreflightError("dataset manifest phải có documents là một list không rỗng")
+    if not raw["documents"]:
+        raise PreflightError("dataset manifest documents rỗng")
+
+    documents: list[DatasetDocument] = []
+    seen_ids: set[str] = set()
+    seen_paths: set[Path] = set()
+    for index, row in enumerate(raw["documents"]):
+        if not isinstance(row, Mapping):
+            raise PreflightError(f"documents[{index}] phải là object")
+        doc_id = row.get("document_id", row.get("doc_id"))
+        if not isinstance(doc_id, str) or not doc_id.strip():
+            raise PreflightError(f"documents[{index}]: thiếu document_id/doc_id")
+        doc_id = doc_id.strip()
+        if doc_id in seen_ids:
+            raise PreflightError(f"duplicate document_id: {doc_id}")
+        seen_ids.add(doc_id)
+
+        expected = row.get("pdf_sha256")
+        if not isinstance(expected, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", expected):
+            raise PreflightError(f"{doc_id}: pdf_sha256 không hợp lệ")
+        path = _manifest_pdf(row, doc_id, repo_root)
+        if path in seen_paths:
+            raise PreflightError(f"duplicate PDF path in manifest: {path}")
+        seen_paths.add(path)
+        actual = sha256_file(path)
         if actual != expected.lower():
             raise PreflightError(
-                f"checksum lệch: {relative.strip()} expected={expected.lower()} actual={actual}"
+                f"{doc_id}: PDF checksum mismatch expected={expected.lower()} actual={actual}"
             )
+        documents.append(DatasetDocument(doc_id, path, actual))
+    return tuple(documents)
 
 
 def _gpu_name() -> str | None:
@@ -294,7 +364,7 @@ def collect_system_metadata() -> dict[str, object]:
     return {
         "python": platform.python_version(),
         "os": platform.platform(),
-        "cpu": cpu or "unknown",
+        "cpu": cpu or None,
         "gpu": _gpu_name(),
         "ram_bytes": _ram_bytes(),
     }
@@ -316,13 +386,22 @@ def publication_preflight(
     dataset_manifest: Path,
     hardware: Hardware,
     config_overrides: Mapping[str, object] | None = None,
-    dataset_validator: Callable[[Path, Path], None] = verify_dataset_manifest,
+    dataset_validator: Callable[
+        [Path, Path], Sequence[DatasetDocument]
+    ] = verify_dataset_manifest,
     system_probe: Callable[[], dict[str, object]] = collect_system_metadata,
     dependency_probe: Callable[[], dict[str, str | None]] = collect_dependency_versions,
 ) -> PreflightContext:
     """Run every publication-only guard before an adapter is constructed."""
     verify_no_config_overrides(config_overrides)
-    dataset_validator(Path(dataset_manifest), Path(repo_root))
+    validated = dataset_validator(Path(dataset_manifest), Path(repo_root))
+    if validated is None:
+        raise PreflightError("dataset validator phải trả các DatasetDocument đã xác minh")
+    documents = tuple(validated)
+    if not documents:
+        raise PreflightError("dataset validator không trả document nào")
+    if any(not isinstance(document, DatasetDocument) for document in documents):
+        raise PreflightError("dataset validator trả phần tử không phải DatasetDocument")
     git = collect_git_metadata(Path(repo_root), require_clean=True)
     system = system_probe()
     if hardware == "gpu" and not system.get("gpu"):
@@ -333,6 +412,7 @@ def publication_preflight(
         git=git,
         system=system,
         dependencies=dependency_probe(),
+        documents=documents,
     )
 
 
@@ -342,11 +422,19 @@ def build_cache_identity(
     *,
     engine_version: str,
     hardware: Hardware,
+    doc_id: str | None = None,
+    pdf_sha256: str | None = None,
 ) -> dict[str, str]:
     """Build the complete identity that authorizes reuse of one prediction."""
+    actual_pdf_sha256 = sha256_file(Path(doc))
+    if pdf_sha256 is not None and actual_pdf_sha256 != pdf_sha256:
+        raise PreflightError(
+            f"{doc_id or Path(doc).stem}: PDF checksum changed after manifest validation "
+            f"expected={pdf_sha256} actual={actual_pdf_sha256}"
+        )
     return {
-        "doc_id": Path(doc).stem,
-        "pdf_sha256": sha256_file(Path(doc)),
+        "doc_id": doc_id or Path(doc).stem,
+        "pdf_sha256": actual_pdf_sha256,
         "profile_config_sha256": profile.fingerprint,
         "engine_version": engine_version,
         "hardware": hardware,
@@ -397,9 +485,10 @@ def build_run_manifest(
         "dependencies": {
             key: dependencies[key] for key in sorted(dependencies)
         },
-        "profiles": {
-            name: profiles[name].fingerprint for name in sorted(profiles)
-        },
+        "profiles": [
+            {"name": name, "config_sha256": profile.fingerprint}
+            for name, profile in profiles.items()
+        ],
         "dataset_manifest": {
             "path": Path(dataset_manifest).name,
             "sha256": sha256_file(Path(dataset_manifest)),
