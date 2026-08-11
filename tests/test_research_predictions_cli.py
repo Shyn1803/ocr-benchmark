@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import importlib.util
 import hashlib
 import inspect
@@ -50,13 +51,19 @@ class _FakeAdapter:
         configured_as: str | None = None,
         perf: bool = True,
         record_hardware: bool = True,
+        record_evidence_version: bool = True,
+        evidence_version: object = 1,
         result_hardware: str | None = None,
+        omit_result_hardware: bool = False,
     ) -> None:
         self.execute_count = 0
         self.configured_as = configured_as
         self.perf = perf
         self.record_hardware = record_hardware
+        self.record_evidence_version = record_evidence_version
+        self.evidence_version = evidence_version
         self.result_hardware = result_hardware
+        self.omit_result_hardware = omit_result_hardware
         self.effective_hardware: str | None = None
         self.events: list[str] = []
 
@@ -75,12 +82,17 @@ class _FakeAdapter:
                 hardware=self.effective_hardware,
                 device=self.effective_hardware,
             )
+            if self.record_evidence_version:
+                fingerprint["hardware_evidence_version"] = self.evidence_version
         return fingerprint
 
     def execute(self, doc: Path) -> OcrResult:
         self.events.append("execute")
         self.execute_count += 1
         fingerprint = self.config_fingerprint()
+        if self.omit_result_hardware:
+            for key in ("hardware", "device", "hardware_evidence_version"):
+                fingerprint.pop(key, None)
         if self.result_hardware is not None:
             fingerprint.update(
                 hardware=self.result_hardware,
@@ -471,6 +483,28 @@ def test_publication_configures_hardware_before_execute_and_records_device(tmp_p
     assert adapter.events == ["configure:cpu", "execute"]
     assert result.config_fingerprint["hardware"] == "cpu"
     assert result.config_fingerprint["device"] == "cpu"
+    assert result.config_fingerprint["hardware_evidence_version"] == 1
+
+
+@pytest.mark.parametrize(
+    "adapter,match",
+    [
+        (_FakeAdapter(record_hardware=False), "hardware"),
+        (_FakeAdapter(record_evidence_version=False), "hardware_evidence_version"),
+        (_FakeAdapter(evidence_version=2), "hardware_evidence_version"),
+        (_FakeAdapter(evidence_version=True), "hardware_evidence_version"),
+    ],
+)
+def test_publication_adapter_preflight_requires_versioned_hardware_evidence(
+    adapter, match
+):
+    from ocr_bench.preflight import PreflightError
+
+    runner = _load_script()
+    with pytest.raises(PreflightError, match=match):
+        runner._configure_adapter_hardware(
+            _profile(), adapter, "cpu", "publication"
+        )
 
 
 def test_runner_has_no_hardware_configuration_bypass():
@@ -484,7 +518,7 @@ def test_runner_has_no_hardware_configuration_bypass():
 @pytest.mark.parametrize(
     "adapter,match",
     [
-        (_FakeAdapter(record_hardware=False), "thiếu hardware"),
+        (_FakeAdapter(omit_result_hardware=True), "thiếu hardware"),
         (_FakeAdapter(result_hardware="gpu"), "hardware.*gpu"),
     ],
 )
@@ -671,6 +705,46 @@ def test_non_object_cache_fingerprint_reruns_only_in_calibration(
     assert bool(adapter.execute_count) is should_execute
 
 
+@pytest.mark.parametrize("mode,should_execute", [("calibration", True), ("publication", False)])
+def test_old_runner_stamped_cache_without_evidence_version_is_not_reused(
+    tmp_path, mode, should_execute
+):
+    from ocr_bench.preflight import PreflightError, build_cache_identity
+
+    runner = _load_script()
+    profile = _profile()
+    doc = tmp_path / "fixture.pdf"
+    doc.write_bytes(b"%PDF-current")
+    output_root = tmp_path / "prediction" / "cpu"
+    adapter = _FakeAdapter()
+    adapter.configure_hardware("cpu")
+    identity = build_cache_identity(
+        doc, profile, engine_version=adapter.version(), hardware="cpu"
+    )
+    old_result = adapter.execute(doc)
+    old_fingerprint = dict(old_result.config_fingerprint)
+    old_fingerprint.pop("hardware_evidence_version")
+    old_result = dataclasses.replace(
+        old_result,
+        config_fingerprint=old_fingerprint,
+    )
+    save_prediction(runner.attach_cache_identity(old_result, identity), output_root)
+    adapter.execute_count = 0
+    adapter.events.clear()
+
+    if mode == "publication":
+        with pytest.raises(PreflightError, match="hardware_evidence_version"):
+            runner.run_profile_predictions(
+                profile, adapter, [doc], output_root, hardware="cpu", mode=mode
+            )
+    else:
+        runner.run_profile_predictions(
+            profile, adapter, [doc], output_root, hardware="cpu", mode=mode
+        )
+
+    assert bool(adapter.execute_count) is should_execute
+
+
 def test_publication_helper_rejects_refresh_even_when_called_directly(tmp_path):
     from ocr_bench.preflight import PreflightError
 
@@ -800,6 +874,129 @@ def test_manifest_changed_after_preflight_stops_before_execute_or_run_manifest(
     assert not (out / "run-manifest.json").exists()
 
 
+@pytest.mark.parametrize(
+    "case",
+    ["missing_method", "configure_raises", "return_mismatch", "fingerprint_bad"],
+)
+def test_adapter_preflight_failure_writes_no_manifest_or_prediction(
+    tmp_path, monkeypatch, case
+):
+    runner = _load_script()
+    profile = _profile()
+    doc = tmp_path / "fixture.pdf"
+    doc.write_bytes(b"%PDF-current")
+    manifest = _dataset_manifest(tmp_path / "manifest.json", [])
+    verified_doc = runner.DatasetDocument(doc.stem, doc, _sha(doc.read_bytes()))
+
+    class MissingMethod(_FakeAdapter):
+        configure_hardware = None
+
+    class ConfigureRaises(_FakeAdapter):
+        def configure_hardware(self, hardware):
+            self.events.append(f"configure:{hardware}")
+            raise RuntimeError("hardware setup failed")
+
+    adapters = {
+        "missing_method": MissingMethod(),
+        "configure_raises": ConfigureRaises(),
+        "return_mismatch": _FakeAdapter(configured_as="gpu"),
+        "fingerprint_bad": _FakeAdapter(record_evidence_version=False),
+    }
+    adapter = adapters[case]
+
+    monkeypatch.setattr(runner, "ROOT", tmp_path)
+    monkeypatch.setattr(runner, "load_profile_catalog", lambda _path: {profile.name: profile})
+    monkeypatch.setattr(runner.registry, "build_adapter", lambda _profile: adapter)
+    monkeypatch.setattr(
+        runner,
+        "publication_preflight",
+        lambda **_kw: runner.PreflightContext(
+            git={"commit": "a" * 40, "dirty": False},
+            system={"python": "3", "os": "x", "cpu": "cpu", "gpu": None, "ram_bytes": 1},
+            dependencies={},
+            documents=(verified_doc,),
+            dataset_manifest_path=manifest,
+            dataset_manifest_sha256=_sha(manifest.read_bytes()),
+        ),
+    )
+    out = tmp_path / "out"
+
+    assert (
+        runner.main(
+            ["--dataset-manifest", str(manifest), "--out", str(out)]
+        )
+        == 2
+    )
+    assert adapter.execute_count == 0
+    assert not (out / "run-manifest.json").exists()
+    assert not (out / "prediction").exists()
+
+
+def test_all_adapters_are_configured_once_before_run_manifest(
+    tmp_path, monkeypatch
+):
+    runner = _load_script()
+    default = _profile()
+    scan = _profile("marker_scan", force_ocr=True)
+    catalog = {default.name: default, scan.name: scan}
+    manifest = _dataset_manifest(tmp_path / "manifest.json", [])
+
+    class BoundAdapter(_FakeAdapter):
+        def __init__(self, profile):
+            super().__init__()
+            self.profile = profile
+
+        def config_fingerprint(self):
+            fingerprint = dict(self.profile.config)
+            if self.effective_hardware is not None:
+                fingerprint.update(
+                    hardware=self.effective_hardware,
+                    device=self.effective_hardware,
+                    hardware_evidence_version=1,
+                )
+            return fingerprint
+
+    adapters = {name: BoundAdapter(profile) for name, profile in catalog.items()}
+    snapshots: list[dict[str, list[str]]] = []
+    real_write_manifest = runner._write_manifest
+
+    monkeypatch.setattr(runner, "ROOT", tmp_path)
+    monkeypatch.setattr(runner, "load_profile_catalog", lambda _path: catalog)
+    monkeypatch.setattr(
+        runner.registry,
+        "build_adapter",
+        lambda profile: adapters[profile.name],
+    )
+    monkeypatch.setattr(
+        runner,
+        "publication_preflight",
+        lambda **_kw: runner.PreflightContext(
+            git={"commit": "a" * 40, "dirty": False},
+            system={"python": "3", "os": "x", "cpu": "cpu", "gpu": None, "ram_bytes": 1},
+            dependencies={},
+            documents=(),
+            dataset_manifest_path=manifest,
+            dataset_manifest_sha256=_sha(manifest.read_bytes()),
+        ),
+    )
+
+    def observe_write(path, payload):
+        snapshots.append({name: list(adapter.events) for name, adapter in adapters.items()})
+        real_write_manifest(path, payload)
+
+    monkeypatch.setattr(runner, "_write_manifest", observe_write)
+
+    assert (
+        runner.main(
+            ["--dataset-manifest", str(manifest), "--out", str(tmp_path / "out")]
+        )
+        == 0
+    )
+    expected = {name: ["configure:cpu"] for name in catalog}
+    assert snapshots == [expected]
+    assert {name: adapter.events for name, adapter in adapters.items()} == expected
+
+
 def test_publication_profile_order_is_catalog_order_for_every_cli_order():
     from ocr_bench.preflight import verify_profile_selection
 
@@ -844,6 +1041,7 @@ def test_cli_orders_execution_and_manifest_by_catalog_for_two_cli_orders(
                 fingerprint.update(
                     hardware=self.effective_hardware,
                     device=self.effective_hardware,
+                    hardware_evidence_version=1,
                 )
             return fingerprint
 

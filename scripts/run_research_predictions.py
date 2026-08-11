@@ -48,6 +48,17 @@ PUBLICATION_DATASET_MANIFEST = ROOT / "datasets" / "manifest.json"
 Mode = Literal["calibration", "publication"]
 
 
+@dataclasses.dataclass(frozen=True, slots=True)
+class ConfiguredAdapter:
+    """Adapter that completed the one allowed hardware handshake for this run."""
+
+    adapter: Any
+    profile_name: str
+    engine_version: str
+    hardware: Literal["cpu", "gpu"]
+    fingerprint: Mapping[str, object]
+
+
 def _split_csv(value: str | None) -> list[str]:
     return [] if value is None else [part.strip() for part in value.split(",") if part.strip()]
 
@@ -104,26 +115,66 @@ def _configure_adapter_hardware(
     adapter: Any,
     hardware: Literal["cpu", "gpu"],
     mode: Mode,
-) -> None:
+) -> dict[str, object]:
     configure = getattr(adapter, "configure_hardware", None)
     if not callable(configure):
         if mode == "publication":
             raise PreflightError(
                 f"{profile.name}: publication adapter thiếu configure_hardware(hardware)"
             )
-        return
-    resolved = configure(hardware)
-    if resolved != hardware:
-        raise PreflightError(
-            f"{profile.name}: configure_hardware({hardware!r}) trả device={resolved!r}"
-        )
-    fingerprint = adapter.config_fingerprint()
-    for key in ("hardware", "device"):
-        claimed = fingerprint.get(key)
-        if claimed is not None and claimed != hardware:
+    else:
+        try:
+            resolved = configure(hardware)
+        except Exception as exc:
             raise PreflightError(
-                f"{profile.name}: adapter fingerprint {key}={claimed!r}, cần {hardware!r}"
+                f"{profile.name}: configure_hardware raised {type(exc).__name__}"
+            ) from None
+        if resolved != hardware:
+            raise PreflightError(
+                f"{profile.name}: configure_hardware({hardware!r}) trả device={resolved!r}"
             )
+    try:
+        fingerprint = adapter.config_fingerprint()
+    except Exception as exc:
+        raise PreflightError(
+            f"{profile.name}: config_fingerprint raised {type(exc).__name__}"
+        ) from None
+    if not isinstance(fingerprint, Mapping):
+        raise PreflightError(f"{profile.name}: adapter fingerprint phải là object")
+    verify_fingerprint(profile, fingerprint)
+    _verify_hardware_evidence(
+        profile,
+        fingerprint,
+        hardware,
+        require_recorded=mode == "publication",
+        source="adapter",
+    )
+    return dict(fingerprint)
+
+
+def configure_adapter(
+    profile: EngineProfile,
+    adapter: Any,
+    hardware: Literal["cpu", "gpu"],
+    mode: Mode,
+) -> ConfiguredAdapter:
+    """Perform and record the sole adapter hardware handshake for a run."""
+    fingerprint = _configure_adapter_hardware(profile, adapter, hardware, mode)
+    try:
+        engine_version = adapter.version()
+    except Exception as exc:
+        raise PreflightError(
+            f"{profile.name}: adapter preflight raised {type(exc).__name__}"
+        ) from None
+    if not isinstance(engine_version, str) or not engine_version:
+        raise PreflightError(f"{profile.name}: adapter version phải là chuỗi không rỗng")
+    return ConfiguredAdapter(
+        adapter=adapter,
+        profile_name=profile.name,
+        engine_version=engine_version,
+        hardware=hardware,
+        fingerprint=dict(fingerprint),
+    )
 
 
 def _normalize_profile_identity(
@@ -181,6 +232,36 @@ def _verify_cached_result(
     verify_fingerprint(profile, cached.config_fingerprint)
 
 
+def _verify_hardware_evidence(
+    profile: EngineProfile,
+    fingerprint: Mapping[str, object],
+    hardware: Literal["cpu", "gpu"],
+    *,
+    require_recorded: bool = False,
+    source: str,
+) -> None:
+    keys = ("hardware", "device", "hardware_evidence_version")
+    recorded = [key for key in keys if key in fingerprint]
+    if not recorded and not require_recorded:
+        return
+    for key in ("hardware", "device"):
+        claimed = fingerprint.get(key)
+        if claimed is None:
+            raise PreflightError(
+                f"{profile.name}: {source} fingerprint thiếu {key}={hardware!r}"
+            )
+        if claimed != hardware:
+            raise PreflightError(
+                f"{profile.name}: {source} fingerprint {key}={claimed!r}, cần {hardware!r}"
+            )
+    evidence_version = fingerprint.get("hardware_evidence_version")
+    if type(evidence_version) is not int or evidence_version != 1:
+        raise PreflightError(
+            f"{profile.name}: {source} fingerprint hardware_evidence_version="
+            f"{evidence_version!r}, cần int 1"
+        )
+
+
 def _verify_result_hardware(
     profile: EngineProfile,
     result: OcrResult,
@@ -188,16 +269,13 @@ def _verify_result_hardware(
     *,
     require_recorded: bool = False,
 ) -> None:
-    for key in ("hardware", "device"):
-        claimed = result.config_fingerprint.get(key)
-        if claimed is None and require_recorded:
-            raise PreflightError(
-                f"{profile.name}: result fingerprint thiếu {key}={hardware!r}"
-            )
-        if claimed is not None and claimed != hardware:
-            raise PreflightError(
-                f"{profile.name}: result fingerprint {key}={claimed!r}, cần {hardware!r}"
-            )
+    _verify_hardware_evidence(
+        profile,
+        result.config_fingerprint,
+        hardware,
+        require_recorded=require_recorded,
+        source="result",
+    )
 
 
 def _verify_publication_perf(profile: EngineProfile, result: OcrResult) -> None:
@@ -214,7 +292,7 @@ def _verify_publication_perf(profile: EngineProfile, result: OcrResult) -> None:
 
 def run_profile_predictions(
     profile: EngineProfile,
-    adapter: Any,
+    adapter_or_configured: ConfiguredAdapter | object,
     docs: Sequence[Path | DatasetDocument],
     output_root: Path,
     *,
@@ -229,9 +307,23 @@ def run_profile_predictions(
         raise PreflightError("publication không cho phép refresh cache")
     if (dataset_manifest is None) != (dataset_manifest_sha256 is None):
         raise PreflightError("dataset manifest path/hash phải được cung cấp cùng nhau")
-    _configure_adapter_hardware(profile, adapter, hardware, mode)
-    engine_version = adapter.version()
-    verify_fingerprint(profile, adapter.config_fingerprint())
+    configured = (
+        adapter_or_configured
+        if isinstance(adapter_or_configured, ConfiguredAdapter)
+        else configure_adapter(profile, adapter_or_configured, hardware, mode)
+    )
+    if configured.profile_name != profile.name or configured.hardware != hardware:
+        raise PreflightError(f"{profile.name}: configured adapter không khớp run")
+    adapter = configured.adapter
+    engine_version = configured.engine_version
+    verify_fingerprint(profile, configured.fingerprint)
+    _verify_hardware_evidence(
+        profile,
+        configured.fingerprint,
+        hardware,
+        require_recorded=mode == "publication",
+        source="adapter",
+    )
     results: list[OcrResult] = []
     for item in docs:
         if dataset_manifest is not None and dataset_manifest_sha256 is not None:
@@ -415,10 +507,16 @@ def main(argv: list[str] | None = None) -> int:
         )
 
         # Construction happens only after every publication preflight guard passes.
-        adapters: list[tuple[EngineProfile, Any]] = []
+        adapters: list[tuple[EngineProfile, ConfiguredAdapter]] = []
         for profile in selected.values():
             adapter = registry.build_adapter(profile)
-            adapters.append((profile, adapter))
+            configured = configure_adapter(
+                profile,
+                adapter,
+                args.hardware,
+                args.mode,
+            )
+            adapters.append((profile, configured))
 
         generated_at = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         manifest = build_run_manifest(
@@ -436,11 +534,11 @@ def main(argv: list[str] | None = None) -> int:
 
         prediction_root = run_root / "prediction" / args.hardware
         total: list[OcrResult] = []
-        for profile, adapter in adapters:
+        for profile, configured in adapters:
             total.extend(
                 run_profile_predictions(
                     profile,
-                    adapter,
+                    configured,
                     docs,
                     prediction_root,
                     hardware=args.hardware,
