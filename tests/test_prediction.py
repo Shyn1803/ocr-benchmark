@@ -898,6 +898,16 @@ def test_fingerprint_khoa_khong_phai_chuoi_thi_nem(tmp_path: Path):
         save_prediction(xau, tmp_path)
 
 
+def test_load_prediction_rejects_non_object_config_fingerprint(tmp_path: Path):
+    path = save_prediction(ket_qua_day_du(), tmp_path)
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["config_fingerprint"] = []
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    with pytest.raises(PredictionSchemaError, match="config_fingerprint.*object"):
+        load_prediction(path)
+
+
 @pytest.mark.parametrize(
     "fingerprint",
     [

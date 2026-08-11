@@ -21,6 +21,7 @@ __all__ = [
     "DatasetDocument",
     "PreflightContext",
     "PreflightError",
+    "VerifiedDataset",
     "build_cache_identity",
     "build_run_manifest",
     "collect_dependency_versions",
@@ -31,6 +32,7 @@ __all__ = [
     "verify_cached_identity",
     "verify_dataset_manifest",
     "verify_fingerprint",
+    "verify_manifest_unchanged",
     "verify_no_config_overrides",
     "verify_profile_selection",
 ]
@@ -62,11 +64,28 @@ class DatasetDocument:
 
 
 @dataclass(frozen=True, slots=True)
+class VerifiedDataset(Sequence[DatasetDocument]):
+    """Manifest documents and provenance derived from one immutable byte snapshot."""
+
+    documents: tuple[DatasetDocument, ...]
+    manifest_sha256: str
+    provisional: bool
+
+    def __getitem__(self, index: int | slice) -> DatasetDocument | tuple[DatasetDocument, ...]:
+        return self.documents[index]
+
+    def __len__(self) -> int:
+        return len(self.documents)
+
+
+@dataclass(frozen=True, slots=True)
 class PreflightContext:
     git: dict[str, object]
     system: dict[str, object]
     dependencies: dict[str, str | None]
     documents: tuple[DatasetDocument, ...] = ()
+    dataset_manifest_path: Path | None = None
+    dataset_manifest_sha256: str | None = None
 
 
 def sha256_file(path: Path) -> str:
@@ -283,20 +302,25 @@ def _manifest_pdf(row: Mapping[str, object], doc_id: str, repo_root: Path) -> Pa
 
 def verify_dataset_manifest(
     manifest_path: Path, repo_root: Path
-) -> tuple[DatasetDocument, ...]:
+) -> VerifiedDataset:
     """Resolve exactly the PDFs declared by the supplied per-document JSON manifest."""
     manifest_path = Path(manifest_path)
     repo_root = Path(repo_root).resolve()
     if not manifest_path.is_file():
         raise PreflightError(f"dataset manifest không tồn tại: {manifest_path}")
     try:
-        raw = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest_bytes = manifest_path.read_bytes()
+        manifest_sha256 = hashlib.sha256(manifest_bytes).hexdigest()
+        raw = json.loads(manifest_bytes.decode("utf-8"))
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise PreflightError(f"dataset manifest JSON không hợp lệ: {exc}") from None
     if not isinstance(raw, Mapping) or not isinstance(raw.get("documents"), list):
         raise PreflightError("dataset manifest phải có documents là một list không rỗng")
     if not raw["documents"]:
         raise PreflightError("dataset manifest documents rỗng")
+    provisional = raw.get("provisional", False)
+    if not isinstance(provisional, bool):
+        raise PreflightError("dataset manifest provisional phải là boolean")
 
     documents: list[DatasetDocument] = []
     seen_ids: set[str] = set()
@@ -325,7 +349,7 @@ def verify_dataset_manifest(
                 f"{doc_id}: PDF checksum mismatch expected={expected.lower()} actual={actual}"
             )
         documents.append(DatasetDocument(doc_id, path, actual))
-    return tuple(documents)
+    return VerifiedDataset(tuple(documents), manifest_sha256, provisional)
 
 
 def _gpu_name() -> str | None:
@@ -386,17 +410,22 @@ def publication_preflight(
     dataset_manifest: Path,
     hardware: Hardware,
     config_overrides: Mapping[str, object] | None = None,
-    dataset_validator: Callable[
-        [Path, Path], Sequence[DatasetDocument]
-    ] = verify_dataset_manifest,
+    dataset_validator: Callable[[Path, Path], VerifiedDataset] = verify_dataset_manifest,
     system_probe: Callable[[], dict[str, object]] = collect_system_metadata,
     dependency_probe: Callable[[], dict[str, str | None]] = collect_dependency_versions,
 ) -> PreflightContext:
     """Run every publication-only guard before an adapter is constructed."""
     verify_no_config_overrides(config_overrides)
-    validated = dataset_validator(Path(dataset_manifest), Path(repo_root))
-    if validated is None:
-        raise PreflightError("dataset validator phải trả các DatasetDocument đã xác minh")
+    dataset_manifest = Path(dataset_manifest)
+    if not dataset_manifest.is_file():
+        raise PreflightError(
+            f"verified publication dataset manifest missing: {dataset_manifest}"
+        )
+    validated = dataset_validator(dataset_manifest, Path(repo_root))
+    if not isinstance(validated, VerifiedDataset):
+        raise PreflightError("dataset validator phải trả VerifiedDataset đã xác minh")
+    if validated.provisional:
+        raise PreflightError("publication dataset manifest is provisional, not verified")
     documents = tuple(validated)
     if not documents:
         raise PreflightError("dataset validator không trả document nào")
@@ -413,7 +442,19 @@ def publication_preflight(
         system=system,
         dependencies=dependency_probe(),
         documents=documents,
+        dataset_manifest_path=dataset_manifest.resolve(),
+        dataset_manifest_sha256=validated.manifest_sha256,
     )
+
+
+def verify_manifest_unchanged(manifest_path: Path, expected_sha256: str) -> None:
+    """Fail if the manifest bytes differ from the snapshot used by preflight."""
+    actual = sha256_file(Path(manifest_path))
+    if actual != expected_sha256:
+        raise PreflightError(
+            "dataset manifest changed after validation "
+            f"expected={expected_sha256} actual={actual}"
+        )
 
 
 def build_cache_identity(
@@ -469,6 +510,7 @@ def build_run_manifest(
     hardware: Hardware,
     profiles: Mapping[str, EngineProfile],
     dataset_manifest: Path,
+    dataset_manifest_sha256: str,
     generated_at: str,
     git: Mapping[str, object],
     system: Mapping[str, object],
@@ -491,6 +533,6 @@ def build_run_manifest(
         ],
         "dataset_manifest": {
             "path": Path(dataset_manifest).name,
-            "sha256": sha256_file(Path(dataset_manifest)),
+            "sha256": dataset_manifest_sha256,
         },
     }

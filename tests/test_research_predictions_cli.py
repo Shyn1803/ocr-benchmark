@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 import hashlib
+import inspect
 import json
 import os
 import sys
@@ -43,25 +44,48 @@ class _FakeAdapter:
     name = "marker_default"
     capabilities = frozenset({Capability.TEXT_MD})
 
-    def __init__(self, *, configured_as: str | None = None, perf: bool = True) -> None:
+    def __init__(
+        self,
+        *,
+        configured_as: str | None = None,
+        perf: bool = True,
+        record_hardware: bool = True,
+        result_hardware: str | None = None,
+    ) -> None:
         self.execute_count = 0
         self.configured_as = configured_as
         self.perf = perf
+        self.record_hardware = record_hardware
+        self.result_hardware = result_hardware
+        self.effective_hardware: str | None = None
         self.events: list[str] = []
 
     def configure_hardware(self, hardware: str) -> str:
         self.events.append(f"configure:{hardware}")
-        return self.configured_as or hardware
+        self.effective_hardware = self.configured_as or hardware
+        return self.effective_hardware
 
     def version(self) -> str:
         return "fake-1"
 
     def config_fingerprint(self) -> dict[str, object]:
-        return {"force_ocr": False, "use_llm": False}
+        fingerprint: dict[str, object] = {"force_ocr": False, "use_llm": False}
+        if self.record_hardware and self.effective_hardware is not None:
+            fingerprint.update(
+                hardware=self.effective_hardware,
+                device=self.effective_hardware,
+            )
+        return fingerprint
 
     def execute(self, doc: Path) -> OcrResult:
         self.events.append("execute")
         self.execute_count += 1
+        fingerprint = self.config_fingerprint()
+        if self.result_hardware is not None:
+            fingerprint.update(
+                hardware=self.result_hardware,
+                device=self.result_hardware,
+            )
         return OcrResult(
             engine=self.name,
             engine_family="marker",
@@ -73,7 +97,7 @@ class _FakeAdapter:
             seconds=1.0 if self.perf else None,
             peak_rss_mb=2.0 if self.perf else None,
             rss_scope="process" if self.perf else None,
-            config_fingerprint=self.config_fingerprint(),
+            config_fingerprint=fingerprint,
         )
 
 
@@ -133,6 +157,8 @@ def test_dataset_manifest_alone_selects_and_verifies_documents(tmp_path):
     documents = verify_dataset_manifest(manifest, tmp_path)
 
     assert [(row.doc_id, row.path) for row in documents] == [("keep", keep.resolve())]
+    assert documents.manifest_sha256 == _sha(manifest.read_bytes())
+    assert documents.provisional is False
 
 
 def test_pdf_changed_after_manifest_validation_is_rejected_before_execute(tmp_path):
@@ -258,6 +284,100 @@ def test_cli_reports_missing_profile_adapter_without_traceback(tmp_path, monkeyp
     assert not (tmp_path / "run" / "calibration" / "prediction").exists()
 
 
+def test_default_calibration_manifest_is_honest_and_runnable(tmp_path, monkeypatch, capsys):
+    runner = _load_script()
+    profile = _profile()
+    adapter = _FakeAdapter()
+    monkeypatch.setattr(runner, "load_profile_catalog", lambda _path: {profile.name: profile})
+    monkeypatch.setattr(runner.registry, "build_adapter", lambda _profile: adapter)
+
+    args = runner._parser().parse_args(["--mode", "calibration"])
+    assert args.dataset_manifest is None
+    assert (
+        runner.main(
+            [
+                "--mode",
+                "calibration",
+                "--profiles",
+                profile.name,
+                "--limit",
+                "1",
+                "--out",
+                str(tmp_path),
+            ]
+        )
+        == 0
+    )
+    assert adapter.execute_count == 1
+    assert "JSON không hợp lệ" not in capsys.readouterr().err
+
+
+def test_default_publication_requires_verified_non_provisional_manifest(
+    tmp_path, monkeypatch, capsys
+):
+    runner = _load_script()
+    profile = _profile()
+    built = False
+
+    def forbidden_build(_profile):
+        nonlocal built
+        built = True
+        raise AssertionError("missing verified manifest reached adapter construction")
+
+    monkeypatch.setattr(runner, "load_profile_catalog", lambda _path: {profile.name: profile})
+    monkeypatch.setattr(runner.registry, "build_adapter", forbidden_build)
+
+    assert runner.main(["--out", str(tmp_path)]) == 2
+    error = capsys.readouterr().err
+    assert "verified" in error.lower()
+    assert "dataset" in error.lower()
+    assert "calibration-manifest" not in error
+    assert built is False
+
+
+def test_publication_rejects_explicit_provisional_manifest_before_build(
+    tmp_path, monkeypatch, capsys
+):
+    runner = _load_script()
+    profile = _profile()
+    doc = tmp_path / "fixture.pdf"
+    doc.write_bytes(b"%PDF-current")
+    manifest = tmp_path / "provisional.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "provisional": True,
+                "documents": [
+                    {
+                        "document_id": doc.stem,
+                        "pdf_path": doc.name,
+                        "pdf_sha256": _sha(doc.read_bytes()),
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(runner, "ROOT", tmp_path)
+    monkeypatch.setattr(runner, "load_profile_catalog", lambda _path: {profile.name: profile})
+    monkeypatch.setattr(
+        runner.registry,
+        "build_adapter",
+        lambda _profile: (_ for _ in ()).throw(
+            AssertionError("provisional manifest reached adapter construction")
+        ),
+    )
+
+    assert (
+        runner.main(
+            ["--dataset-manifest", str(manifest), "--out", str(tmp_path / "out")]
+        )
+        == 2
+    )
+    assert "provisional" in capsys.readouterr().err.lower()
+
+
 def test_publication_cache_identity_mismatch_is_error_not_rerun(tmp_path):
     from ocr_bench.preflight import PreflightError
 
@@ -353,6 +473,45 @@ def test_publication_configures_hardware_before_execute_and_records_device(tmp_p
     assert result.config_fingerprint["device"] == "cpu"
 
 
+def test_runner_has_no_hardware_configuration_bypass():
+    runner = _load_script()
+
+    assert "hardware_configured" not in inspect.signature(
+        runner.run_profile_predictions
+    ).parameters
+
+
+@pytest.mark.parametrize(
+    "adapter,match",
+    [
+        (_FakeAdapter(record_hardware=False), "thiếu hardware"),
+        (_FakeAdapter(result_hardware="gpu"), "hardware.*gpu"),
+    ],
+)
+def test_publication_rejects_missing_or_mismatched_fresh_hardware_evidence(
+    tmp_path, adapter, match
+):
+    from ocr_bench.preflight import PreflightError
+
+    runner = _load_script()
+    doc = tmp_path / "fixture.pdf"
+    doc.write_bytes(b"%PDF-current")
+    output_root = tmp_path / "prediction" / "cpu"
+
+    with pytest.raises(PreflightError, match=match):
+        runner.run_profile_predictions(
+            _profile(),
+            adapter,
+            [doc],
+            output_root,
+            hardware="cpu",
+            mode="publication",
+        )
+
+    assert adapter.execute_count == 1
+    assert not (output_root / _profile().name / "fixture.json").exists()
+
+
 def test_publication_rejects_adapter_hardware_mismatch_before_execute(tmp_path):
     from ocr_bench.preflight import PreflightError
 
@@ -429,6 +588,7 @@ def test_publication_rejects_cached_result_with_missing_perf_without_execute(tmp
         doc, profile, engine_version=adapter.version(), hardware="cpu"
     )
     output_root = tmp_path / "prediction" / "cpu"
+    adapter.configure_hardware("cpu")
     save_prediction(
         runner.attach_cache_identity(adapter.execute(doc), identity), output_root
     )
@@ -473,6 +633,44 @@ def test_bad_cache_reruns_only_in_calibration(tmp_path, bad_bytes, mode, should_
     assert bool(adapter.execute_count) is should_execute
 
 
+@pytest.mark.parametrize("mode,should_execute", [("calibration", True), ("publication", False)])
+def test_non_object_cache_fingerprint_reruns_only_in_calibration(
+    tmp_path, mode, should_execute
+):
+    from ocr_bench.preflight import PreflightError, build_cache_identity
+
+    runner = _load_script()
+    profile = _profile()
+    doc = tmp_path / "fixture.pdf"
+    doc.write_bytes(b"%PDF-current")
+    output_root = tmp_path / "prediction" / "cpu"
+    adapter = _FakeAdapter()
+    adapter.configure_hardware("cpu")
+    identity = build_cache_identity(
+        doc, profile, engine_version=adapter.version(), hardware="cpu"
+    )
+    cache = save_prediction(
+        runner.attach_cache_identity(adapter.execute(doc), identity), output_root
+    )
+    payload = json.loads(cache.read_text(encoding="utf-8"))
+    payload["config_fingerprint"] = []
+    cache.write_text(json.dumps(payload), encoding="utf-8")
+    adapter.execute_count = 0
+    adapter.events.clear()
+
+    if mode == "publication":
+        with pytest.raises(PreflightError, match="config_fingerprint"):
+            runner.run_profile_predictions(
+                profile, adapter, [doc], output_root, hardware="cpu", mode=mode
+            )
+    else:
+        runner.run_profile_predictions(
+            profile, adapter, [doc], output_root, hardware="cpu", mode=mode
+        )
+
+    assert bool(adapter.execute_count) is should_execute
+
+
 def test_publication_helper_rejects_refresh_even_when_called_directly(tmp_path):
     from ocr_bench.preflight import PreflightError
 
@@ -494,6 +692,7 @@ def test_run_manifest_is_deterministic_except_generated_at(tmp_path):
 
     manifest = tmp_path / "dataset.json"
     manifest.write_text('{"dataset":"fixed"}\n', encoding="utf-8")
+    validated_manifest_sha256 = _sha(manifest.read_bytes())
     profile = _profile()
     fixed = {
         "git": {"commit": "a" * 40, "dirty": False},
@@ -512,14 +711,17 @@ def test_run_manifest_is_deterministic_except_generated_at(tmp_path):
         hardware="cpu",
         profiles={profile.name: profile},
         dataset_manifest=manifest,
+        dataset_manifest_sha256=validated_manifest_sha256,
         generated_at="2026-08-11T00:00:00Z",
         **fixed,
     )
+    manifest.write_text('{"dataset":"changed after validation"}\n', encoding="utf-8")
     second = build_run_manifest(
         mode="publication",
         hardware="cpu",
         profiles={profile.name: profile},
         dataset_manifest=manifest,
+        dataset_manifest_sha256=validated_manifest_sha256,
         generated_at="later",
         **fixed,
     )
@@ -533,6 +735,69 @@ def test_run_manifest_is_deterministic_except_generated_at(tmp_path):
     )
     serialized = json.dumps(first, sort_keys=True)
     assert "secret" not in serialized.lower()
+
+
+def test_manifest_changed_after_preflight_stops_before_execute_or_run_manifest(
+    tmp_path, monkeypatch
+):
+    import ocr_bench.preflight as preflight
+
+    runner = _load_script()
+    profile = _profile()
+    doc = tmp_path / "fixture.pdf"
+    doc.write_bytes(b"%PDF-current")
+    manifest = _dataset_manifest(
+        tmp_path / "manifest.json",
+        [
+            {
+                "document_id": doc.stem,
+                "pdf_path": doc.name,
+                "pdf_sha256": _sha(doc.read_bytes()),
+            }
+        ],
+    )
+    original_hash = _sha(manifest.read_bytes())
+    adapter = _FakeAdapter()
+    actual_preflight = runner.publication_preflight
+
+    monkeypatch.setattr(runner, "ROOT", tmp_path)
+    monkeypatch.setattr(runner, "load_profile_catalog", lambda _path: {profile.name: profile})
+    monkeypatch.setattr(runner.registry, "build_adapter", lambda _profile: adapter)
+    monkeypatch.setattr(
+        preflight,
+        "collect_git_metadata",
+        lambda *_args, **_kwargs: {"commit": "a" * 40, "dirty": False},
+    )
+
+    def mutate_after_preflight(**kwargs):
+        context = actual_preflight(
+            **kwargs,
+            system_probe=lambda: {
+                "python": "3",
+                "os": "x",
+                "cpu": "cpu",
+                "gpu": None,
+                "ram_bytes": 1,
+            },
+            dependency_probe=lambda: {},
+        )
+        payload = json.loads(manifest.read_text(encoding="utf-8"))
+        payload["changed_after_preflight"] = True
+        manifest.write_text(json.dumps(payload), encoding="utf-8")
+        assert _sha(manifest.read_bytes()) != original_hash
+        return context
+
+    monkeypatch.setattr(runner, "publication_preflight", mutate_after_preflight)
+    out = tmp_path / "out"
+
+    assert (
+        runner.main(
+            ["--dataset-manifest", str(manifest), "--out", str(out)]
+        )
+        == 2
+    )
+    assert adapter.execute_count == 0
+    assert not (out / "run-manifest.json").exists()
 
 
 def test_publication_profile_order_is_catalog_order_for_every_cli_order():
@@ -574,7 +839,13 @@ def test_cli_orders_execution_and_manifest_by_catalog_for_two_cli_orders(
             self.name = profile.name
 
         def config_fingerprint(self):
-            return dict(self.bound_profile.config)
+            fingerprint = dict(self.bound_profile.config)
+            if self.effective_hardware is not None:
+                fingerprint.update(
+                    hardware=self.effective_hardware,
+                    device=self.effective_hardware,
+                )
+            return fingerprint
 
         def execute(self, path):
             executions.append(self.name)
@@ -602,6 +873,8 @@ def test_cli_orders_execution_and_manifest_by_catalog_for_two_cli_orders(
             system={"python": "3", "os": "x", "cpu": "cpu", "gpu": None, "ram_bytes": 1},
             dependencies={},
             documents=(verified_doc,),
+            dataset_manifest_path=manifest,
+            dataset_manifest_sha256=_sha(manifest.read_bytes()),
         ),
     )
 
@@ -670,6 +943,10 @@ def test_publication_preflight_rejects_unavailable_hardware_identity(
     doc = tmp_path / "doc.pdf"
     doc.write_bytes(b"%PDF")
     verified = preflight.DatasetDocument("doc", doc, _sha(doc.read_bytes()))
+    manifest = _dataset_manifest(tmp_path / "manifest.json", [])
+    verified_dataset = preflight.VerifiedDataset(
+        (verified,), _sha(manifest.read_bytes()), False
+    )
     monkeypatch.setattr(
         preflight,
         "collect_git_metadata",
@@ -679,9 +956,9 @@ def test_publication_preflight_rejects_unavailable_hardware_identity(
     with pytest.raises(preflight.PreflightError, match=match):
         preflight.publication_preflight(
             repo_root=tmp_path,
-            dataset_manifest=tmp_path / "manifest.json",
+            dataset_manifest=manifest,
             hardware=hardware,
-            dataset_validator=lambda *_args: (verified,),
+            dataset_validator=lambda *_args: verified_dataset,
             system_probe=lambda: system,
             dependency_probe=lambda: {},
         )
@@ -715,6 +992,8 @@ def test_cpu_mask_is_applied_before_adapter_construction(tmp_path, monkeypatch):
             system={"python": "3", "os": "x", "cpu": "cpu", "gpu": None, "ram_bytes": 1},
             dependencies={},
             documents=(),
+            dataset_manifest_path=manifest,
+            dataset_manifest_sha256=_sha(manifest.read_bytes()),
         ),
     )
 

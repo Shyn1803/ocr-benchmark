@@ -25,6 +25,7 @@ from ocr_bench.preflight import (
     DatasetDocument,
     PreflightContext,
     PreflightError,
+    VerifiedDataset,
     build_cache_identity,
     build_run_manifest,
     collect_dependency_versions,
@@ -34,6 +35,7 @@ from ocr_bench.preflight import (
     verify_cached_identity,
     verify_dataset_manifest,
     verify_fingerprint,
+    verify_manifest_unchanged,
     verify_profile_selection,
 )
 from ocr_bench.profiles import EngineProfile, ProfileConfigError, load_profile_catalog
@@ -41,7 +43,8 @@ from ocr_bench.types import OcrResult
 
 ROOT = Path(__file__).resolve().parent.parent
 PROFILE_CATALOG = ROOT / "configs" / "profiles.json"
-DATASET_MANIFEST = ROOT / "manifest.yaml"
+CALIBRATION_DATASET_MANIFEST = ROOT / "datasets" / "calibration-manifest.json"
+PUBLICATION_DATASET_MANIFEST = ROOT / "datasets" / "manifest.json"
 Mode = Literal["calibration", "publication"]
 
 
@@ -55,9 +58,11 @@ def discover_documents(
     *,
     limit: int | None = None,
     only: str | None = None,
+    verified_dataset: VerifiedDataset | None = None,
 ) -> list[DatasetDocument]:
     """Select only verified rows from the supplied dataset manifest."""
-    docs = list(verify_dataset_manifest(manifest_path, repo_root))
+    verified = verified_dataset or verify_dataset_manifest(manifest_path, repo_root)
+    docs = list(verified)
     if only:
         requested = set(_split_csv(only))
         by_stem = {doc.doc_id: doc for doc in docs}
@@ -81,8 +86,6 @@ def attach_cache_identity(
     fingerprint = dict(result.config_fingerprint)
     fingerprint[CACHE_IDENTITY_KEY] = dict(identity)
     fingerprint["profile_config_sha256"] = identity["profile_config_sha256"]
-    fingerprint["hardware"] = identity["hardware"]
-    fingerprint["device"] = identity["hardware"]
     return dataclasses.replace(result, config_fingerprint=fingerprint)
 
 
@@ -189,7 +192,7 @@ def _verify_result_hardware(
         claimed = result.config_fingerprint.get(key)
         if claimed is None and require_recorded:
             raise PreflightError(
-                f"{profile.name}: cached fingerprint thiếu {key}={hardware!r}"
+                f"{profile.name}: result fingerprint thiếu {key}={hardware!r}"
             )
         if claimed is not None and claimed != hardware:
             raise PreflightError(
@@ -218,17 +221,21 @@ def run_profile_predictions(
     hardware: Literal["cpu", "gpu"],
     mode: Mode,
     refresh: bool = False,
-    hardware_configured: bool = False,
+    dataset_manifest: Path | None = None,
+    dataset_manifest_sha256: str | None = None,
 ) -> list[OcrResult]:
     """Run/resume one profile; publication cache drift is always fatal."""
     if mode == "publication" and refresh:
         raise PreflightError("publication không cho phép refresh cache")
-    if not hardware_configured:
-        _configure_adapter_hardware(profile, adapter, hardware, mode)
+    if (dataset_manifest is None) != (dataset_manifest_sha256 is None):
+        raise PreflightError("dataset manifest path/hash phải được cung cấp cùng nhau")
+    _configure_adapter_hardware(profile, adapter, hardware, mode)
     engine_version = adapter.version()
     verify_fingerprint(profile, adapter.config_fingerprint())
     results: list[OcrResult] = []
     for item in docs:
+        if dataset_manifest is not None and dataset_manifest_sha256 is not None:
+            verify_manifest_unchanged(dataset_manifest, dataset_manifest_sha256)
         if isinstance(item, DatasetDocument):
             doc = item.path
             doc_id = item.doc_id
@@ -265,7 +272,7 @@ def run_profile_predictions(
                 )
                 if mode == "publication":
                     _verify_publication_perf(profile, cached)
-            except (PredictionSchemaError, PreflightError, OSError, ValueError) as exc:
+            except (PredictionSchemaError, PreflightError, OSError, UnicodeError) as exc:
                 if mode == "publication":
                     if isinstance(exc, PreflightError):
                         raise
@@ -284,7 +291,12 @@ def run_profile_predictions(
             engine_version=engine_version,
         )
         verify_fingerprint(profile, result.config_fingerprint)
-        _verify_result_hardware(profile, result, hardware)
+        _verify_result_hardware(
+            profile,
+            result,
+            hardware,
+            require_recorded=mode == "publication",
+        )
         if mode == "publication":
             _verify_publication_perf(profile, result)
         result = attach_cache_identity(result, expected)
@@ -293,7 +305,11 @@ def run_profile_predictions(
     return results
 
 
-def _calibration_context(hardware: str) -> PreflightContext:
+def _calibration_context(
+    hardware: str,
+    dataset_manifest: Path,
+    verified_dataset: VerifiedDataset,
+) -> PreflightContext:
     system = collect_system_metadata()
     if hardware == "gpu" and not system.get("gpu"):
         raise PreflightError("--hardware gpu nhưng không phát hiện GPU")
@@ -301,6 +317,9 @@ def _calibration_context(hardware: str) -> PreflightContext:
         git=collect_git_metadata(ROOT),
         system=system,
         dependencies=collect_dependency_versions(),
+        documents=tuple(verified_dataset),
+        dataset_manifest_path=dataset_manifest.resolve(),
+        dataset_manifest_sha256=verified_dataset.manifest_sha256,
     )
 
 
@@ -323,7 +342,15 @@ def _parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--hardware", choices=("cpu", "gpu"), default="cpu")
     parser.add_argument("--out", type=Path, default=ROOT)
-    parser.add_argument("--dataset-manifest", type=Path, default=DATASET_MANIFEST)
+    parser.add_argument(
+        "--dataset-manifest",
+        type=Path,
+        default=None,
+        help=(
+            "JSON manifest; defaults to provisional datasets/calibration-manifest.json "
+            "in calibration and verified datasets/manifest.json in publication"
+        ),
+    )
     parser.add_argument("--limit", type=int, default=None, help="calibration only")
     parser.add_argument("--only", default=None, help="calibration-only comma-separated doc IDs")
     parser.add_argument("--refresh", action="store_true", help="calibration only")
@@ -337,7 +364,12 @@ def main(argv: list[str] | None = None) -> int:
         requested = list(catalog) if args.profiles is None else _split_csv(args.profiles)
         selected = verify_profile_selection(catalog, requested, mode=args.mode)
 
-        dataset_manifest = args.dataset_manifest.resolve()
+        default_manifest = (
+            PUBLICATION_DATASET_MANIFEST
+            if args.mode == "publication"
+            else CALIBRATION_DATASET_MANIFEST
+        )
+        dataset_manifest = (args.dataset_manifest or default_manifest).resolve()
         if args.mode == "publication":
             overrides = {
                 key: value
@@ -358,23 +390,34 @@ def main(argv: list[str] | None = None) -> int:
             run_root = args.out.resolve()
             docs: list[DatasetDocument] = list(context.documents)
         else:
+            verified_dataset = verify_dataset_manifest(dataset_manifest, ROOT)
             docs = discover_documents(
                 dataset_manifest,
                 ROOT,
                 limit=args.limit,
                 only=args.only,
+                verified_dataset=verified_dataset,
             )
-            context = _calibration_context(args.hardware)
+            context = _calibration_context(
+                args.hardware,
+                dataset_manifest,
+                verified_dataset,
+            )
             run_root = args.out.resolve() / "calibration"
 
         configure_process_hardware(args.hardware)
+
+        if context.dataset_manifest_sha256 is None:
+            raise PreflightError("preflight không cung cấp dataset manifest hash")
+        verify_manifest_unchanged(
+            dataset_manifest,
+            context.dataset_manifest_sha256,
+        )
 
         # Construction happens only after every publication preflight guard passes.
         adapters: list[tuple[EngineProfile, Any]] = []
         for profile in selected.values():
             adapter = registry.build_adapter(profile)
-            _configure_adapter_hardware(profile, adapter, args.hardware, args.mode)
-            verify_fingerprint(profile, adapter.config_fingerprint())
             adapters.append((profile, adapter))
 
         generated_at = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
@@ -383,6 +426,7 @@ def main(argv: list[str] | None = None) -> int:
             hardware=args.hardware,
             profiles=selected,
             dataset_manifest=dataset_manifest,
+            dataset_manifest_sha256=context.dataset_manifest_sha256,
             generated_at=generated_at,
             git=context.git,
             system=context.system,
@@ -402,7 +446,8 @@ def main(argv: list[str] | None = None) -> int:
                     hardware=args.hardware,
                     mode=args.mode,
                     refresh=args.refresh,
-                    hardware_configured=True,
+                    dataset_manifest=dataset_manifest,
+                    dataset_manifest_sha256=context.dataset_manifest_sha256,
                 )
             )
         failed = sum(result.failed for result in total)

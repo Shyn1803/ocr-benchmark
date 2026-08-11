@@ -649,6 +649,14 @@ def load_prediction(path: Path) -> OcrResult:
             "Đổi tên file thủ công sẽ làm bench tra nhãn của tài liệu khác."
         )
 
+    fingerprint = raw["config_fingerprint"]
+    if not isinstance(fingerprint, dict):
+        raise PredictionSchemaError(f"{path}: config_fingerprint phải là object")
+    try:
+        fingerprint = _jsonable_fingerprint(fingerprint, doc_id)
+    except ValueError as exc:
+        raise PredictionSchemaError(f"{path}: {exc}") from None
+
     caps = raw["capabilities"]
     if not isinstance(caps, list):
         raise PredictionSchemaError(f"{path}: capabilities phải là list")
@@ -721,7 +729,7 @@ def load_prediction(path: Path) -> OcrResult:
                     FailureKind, raw["failure_kind"], path, "failure_kind"
                 )
             ),
-            config_fingerprint=raw["config_fingerprint"],
+            config_fingerprint=fingerprint,
         )
     except ValueError as exc:
         # `OcrResult.__post_init__` giữ bất biến "có dữ liệu thì phải khai năng lực".
