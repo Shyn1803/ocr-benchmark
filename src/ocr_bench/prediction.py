@@ -243,16 +243,17 @@ def _jsonable_fingerprint(fp: dict[str, object], doc_id: str) -> dict[str, Any]:
     được. Để tới lúc đọc mới phát hiện thì đã mất 3 tiếng chạy engine.
     """
     def validate(value: object, where: str, *, key: str | None = None) -> None:
-        if (
-            key is not None
-            and is_secret_bearing_key(key)
-            and isinstance(value, str)
-            and value not in {"", "<redacted>"}
-        ):
-            raise ValueError(
-                f"{doc_id}: {where} chứa secret thô dưới khoá {key!r}; "
-                "chỉ lưu boolean/None/chuỗi rỗng hoặc '<redacted>'."
+        if key is not None and is_secret_bearing_key(key):
+            safe_secret_metadata = (
+                value is None
+                or isinstance(value, bool)
+                or (isinstance(value, str) and value in {"", "<redacted>"})
             )
+            if not safe_secret_metadata:
+                raise ValueError(
+                    f"{doc_id}: {where} chứa secret thô dưới khoá {key!r}; "
+                    "chỉ lưu boolean/None/chuỗi rỗng hoặc '<redacted>'."
+                )
         if isinstance(value, str):
             if contains_secret_pattern(value):
                 raise ValueError(

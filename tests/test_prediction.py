@@ -922,6 +922,31 @@ def test_fingerprint_rejects_nested_raw_secrets(
         save_prediction(result, tmp_path)
 
 
+@pytest.mark.parametrize(
+    ("key", "value"),
+    [
+        ("api_key", 123456),
+        ("access_token", 12.5),
+        ("password", ["raw-secret-value"]),
+        ("api_key", ("raw-secret-value",)),
+        ("access_token", {"nested": "raw-secret-value"}),
+        ("password", b"raw-secret-value"),
+    ],
+)
+def test_fingerprint_rejects_non_allowlisted_values_under_secret_keys(
+    tmp_path: Path, key: str, value: object
+):
+    result = OcrResult(
+        engine="e",
+        engine_version="1",
+        doc_id="d",
+        capabilities=frozenset(),
+        config_fingerprint={"nested": {key: value}},
+    )
+    with pytest.raises(ValueError, match="secret thô"):
+        save_prediction(result, tmp_path)
+
+
 def test_fingerprint_allows_safe_secret_metadata(tmp_path: Path):
     result = OcrResult(
         engine="e",
