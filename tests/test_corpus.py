@@ -14,7 +14,7 @@ import json
 
 import pytest
 
-from ocr_bench.corpus import COCO_BLOCK_TYPE, CorpusError, load_doclaynet, load_olmocr
+from ocr_bench.corpus import ROOT, COCO_BLOCK_TYPE, CorpusError, load_doclaynet, load_olmocr
 from ocr_bench.types import (
     Baseline,
     BlockType,
@@ -332,3 +332,45 @@ def test_bo_mau_that_khong_dung_khoa():
     """Hai bộ trộn chung một dict `{doc_id: GroundTruth}`. Trùng khoá thì một bộ ăn
     mất nhãn của bộ kia, và loại nhãn sai sẽ ra N/A chứ không ra lỗi."""
     assert not (set(load_doclaynet()) & set(load_olmocr()))
+
+
+@pytest.mark.needs_corpus
+def test_manifest_va_corpus_noi_ve_cung_mot_bo_tai_lieu():
+    """`datasets/manifest.json` và các loader phải mô tả **cùng** một bộ đĩa.
+
+    Hai đường đọc độc lập trên cùng dữ liệu là chỗ trôi rất êm: manifest ghi 1606 tài
+    liệu trong khi loader nạp 1607 thì báo cáo dẫn nguồn cho một con số được tính trên
+    tập khác. Ràng buộc ở đây khoá đúng một chiều: mọi dòng manifest phải có nhãn nạp
+    được, và mọi tài liệu bị manifest loại ra phải thật sự **không có nhãn nào** —
+    loại một trang có nhãn ra khỏi bảng là tự chọn mẫu.
+    """
+    from ocr_bench.dataset_manifest import build_manifest
+
+    manifest = build_manifest(ROOT)
+    dl, olm = load_doclaynet(), load_olmocr()
+    nhan = {**{k: len(v.blocks) for k, v in dl.items()}, **{k: len(v.tests) for k, v in olm.items()}}
+
+    thieu = [r["document_id"] for r in manifest["documents"] if r["document_id"] not in nhan]
+    assert not thieu, f"manifest có dòng mà loader không nạp được nhãn: {thieu[:5]}"
+
+    for r in manifest["excluded_documents"]:
+        assert nhan.get(r["document_id"], 0) == 0, (
+            f"{r['document_id']} bị manifest loại vì {r['reason']!r} nhưng loader vẫn "
+            f"nạp được nhãn cho nó — loại một trang có nhãn là tự chọn mẫu"
+        )
+
+
+@pytest.mark.needs_corpus
+def test_manifest_da_dung_bo_nhip_voi_dia():
+    """Manifest đã commit phải còn khớp đĩa — chính là cổng `--verify`, chạy trong suite.
+
+    Không có nó thì `datasets/manifest.json` chỉ đúng vào ngày ai đó nhớ chạy script.
+    """
+    import json as _json
+
+    from ocr_bench.dataset_manifest import build_manifest
+
+    da_commit = _json.loads((ROOT / "datasets" / "manifest.json").read_text(encoding="utf-8"))
+    assert da_commit == build_manifest(ROOT), (
+        "datasets/manifest.json lệch đĩa — chạy py -3 scripts/build_dataset_manifest.py"
+    )

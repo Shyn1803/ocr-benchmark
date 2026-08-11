@@ -30,6 +30,16 @@ CHECKSUMS = ROOT / "checksums.sha256"
 # nó là file dựng tay để chạy thử đường ống, không phải dữ liệu đo.
 VUNG = ["pdfs/doclaynet", "pdfs/olmocr", "ground-truth/doclaynet", "ground-truth/olmocr"]
 
+# Hai file viết tay quyết định bộ mẫu được *hiểu* thế nào: bộ nào được dùng, giấy phép
+# nào, và nhãn nào bị sửa. Không bấm checksum chúng thì `--verify` xanh trong khi cơ sở
+# diễn giải đã đổi — checksum trả lời "file có còn đúng file đã đo không", và catalog là
+# một trong những file đó.
+#
+# `datasets/manifest.json` cố ý KHÔNG có mặt: nó là đầu ra sinh lại được, và cổng của
+# nó là `scripts/build_dataset_manifest.py --verify`. Bấm cả hai nơi thì một thay đổi
+# hợp lệ làm đỏ hai chỗ và người ta học cách bỏ qua cả hai.
+FILE_LE = ["datasets/catalog.json", "datasets/corrections.jsonl"]
+
 
 def bam(p: Path) -> str:
     h = hashlib.sha256()
@@ -45,6 +55,10 @@ def liet_ke() -> list[Path]:
         d = ROOT / v
         if d.is_dir():
             ra += [p for p in sorted(d.rglob("*")) if p.is_file()]
+    for v in FILE_LE:
+        p = ROOT / v
+        if p.is_file():
+            ra.append(p)
     return ra
 
 
@@ -85,6 +99,11 @@ def viet_manifest(files: list[Path]) -> str:
 # lẫn checksums.sha256 trong cùng một commit với dữ liệu.
 #
 # Kiểm lại:  py -3 scripts/make_manifest.py --verify
+#
+# File này đếm *file trên đĩa*. Nguồn chuẩn cho câu hỏi "bộ nào được dùng, giấy phép
+# nào, bộ nào bị loại vì sao" là datasets/catalog.json, và bản kiểm từng tài liệu là
+# datasets/manifest.json (py -3 scripts/build_dataset_manifest.py --verify). Phần
+# `nguon:` dưới đây là bản tóm tắt cho người đọc; khi hai bên lệch nhau thì catalog đúng.
 
 tong_ket:
   so_file: {len(files)}
