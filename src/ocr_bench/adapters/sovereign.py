@@ -51,17 +51,26 @@ trang. Nên ``capabilities = {TEXT_MD}``, chấm hết.
 from __future__ import annotations
 
 import base64
+import importlib.util
+import json
 import os
+import subprocess
 import sys
 import time
+from collections.abc import Mapping
+from dataclasses import dataclass
+from importlib.metadata import PackageNotFoundError, version as package_version
 from pathlib import Path
-from typing import Any, Callable, ClassVar
+from typing import Any, Callable, ClassVar, Literal
 
 from ocr_bench.adapters.base import Adapter
-from ocr_bench.types import Capability, FailureKind, OcrResult
+from ocr_bench.profiles import EngineProfile, ProfileConfigError
+from ocr_bench.secrets import sanitize_secret_text
+from ocr_bench.types import Capability, FailureKind, OcrResult, RawArtifact
 
 __all__ = [
     "SovereignAdapter",
+    "ProfileEnvironmentError",
     "VuotTran",
     "ENV_CUONG_BUC",
     "duong_dan_be",
@@ -69,6 +78,10 @@ __all__ = [
     "kiem_config",
     "marker_san_sang",
 ]
+
+
+class ProfileEnvironmentError(RuntimeError):
+    """The installed Sovereign runtime does not match its frozen profile."""
 
 
 class VuotTran(BaseException):
@@ -91,9 +104,42 @@ ENV_CUONG_BUC: dict[str, str] = {
     "OCR_USE_LOCAL_FIRST": "false",
     "OCR_USE_VISION_API": "false",
     "OPENROUTER_API_KEY": "",
+    "OPENROUTER_API_URL": "",
     "GROQ_API_KEY": "",
     "GDOC_PARSER_URL": "",
+    "OCR_DEVICE": "cpu",
+    "CUDA_VISIBLE_DEVICES": "",
 }
+
+_PROFILE_CONFIG = {
+    "ocr_use_vision_api": False,
+    "api_enabled": False,
+}
+_PROFILE_ENVIRONMENTS = {
+    "sovereign_default": {"marker_available": False},
+    "sovereign_scan": {"marker_available": True},
+}
+_SECRET_ENV_NAMES = ("OPENROUTER_API_KEY", "GROQ_API_KEY")
+
+
+@dataclass(frozen=True, slots=True)
+class SovereignIdentity:
+    name: str
+    engine_family: str
+    profile: str
+    config: Mapping[str, object]
+    environment: Mapping[str, object]
+    profile_config_sha256: str
+
+
+LEGACY_IDENTITY = SovereignIdentity(
+    name="sovereign",
+    engine_family="sovereign",
+    profile="legacy",
+    config=_PROFILE_CONFIG,
+    environment={},
+    profile_config_sha256="legacy",
+)
 
 #: Đuôi file → chuỗi mà BE mong đợi (nó nhận `extension` **không** có dấu chấm).
 _DUOI_MAC_DINH = "pdf"
@@ -120,18 +166,31 @@ def duong_dan_be() -> Path:
     """Thư mục gốc BE. Ghi đè bằng ``SOVEREIGN_BE_PATH`` nếu cây thư mục khác."""
     if thu_cong := os.environ.get("SOVEREIGN_BE_PATH"):
         return Path(thu_cong).resolve()
-    # ocr-bench/src/ocr_bench/adapters/sovereign.py → lên 5 mức là sovereign/
-    return (
-        Path(__file__).resolve().parents[4] / "adminPortal" / "back-end-admin-portal"
-    ).resolve()
+
+    # Cả checkout thường và worktree lồng đều nằm dưới đúng một ancestor ``ocr-bench``.
+    # Chỉ duyệt ancestor của chính file này; không quét ổ đĩa hay dò repo lân cận.
+    module_path = Path(__file__).resolve()
+    for ancestor in module_path.parents:
+        if ancestor.name == "ocr-bench":
+            return (
+                ancestor.parent / "adminPortal" / "back-end-admin-portal"
+            ).resolve()
+    # Fallback cũ cho layout được vendored/đổi tên; explicit env vẫn luôn authoritative.
+    return (module_path.parents[4] / "adminPortal" / "back-end-admin-portal").resolve()
 
 
-def _ap_env() -> None:
+def _ap_env(*, marker_enabled: bool | None = None) -> None:
     """Ghi ``ENV_CUONG_BUC`` vào ``os.environ``. Gọi **trước** mọi import BE."""
     os.environ.update(ENV_CUONG_BUC)
+    if marker_enabled is not None:
+        os.environ["OCR_ENABLE_MARKER_ON_CPU"] = (
+            "true" if marker_enabled else "false"
+        )
 
 
-def kiem_config(get_settings: Callable[[], Any]) -> dict[str, object]:
+def kiem_config(
+    get_settings: Callable[[], Any], *, marker_enabled: bool | None = None
+) -> dict[str, object]:
     """Giải config *sau* khi cưỡng bức và **kiểm lại**. Sai thì ném ``VuotTran``.
 
     Đây là điểm của AC-01: không tin vào việc "đã set env" mà hỏi lại chính đối tượng
@@ -144,22 +203,45 @@ def kiem_config(get_settings: Callable[[], Any]) -> dict[str, object]:
     s = get_settings()
     local_first = bool(getattr(s, "ocr_use_local_first", False))
     vision = bool(getattr(s, "ocr_use_vision_api", False))
-    khoa = bool((getattr(s, "openrouter_api_key", "") or "").strip())
-    gdoc = (getattr(s, "gdoc_parser_url", "") or "").strip()
+    openrouter_key = bool((getattr(s, "openrouter_api_key", "") or "").strip())
+    groq_key = bool((getattr(s, "groq_api_key", "") or "").strip())
+    openrouter_url = bool((getattr(s, "openrouter_api_url", "") or "").strip())
+    gdoc_url = bool((getattr(s, "gdoc_parser_url", "") or "").strip())
+    marker_cpu = bool(getattr(s, "ocr_enable_marker_on_cpu", False))
+    device = str(getattr(s, "ocr_device", "") or "").strip().lower()
+    api_key_present = openrouter_key or groq_key
+    remote_url_present = openrouter_url or gdoc_url
+    api_enabled = vision or api_key_present or remote_url_present
 
-    if vision or khoa:
+    if api_enabled:
         raise VuotTran(
             "Cưỡng bức env thất bại: "
-            f"ocr_use_vision_api={vision}, api_key_present={khoa}. "
-            "BE .env bật vision và mang khoá thật — chạy tiếp là gọi API tính tiền. Dừng."
+            f"ocr_use_vision_api={vision}, api_key_present={api_key_present}, "
+            f"remote_url_present={remote_url_present}. "
+            "Resolved BE config còn đường gọi ngoài/tính phí. Dừng."
+        )
+    if device != "cpu":
+        raise VuotTran(
+            f"Cưỡng bức device thất bại: ocr_device={device!r}, cần 'cpu'. Dừng."
+        )
+    if marker_enabled is not None and marker_cpu is not marker_enabled:
+        raise VuotTran(
+            "Cưỡng bức Marker thất bại: "
+            f"ocr_enable_marker_on_cpu={marker_cpu}, cần {marker_enabled}. Dừng."
         )
     return {
         "ocr_use_local_first": local_first,
         "ocr_use_vision_api": vision,
-        # CHỈ boolean. Giá trị khoá không bao giờ được ghi ra: fingerprint đi vào
-        # `prediction/` và `prediction/` được commit.
-        "api_key_present": khoa,
-        "gdoc_parser_url": gdoc,
+        "api_enabled": api_enabled,
+        # Chỉ presence booleans. Không URL, query token hay credential thô nào được ghi.
+        "api_key_present": api_key_present,
+        "openrouter_api_key_present": openrouter_key,
+        "groq_api_key_present": groq_key,
+        "remote_url_present": remote_url_present,
+        "openrouter_api_url_present": openrouter_url,
+        "gdoc_parser_url_present": gdoc_url,
+        "ocr_device": device,
+        "marker_cpu_enabled": marker_cpu,
     }
 
 
@@ -170,6 +252,13 @@ def marker_san_sang() -> bool:
     lỗi, ném ở đó thì lỗi gốc bị nuốt (bài học A5 lỗi #3).
     """
     try:
+        goc = duong_dan_be()
+        if not (goc / "app" / "services" / "marker_ocr_service.py").is_file():
+            return False
+        if str(goc) not in sys.path:
+            sys.path.insert(0, str(goc))
+        if importlib.util.find_spec("marker") is None:
+            return False
         from app.services.marker_ocr_service import _surya_models_cached  # noqa: PLC0415
 
         return bool(_surya_models_cached())
@@ -177,13 +266,29 @@ def marker_san_sang() -> bool:
         return False
 
 
-def nap_pipeline() -> Callable[..., dict]:
+def _kiem_pipeline_module(module: Any) -> None:
+    """Reject module globals frozen from an earlier unsafe BE import."""
+    api_key_present = bool((getattr(module, "_api_key", "") or "").strip()) or bool(
+        (getattr(module, "_groq_api_key", "") or "").strip()
+    )
+    remote_url_present = bool((getattr(module, "_api_url", "") or "").strip()) or bool(
+        (getattr(module, "_gdoc_parser_url", "") or "").strip()
+    )
+    if api_key_present or remote_url_present:
+        raise VuotTran(
+            "BE parser đã import với config không an toàn: "
+            f"api_key_present={api_key_present}, "
+            f"remote_url_present={remote_url_present}. Dừng."
+        )
+
+
+def nap_pipeline(*, marker_enabled: bool | None = None) -> Callable[..., dict]:
     """Cưỡng bức env → thêm BE vào ``sys.path`` → import → kiểm config.
 
     Trả về chính ``extract_text_from_document``. Bốn bước **đúng thứ tự đó**, xem mục 2
     của docstring module.
     """
-    _ap_env()
+    _ap_env(marker_enabled=marker_enabled)
     goc = duong_dan_be()
     if not (goc / "app" / "services" / "openrouter_document_parser.py").is_file():
         raise VuotTran(
@@ -194,13 +299,79 @@ def nap_pipeline() -> Callable[..., dict]:
 
     from app.config import get_settings  # noqa: PLC0415
 
-    kiem_config(get_settings)
+    kiem_config(get_settings, marker_enabled=marker_enabled)
 
-    from app.services.openrouter_document_parser import (  # noqa: PLC0415
-        extract_text_from_document,
-    )
+    from app.services import openrouter_document_parser as parser  # noqa: PLC0415
 
-    return extract_text_from_document
+    _kiem_pipeline_module(parser)
+    return parser.extract_text_from_document
+
+
+def _plain(value: object) -> object:
+    if isinstance(value, Mapping):
+        return {str(key): _plain(nested) for key, nested in value.items()}
+    if isinstance(value, tuple):
+        return [_plain(nested) for nested in value]
+    return value
+
+
+def _marker_version() -> str:
+    try:
+        return package_version("marker-pdf")
+    except PackageNotFoundError:
+        return "not-installed"
+    except BaseException:  # fingerprint must never mask the original adapter failure
+        return "unknown"
+
+
+def _be_git_metadata() -> dict[str, object]:
+    """Return only commit/dirty state; never retain the BE path or Git diagnostics."""
+    try:
+        commit = subprocess.run(
+            ["git", "-C", str(duong_dan_be()), "rev-parse", "HEAD"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        dirty = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(duong_dan_be()),
+                "status",
+                "--porcelain=v1",
+                "--untracked-files=normal",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        if commit.returncode != 0 or dirty.returncode != 0:
+            return {"commit": "unknown", "dirty": None}
+        return {
+            "commit": commit.stdout.strip() or "unknown",
+            "dirty": bool(dirty.stdout.strip()),
+        }
+    except BaseException:  # version/fingerprint are diagnostic paths and cannot throw
+        return {"commit": "unknown", "dirty": None}
+
+
+def _sanitize_runtime_text(value: str, exact_secrets: tuple[str, ...]) -> str:
+    sanitized = sanitize_secret_text(value) or ""
+    for secret in sorted(set(exact_secrets), key=len, reverse=True):
+        if secret:
+            sanitized = sanitized.replace(secret, "<redacted>")
+    return sanitized
+
+
+def _canonical_response_bytes(success: bool, full_text: str) -> bytes:
+    return json.dumps(
+        {"success": success, "fullText": full_text},
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
 
 
 class SovereignAdapter(Adapter):
@@ -226,6 +397,7 @@ class SovereignAdapter(Adapter):
         tran_giay_moi_tai_lieu: float | None = None,
         tran_giay_tong: float | None = None,
         tran_so_tai_lieu: int | None = None,
+        identity: SovereignIdentity = LEGACY_IDENTITY,
     ) -> None:
         # Nâng trần phải là **hành động có chủ ý**, nên nó đi qua env chứ không phải một
         # cờ dòng lệnh lẫn giữa mười cờ khác. Mặc định cố tình thấp hơn bộ mẫu olmocr
@@ -237,6 +409,10 @@ class SovereignAdapter(Adapter):
         tran_so_tai_lieu = _tu_env("SOVEREIGN_TRAN_SO_TAI_LIEU", tran_so_tai_lieu, 250, int)
         if min(tran_giay_moi_tai_lieu, tran_giay_tong) <= 0 or tran_so_tai_lieu <= 0:
             raise ValueError("trần phải dương")
+        self.identity = identity
+        self.name = identity.name
+        self.engine_family = identity.engine_family
+        self.profile = identity.profile
         self.tran_giay_moi_tai_lieu = tran_giay_moi_tai_lieu
         self.tran_giay_tong = tran_giay_tong
         self.tran_so_tai_lieu = tran_so_tai_lieu
@@ -244,31 +420,115 @@ class SovereignAdapter(Adapter):
         self._tong_giay = 0.0
         self._pipeline: Callable[..., dict] | None = None
         self._config: dict[str, object] | None = None
+        expected = identity.environment.get("marker_available")
+        self._marker_expected = expected if isinstance(expected, bool) else None
+        self._marker_available = False
+        self._preflight_complete = identity.profile == "legacy"
+        self._hardware: Literal["cpu"] = "cpu"
+        self._hardware_verified = False
+        self._sensitive_values = tuple(
+            value
+            for name in _SECRET_ENV_NAMES
+            if (value := os.environ.get(name))
+        )
+
+    @classmethod
+    def from_profile(cls, profile: EngineProfile) -> "SovereignAdapter":
+        if profile.adapter != "sovereign" or profile.family != "sovereign":
+            raise ProfileConfigError(
+                f"SovereignAdapter không nhận profile {profile.name!r}/{profile.family!r}"
+            )
+        expected_environment = _PROFILE_ENVIRONMENTS.get(profile.name)
+        expected_profile = {
+            "sovereign_default": "default",
+            "sovereign_scan": "scan",
+        }.get(profile.name)
+        if expected_profile is None or profile.profile != expected_profile:
+            raise ProfileConfigError(f"profile Sovereign không hỗ trợ: {profile.name!r}")
+        if _plain(profile.config) != _PROFILE_CONFIG:
+            raise ProfileConfigError(
+                f"{profile.name}: config không khớp catalog Sovereign đã khóa"
+            )
+        if _plain(profile.environment) != expected_environment:
+            raise ProfileConfigError(
+                f"{profile.name}: environment không khớp catalog Sovereign đã khóa"
+            )
+        return cls(
+            identity=SovereignIdentity(
+                name=profile.name,
+                engine_family="sovereign",
+                profile=profile.profile,
+                config=profile.config,
+                environment=profile.environment,
+                profile_config_sha256=profile.fingerprint,
+            )
+        )
 
     # -- config -----------------------------------------------------------
 
+    @property
+    def _marker_enabled(self) -> bool | None:
+        if self.profile == "scan":
+            return True
+        if self.profile == "default":
+            return False
+        return None
+
+    def preflight(self) -> dict[str, object]:
+        """Bind one profile to a matching, local-only BE runtime before execution."""
+        _ap_env(marker_enabled=self._marker_enabled)
+        marker_available = marker_san_sang()
+        self._marker_available = marker_available
+        if (
+            self._marker_expected is not None
+            and marker_available is not self._marker_expected
+        ):
+            raise ProfileEnvironmentError(
+                f"{self.name}: marker_available={marker_available}, "
+                f"profile requires {self._marker_expected}"
+            )
+
+        pipeline = nap_pipeline(marker_enabled=self._marker_enabled)
+        from app.config import get_settings  # noqa: PLC0415
+
+        self._config = kiem_config(
+            get_settings, marker_enabled=self._marker_enabled
+        )
+        self._pipeline = pipeline
+        self._preflight_complete = True
+        return self.config_fingerprint()
+
+    def configure_hardware(self, hardware: str) -> str:
+        if hardware not in {"cpu", "gpu"}:
+            raise ValueError("Sovereign hardware phải là 'cpu' hoặc 'gpu'")
+        if hardware == "gpu":
+            raise RuntimeError(
+                "Sovereign GPU/CUDA bị từ chối: BE Marker path không có handshake "
+                "enforce/verify CUDA đáng tin cậy"
+            )
+        self._hardware_verified = False
+        self.preflight()
+        self._hardware = "cpu"
+        self._hardware_verified = True
+        return "cpu"
+
     def _nap(self) -> Callable[..., dict]:
+        if self.profile != "legacy" and not self._hardware_verified:
+            raise ProfileEnvironmentError(
+                f"{self.name}: phải configure_hardware('cpu') trước document execution"
+            )
         if self._pipeline is None:
-            self._pipeline = nap_pipeline()
+            self._pipeline = nap_pipeline(marker_enabled=self._marker_enabled)
             from app.config import get_settings  # noqa: PLC0415
 
-            self._config = kiem_config(get_settings)
+            self._config = kiem_config(
+                get_settings, marker_enabled=self._marker_enabled
+            )
         return self._pipeline
 
     def version(self) -> str:
-        """Không có số phiên bản nào cho "pipeline BE" — dùng commit của repo BE."""
-        import subprocess  # noqa: PLC0415
-
-        try:
-            r = subprocess.run(
-                ["git", "-C", str(duong_dan_be()), "rev-parse", "--short", "HEAD"],
-                capture_output=True,
-                text=True,
-                timeout=10,
-            )
-            return r.stdout.strip() or "unknown" if r.returncode == 0 else "unknown"
-        except BaseException:  # noqa: BLE001 — version() không được ném, xem marker_san_sang
-            return "unknown"
+        """Không có package version cho pipeline BE — dùng full Git commit."""
+        return str(_be_git_metadata()["commit"])
 
     def config_fingerprint(self) -> dict[str, object]:
         """AC-03 — **bắt buộc không rỗng**.
@@ -277,14 +537,30 @@ class SovereignAdapter(Adapter):
         API hay không, Marker có sẵn hay không. Thiếu ``marker_available`` thì hai lượt
         chạy chênh nhau hàng chục lần thời gian trông như cùng một thứ.
         """
-        co_marker = marker_san_sang()
-        return {
+        co_marker = self._marker_available
+        git = _be_git_metadata()
+        safe_config = {
+            **_plain(self.identity.config),
             **(self._config or {}),
+        }
+        return {
+            **safe_config,
             "mode": "full" if co_marker else "light",
             "marker_available": co_marker,
-            "env_forced": dict(ENV_CUONG_BUC),
-            "be_path": str(duong_dan_be()),
+            "marker_model_cache": co_marker,
+            "marker_version": _marker_version(),
+            "be_commit": git["commit"],
+            "be_dirty": git["dirty"],
             "python": sys.version.split()[0],
+            "profile_config_sha256": self.identity.profile_config_sha256,
+            "hardware": "cpu",
+            "device": "cpu" if self._hardware_verified else "unverified",
+            "hardware_evidence_version": 1,
+            "device_evidence": (
+                "be-settings-ocr-device-cpu"
+                if self._hardware_verified
+                else "none"
+            ),
             "tran_giay_moi_tai_lieu": self.tran_giay_moi_tai_lieu,
             "tran_giay_tong": self.tran_giay_tong,
             "tran_so_tai_lieu": self.tran_so_tai_lieu,
@@ -327,9 +603,22 @@ class SovereignAdapter(Adapter):
         self._kiem_tran_sau(giay, doc_path.stem)
 
         van_ban = ket.get("fullText") or ""
+        if not isinstance(van_ban, str):
+            van_ban = str(van_ban)
+        van_ban = _sanitize_runtime_text(van_ban, self._sensitive_values)
         thanh_cong = bool(ket.get("success"))
+        raw_bytes = _canonical_response_bytes(thanh_cong, van_ban)
+        error = None
+        if not thanh_cong:
+            error = _sanitize_runtime_text(
+                f"{ket.get('error_code') or 'ocr.failed'}: "
+                f"{ket.get('message') or 'không rõ'}",
+                self._sensitive_values,
+            )
         return OcrResult(
             engine=self.name,
+            engine_family=self.engine_family,
+            profile=self.profile,
             engine_version=self.version(),
             doc_id=doc_path.stem,
             capabilities=self.capabilities,
@@ -337,11 +626,12 @@ class SovereignAdapter(Adapter):
             # `success=False` có `error_code` riêng (ocr.markerFailed, ocr.pdfEncrypted…),
             # giữ nguyên mã đó chứ không gộp thành "lỗi".
             text_md=van_ban if thanh_cong else None,
+            raw_artifacts=(
+                RawArtifact("sovereign.json", "application/json", raw_bytes),
+            ),
             seconds=giay,
             failed=not thanh_cong,
-            error=None
-            if thanh_cong
-            else f"{ket.get('error_code') or 'ocr.failed'}: {ket.get('message') or 'không rõ'}",
+            error=error,
             failure_kind=None if thanh_cong else FailureKind.ENGINE_ERROR,
             config_fingerprint=self.config_fingerprint(),
         )

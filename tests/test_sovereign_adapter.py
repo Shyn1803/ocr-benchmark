@@ -15,6 +15,7 @@ Test cần BE thật đánh dấu ``needs_be``.
 
 from __future__ import annotations
 
+import json
 import os
 from functools import lru_cache
 from pathlib import Path
@@ -22,6 +23,7 @@ from types import SimpleNamespace as NS
 
 import pytest
 
+import ocr_bench.adapters.sovereign as sov
 from ocr_bench.adapters.sovereign import (
     ENV_CUONG_BUC,
     SovereignAdapter,
@@ -29,7 +31,12 @@ from ocr_bench.adapters.sovereign import (
     duong_dan_be,
     kiem_config,
 )
+from ocr_bench.profiles import EngineProfile, ProfileConfigError, load_profile_catalog
 from ocr_bench.types import Capability
+
+ROOT = Path(__file__).resolve().parents[1]
+CATALOG = load_profile_catalog(ROOT / "configs" / "profiles.json")
+
 
 def _co_be() -> bool:
     """Có repo BE **và** có bao đóng import của nó.
@@ -58,7 +65,11 @@ def _settings(**kw):
         "ocr_use_local_first": False,
         "ocr_use_vision_api": False,
         "openrouter_api_key": "",
+        "openrouter_api_url": "",
+        "groq_api_key": "",
         "gdoc_parser_url": "",
+        "ocr_device": "cpu",
+        "ocr_enable_marker_on_cpu": False,
     }
     return lru_cache()(lambda: NS(**{**mac_dinh, **kw}))
 
@@ -125,6 +136,23 @@ def test_kiem_config_nem_khi_con_khoa_api():
         kiem_config(_settings(openrouter_api_key="sk-that-25-ky-tu-xxxx"))
 
 
+@pytest.mark.parametrize(
+    ("unsafe", "match"),
+    [
+        (
+            {"openrouter_api_url": "https://paid.example/v1?token=raw"},
+            "remote_url_present",
+        ),
+        ({"gdoc_parser_url": "http://paid.example/parser"}, "remote_url_present"),
+        ({"groq_api_key": "seeded-groq-value"}, "api_key_present"),
+    ],
+)
+def test_kiem_config_nem_khi_con_remote_url_hoac_groq_key(unsafe, match):
+    """Removing any resolved URL/key check would re-enable an external call path."""
+    with pytest.raises(VuotTran, match=match):
+        kiem_config(_settings(**unsafe))
+
+
 def test_kiem_config_xoa_cache_lru():
     """``get_settings`` có ``@lru_cache()``.
 
@@ -141,7 +169,10 @@ def test_kiem_config_xoa_cache_lru():
             ocr_use_local_first=False,
             ocr_use_vision_api=False,
             openrouter_api_key="",
+            openrouter_api_url="",
+            groq_api_key="",
             gdoc_parser_url="",
+            ocr_device="cpu",
         )
 
     get_settings()  # nạp cache "cũ"
@@ -210,10 +241,20 @@ def test_vuot_tran_khong_bi_execute_nuot(tmp_path: Path):
 
 def test_fingerprint_khong_rong_va_du_truong():
     fp = SovereignAdapter().config_fingerprint()
-    for truong in ("mode", "marker_available", "env_forced", "be_path", "python"):
+    for truong in (
+        "mode",
+        "marker_available",
+        "be_commit",
+        "be_dirty",
+        "marker_version",
+        "marker_model_cache",
+        "python",
+    ):
         assert truong in fp, truong
     assert fp["mode"] in ("light", "full")
     assert isinstance(fp["marker_available"], bool)
+    assert "be_path" not in fp
+    assert "env_forced" not in fp
 
 
 def test_fingerprint_khong_chua_gia_tri_khoa():
@@ -229,6 +270,189 @@ def test_fingerprint_khong_chua_gia_tri_khoa():
 def test_fingerprint_ghi_ca_tran():
     fp = SovereignAdapter(tran_giay_tong=99.0).config_fingerprint()
     assert fp["tran_giay_tong"] == 99.0
+
+
+# --------------------------------------------------------------------------
+# Task 6 — frozen publication profiles and fail-closed environment gates
+# --------------------------------------------------------------------------
+
+
+def test_sovereign_profiles_bind_exact_identity_and_config():
+    default = SovereignAdapter.from_profile(CATALOG["sovereign_default"])
+    scan = SovereignAdapter.from_profile(CATALOG["sovereign_scan"])
+
+    assert (default.name, default.engine_family, default.profile) == (
+        "sovereign_default",
+        "sovereign",
+        "default",
+    )
+    assert (scan.name, scan.engine_family, scan.profile) == (
+        "sovereign_scan",
+        "sovereign",
+        "scan",
+    )
+    assert default.config_fingerprint()["profile_config_sha256"] == CATALOG[
+        "sovereign_default"
+    ].fingerprint
+    assert scan.config_fingerprint()["profile_config_sha256"] == CATALOG[
+        "sovereign_scan"
+    ].fingerprint
+
+
+def test_sovereign_profile_rejects_catalog_drift():
+    source = CATALOG["sovereign_scan"]
+    changed = EngineProfile(
+        name=source.name,
+        family=source.family,
+        profile=source.profile,
+        adapter=source.adapter,
+        config={"ocr_use_vision_api": False, "api_enabled": True},
+        environment=source.environment,
+    )
+    with pytest.raises(ProfileConfigError, match="config"):
+        SovereignAdapter.from_profile(changed)
+
+
+def test_sovereign_default_refuses_marker_environment(monkeypatch):
+    monkeypatch.setattr(sov, "marker_san_sang", lambda: True)
+    adapter = SovereignAdapter.from_profile(CATALOG["sovereign_default"])
+
+    with pytest.raises(sov.ProfileEnvironmentError, match="marker_available"):
+        adapter.preflight()
+
+
+def test_sovereign_scan_requires_marker(monkeypatch):
+    monkeypatch.setattr(sov, "marker_san_sang", lambda: False)
+    adapter = SovereignAdapter.from_profile(CATALOG["sovereign_scan"])
+
+    with pytest.raises(sov.ProfileEnvironmentError, match="marker_available"):
+        adapter.preflight()
+
+
+def test_sovereign_rejects_gpu_without_claiming_device(monkeypatch):
+    adapter = SovereignAdapter.from_profile(CATALOG["sovereign_scan"])
+    called = False
+
+    def forbidden_preflight():
+        nonlocal called
+        called = True
+
+    monkeypatch.setattr(adapter, "preflight", forbidden_preflight)
+    with pytest.raises(RuntimeError, match="GPU|CUDA|verify"):
+        adapter.configure_hardware("gpu")
+    assert called is False
+    assert adapter.config_fingerprint()["device"] == "unverified"
+
+
+def test_sovereign_cpu_configuration_records_versioned_evidence(monkeypatch):
+    adapter = SovereignAdapter.from_profile(CATALOG["sovereign_default"])
+    monkeypatch.setattr(adapter, "preflight", lambda: adapter.config_fingerprint())
+
+    assert adapter.configure_hardware("cpu") == "cpu"
+    fingerprint = adapter.config_fingerprint()
+    assert fingerprint["hardware"] == "cpu"
+    assert fingerprint["device"] == "cpu"
+    assert fingerprint["hardware_evidence_version"] == 1
+    assert fingerprint["device_evidence"] == "be-settings-ocr-device-cpu"
+
+
+def _profile_adapter(
+    name: str,
+    response: dict[str, object],
+) -> SovereignAdapter:
+    adapter = SovereignAdapter.from_profile(CATALOG[name])
+    adapter._pipeline = lambda _data, _suffix, **_: response
+    adapter._config = kiem_config(
+        _settings(ocr_enable_marker_on_cpu=name.endswith("_scan")),
+        marker_enabled=name.endswith("_scan"),
+    )
+    adapter._preflight_complete = True
+    adapter._hardware = "cpu"
+    adapter._hardware_verified = True
+    adapter._marker_available = name.endswith("_scan")
+    return adapter
+
+
+@pytest.mark.parametrize(
+    ("name", "success"),
+    [("sovereign_default", True), ("sovereign_scan", False)],
+)
+def test_sovereign_result_keeps_profile_identity_for_success_and_failure(
+    tmp_path, name, success
+):
+    response: dict[str, object] = {"success": success, "fullText": "public text"}
+    if not success:
+        response.update(error_code="ocr.markerFailed", message="cache failure")
+    result = _profile_adapter(name, response).run(_pdf(tmp_path))
+
+    assert (result.engine, result.engine_family, result.profile) == (
+        name,
+        "sovereign",
+        CATALOG[name].profile,
+    )
+    assert result.raw_artifacts[0].name == "sovereign.json"
+    assert result.raw_artifacts[0].data == json.dumps(
+        {"fullText": "public text", "success": success},
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+
+
+def test_sovereign_raw_fingerprint_and_error_redact_seeded_secrets(
+    tmp_path, monkeypatch
+):
+    openrouter = "seeded-openrouter-value-123"
+    groq = "seeded-groq-value-456"
+    monkeypatch.setenv("OPENROUTER_API_KEY", openrouter)
+    monkeypatch.setenv("GROQ_API_KEY", groq)
+    adapter = _profile_adapter(
+        "sovereign_default",
+        {
+            "success": False,
+            "fullText": f"leak {openrouter}",
+            "message": f"failed with {groq}",
+        },
+    )
+    result = adapter.run(_pdf(tmp_path))
+    serialized = b"\n".join(
+        [
+            result.raw_artifacts[0].data,
+            json.dumps(result.config_fingerprint, sort_keys=True).encode(),
+            (result.error or "").encode(),
+        ]
+    )
+
+    assert openrouter.encode() not in serialized
+    assert groq.encode() not in serialized
+    assert b"<redacted>" in serialized
+
+
+def test_sovereign_be_discovery_handles_nested_worktree(monkeypatch, tmp_path):
+    repo = tmp_path / "sovereign"
+    fake_module = (
+        repo
+        / "ocr-bench"
+        / ".worktrees"
+        / "ocr-parser-benchmark"
+        / "src"
+        / "ocr_bench"
+        / "adapters"
+        / "sovereign.py"
+    )
+    expected = repo / "adminPortal" / "back-end-admin-portal"
+    expected.mkdir(parents=True)
+    monkeypatch.delenv("SOVEREIGN_BE_PATH", raising=False)
+    monkeypatch.setattr(sov, "__file__", str(fake_module))
+
+    assert duong_dan_be() == expected.resolve()
+
+
+def test_sovereign_be_explicit_path_remains_authoritative(monkeypatch, tmp_path):
+    explicit = tmp_path / "chosen"
+    monkeypatch.setenv("SOVEREIGN_BE_PATH", str(explicit))
+
+    assert duong_dan_be() == explicit.resolve()
 
 
 # --------------------------------------------------------------------------
