@@ -16,28 +16,29 @@ from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any, Sequence
 
-from packaging.specifiers import SpecifierSet
-from packaging.version import InvalidVersion, Version
-
-
 HOST = "127.0.0.1"
 PORT = 5002
 READINESS_TIMEOUT_SECONDS = 120.0
 MANIFEST_ENV = "OCR_BENCH_ODL_HYBRID_MANIFEST"
+DEFAULT_MANIFEST_PATH = (
+    Path(__file__).resolve().parents[1] / "build" / "odl-hybrid" / "manifest.json"
+)
 MANIFEST_SCHEMA_VERSION = 1
 LAUNCHER_VERSION = 1
 
 # distribution, accepted versions, user-facing locked requirement
 REQUIREMENTS = (
     ("docling", ">=2.91.0", "docling>=2.91.0"),
-    ("easyocr", ">=0", "easyocr (required by docling[easyocr])"),
+    ("easyocr", ">=1.7,<2", "easyocr>=1.7,<2"),
     ("fastapi", ">=0.136.1", "fastapi>=0.136.1"),
     (
         "opendataloader-pdf",
         "==2.5.0",
         "opendataloader-pdf[hybrid]==2.5.0",
     ),
+    ("packaging", ">=23", "packaging>=23"),
     ("pypdf", ">=5", "pypdf>=5"),
+    ("psutil", ">=5", "psutil>=5"),
     ("python-multipart", ">=0.0.28", "python-multipart>=0.0.28"),
     ("uvicorn", ">=0.46.0", "uvicorn>=0.46.0"),
 )
@@ -52,15 +53,57 @@ def _distribution_version(name: str) -> str | None:
 
 def dependency_report() -> dict[str, object]:
     """Resolve and validate every dependency required by the publication server."""
-    versions: dict[str, str] = {}
-    missing: list[str] = []
+    versions = {
+        distribution: installed
+        for distribution, _specifier, _requirement in REQUIREMENTS
+        if (installed := _distribution_version(distribution)) is not None
+    }
+    missing = [
+        requirement
+        for distribution, _specifier, requirement in REQUIREMENTS
+        if distribution not in versions
+    ]
     incompatible: list[dict[str, str]] = []
+
+    packaging_version = versions.get("packaging")
+    if packaging_version is None:
+        return {
+            "missing": sorted(missing),
+            "incompatible": [],
+            "versions": dict(sorted(versions.items())),
+        }
+    try:
+        packaging_major = int(packaging_version.split(".", 1)[0])
+    except ValueError:
+        packaging_major = -1
+    if packaging_major < 23:
+        incompatible.append(
+            {"installed": packaging_version, "requirement": "packaging>=23"}
+        )
+        return {
+            "missing": sorted(missing),
+            "incompatible": incompatible,
+            "versions": dict(sorted(versions.items())),
+        }
+
+    # Import only after metadata proves a supported packaging distribution exists.
+    try:
+        from packaging.specifiers import SpecifierSet  # noqa: PLC0415
+        from packaging.version import InvalidVersion, Version  # noqa: PLC0415
+    except ImportError:
+        incompatible.append(
+            {"installed": packaging_version, "requirement": "packaging>=23"}
+        )
+        return {
+            "missing": sorted(missing),
+            "incompatible": incompatible,
+            "versions": dict(sorted(versions.items())),
+        }
+
     for distribution, specifier, requirement in REQUIREMENTS:
-        installed = _distribution_version(distribution)
+        installed = versions.get(distribution)
         if installed is None:
-            missing.append(requirement)
             continue
-        versions[distribution] = installed
         try:
             accepted = Version(installed) in SpecifierSet(specifier)
         except InvalidVersion:
@@ -243,6 +286,30 @@ def _write_manifest(path: Path, payload: dict[str, object]) -> None:
     path.write_bytes(_canonical_bytes(payload))
 
 
+def resolve_manifest_path(cli_path: Path | None) -> Path:
+    if cli_path is not None:
+        return cli_path.resolve()
+    if environment_path := os.environ.get(MANIFEST_ENV):
+        return Path(environment_path).resolve()
+    return DEFAULT_MANIFEST_PATH.resolve()
+
+
+def _remove_owned_manifest(path: Path, expected_sha256: str) -> None:
+    """Remove only the exact manifest bytes written by this launcher instance."""
+    try:
+        current = path.read_bytes()
+    except FileNotFoundError:
+        return
+    except OSError:
+        return
+    if hashlib.sha256(current).hexdigest() != expected_sha256:
+        return
+    try:
+        path.unlink()
+    except FileNotFoundError:
+        return
+
+
 def serve_until_interrupted(process: subprocess.Popen[bytes]) -> None:
     try:
         process.wait()
@@ -266,7 +333,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--check-only", action="store_true")
     parser.add_argument("--host", default=HOST)
     parser.add_argument("--port", type=int, default=PORT)
-    parser.add_argument("--manifest", type=Path, default=Path("run-manifest.json"))
+    parser.add_argument("--manifest", type=Path)
     args = parser.parse_args(argv)
 
     report = dependency_report()
@@ -290,6 +357,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     child_env = os.environ.copy()
     child_env["CUDA_VISIBLE_DEVICES"] = ""
     process = subprocess.Popen(command, env=child_env)
+    manifest: Path | None = None
+    manifest_sha256: str | None = None
     try:
         health, listener_pids = wait_until_ready(
             process=process,
@@ -314,13 +383,18 @@ def main(argv: Sequence[str] | None = None) -> int:
             "versions": report["versions"],
         }
         payload["run_id"] = hashlib.sha256(_canonical_bytes(payload)).hexdigest()
-        manifest = args.manifest.resolve()
+        manifest = resolve_manifest_path(args.manifest)
         _write_manifest(manifest, payload)
-        os.environ[MANIFEST_ENV] = str(manifest)
+        manifest_sha256 = hashlib.sha256(manifest.read_bytes()).hexdigest()
+        print(f"Hybrid manifest: {manifest}", flush=True)
+        escaped = str(manifest).replace("'", "''")
+        print(f"PowerShell: $env:{MANIFEST_ENV}='{escaped}'", flush=True)
         serve_until_interrupted(process)
         return process.poll() or 0
     finally:
         _stop_process(process)
+        if manifest is not None and manifest_sha256 is not None:
+            _remove_owned_manifest(manifest, manifest_sha256)
 
 
 if __name__ == "__main__":

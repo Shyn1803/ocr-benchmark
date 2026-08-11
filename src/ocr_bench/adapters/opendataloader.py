@@ -83,6 +83,12 @@ __all__ = [
 ]
 
 HYBRID_MANIFEST_ENV = "OCR_BENCH_ODL_HYBRID_MANIFEST"
+DEFAULT_HYBRID_MANIFEST_PATH = (
+    Path(__file__).resolve().parents[3]
+    / "build"
+    / "odl-hybrid"
+    / "manifest.json"
+)
 HYBRID_HOST = "127.0.0.1"
 HYBRID_PORT = 5002
 HYBRID_URL = "http://127.0.0.1:5002"
@@ -107,10 +113,12 @@ HYBRID_ARGV_TAIL = [
 ]
 HYBRID_VERSION_SPECS = {
     "docling": ">=2.91.0",
-    "easyocr": ">=0",
+    "easyocr": ">=1.7,<2",
     "fastapi": ">=0.136.1",
     "opendataloader-pdf": "==2.5.0",
+    "packaging": ">=23",
     "pypdf": ">=5",
+    "psutil": ">=5",
     "python-multipart": ">=0.0.28",
     "uvicorn": ">=0.46.0",
 }
@@ -485,12 +493,9 @@ def _validate_hybrid_versions(versions: object) -> dict[str, str]:
 
 
 def _validated_hybrid_manifest() -> dict[str, object]:
-    manifest_value = os.environ.get(HYBRID_MANIFEST_ENV)
-    if not manifest_value:
-        raise RuntimeError(
-            f"{HYBRID_MANIFEST_ENV} must point to the owned hybrid launcher manifest"
-        )
-    manifest_path = Path(manifest_value)
+    manifest_path = Path(
+        os.environ.get(HYBRID_MANIFEST_ENV, str(DEFAULT_HYBRID_MANIFEST_PATH))
+    )
     try:
         raw = manifest_path.read_bytes()
         payload = json.loads(raw)
@@ -588,6 +593,7 @@ def _validated_hybrid_manifest() -> dict[str, object]:
         "manifest_path": str(manifest_path.resolve()),
         "manifest_sha256": hashlib.sha256(raw).hexdigest(),
         "run_id": run_id,
+        "url": HYBRID_URL,
         "pid": pid,
         "process_create_time": float(create_time),
         "listener_pids": owned,
@@ -829,6 +835,7 @@ class OpenDataLoaderAdapter(Adapter):
         self.include_header_footer = include_header_footer
         self._hardware: Literal["cpu"] = "cpu"
         self._hybrid_evidence: dict[str, object] | None = None
+        self._hybrid_evidence_current = False
 
     @classmethod
     def from_profile(cls, profile: EngineProfile) -> "OpenDataLoaderAdapter":
@@ -896,18 +903,52 @@ class OpenDataLoaderAdapter(Adapter):
                 "or hybrid /health endpoint"
             )
         if self.profile == "scan":
-            self._hybrid_evidence = _validated_hybrid_manifest()
+            try:
+                candidate = _validated_hybrid_manifest()
+                if self._hybrid_evidence is None:
+                    self._hybrid_evidence = candidate
+                else:
+                    self._require_same_hybrid_identity(candidate)
+            except RuntimeError:
+                self._hybrid_evidence_current = False
+                raise
+            self._hybrid_evidence_current = True
         self._hardware = "cpu"
         return "cpu"
 
     def _refresh_hybrid_evidence(self) -> dict[str, object]:
+        if self._hybrid_evidence is None:
+            raise RuntimeError(
+                "OpenDataLoader scan requires configure_hardware('cpu') before run"
+            )
         try:
-            evidence = _validated_hybrid_manifest()
-        except Exception:
-            self._hybrid_evidence = None
+            candidate = _validated_hybrid_manifest()
+            self._require_same_hybrid_identity(candidate)
+        except RuntimeError:
+            self._hybrid_evidence_current = False
             raise
-        self._hybrid_evidence = evidence
-        return evidence
+        self._hybrid_evidence_current = True
+        return self._hybrid_evidence
+
+    def _require_same_hybrid_identity(self, candidate: Mapping[str, object]) -> None:
+        assert self._hybrid_evidence is not None
+        identity_fields = (
+            "manifest_sha256",
+            "run_id",
+            "pid",
+            "process_create_time",
+            "url",
+        )
+        changed = [
+            field
+            for field in identity_fields
+            if candidate.get(field) != self._hybrid_evidence.get(field)
+        ]
+        if changed:
+            raise RuntimeError(
+                "OpenDataLoader hybrid manifest identity rebind rejected: "
+                + ", ".join(changed)
+            )
 
     @staticmethod
     def _odl_version() -> str:
@@ -929,13 +970,6 @@ class OpenDataLoaderAdapter(Adapter):
         return self._odl_version()
 
     def config_fingerprint(self) -> dict[str, object]:
-        if self.profile == "scan" and self._hybrid_evidence is not None:
-            try:
-                self._hybrid_evidence = _validated_hybrid_manifest()
-            except RuntimeError:
-                # Failure records must remain constructible and must not retain stale
-                # CPU ownership claims after the launcher evidence becomes invalid.
-                self._hybrid_evidence = None
         config = _plain(self.identity.config)
         assert isinstance(config, dict)
         fingerprint = {
@@ -956,7 +990,11 @@ class OpenDataLoaderAdapter(Adapter):
             fingerprint["table_method"] = self.table_method
         if self.reading_order is not None:
             fingerprint["reading_order"] = self.reading_order
-        if self.profile == "scan" and self._hybrid_evidence is not None:
+        if (
+            self.profile == "scan"
+            and self._hybrid_evidence is not None
+            and self._hybrid_evidence_current
+        ):
             evidence = self._hybrid_evidence
             versions = evidence["versions"]
             config_evidence = evidence["config"]
@@ -976,6 +1014,8 @@ class OpenDataLoaderAdapter(Adapter):
                     "opendataloader_version": versions["opendataloader-pdf"],
                     "docling_version": versions["docling"],
                     "easyocr_version": versions["easyocr"],
+                    "pypdf_version": versions["pypdf"],
+                    "hybrid_dependency_versions": dict(versions),
                     "hybrid_server_versions": {
                         name: versions[name]
                         for name in ("fastapi", "python-multipart", "uvicorn")

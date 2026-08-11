@@ -43,7 +43,9 @@ HYBRID_VERSIONS = {
     "easyocr": "1.7.2",
     "fastapi": "0.136.1",
     "opendataloader-pdf": "2.5.0",
+    "packaging": "25.0",
     "pypdf": "5.0.0",
+    "psutil": "7.0.0",
     "python-multipart": "0.0.28",
     "uvicorn": "0.46.0",
 }
@@ -77,9 +79,18 @@ class _HybridProcess:
         return list(self._cmdline)
 
 
-def _hybrid_runtime(monkeypatch, module, tmp_path, *, payload_changes=None, process=None):
-    child = _HybridProcess(4243, listening=True)
-    root = process or _HybridProcess(4242, children=[child])
+def _hybrid_runtime(
+    monkeypatch,
+    module,
+    tmp_path,
+    *,
+    payload_changes=None,
+    process=None,
+    pid=4242,
+    use_env=True,
+):
+    child = _HybridProcess(pid + 1, listening=True)
+    root = process or _HybridProcess(pid, children=[child])
     processes = {root.pid: root, child.pid: child}
     fake_psutil = SimpleNamespace(
         CONN_LISTEN="LISTEN",
@@ -114,9 +125,9 @@ def _hybrid_runtime(monkeypatch, module, tmp_path, *, payload_changes=None, proc
         "health": {"status": "ok"},
         "host": "127.0.0.1",
         "launcher_version": 1,
-        "listener_pids": [4243],
+        "listener_pids": [pid + 1],
         "manifest_schema_version": 1,
-        "pid": 4242,
+        "pid": pid,
         "port": 5002,
         "process_create_time": 1234.5,
         "url": "http://127.0.0.1:5002",
@@ -138,7 +149,11 @@ def _hybrid_runtime(monkeypatch, module, tmp_path, *, payload_changes=None, proc
             + "\n"
         ).encode("utf-8")
     )
-    monkeypatch.setenv(module.HYBRID_MANIFEST_ENV, str(manifest))
+    if use_env:
+        monkeypatch.setenv(module.HYBRID_MANIFEST_ENV, str(manifest))
+    else:
+        monkeypatch.delenv(module.HYBRID_MANIFEST_ENV, raising=False)
+        monkeypatch.setattr(module, "DEFAULT_HYBRID_MANIFEST_PATH", manifest)
     monkeypatch.setattr(module, "_load_psutil", lambda: fake_psutil)
     monkeypatch.setattr(
         module, "_health_payload", lambda *_args, **_kwargs: {"status": "ok"}
@@ -689,13 +704,16 @@ def test_opendataloader_gpu_fails_when_runtime_cannot_prove_device():
         adapter.configure_hardware("gpu")
 
 
-def test_opendataloader_scan_requires_manifest_for_cpu_configuration(monkeypatch):
+def test_opendataloader_scan_requires_manifest_for_cpu_configuration(monkeypatch, tmp_path):
     import ocr_bench.adapters.opendataloader as module
 
     monkeypatch.delenv(module.HYBRID_MANIFEST_ENV, raising=False)
+    monkeypatch.setattr(
+        module, "DEFAULT_HYBRID_MANIFEST_PATH", tmp_path / "missing.json"
+    )
     adapter = OpenDataLoaderAdapter.from_profile(CATALOG["opendataloader_scan"])
 
-    with pytest.raises(RuntimeError, match="OCR_BENCH_ODL_HYBRID_MANIFEST"):
+    with pytest.raises(RuntimeError, match="manifest is missing"):
         adapter.configure_hardware("cpu")
     assert adapter.config_fingerprint()["device"] == "unverified"
 
@@ -717,6 +735,8 @@ def test_opendataloader_scan_fingerprint_uses_validated_launcher_evidence(
     assert fingerprint["opendataloader_version"] == "2.5.0"
     assert fingerprint["docling_version"] == "2.91.0"
     assert fingerprint["easyocr_version"] == "1.7.2"
+    assert fingerprint["pypdf_version"] == "5.0.0"
+    assert fingerprint["hybrid_dependency_versions"] == HYBRID_VERSIONS
     assert fingerprint["hybrid_server_versions"] == {
         "fastapi": "0.136.1",
         "python-multipart": "0.0.28",
@@ -806,6 +826,66 @@ def test_odl_scan_revalidates_manifest_before_each_run(monkeypatch, tmp_path):
     with pytest.raises(RuntimeError, match="manifest"):
         adapter.run(tmp_path / "sample.pdf")
     assert called is False
+
+
+def test_odl_scan_rejects_valid_live_manifest_rebind_after_configuration(
+    monkeypatch, tmp_path
+):
+    import ocr_bench.adapters.opendataloader as module
+
+    first = tmp_path / "first"
+    second = tmp_path / "second"
+    first.mkdir()
+    second.mkdir()
+    _hybrid_runtime(monkeypatch, module, first, pid=4242)
+    adapter = OpenDataLoaderAdapter.from_profile(CATALOG["opendataloader_scan"])
+    adapter.configure_hardware("cpu")
+    frozen = dict(adapter._hybrid_evidence)
+
+    _hybrid_runtime(monkeypatch, module, second, pid=5252)
+    called = False
+
+    def forbidden_cli(*_args, **_kwargs):
+        nonlocal called
+        called = True
+
+    monkeypatch.setattr(module, "chay_cli", forbidden_cli)
+    with pytest.raises(RuntimeError, match="identity|rebind"):
+        adapter.run(tmp_path / "sample.pdf")
+
+    assert called is False
+    assert adapter._hybrid_evidence == frozen
+    assert adapter.config_fingerprint()["device"] == "unverified"
+
+
+def test_odl_scan_uses_shared_default_manifest_without_process_local_env(
+    monkeypatch, tmp_path
+):
+    import ocr_bench.adapters.opendataloader as module
+
+    manifest = _hybrid_runtime(
+        monkeypatch, module, tmp_path, use_env=False
+    )
+    adapter = OpenDataLoaderAdapter.from_profile(CATALOG["opendataloader_scan"])
+
+    assert module.HYBRID_MANIFEST_ENV not in module.os.environ
+    assert adapter.configure_hardware("cpu") == "cpu"
+    assert adapter._hybrid_evidence["manifest_path"] == str(manifest.resolve())
+
+
+def test_odl_scan_environment_manifest_override_wins_over_default(
+    monkeypatch, tmp_path
+):
+    import ocr_bench.adapters.opendataloader as module
+
+    monkeypatch.setattr(
+        module, "DEFAULT_HYBRID_MANIFEST_PATH", tmp_path / "missing-default.json"
+    )
+    manifest = _hybrid_runtime(monkeypatch, module, tmp_path, use_env=True)
+    adapter = OpenDataLoaderAdapter.from_profile(CATALOG["opendataloader_scan"])
+
+    adapter.configure_hardware("cpu")
+    assert adapter._hybrid_evidence["manifest_path"] == str(manifest.resolve())
 
 
 def test_opendataloader_malformed_document_mapping_is_adapter_error():

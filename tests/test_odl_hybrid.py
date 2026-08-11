@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import importlib.util
+import ast
 import json
+import tomllib
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -16,7 +18,9 @@ VERSIONS = {
     "easyocr": "1.7.2",
     "fastapi": "0.136.1",
     "opendataloader-pdf": "2.5.0",
+    "packaging": "25.0",
     "pypdf": "5.0.0",
+    "psutil": "7.0.0",
     "python-multipart": "0.0.28",
     "uvicorn": "0.46.0",
 }
@@ -89,7 +93,14 @@ def test_hybrid_launcher_rejects_public_bind():
 def test_check_only_rejects_missing_and_incompatible_versions(monkeypatch, capsys):
     module = _launcher()
     installed = dict(VERSIONS)
-    installed.update({"opendataloader-pdf": "2.5.1", "fastapi": "0.100.0"})
+    installed.update(
+        {
+            "easyocr": "1.6.0",
+            "fastapi": "0.100.0",
+            "opendataloader-pdf": "2.5.1",
+            "pypdf": "4.9.0",
+        }
+    )
     installed.pop("python-multipart")
     monkeypatch.setattr(module, "_distribution_version", installed.get)
 
@@ -98,6 +109,10 @@ def test_check_only_rejects_missing_and_incompatible_versions(monkeypatch, capsy
     assert output["missing"] == ["python-multipart>=0.0.28"]
     assert output["incompatible"] == [
         {
+            "installed": "1.6.0",
+            "requirement": "easyocr>=1.7,<2",
+        },
+        {
             "installed": "0.100.0",
             "requirement": "fastapi>=0.136.1",
         },
@@ -105,8 +120,58 @@ def test_check_only_rejects_missing_and_incompatible_versions(monkeypatch, capsy
             "installed": "2.5.1",
             "requirement": "opendataloader-pdf[hybrid]==2.5.0",
         },
+        {
+            "installed": "4.9.0",
+            "requirement": "pypdf>=5",
+        },
     ]
-    assert output["versions"]["easyocr"] == "1.7.2"
+    assert output["versions"]["easyocr"] == "1.6.0"
+
+
+def test_check_only_reports_missing_packaging_and_psutil_without_crashing(
+    monkeypatch, capsys
+):
+    module = _launcher()
+    installed = dict(VERSIONS)
+    installed.pop("packaging")
+    installed.pop("psutil")
+    monkeypatch.setattr(module, "_distribution_version", installed.get)
+
+    assert module.main(["--check-only"]) == 2
+    output = json.loads(capsys.readouterr().out)
+    assert output["missing"] == ["packaging>=23", "psutil>=5"]
+    assert output["incompatible"] == []
+
+
+def test_check_only_rejects_too_old_packaging_before_version_parser_use(
+    monkeypatch, capsys
+):
+    module = _launcher()
+    installed = dict(VERSIONS, packaging="22.0")
+    monkeypatch.setattr(module, "_distribution_version", installed.get)
+
+    assert module.main(["--check-only"]) == 2
+    output = json.loads(capsys.readouterr().out)
+    assert output["incompatible"] == [
+        {"installed": "22.0", "requirement": "packaging>=23"}
+    ]
+
+
+def test_hybrid_extra_and_launcher_bootstrap_do_not_assume_packaging_installed():
+    extra = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))[
+        "project"
+    ]["optional-dependencies"]["opendataloader-hybrid"]
+    assert "easyocr>=1.7,<2" in extra
+    assert "packaging>=23" in extra
+    assert "psutil>=5" in extra
+
+    tree = ast.parse((ROOT / "scripts" / "run_odl_hybrid.py").read_text(encoding="utf-8"))
+    top_level_packaging_imports = [
+        node
+        for node in tree.body
+        if isinstance(node, ast.ImportFrom) and node.module.startswith("packaging")
+    ]
+    assert top_level_packaging_imports == []
 
 
 def test_stale_healthy_server_is_refused_before_spawn(monkeypatch, tmp_path):
@@ -148,8 +213,8 @@ def test_listener_ownership_accepts_child_and_rejects_foreign_process():
         )
 
 
-def test_owned_ready_server_writes_canonical_manifest_and_cleans_up(
-    monkeypatch, tmp_path
+def test_owned_ready_server_exposes_manifest_then_removes_it_on_cleanup(
+    monkeypatch, tmp_path, capsys
 ):
     module = _launcher()
 
@@ -186,11 +251,17 @@ def test_owned_ready_server_writes_canonical_manifest_and_cleans_up(
         return process
 
     monkeypatch.setattr(module.subprocess, "Popen", fake_popen)
-    monkeypatch.setattr(module, "serve_until_interrupted", lambda _process: None)
     manifest = tmp_path / "run-manifest.json"
+    active = {}
+
+    def inspect_while_active(_process):
+        active["raw"] = manifest.read_bytes()
+
+    monkeypatch.setattr(module, "serve_until_interrupted", inspect_while_active)
+    monkeypatch.delenv(module.MANIFEST_ENV, raising=False)
 
     assert module.main(["--manifest", str(manifest)]) == 0
-    raw = manifest.read_bytes()
+    raw = active["raw"]
     payload = json.loads(raw)
     assert raw == (
         json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
@@ -211,6 +282,25 @@ def test_owned_ready_server_writes_canonical_manifest_and_cleans_up(
     assert payload["versions"] == VERSIONS
     assert len(payload["run_id"]) == 64
     assert spawned["env"]["CUDA_VISIBLE_DEVICES"] == ""
-    assert module.MANIFEST_ENV in module.os.environ
-    assert Path(module.os.environ[module.MANIFEST_ENV]) == manifest.resolve()
+    output = capsys.readouterr().out
+    assert str(manifest.resolve()) in output
+    assert f"$env:{module.MANIFEST_ENV}" in output
+    assert module.MANIFEST_ENV not in module.os.environ
+    assert not manifest.exists()
     assert process.terminated and process.waited
+
+
+def test_manifest_path_precedence_supports_cross_process_default_and_overrides(
+    monkeypatch, tmp_path
+):
+    module = _launcher()
+    default = tmp_path / "build" / "odl-hybrid" / "manifest.json"
+    environment = tmp_path / "environment.json"
+    cli = tmp_path / "cli.json"
+    monkeypatch.setattr(module, "DEFAULT_MANIFEST_PATH", default)
+    monkeypatch.delenv(module.MANIFEST_ENV, raising=False)
+
+    assert module.resolve_manifest_path(None) == default.resolve()
+    monkeypatch.setenv(module.MANIFEST_ENV, str(environment))
+    assert module.resolve_manifest_path(None) == environment.resolve()
+    assert module.resolve_manifest_path(cli) == cli.resolve()
