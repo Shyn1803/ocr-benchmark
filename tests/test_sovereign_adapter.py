@@ -523,14 +523,21 @@ def test_sovereign_sanitized_wrapper_keeps_failure_taxonomy(
 
 
 def _marker_state(**changes):
+    """Dựng `MarkerRuntimeState` thật, không phải `SimpleNamespace`.
+
+    `marker_available` của lớp thật là **property dẫn xuất** từ hai cờ kia. Bản
+    `SimpleNamespace` cho phép đặt tay `marker_available=True` cùng lúc với
+    `package_available=False` — một trạng thái lớp thật không bao giờ tạo ra được —
+    nên chính công thức mà fingerprint dùng chưa bao giờ được test chạy qua.
+    """
     defaults = {
         "package_available": True,
         "model_cache_ready": True,
-        "marker_available": True,
         "runtime_loaded": False,
         "runtime_device": None,
     }
-    return NS(**{**defaults, **changes})
+    changes.pop("marker_available", None)
+    return sov.MarkerRuntimeState(**{**defaults, **changes})
 
 
 def test_sovereign_scan_cpu_rejects_preloaded_cuda_runtime():
@@ -755,3 +762,113 @@ def test_that_config_giai_ra_false_du_env_bao_true():
     assert s.ocr_use_vision_api is False
     assert not (s.openrouter_api_key or "").strip()
     assert os.environ["OCR_USE_VISION_API"] == "false"
+
+
+# ------------------------------------------------ vòng sửa 2: rò rỉ ngoài `run()`
+
+
+def test_preflight_wraps_backend_errors_before_they_reach_artifacts(monkeypatch):
+    """Lỗi lúc *nạp* BE cũng phải đi qua bộ lọc, không chỉ lỗi lúc chạy tài liệu.
+
+    `nap_pipeline()` gọi `get_settings()`; một `ValidationError` của pydantic in lại
+    **giá trị đầu vào** — và giá trị đầu vào ở đây chính là `.env` của BE. Trước fix
+    này nó đi thẳng ra `error` và `config_fingerprint.traceback` mà chỉ qua regex chung.
+    """
+    secret = "opaque-preflight-secret-77213"
+    monkeypatch.setenv("OPENROUTER_API_KEY", secret)
+    adapter = SovereignAdapter.from_profile(CATALOG["sovereign_default"])
+
+    def no_pipeline(**_kwargs):
+        raise ValueError(f"1 validation error for Settings: input={secret}")
+
+    monkeypatch.setattr(sov, "nap_pipeline", no_pipeline)
+    monkeypatch.setattr(
+        sov, "marker_runtime_state", lambda: _marker_state(
+            package_available=False, model_cache_ready=False
+        )
+    )
+
+    with pytest.raises(sov.SanitizedPipelineError) as thong_tin:
+        adapter.preflight()
+    assert secret not in str(thong_tin.value)
+    assert "<redacted>" in str(thong_tin.value)
+
+
+def test_preflight_still_raises_its_own_environment_error_unchanged(monkeypatch):
+    """Bọc lỗi BE không được nuốt lỗi *của bench*.
+
+    `configure_hardware` và runner bắt `ProfileEnvironmentError` theo kiểu; đổi kiểu
+    thì cổng "profile này không khớp runtime" im lặng biến mất.
+    """
+    adapter = SovereignAdapter.from_profile(CATALOG["sovereign_scan"])
+    monkeypatch.setattr(
+        sov, "marker_runtime_state", lambda: _marker_state(
+            package_available=False, model_cache_ready=False
+        )
+    )
+    with pytest.raises(sov.ProfileEnvironmentError):
+        adapter.preflight()
+
+
+def test_secret_inventory_survives_env_scrubbing_of_a_previous_profile(monkeypatch):
+    """Profile thứ hai phải bịt được đúng chuỗi mà profile đầu đã xoá khỏi env."""
+    secret = "opaque-two-profile-secret-31889"
+    monkeypatch.setenv("OPENROUTER_API_KEY", secret)
+    dau = SovereignAdapter.from_profile(CATALOG["sovereign_default"])
+    assert secret in dau._sensitive_values
+
+    sov._ap_env(marker_enabled=False)  # đúng thứ `preflight()` của profile #1 làm
+    assert not os.environ.get("OPENROUTER_API_KEY")
+
+    sau = SovereignAdapter.from_profile(CATALOG["sovereign_scan"])
+    assert secret in sau._sensitive_values
+
+
+def test_fingerprint_reports_redactions_made_to_the_scored_text(tmp_path, monkeypatch):
+    """Bịt chuỗi trong `text_md` làm điểm accuracy tụt — phải có dấu vết, không im lặng."""
+    secret = "opaque-inside-text-secret-40277"
+    monkeypatch.setenv("OPENROUTER_API_KEY", secret)
+
+    sach = _profile_adapter("sovereign_default", {"success": True, "fullText": "chỉ là văn bản"})
+    ket_sach = sach.execute(_pdf(tmp_path))
+    assert ket_sach.config_fingerprint["scored_text_redactions"] == 0
+
+    ban = _profile_adapter(
+        "sovereign_default", {"success": True, "fullText": f"tiêu đề {secret} kết"}
+    )
+    ket_ban = ban.execute(_pdf(tmp_path))
+    assert secret not in (ket_ban.text_md or "")
+    assert ket_ban.config_fingerprint["scored_text_redactions"] == 1
+
+
+def test_marker_runtime_device_is_probed_at_scoring_time(tmp_path, monkeypatch):
+    """`marker_runtime_*` phải là quan sát lúc chấm, không phải ảnh chụp preflight.
+
+    Mọi preflight chạy xong trước tài liệu đầu tiên, nên ảnh chụp ấy **luôn** rỗng —
+    204 dòng sẽ khai `runtime_device: null` kể cả khi Marker đã nạp model thật.
+    """
+    adapter = _profile_adapter("sovereign_scan", {"success": True, "fullText": "x"})
+    assert adapter._marker_state.runtime_device is None
+
+    monkeypatch.setattr(sov, "marker_runtime_live", lambda: (True, "cpu"))
+    dau_van_tay = adapter.execute(_pdf(tmp_path)).config_fingerprint
+    assert dau_van_tay["marker_runtime_loaded"] is True
+    assert dau_van_tay["marker_runtime_device"] == "cpu"
+    assert dau_van_tay["marker_preflight_runtime_device"] is None
+
+
+def test_model_ref_probe_reaches_devices_held_on_attributes():
+    """`_model_refs` thật là dict tên → predictor; device nằm ở thuộc tính của predictor."""
+    predictor = NS(model=NS(device="cuda:0"))
+    assert "cuda:0" in sov._model_ref_devices({"layout": predictor})
+
+
+def test_failure_classification_never_raises_from_a_hostile_engine():
+    class NoDoc(Exception):
+        @property
+        def failure_kind(self):
+            raise RuntimeError("engine thù địch")
+
+    from ocr_bench.adapters.base import classify_exception  # noqa: PLC0415
+
+    assert classify_exception(NoDoc()) is FailureKind.ENGINE_ERROR

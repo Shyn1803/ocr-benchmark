@@ -144,6 +144,79 @@ _SECRET_ENV_NAMES = (
 )
 _BE_EXECUTION_LOCK = threading.RLock()
 
+#: Tên biến *gợi ý* mang bí mật. Danh sách cứng `_SECRET_ENV_NAMES` chỉ phủ được cái
+#: adapter tự ép; BE nạp `.env` riêng của nó với `DB_PASSWORD`, `JWT_SECRET`,
+#: `MAIL_PASSWORD`, `SENTRY_DSN`… — không tên nào trong số đó có mặt ở `os.environ` của
+#: ocr-bench, nên nếu chỉ đọc env thì bộ giá trị cần thay khớp chính xác sẽ **rỗng** và
+#: cả cơ chế tụt về đúng cái regex mà nó sinh ra để đỡ lưng.
+_SECRET_NAME_HINTS = (
+    "key",
+    "secret",
+    "token",
+    "password",
+    "passwd",
+    "credential",
+    "dsn",
+)
+
+#: Giá trị ngắn hơn ngưỡng này không được thay khớp-chính-xác. `POSTGRES_PASSWORD=abc`
+#: mà đem thay mọi "abc" trong văn bản trích ra thì chỉ số chính xác tụt đi vì lý do
+#: không ai nhìn thấy — một kiểu hỏng tệ hơn cả rò rỉ, vì nó im lặng và làm sai số liệu.
+_DO_DAI_BI_MAT_TOI_THIEU = 12
+
+_SECRET_VALUES_LOCK = threading.Lock()
+_SECRET_VALUES: set[str] = set()
+
+
+def _co_ve_bi_mat(ten: str) -> bool:
+    t = ten.lower()
+    return ten in _SECRET_ENV_NAMES or any(g in t for g in _SECRET_NAME_HINTS)
+
+
+def _doc_env_be() -> dict[str, str]:
+    """Đọc `.env` của BE **chỉ để biết chuỗi nào cần bịt**. Không ghi, không lan ra.
+
+    Giá trị vào thẳng bộ thay-thế trong tiến trình và không bao giờ được ghi ra
+    artifact, log hay fingerprint. Không đọc thì `_sensitive_values` rỗng trong lượt
+    chạy thật, vì BE ghim `.env` theo đường dẫn chứ không theo `os.environ`.
+    """
+    ra: dict[str, str] = {}
+    try:
+        p = duong_dan_be() / ".env"
+        if not p.is_file():
+            return ra
+        for dong in p.read_text(encoding="utf-8", errors="replace").splitlines():
+            dong = dong.strip()
+            if not dong or dong.startswith("#") or "=" not in dong:
+                continue
+            ten, _, gia_tri = dong.partition("=")
+            ra[ten.strip()] = gia_tri.strip().strip("'\"")
+    except BaseException:  # noqa: BLE001 - thu thập bí mật không được làm hỏng lượt chạy
+        return {}
+    return ra
+
+
+def thu_thap_bi_mat() -> tuple[str, ...]:
+    """Bộ giá trị cần bịt, **chỉ lớn thêm** qua vòng đời tiến trình.
+
+    Chỉ-lớn-thêm là điểm mấu chốt: `preflight()` của profile đầu tiên gọi `_ap_env()`
+    xoá trắng bốn biến, nên adapter dựng sau đó mà tự đọc `os.environ` sẽ thu được
+    con số không. Một cơ chế an toàn tự tắt ở profile thứ hai, không cảnh báo, còn tệ
+    hơn là chưa từng có.
+    """
+    # Danh sách chứ không phải dict theo tên: `os.environ` và `.env` của BE hay có
+    # **cùng một tên với hai giá trị khác nhau**, và bịt cái này rồi bỏ cái kia thì
+    # đúng giá trị đang chạy mới là cái lọt ra.
+    ung_vien: list[str] = [
+        gia_tri for ten, gia_tri in os.environ.items() if _co_ve_bi_mat(ten)
+    ]
+    ung_vien += [v for t, v in _doc_env_be().items() if _co_ve_bi_mat(t)]
+    with _SECRET_VALUES_LOCK:
+        for gia_tri in ung_vien:
+            if gia_tri and len(gia_tri) >= _DO_DAI_BI_MAT_TOI_THIEU:
+                _SECRET_VALUES.add(gia_tri)
+        return tuple(sorted(_SECRET_VALUES, key=len, reverse=True))
+
 
 @dataclass(frozen=True, slots=True)
 class SovereignIdentity:
@@ -324,6 +397,10 @@ def _model_ref_devices(value: object) -> set[str]:
     """Read a bounded sample of cached model refs without moving or clearing models."""
     devices: set[str] = set()
     pending: list[tuple[object, int]] = [(value, 0)]
+    # `id()` chỉ là định danh duy nhất khi đối tượng còn sống. Giữ luôn tham chiếu ở
+    # `giu` để không có đối tượng nào bị thu hồi rồi một đối tượng khác tái dùng đúng
+    # id đó — nếu xảy ra, nhánh chứa `device` thật sẽ bị bỏ qua vì tưởng đã thăm.
+    giu: list[object] = []
     seen: set[int] = set()
     while pending and len(seen) < 64:
         current, depth = pending.pop()
@@ -331,6 +408,7 @@ def _model_ref_devices(value: object) -> set[str]:
         if marker in seen:
             continue
         seen.add(marker)
+        giu.append(current)
         if (device := _normalize_device(getattr(current, "device", None))) is not None:
             devices.add(device)
         parameters = getattr(current, "parameters", None)
@@ -349,6 +427,17 @@ def _model_ref_devices(value: object) -> set[str]:
             pending.extend((nested, depth + 1) for nested in list(current.values())[:32])
         elif isinstance(current, (list, tuple)):
             pending.extend((nested, depth + 1) for nested in current[:32])
+        else:
+            # `_model_refs` thật là dict tên → **predictor**, và predictor giữ model ở
+            # thuộc tính chứ không phải phần tử. Chỉ duyệt Mapping/list thì vòng lặp
+            # dừng ngay tại predictor và không bao giờ nhìn thấy device thật.
+            for ten in ("model", "models", "predictor", "processor"):
+                try:
+                    nested = getattr(current, ten, None)
+                except BaseException:  # noqa: BLE001 - probe phải fail-closed
+                    nested = None
+                if nested is not None:
+                    pending.append((nested, depth + 1))
     return devices
 
 
@@ -398,6 +487,33 @@ def marker_runtime_state() -> MarkerRuntimeState:
         runtime_loaded=runtime_loaded,
         runtime_device=runtime_device,
     )
+
+
+def marker_runtime_live() -> tuple[bool, str | None]:
+    """Đọc lại `(runtime_loaded, runtime_device)` **tại thời điểm gọi**.
+
+    `marker_runtime_state()` chỉ chạy trong `preflight()`, và mọi preflight đều xong
+    trước tài liệu đầu tiên — nên `_model_refs`/`_device_str` chắc chắn còn `None` lúc
+    đó. Dùng ảnh chụp ấy cho 204 dòng fingerprint thì cột `marker_runtime_device` luôn
+    `null` kể cả khi Marker đã nạp model và đang chạy trên thiết bị khác CPU: một
+    trường mang tên "runtime" nhưng không bao giờ quan sát runtime. Ở đây chỉ đọc hai
+    thuộc tính module — không nạp model, không đụng vào cache.
+    """
+    try:
+        with _be_read_only():
+            service = _load_marker_service()
+            model_refs = getattr(service, "_model_refs", None)
+            device = _normalize_device(getattr(service, "_device_str", None))
+    except BaseException:  # noqa: BLE001 - probe không được phép làm hỏng lượt chạy
+        return (False, None)
+    devices = set(_model_ref_devices(model_refs)) if model_refs is not None else set()
+    if device is not None:
+        devices.add(device)
+    if len(devices) == 1:
+        return (True, next(iter(devices)))
+    if len(devices) > 1:
+        return (True, "conflict:" + ",".join(sorted(devices)))
+    return (model_refs is not None, None)
 
 
 def marker_san_sang() -> bool:
@@ -499,12 +615,54 @@ def _be_git_metadata() -> dict[str, object]:
         return {"commit": "unknown", "dirty": None}
 
 
-def _sanitize_runtime_text(value: str, exact_secrets: tuple[str, ...]) -> str:
+def _sanitize_dem(value: str, exact_secrets: tuple[str, ...]) -> tuple[str, int]:
+    """Làm sạch và **đếm** số lần thay khớp-chính-xác.
+
+    Đếm để chỗ gọi có thể nói ra. Thay chuỗi trong `text_md` là can thiệp vào chính
+    thứ đang được chấm điểm; im lặng thì điểm tụt mà không có dấu vết nào giải thích.
+    """
     sanitized = sanitize_secret_text(value) or ""
+    dem = 0
     for secret in sorted(set(exact_secrets), key=len, reverse=True):
-        if secret:
+        if secret and len(secret) >= _DO_DAI_BI_MAT_TOI_THIEU and secret in sanitized:
+            dem += sanitized.count(secret)
             sanitized = sanitized.replace(secret, "<redacted>")
-    return sanitized
+    return sanitized, dem
+
+
+def _sanitize_runtime_text(value: str, exact_secrets: tuple[str, ...]) -> str:
+    return _sanitize_dem(value, exact_secrets)[0]
+
+
+#: Lỗi *của bench*, không phải của BE — không bọc, không làm sạch. Bọc chúng lại thì
+#: `preflight` mất kiểu ngoại lệ mà chỗ gọi đang bắt, và thông điệp chẩn đoán do chính
+#: repo này viết (vốn không chứa bí mật) bị thay bằng một lớp vỏ mờ.
+_LOI_NOI_BO: tuple[type[BaseException], ...] = (
+    ProfileConfigError,
+    ProfileEnvironmentError,
+    SanitizedPipelineError,
+    VuotTran,
+)
+
+
+@contextmanager
+def _boc_loi_be(secrets: tuple[str, ...]):
+    """Mọi lời gọi chạm BE đều phải nằm trong đây.
+
+    `nap_pipeline()` → `from app.config import get_settings` → `get_settings()`: một
+    `ValidationError` của pydantic in lại **giá trị đầu vào**, và trước fix này nó đi
+    thẳng ra `error` + `config_fingerprint.traceback` chỉ qua regex chung — đúng loại
+    bí mật đục mà regex không nhìn thấy.
+    """
+    try:
+        yield
+    except _LOI_NOI_BO:
+        raise
+    except Exception as exc:  # noqa: BLE001 - biên duy nhất giữa BE và artifact
+        raise SanitizedPipelineError(
+            _sanitize_runtime_text(f"{type(exc).__name__}: {exc}", secrets),
+            classify_exception(exc),
+        ) from None
 
 
 def _canonical_response_bytes(success: bool, full_text: str) -> bytes:
@@ -569,11 +727,17 @@ class SovereignAdapter(Adapter):
         self._preflight_complete = identity.profile == "legacy"
         self._hardware: Literal["cpu"] = "cpu"
         self._hardware_verified = False
-        self._sensitive_values = tuple(
-            value
-            for name in _SECRET_ENV_NAMES
-            if (value := os.environ.get(name))
-        )
+        self._text_redactions = 0
+        thu_thap_bi_mat()  # nạp sớm, trước khi `_ap_env` kịp xoá trắng env
+
+    @property
+    def _sensitive_values(self) -> tuple[str, ...]:
+        """Đọc lại mỗi lần dùng, không đóng băng lúc `__init__`.
+
+        Đóng băng làm bộ giá trị phụ thuộc thứ tự dựng adapter; đọc lại thì profile
+        thứ hai vẫn thấy đủ những gì profile thứ nhất đã thấy.
+        """
+        return thu_thap_bi_mat()
 
     @classmethod
     def from_profile(cls, profile: EngineProfile) -> "SovereignAdapter":
@@ -624,13 +788,14 @@ class SovereignAdapter(Adapter):
         self._marker_state = state
         self._validate_marker_runtime(state)
 
-        pipeline = nap_pipeline(marker_enabled=self._marker_enabled)
-        with _be_read_only():
-            from app.config import get_settings  # noqa: PLC0415
+        with _boc_loi_be(self._sensitive_values):
+            pipeline = nap_pipeline(marker_enabled=self._marker_enabled)
+            with _be_read_only():
+                from app.config import get_settings  # noqa: PLC0415
 
-            self._config = kiem_config(
-                get_settings, marker_enabled=self._marker_enabled
-            )
+                self._config = kiem_config(
+                    get_settings, marker_enabled=self._marker_enabled
+                )
         self._pipeline = pipeline
         self._preflight_complete = True
         return self.config_fingerprint()
@@ -683,13 +848,15 @@ class SovereignAdapter(Adapter):
                 f"{self.name}: phải configure_hardware('cpu') trước document execution"
             )
         if self._pipeline is None:
-            self._pipeline = nap_pipeline(marker_enabled=self._marker_enabled)
-            with _be_read_only():
-                from app.config import get_settings  # noqa: PLC0415
+            with _boc_loi_be(self._sensitive_values):
+                pipeline = nap_pipeline(marker_enabled=self._marker_enabled)
+                with _be_read_only():
+                    from app.config import get_settings  # noqa: PLC0415
 
-                self._config = kiem_config(
-                    get_settings, marker_enabled=self._marker_enabled
-                )
+                    self._config = kiem_config(
+                        get_settings, marker_enabled=self._marker_enabled
+                    )
+            self._pipeline = pipeline
         return self._pipeline
 
     def version(self) -> str:
@@ -705,6 +872,7 @@ class SovereignAdapter(Adapter):
         """
         marker_state = self._marker_state
         co_marker = marker_state.marker_available
+        runtime_loaded, runtime_device = marker_runtime_live()
         git = _be_git_metadata()
         safe_config = {
             **_plain(self.identity.config),
@@ -717,8 +885,11 @@ class SovereignAdapter(Adapter):
             "marker_package_available": marker_state.package_available,
             "marker_model_cache_ready": marker_state.model_cache_ready,
             "marker_model_cache": marker_state.model_cache_ready,
-            "marker_runtime_loaded": marker_state.runtime_loaded,
-            "marker_runtime_device": marker_state.runtime_device,
+            # Đọc lại lúc chấm, không dùng ảnh chụp preflight — xem `marker_runtime_live`.
+            "marker_runtime_loaded": runtime_loaded,
+            "marker_runtime_device": runtime_device,
+            "marker_preflight_runtime_loaded": marker_state.runtime_loaded,
+            "marker_preflight_runtime_device": marker_state.runtime_device,
             "marker_version": _marker_version(),
             "be_commit": git["commit"],
             "be_dirty": git["dirty"],
@@ -732,6 +903,10 @@ class SovereignAdapter(Adapter):
                 if self._hardware_verified
                 else "none"
             ),
+            # Bao nhiêu lần chuỗi bí mật bị thay **trong chính văn bản được chấm điểm**.
+            # Khác 0 nghĩa là điểm accuracy của tài liệu đó đã bị chính lớp bảo vệ này
+            # làm giảm; im lặng thì nó trông y hệt một lần OCR kém.
+            "scored_text_redactions": self._text_redactions,
             "tran_giay_moi_tai_lieu": self.tran_giay_moi_tai_lieu,
             "tran_giay_tong": self.tran_giay_tong,
             "tran_so_tai_lieu": self.tran_so_tai_lieu,
@@ -759,6 +934,7 @@ class SovereignAdapter(Adapter):
     # -- chạy -------------------------------------------------------------
 
     def run(self, doc_path: Path) -> OcrResult:
+        self._text_redactions = 0  # đếm lại từng tài liệu, không cộng dồn
         self._kiem_tran_truoc()
         pipeline = self._nap()
 
@@ -783,7 +959,8 @@ class SovereignAdapter(Adapter):
         van_ban = ket.get("fullText") or ""
         if not isinstance(van_ban, str):
             van_ban = str(van_ban)
-        van_ban = _sanitize_runtime_text(van_ban, self._sensitive_values)
+        van_ban, so_lan_bit = _sanitize_dem(van_ban, self._sensitive_values)
+        self._text_redactions = so_lan_bit
         thanh_cong = bool(ket.get("success"))
         raw_bytes = _canonical_response_bytes(thanh_cong, van_ban)
         error = None

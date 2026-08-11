@@ -37,7 +37,15 @@ def classify_exception(exc: BaseException) -> FailureKind:
     dồn hết vào `ENGINE_ERROR` và cột fail-rate mất nghĩa. Chỉ nhận đúng kiểu
     `FailureKind` — một chuỗi trùng tên không được tự phong.
     """
-    if isinstance(khai_bao := getattr(exc, "failure_kind", None), FailureKind):
+    # `getattr` ở đây chạy **bên trong** `except` của `execute()`. Một engine có
+    # `failure_kind` là property/`__getattr__` động và ném ra thứ khác `AttributeError`
+    # sẽ biến một dòng `failed=True` thành cú sập cả lượt 204 tài liệu — đúng điều mà
+    # docstring của `execute()` nói là không bao giờ được xảy ra.
+    try:
+        khai_bao = getattr(exc, "failure_kind", None)
+    except BaseException:  # noqa: BLE001 - phân loại lỗi không được phép tự gây lỗi
+        khai_bao = None
+    if isinstance(khai_bao, FailureKind):
         return khai_bao
     if isinstance(exc, AdapterOutputError):
         return FailureKind.ADAPTER_ERROR
