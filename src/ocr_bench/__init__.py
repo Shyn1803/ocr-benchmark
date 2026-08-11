@@ -9,6 +9,7 @@ from __future__ import annotations
 __version__ = "0.1.0"
 
 from ocr_bench import registry
+from ocr_bench.adapters.docling import DoclingAdapter
 from ocr_bench.adapters.marker import MarkerAdapter
 from ocr_bench.adapters.noop import NoopAdapter
 from ocr_bench.adapters.opendataloader import OpenDataLoaderAdapter
@@ -58,6 +59,11 @@ registry.register_adapter(PdfInspectorAdapter)
 # thì cưỡng bức `os.environ` TRƯỚC rồi mới import.
 registry.register_adapter(SovereignAdapter)
 
+# Task 4 — hai publication profile dùng chung adapter class. Tên đăng ký tĩnh là
+# ``docling``; ``from_profile`` gắn ``docling_default``/``docling_scan`` lên instance.
+# Module adapter không import optional package ở top level.
+registry.register_adapter(DoclingAdapter)
+
 # B1 — hai thước đo nền. `jiwer` là extra `metrics` và cũng được import lười (trong
 # `_doi()`), nên đăng ký ở đây không đòi máy phải cài nó.
 registry.register_metric(CerMetric)
@@ -96,6 +102,7 @@ registry.register_metric(BaselineMetric)
 __all__ = [
     "__version__",
     "registry",
+    "DoclingAdapter",
     "EngineProfile",
     "ProfileConfigError",
     "load_profile_catalog",
