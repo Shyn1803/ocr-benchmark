@@ -101,6 +101,11 @@ def tim_tai_lieu(corpus: str, limit: int | None, chi: str | None = None) -> list
 
 
 def main(argv: list[str] | None = None) -> int:
+    print(
+        "CẢNH BÁO: scripts/make_predictions.py chỉ dành cho developer smoke run; "
+        "không dùng cho publication.",
+        file=sys.stderr,
+    )
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument(
         "--engines",

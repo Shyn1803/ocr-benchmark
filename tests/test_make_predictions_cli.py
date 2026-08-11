@@ -57,3 +57,19 @@ def test_only_nem_khi_stem_khong_ton_tai():
 @needs_corpus
 def test_khong_only_thi_khong_doi_gi():
     assert mp.tim_tai_lieu("doclaynet", None, None) == mp.tim_tai_lieu("doclaynet", None)
+
+
+def test_developer_cli_warns_that_output_is_not_for_publication(tmp_path, capsys):
+    rc = mp.main(
+        [
+            "--engines",
+            "noop",
+            "--corpus",
+            "sample",
+            "--out",
+            str(tmp_path),
+        ]
+    )
+
+    assert rc == 0
+    assert "không dùng cho publication" in capsys.readouterr().err
