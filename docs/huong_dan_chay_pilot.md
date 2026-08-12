@@ -12,32 +12,42 @@ Tài liệu này hướng dẫn chi tiết cách chạy 6 profile (Docling, Open
 
 > 💡 **Mẹo phụ:** Nếu bạn không muốn máy tự động bốc 20 file đầu tiên, mà muốn **chỉ định đích danh** tên các file bạn tự chọn để test, hãy bỏ `--limit 20` đi và dùng cờ `--only`. Ví dụ: `--only bao_cao_tai_chinh,hop_dong_vay`. Khi đó mọi profile sẽ chỉ chạy trên các file bạn chỉ định.
 
-### Các lệnh cần chạy trên Terminal (PowerShell):
+### Các lệnh cần chạy:
 
-Bạn hãy mở PowerShell tại thư mục gốc của dự án (`D:\vnpt-projects\sovereign\ocr-bench`) và lần lượt chạy 3 lệnh sau (tương ứng với 3 môi trường ảo khác nhau của 3 công cụ):
+> ⚠️ **Lưu ý hệ điều hành:** Dưới đây là 2 phiên bản lệnh. Nếu bạn dùng **PowerShell** (mặc định của Windows), hãy copy khối lệnh PowerShell. Nếu bạn dùng **Git Bash** (màn hình đen chữ màu), hãy dùng khối lệnh Bash.
 
 **1. Chạy cặp profile Docling:**
+- **PowerShell:**
 ```powershell
-# Chạy Docling (cần môi trường ảo của docling)
 $env:PYTHONIOENCODING="utf-8"
 .\.venv-docling\Scripts\python.exe scripts\run_research_predictions.py --mode calibration --dataset-manifest datasets/manifest.json --limit 20 --profiles docling_default,docling_scan --hardware cpu
 ```
-*(Lưu ý: Bạn thay `\.venv-docling` bằng đường dẫn tới môi trường ảo cài Docling hiện tại của bạn)*
+- **Git Bash:**
+```bash
+PYTHONIOENCODING="utf-8" ./.venv-docling/Scripts/python.exe scripts/run_research_predictions.py --mode calibration --dataset-manifest datasets/manifest.json --limit 20 --profiles docling_default,docling_scan --hardware cpu
+```
 
 **2. Chạy cặp profile Marker:**
+- **PowerShell:**
 ```powershell
-# Chạy Marker (môi trường .venv-marker đã có sẵn)
 $env:PYTHONIOENCODING="utf-8"
 .\.venv-marker\Scripts\python.exe scripts\run_research_predictions.py --mode calibration --dataset-manifest datasets/manifest.json --limit 20 --profiles marker_default,marker_scan --hardware cpu
 ```
+- **Git Bash:**
+```bash
+PYTHONIOENCODING="utf-8" ./.venv-marker/Scripts/python.exe scripts/run_research_predictions.py --mode calibration --dataset-manifest datasets/manifest.json --limit 20 --profiles marker_default,marker_scan --hardware cpu
+```
 
 **3. Chạy cặp profile OpenDataLoader:**
+- **PowerShell:**
 ```powershell
-# Chạy OpenDataLoader (môi trường .venv-odl đã có sẵn và đã được cài đủ 100% thư viện)
 $env:PYTHONIOENCODING="utf-8"
 .\.venv-odl\Scripts\python.exe scripts\run_research_predictions.py --mode calibration --dataset-manifest datasets/manifest.json --limit 20 --profiles opendataloader_default,opendataloader_scan --hardware cpu
 ```
-*(Cả 2 chế độ default và scan lai AI đều đã được cài đủ thư viện nên sẽ chạy rất mượt)*
+- **Git Bash:**
+```bash
+PYTHONIOENCODING="utf-8" ./.venv-odl/Scripts/python.exe scripts/run_research_predictions.py --mode calibration --dataset-manifest datasets/manifest.json --limit 20 --profiles opendataloader_default,opendataloader_scan --hardware cpu
+```
 
 ---
 
