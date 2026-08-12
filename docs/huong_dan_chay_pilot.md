@@ -14,7 +14,7 @@ Tài liệu này hướng dẫn chi tiết cách chạy 6 profile (Docling, Open
 
 ### Các lệnh cần chạy trên Terminal (PowerShell):
 
-Bạn hãy mở PowerShell tại thư mục `D:\vnpt-projects\sovereign\ocr-bench\.worktrees\ocr-parser-benchmark` và lần lượt chạy 3 lệnh sau (tương ứng với 3 môi trường ảo khác nhau của 3 công cụ):
+Bạn hãy mở PowerShell tại thư mục gốc của dự án (`D:\vnpt-projects\sovereign\ocr-bench`) và lần lượt chạy 3 lệnh sau (tương ứng với 3 môi trường ảo khác nhau của 3 công cụ):
 
 **1. Chạy cặp profile Docling:**
 ```powershell
