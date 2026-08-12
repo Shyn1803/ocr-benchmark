@@ -520,7 +520,13 @@ def _image_from_json(d: Any, path: Path, img_dir: Path, where: str) -> OcrImage:
         if not isinstance(name, str) or not _IMAGE_NAME.match(name):
             raise PredictionSchemaError(f"{path}: {where}.file={name!r} không hợp lệ")
         blob = img_dir / name
-        if blob.is_file():
+        if not blob.is_file():
+            if img_dir.is_dir():
+                raise PredictionSchemaError(
+                    f"{path}: {where} trỏ tới {blob} nhưng file không có. "
+                    "JSON và thư mục ảnh đã đi lệch nhau — sinh lại prediction."
+                )
+        else:
             data = blob.read_bytes()
             got = hashlib.sha256(data).hexdigest()
             if got != d["sha256"]:
