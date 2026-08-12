@@ -1004,9 +1004,13 @@ class OpenDataLoaderAdapter(Adapter):
                 {
                     "device": "cpu",
                     "device_evidence": "owned-hybrid-launcher-manifest",
-                    "force_ocr": config_evidence["force_ocr"],
-                    "ocr_engine": config_evidence["ocr_engine"],
-                    "ocr_languages": list(config_evidence["ocr_languages"]),
+                    "hybrid_server": {
+                        "host": config_evidence.get("host", "127.0.0.1"),
+                        "port": config_evidence.get("port", 5002),
+                        "force_ocr": config_evidence["force_ocr"],
+                        "ocr_engine": config_evidence["ocr_engine"],
+                        "ocr_languages": list(config_evidence["ocr_languages"]),
+                    },
                     "cpu_enforcement": dict(config_evidence["device_enforcement"]),
                     "cpu_enforcement_method": config_evidence[
                         "device_enforcement_method"
