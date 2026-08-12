@@ -89,6 +89,19 @@ def test_nhan_long_nhau_thi_chon_box_NHO_NHAT() -> None:
     assert ghep_theo_tam([to, nho], [_b(0.45, 0.45, 0.55, 0.55)]) == [1]
 
 
+def test_ghep_o_day_la_NHIEU_MOT_khong_phai_1_1_nhu_imgf1() -> None:
+    """Chốt phép ghép của B4 là nhiều-một, để lần dọn dẹp sau không "thống nhất"
+    nó về `metrics/matching.py`.
+
+    `imgf1`/`layout` ghép 1-1 tối ưu; ở đây 5 dòng cùng thuộc một đoạn PHẢI cùng
+    trả về chỉ số của đoạn đó. Ép 1-1 thì 4 dòng thành `None` và engine chia mịn
+    bị phạt vì độ mịn chứ không vì đọc sai thứ tự — xem quyết định 2 và 3.
+    """
+    doan = _b(0.1, 0.1, 0.9, 0.5)
+    cac_dong = [_b(0.1, 0.12 + i * 0.05, 0.9, 0.15 + i * 0.05) for i in range(5)]
+    assert ghep_theo_tam([doan], cac_dong) == [0, 0, 0, 0, 0]
+
+
 # --- gộp trùng liên tiếp -----------------------------------------------------
 
 

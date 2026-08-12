@@ -24,6 +24,13 @@ Bốn quyết định của file này:
    một đoạn sinh ra `[3,3,3,3,3]`, gộp thành `[3]`. Engine chia nhỏ mà đọc đúng
    thứ tự vẫn được 1.0. Không gộp thì quyết định 2 vô nghĩa.
 
+   **Vì thế phép ghép ở file này KHÔNG được thay bằng `metrics/matching.py`.**
+   Task 8 đổi `imgf1.py` và `layout.py` sang ghép tối ưu **1-1**; ghép ở đây cố ý
+   là **nhiều-một** và đó là toàn bộ nội dung của quyết định 2. Ép 1-1 vào đây thì
+   82 dòng của pdf_inspector chỉ còn 14 dòng được ghép, 68 dòng còn lại thành
+   `None`, và metric quay về đúng cái lỗi mà quyết định 2 tồn tại để tránh. Hai
+   phép ghép giải hai bài toán khác nhau, không phải một bài toán bị viết hai lần.
+
 4. **Đơn vị chuỗi là chỉ số block, không phải ký tự.** Bản gốc
    (`opendataloader-bench`) chạy NID trên ký tự văn bản. Không dùng được ở đây:
    nhãn DocLayNet **không có text** (0/2941 block). Xem bảng đối chiếu ở

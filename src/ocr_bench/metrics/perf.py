@@ -33,10 +33,30 @@ giải nhất cho engine sập nhanh nhất.
 Nợ ghi từ B1. Một tài liệu 400 trang trong bộ mẫu đủ kéo lệch trung bình sec/trang;
 trung vị nói phần lớn tài liệu chạy ra sao. Hai số cạnh nhau, lệch nhiều nghĩa là
 phân bố có đuôi — chính là thông tin cần để đọc bảng.
+
+## Nguội và nóng là hai con số, không phải một (Task 8)
+
+Tài liệu **đầu tiên** của một engine trả tiền nạp model; các tài liệu sau thì
+không. Gộp cả hai vào một trung bình thì con số phụ thuộc vào **kích thước bộ
+mẫu**: chạy 5 tài liệu thì chi phí nạp chia cho 5, chạy 500 thì chia cho 500, và
+cùng một engine cho hai con số khác nhau mà không có gì trong bảng nói ra điều đó.
+
+Nên `PerfRow` mang `thu_tu` — thứ tự tài liệu đó chạy trong lượt của engine, ghi
+lúc rút số. Không ghi thì mất luôn: `perf_rows()` sắp theo `(engine, doc_id)` để
+đầu ra tất định, và phép sắp đó xoá đúng thông tin "cái nào chạy trước".
+`thu_tu == 0` là lượt **nguội**; `sec_moi_trang_nong_*` bỏ nó ra.
+
+## p95 đi cùng trung vị
+
+Trung vị nói phần lớn tài liệu chạy ra sao, p95 nói cái đuôi dài tới đâu — đó mới
+là con số quyết định timeout khi triển khai. Dùng **nearest-rank** (`ceil(0.95·n)`
+trên mẫu đã sắp), không nội suy: nội suy đẻ ra một giá trị **chưa từng đo được**,
+và p95 phải là một tài liệu có thật để người đọc tìm lại được.
 """
 
 from __future__ import annotations
 
+import math
 import statistics
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
@@ -46,6 +66,7 @@ from ocr_bench.types import OcrResult, RssScope
 __all__ = [
     "PerfRow",
     "PerfAggregate",
+    "phan_vi_gan_nhat",
     "perf_rows",
     "perf_aggregate",
     "perf_aggregates",
@@ -59,6 +80,19 @@ HON_HOP = "hỗn hợp"
 
 def _so(x: float | None, n: int = 2) -> str:
     return "—" if x is None else f"{x:.{n}f}"
+
+
+def phan_vi_gan_nhat(mau: Sequence[float], p: float = 0.95) -> float | None:
+    """Phân vị **nearest-rank**: phần tử thứ `ceil(p·n)` của mẫu đã sắp (1-based).
+
+    Trả một giá trị **có thật trong mẫu**. Không nội suy — xem docstring module.
+    Mẫu rỗng trả `None`, không phải 0.0.
+    """
+    if not mau:
+        return None
+    sap = sorted(mau)
+    k = max(1, math.ceil(p * len(sap)))
+    return sap[min(k, len(sap)) - 1]
 
 
 @dataclass(frozen=True, slots=True)
@@ -88,15 +122,36 @@ class PerfRow:
     """
     peak_rss_mb: float | None
     rss_scope: RssScope | None
+    peak_vram_mb: float | None
+    """`None` = không đo được, **không** phải 0 MB. Xem `OcrResult.peak_vram_mb`."""
+    thu_tu: int
+    """Tài liệu này là lượt thứ mấy của engine, 0-based **theo thứ tự đầu vào**.
+
+    `thu_tu == 0` là lượt **nguội** (trả tiền nạp model). Ghi tại đây vì
+    `perf_rows()` sắp lại theo `(engine, doc_id)` và phép sắp đó xoá mất thông tin
+    đó — xem docstring module.
+    """
     failed: bool
+
+    @property
+    def nguoi(self) -> bool:
+        """Lượt nguội: tài liệu đầu tiên của engine trong lượt chạy này."""
+        return self.thu_tu == 0
 
 
 def perf_rows(results: Iterable[OcrResult]) -> list[PerfRow]:
-    """Rút số perf từ kết quả engine. Sắp xếp tất định theo (engine, doc_id)."""
+    """Rút số perf từ kết quả engine. Sắp xếp tất định theo (engine, doc_id).
+
+    `thu_tu` được gán theo **thứ tự `results` đi vào**, trước khi sắp — người gọi
+    phải truyền kết quả đúng thứ tự đã chạy, nếu không cột nguội/nóng vô nghĩa.
+    """
     rows: list[PerfRow] = []
+    dem: dict[str, int] = {}
     for r in results:
         n_trang = len(r.page_sizes) or None
         tru = r.model_load_seconds is not None
+        thu_tu = dem.get(r.engine, 0)
+        dem[r.engine] = thu_tu + 1
         spp: float | None = None
         if r.seconds is not None and n_trang:
             giay = r.seconds - (r.model_load_seconds or 0.0)
@@ -112,6 +167,8 @@ def perf_rows(results: Iterable[OcrResult]) -> list[PerfRow]:
                 da_tru_nap=tru,
                 peak_rss_mb=r.peak_rss_mb,
                 rss_scope=r.rss_scope,
+                peak_vram_mb=r.peak_vram_mb,
+                thu_tu=thu_tu,
                 failed=r.failed,
             )
         )
@@ -133,10 +190,22 @@ class PerfAggregate:
     n_failed: int
     sec_moi_trang_tb: float | None
     sec_moi_trang_trung_vi: float | None
+    sec_moi_trang_p95: float | None
+    """Nearest-rank, một giá trị có thật trong mẫu. Xem `phan_vi_gan_nhat()`."""
+    sec_moi_trang_nong_tb: float | None
+    """Trung bình **bỏ lượt nguội** (`thu_tu == 0`). `None` khi engine chỉ chạy
+    đúng một tài liệu — khi đó không có lượt nóng nào, và lấy chính lượt nguội làm
+    "nóng" là báo cáo chi phí nạp model như thể nó không tồn tại."""
+    n_nong: int
+    """Số tài liệu vào `sec_moi_trang_nong_tb`. In ra để `None` ở trên đọc được là
+    "chưa có lượt nóng" chứ không phải "đo hỏng"."""
     rss_dinh_mb: float | None
     """Đỉnh **cao nhất** qua các tài liệu — đây là con số quyết định máy cần bao
     nhiêu RAM, nên lấy max chứ không lấy trung bình."""
     rss_trung_vi_mb: float | None
+    vram_dinh_mb: float | None
+    """Đỉnh VRAM cao nhất qua các tài liệu; `None` = không tài liệu nào đo được.
+    Cùng lý do lấy max như `rss_dinh_mb`: đây là số quyết định card cần bao nhiêu."""
     rss_scope: str | None
     """`process` · `process+children` · `hỗn hợp` · `None` (không đo được)."""
     model_load_seconds: float | None
@@ -166,7 +235,13 @@ def perf_aggregate(rows: Iterable[PerfRow]) -> PerfAggregate:
         raise ValueError(f"perf_aggregate() nhận lẫn engine: {sorted(engines)}")
 
     spp = [r.seconds_per_page for r in rs if r.seconds_per_page is not None]
+    nong = [
+        r.seconds_per_page
+        for r in rs
+        if r.seconds_per_page is not None and not r.nguoi
+    ]
     rss = [r.peak_rss_mb for r in rs if r.peak_rss_mb is not None]
+    vram = [r.peak_vram_mb for r in rs if r.peak_vram_mb is not None]
     nap = [r.model_load_seconds for r in rs if r.model_load_seconds is not None]
     hong = [r for r in rs if r.failed]
 
@@ -187,8 +262,12 @@ def perf_aggregate(rows: Iterable[PerfRow]) -> PerfAggregate:
         n_failed=len(hong),
         sec_moi_trang_tb=statistics.mean(spp) if spp else None,
         sec_moi_trang_trung_vi=statistics.median(spp) if spp else None,
+        sec_moi_trang_p95=phan_vi_gan_nhat(spp),
+        sec_moi_trang_nong_tb=statistics.mean(nong) if nong else None,
+        n_nong=len(nong),
         rss_dinh_mb=max(rss) if rss else None,
         rss_trung_vi_mb=statistics.median(rss) if rss else None,
+        vram_dinh_mb=max(vram) if vram else None,
         rss_scope=scope,
         model_load_seconds=max(nap) if nap else None,
         # Mẫu số là **toàn bộ** tài liệu đã thử, không phải số tài liệu đo được.
@@ -235,15 +314,17 @@ def bang_chi_tiet(rows: Iterable[PerfRow]) -> str:
     """Bảng markdown engine × tài liệu — mức AC-01 đòi."""
     rs = list(rows)
     dong = [
-        "| engine | doc_id | trang | giây | s/trang | trừ nạp | RSS (MB) | phạm vi | hỏng |",
-        "|---|---|---:|---:|---:|:---:|---:|---|:---:|",
+        "| engine | doc_id | lượt | trang | giây | s/trang | trừ nạp | RSS (MB) "
+        "| phạm vi | VRAM (MB) | hỏng |",
+        "|---|---|---:|---:|---:|---:|:---:|---:|---|---:|:---:|",
     ]
     for r in rs:
         dong.append(
-            f"| {r.engine} | {r.doc_id} | {r.n_trang or '—'} | {_so(r.seconds)} | "
+            f"| {r.engine} | {r.doc_id} | {r.thu_tu}{' nguội' if r.nguoi else ''} | "
+            f"{r.n_trang or '—'} | {_so(r.seconds)} | "
             f"{_so(r.seconds_per_page, 3)} | {'có' if r.da_tru_nap else '—'} | "
             f"{_so(r.peak_rss_mb, 1)} | {r.rss_scope or '—'} | "
-            f"{'HỎNG' if r.failed else ''} |"
+            f"{_so(r.peak_vram_mb, 1)} | {'HỎNG' if r.failed else ''} |"
         )
     ghi = _chu_thich({r.rss_scope for r in rs})
     return "\n".join(dong + ([""] + [f"- {g}" for g in ghi] if ghi else []))
@@ -253,19 +334,34 @@ def bang_tong_hop(aggs: Iterable[PerfAggregate]) -> str:
     """Bảng markdown một dòng mỗi engine. **Luôn** có cột FailRate (AC-02)."""
     ags = list(aggs)
     dong = [
-        "| engine | n | s/trang TB | s/trang trung vị | trừ nạp | nạp model (s) "
-        "| RSS đỉnh (MB) | RSS trung vị | phạm vi | FailRate |",
-        "|---|---:|---:|---:|:---:|---:|---:|---:|---|---:|",
+        "| engine | n | s/trang TB | s/trang nóng TB | n nóng | s/trang trung vị "
+        "| s/trang p95 | trừ nạp | nạp model (s) | RSS đỉnh (MB) | RSS trung vị "
+        "| phạm vi | VRAM đỉnh (MB) | FailRate |",
+        "|---|---:|---:|---:|---:|---:|---:|:---:|---:|---:|---:|---|---:|---:|",
     ]
     for a in ags:
         dong.append(
             f"| {a.engine} | {a.n_total} | {_so(a.sec_moi_trang_tb, 3)} | "
+            f"{_so(a.sec_moi_trang_nong_tb, 3)} | {a.n_nong} | "
             f"{_so(a.sec_moi_trang_trung_vi, 3)} | "
+            f"{_so(a.sec_moi_trang_p95, 3)} | "
             f"{'có' if a.da_tru_nap else '—'} | {_so(a.model_load_seconds)} | "
             f"{_so(a.rss_dinh_mb, 1)} | {_so(a.rss_trung_vi_mb, 1)} | "
-            f"{a.rss_scope or '—'} | {a.fail_rate:.0%} |"
+            f"{a.rss_scope or '—'} | {_so(a.vram_dinh_mb, 1)} | "
+            f"{a.fail_rate:.0%} |"
         )
     ghi = _chu_thich({a.rss_scope for a in ags})
+    if any(a.vram_dinh_mb is None for a in ags):
+        ghi.append(
+            "`—` ở cột VRAM = **không đo được**, không phải 0 MB. Engine chạy CPU "
+            "và engine chạy GPU mà không bật đo đều hiện `—`; hai ca đó phân biệt "
+            "bằng `config_fingerprint`, không bằng cột này."
+        )
+    ghi.append(
+        "`s/trang TB` gộp cả lượt nguội nên phụ thuộc kích thước bộ mẫu; "
+        "`s/trang nóng TB` bỏ lượt đầu. So hai engine thì so cột nóng, và chỉ khi "
+        "`n nóng` của cả hai đều > 0."
+    )
     ghi.append(
         "Engine chết ngay lập tức có `s/trang` **thấp nhất** bảng. Đọc cột "
         "`FailRate` trước cột tốc độ, không phải sau."

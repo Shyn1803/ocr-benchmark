@@ -317,6 +317,18 @@ class OcrResult:
     bao giờ giảm, nên engine chạy sau sẽ thừa hưởng vùng nhớ của engine chạy trước và
     trông ngốn hơn **theo đúng thứ tự chạy**.
     """
+    peak_vram_mb: float | None = None
+    """Đỉnh VRAM trong cửa sổ chạy, `None` = **không đo được**, không phải 0 MB.
+
+    Không có `vram_scope` đi kèm như RSS: VRAM được cấp theo tiến trình bởi driver
+    và không có mốc nước cao thừa hưởng từ tiến trình chạy trước, nên câu hỏi "đếm
+    tới đâu" không đặt ra. Nhưng câu hỏi "engine này có dùng GPU không" thì có —
+    engine chạy CPU để `None`, và cột phải hiện `—` chứ không hiện 0.
+
+    Số 0.0 chỉ hợp lệ khi thật sự đo được và thật sự bằng 0 (đã bật đo trên máy có
+    GPU mà engine không cấp phát gì). Adapter không có handshake chứng minh thiết
+    bị thì để `None`.
+    """
     rss_scope: RssScope | None = None
     """`peak_rss_mb` đếm tới đâu. Bắt buộc có nếu `peak_rss_mb` có (xem `__post_init__`).
 
@@ -355,6 +367,11 @@ class OcrResult:
                 f"{self.engine} trả peak_rss_mb={self.peak_rss_mb} nhưng không khai "
                 "rss_scope. Một con số RSS không kèm phạm vi thì không so được giữa "
                 "engine chạy trong tiến trình và engine gọi tiến trình con."
+            )
+        if self.peak_vram_mb is not None and self.peak_vram_mb < 0:
+            raise ValueError(
+                f"{self.engine} trả peak_vram_mb={self.peak_vram_mb}. VRAM âm là "
+                "lỗi đo, không phải một con số nhỏ — để `None` nếu không đo được."
             )
         if self.rss_scope is not None and self.rss_scope not in get_args(RssScope):
             raise ValueError(

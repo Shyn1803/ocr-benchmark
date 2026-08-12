@@ -25,9 +25,12 @@ from ocr_bench.metrics.assertions import (
     TextPresenceMetric,
 )
 from ocr_bench.metrics.cer import CerMetric, WerMetric
+from ocr_bench.metrics.diacritics import DiacriticsMetric
 from ocr_bench.metrics.heading import HeadingMetric
 from ocr_bench.metrics.imgf1 import ImgF1Metric, ImgIouMetric
+from ocr_bench.metrics.layout import BlockF1Metric, TypeF1Metric
 from ocr_bench.metrics.nid import NidMetric
+from ocr_bench.metrics.table_cells import CellF1Metric, TableRecallMetric
 from ocr_bench.metrics.teds import TedsMetric, TedsStructMetric
 from ocr_bench.profiles import EngineProfile, ProfileConfigError, load_profile_catalog
 
@@ -98,6 +101,24 @@ registry.register_metric(ReadingOrderMetric)
 registry.register_metric(MathPresenceMetric)
 registry.register_metric(TableRelationMetric)
 registry.register_metric(BaselineMetric)
+
+# B7 — bố cục. `block_f1` hỏi "khoanh đúng vùng chưa", `type_f1` hỏi "gọi đúng tên
+# vùng chưa". Tách vì một engine khoanh chuẩn mà gán nhầm nhãn và một engine khoanh
+# sai hoàn toàn không phải cùng một hỏng hóc, mà gộp lại thì cùng một điểm. Khác B3
+# ở phép ghép: box khối **chồng nhau được** (caption nằm trong picture) nên phải
+# dùng ghép tối ưu của `metrics/matching.py`, không dùng tham lam.
+registry.register_metric(BlockF1Metric)
+registry.register_metric(TypeF1Metric)
+
+# B8 — ô bảng. Đứng cạnh TEDS chứ không thay: TEDS chấm cả cây bảng, hai cột này
+# chấm từng ô, nên "mất vài ô" và "sập cấu trúc" đọc ra được là hai chuyện.
+registry.register_metric(CellF1Metric)
+registry.register_metric(TableRecallMetric)
+
+# B10 — dấu tiếng Việt. Metric duy nhất trong bộ này gắn với ngôn ngữ, và là lý do
+# bench tồn tại: một engine bỏ sạch dấu vẫn có thể có `cer` trông chấp nhận được vì
+# phần chữ cái vẫn đúng. `rapidfuzz` nhập lười như B1.
+registry.register_metric(DiacriticsMetric)
 
 __all__ = [
     "__version__",

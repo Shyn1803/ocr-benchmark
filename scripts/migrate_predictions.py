@@ -1,4 +1,4 @@
-"""Nâng file prediction schema 1/2 lên 3 — tại chỗ, không chạy lại engine.
+"""Nâng file prediction schema 1/2/3 lên 4 — tại chỗ, không chạy lại engine.
 
     py -3 scripts/migrate_predictions.py prediction
     py -3 scripts/migrate_predictions.py prediction --dry-run    # xem trước, không ghi
@@ -7,6 +7,11 @@ Schema 3 thêm identity `engine_family`/`profile`, raw artifact metadata và fai
 taxonomy. Prediction v2 chưa có raw sidecar nên `raw_artifacts=[]`; identity legacy
 được ghi rõ bằng `engine_family=engine`, `profile="legacy"`. Với ca lỗi cũ, message
 không đủ tin cậy để suy timeout/OOM nên script gán bảo thủ `engine_error` và cảnh báo.
+
+Schema 4 thêm `peak_vram_mb`. File cũ chạy trước khi bench biết đo VRAM nên giá trị
+đúng của chúng là `null` — "không đo được", không phải "đo ra 0 MB". Điền 0 sẽ biến
+những lần chạy đó thành bằng chứng rằng engine không đụng GPU, thứ mà không lần chạy
+nào trong số đó nói.
 
 ## Vì sao là script chứ không phải "chạy lại cho sạch"
 
@@ -33,7 +38,7 @@ from pathlib import Path
 # Trường thêm ở schema 2 → giá trị mặc định khi nâng từ v1.
 THEM_V2 = {"model_load_seconds": None, "rss_scope": None}
 
-DICH = 3
+DICH = 4
 
 # Thứ tự khoá đúng như `save_prediction()` dựng payload. Chỉ `setdefault` rồi ghi thì
 # hai khoá mới rơi xuống cuối file; lần chạy engine thật kế tiếp sẽ ghi lại theo thứ
@@ -58,14 +63,21 @@ THU_TU = (
     "model_load_seconds",
     "peak_rss_mb",
     "rss_scope",
+    "peak_vram_mb",
     "failed",
     "error",
     "failure_kind",
     "config_fingerprint",
 )
+THEM_V4 = {"peak_vram_mb": None}
 THEM_V3 = frozenset({"engine_family", "profile", "raw_artifacts", "failure_kind"})
-KHOA_V2 = frozenset(THU_TU) - THEM_V3
+KHOA_V3 = frozenset(THU_TU) - frozenset(THEM_V4)
+KHOA_V2 = KHOA_V3 - THEM_V3
 KHOA_V1 = KHOA_V2 - frozenset(THEM_V2)
+KHOA_CU = {1: KHOA_V1, 2: KHOA_V2, 3: KHOA_V3}
+"""Bộ khoá đầy đủ của từng schema nguồn. Kiểm **bằng nhau**, không phải "chứa":
+file thiếu khoá thì nâng sẽ đẻ ra `KeyError` giữa chừng, file thừa khoá thì có kênh
+dữ liệu mà bản này không biết và sắp lại theo `THU_TU` sẽ vứt nó đi lặng lẽ."""
 
 
 def _ensure_utf8_console() -> None:
@@ -90,16 +102,16 @@ def nang_mot(path: Path, *, thu: bool) -> str:
     ver = raw.get("schema_version")
     if ver == DICH:
         return "da_moi"
-    if ver not in {1, 2}:
+    if ver not in KHOA_CU:
         # Không đoán. Bản lạ có thể là bản mới hơn script này, và ghi đè nó là làm
         # mất dữ liệu mà không có đường phục hồi.
         print(
-            f"  BỎ   {path}: schema_version={ver!r}, script chỉ nâng 1/2→3",
+            f"  BỎ   {path}: schema_version={ver!r}, script chỉ nâng 1/2/3→{DICH}",
             file=sys.stderr,
         )
         return "bo"
 
-    khoa_dung = KHOA_V1 if ver == 1 else KHOA_V2
+    khoa_dung = KHOA_CU[ver]
     if set(raw) != khoa_dung:
         print(
             f"  BỎ   {path}: khoá lệch schema {ver} "
@@ -108,27 +120,32 @@ def nang_mot(path: Path, *, thu: bool) -> str:
         )
         return "bo"
 
-    if ver == 1:
+    if ver < 2:
         for k, v in THEM_V2.items():
             raw.setdefault(k, v)
-    raw["engine_family"] = raw["engine"]
-    raw["profile"] = "legacy"
-    raw["raw_artifacts"] = []
-    if raw.get("failed"):
-        raw["failure_kind"] = "engine_error"
-        print(
-            f"  CẢNH BÁO  {path}: prediction lỗi v{ver} được gán "
-            "failure_kind=engine_error vì schema cũ không lưu taxonomy",
-            file=sys.stderr,
-        )
-    else:
-        raw["failure_kind"] = None
+    if ver < 3:
+        # Chỉ ca v1/v2 mới bịa identity legacy. File v3 đã mang identity thật của
+        # lần chạy — ghi đè bằng `profile="legacy"` là xoá dữ liệu đúng bằng dữ liệu bịa.
+        raw["engine_family"] = raw["engine"]
+        raw["profile"] = "legacy"
+        raw["raw_artifacts"] = []
+        if raw.get("failed"):
+            raw["failure_kind"] = "engine_error"
+            print(
+                f"  CẢNH BÁO  {path}: prediction lỗi v{ver} được gán "
+                "failure_kind=engine_error vì schema cũ không lưu taxonomy",
+                file=sys.stderr,
+            )
+        else:
+            raw["failure_kind"] = None
+    for k, v in THEM_V4.items():
+        raw.setdefault(k, v)
     raw["schema_version"] = DICH
     if set(raw) != set(THU_TU):
         # Không tự ý sắp lại một file có khoá lạ: sắp theo THU_TU sẽ **vứt** khoá
         # không có trong danh sách, im lặng.
         print(
-            f"  BỎ   {path}: khoá lệch schema 3 "
+            f"  BỎ   {path}: khoá lệch schema {DICH} "
             f"({sorted(set(raw) ^ set(THU_TU))})",
             file=sys.stderr,
         )
@@ -174,11 +191,12 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     ten = {
-        "da_nang_v1": "đã nâng v1 → v3",
-        "da_nang_v2": "đã nâng v2 → v3",
-        "se_nang_v1": "sẽ nâng v1 → v3 (bỏ --dry-run để ghi)",
-        "se_nang_v2": "sẽ nâng v2 → v3 (bỏ --dry-run để ghi)",
-        "da_moi": "đã ở schema 3, không đụng",
+        **{f"da_nang_v{v}": f"đã nâng v{v} → v{DICH}" for v in sorted(KHOA_CU)},
+        **{
+            f"se_nang_v{v}": f"sẽ nâng v{v} → v{DICH} (bỏ --dry-run để ghi)"
+            for v in sorted(KHOA_CU)
+        },
+        "da_moi": f"đã ở schema {DICH}, không đụng",
         "bo": "bỏ qua (schema lạ)",
         "loi": "lỗi đọc",
     }

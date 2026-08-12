@@ -9,6 +9,18 @@ Bốn quyết định của file này, ghi tại chỗ để người sau không
    ghép vì thế là **duy nhất**, và ghép tham lam cho đúng kết quả tối ưu. Khẳng
    định này có test đối chiếu với vét cạn, không chỉ nằm ở đây.
 
+   Tiền đề "box nhãn rời nhau" đúng với **ảnh**, không đúng với **khối** (caption
+   nằm trong picture). Nên từ Task 8 file này gọi thẳng `ghep_toi_uu()` của
+   `metrics/matching.py` thay vì giữ một bản tham lam riêng: cùng kết quả ở nơi
+   tiền đề đúng, đúng kết quả ở nơi tiền đề sai, và chỉ còn **một** phép ghép
+   trong repo để kiểm.
+
+   Đổi phép ghép **không** đổi số nào đã commit — đo trực tiếp trên corpus, không
+   suy luận: 266 cặp (engine, tài liệu) có box ảnh và 854 cặp có box khối,
+   tham lam và tối ưu cho `f1` lẫn `chất lượng IoU` **giống hệt** trên toàn bộ.
+   Vì thế không cần tên metric versioned: `img_f1`/`img_iou` giữ nguyên ý nghĩa
+   lịch sử.
+
 2. **Hai cột chứ không một.** `img_f1` trả lời "tìm đúng bao nhiêu ảnh",
    `img_iou` trả lời "khung có sát không". `img_f1` cao mà `img_iou` thấp nghĩa
    là đếm đúng nhưng cắt lệch — gộp một số là mất đúng chẩn đoán đó.
@@ -31,6 +43,7 @@ from __future__ import annotations
 from typing import ClassVar
 
 from ocr_bench.metrics.base import Metric
+from ocr_bench.metrics.matching import NGUONG_MAC_DINH, ghep_toi_uu
 from ocr_bench.types import (
     AnnotationGT,
     Box,
@@ -48,44 +61,18 @@ __all__ = [
     "ImgIouMetric",
 ]
 
-NGUONG_MAC_DINH = 0.5
-"""Ngưỡng IoU coi là "cùng một ảnh". Xem quyết định 1 ở docstring module."""
-
-
 def ghep_cap(
     nhan: list[Box], doan: list[Box], nguong: float = NGUONG_MAC_DINH
 ) -> list[tuple[int, int, float]]:
-    """Ghép nhãn với đoán, tham lam theo IoU giảm dần. Mỗi box dùng đúng một lần.
+    """Ghép nhãn với đoán 1-1: **nhiều cặp trước, tổng IoU sau**.
 
-    Trả danh sách `(chỉ số nhãn, chỉ số đoán, iou)` đã sắp theo chỉ số nhãn — sắp
-    lại để đầu ra ổn định, vì thứ tự tham lam phụ thuộc IoU chứ không phụ thuộc
-    thứ tự đầu vào và `detail` bị so trong test.
+    Trả `(chỉ số nhãn, chỉ số đoán, iou)` đã sắp theo chỉ số nhãn.
 
-    Ở `nguong > 0.5` kết quả này **là** phép ghép tối ưu (xem quyết định 1). Dưới
-    0.5 thì tham lam chỉ là xấp xỉ — không dùng ngưỡng dưới 0.5 mà không đọc lại
-    chỗ này.
+    Tên này giữ lại vì nó là API cũ của file; phần việc nằm ở `ghep_toi_uu()`
+    của `metrics/matching.py`. Trước Task 8 đây là một bản ghép tham lam riêng —
+    xem quyết định 1 để biết vì sao đổi và vì sao không số nào đã commit thay đổi.
     """
-    cap: list[tuple[float, int, int]] = []
-    for i, a in enumerate(nhan):
-        for j, b in enumerate(doan):
-            iou = a.iou(b)
-            if iou >= nguong and iou > 0.0:
-                cap.append((iou, i, j))
-    # Khoá phụ `(i, j)` để hai cặp cùng IoU không đổi thứ tự theo tâm trạng của
-    # `sort` — kết quả phải tái lập được giữa các lần chạy.
-    cap.sort(key=lambda t: (-t[0], t[1], t[2]))
-
-    da_nhan: set[int] = set()
-    da_doan: set[int] = set()
-    ra: list[tuple[int, int, float]] = []
-    for iou, i, j in cap:
-        if i in da_nhan or j in da_doan:
-            continue
-        da_nhan.add(i)
-        da_doan.add(j)
-        ra.append((i, j, iou))
-    ra.sort()
-    return ra
+    return ghep_toi_uu(nhan, doan, nguong)
 
 
 def img_scores(

@@ -21,6 +21,7 @@ from ocr_bench.metrics.perf import (
     perf_aggregate,
     perf_aggregates,
     perf_rows,
+    phan_vi_gan_nhat,
 )
 from ocr_bench.rss import DoRss, co_psutil
 from ocr_bench.types import Capability, FailureKind, OcrResult
@@ -402,3 +403,144 @@ def test_khong_do_duoc_gi_thi_o_hien_gach_khong_hien_khong():
     assert agg.sec_moi_trang_tb is None
     assert agg.rss_dinh_mb is None
     assert "—" in agg.cell()
+
+
+# ---------------------------------------------------------------------------
+# Task 8 — nguội/nóng, p95, VRAM
+# ---------------------------------------------------------------------------
+
+
+def test_thu_tu_theo_thu_tu_dau_vao_va_song_qua_phep_sap():
+    """`thu_tu` phải ghi lúc rút số, không suy lại từ danh sách đã sắp.
+
+    `perf_rows()` sắp theo `(engine, doc_id)` cho tất định. Nếu `thu_tu` được suy
+    ra sau khi sắp thì "lượt nguội" biến thành "doc_id nhỏ nhất theo bảng chữ
+    cái" — một con số nói về tên file chứ không nói về chi phí nạp model.
+    """
+    rows = perf_rows([kq("z"), kq("a")])
+    assert [r.doc_id for r in rows] == ["a", "z"]  # đã sắp
+    assert {r.doc_id: r.thu_tu for r in rows} == {"z": 0, "a": 1}
+    assert [r.doc_id for r in rows if r.nguoi] == ["z"]
+
+
+def test_thu_tu_dem_rieng_tung_engine():
+    rows = perf_rows([kq("d1", "a"), kq("d1", "b"), kq("d2", "a")])
+    assert {(r.engine, r.doc_id): r.thu_tu for r in rows} == {
+        ("a", "d1"): 0,
+        ("a", "d2"): 1,
+        ("b", "d1"): 0,
+    }
+
+
+def test_sec_moi_trang_nong_bo_luot_nguoi():
+    """Lượt nguội trả tiền nạp model; gộp nó vào trung bình thì con số phụ thuộc
+    kích thước bộ mẫu chứ không phụ thuộc engine — xem docstring module."""
+    agg = perf_aggregate(
+        perf_rows([kq("d1", seconds=40.0), kq("d2", seconds=8.0), kq("d3", seconds=16.0)])
+    )
+    assert agg.sec_moi_trang_tb == pytest.approx((10.0 + 2.0 + 4.0) / 3)
+    assert agg.sec_moi_trang_nong_tb == pytest.approx(3.0)
+    assert agg.n_nong == 2
+
+
+def test_mot_tai_lieu_thi_khong_co_luot_nong():
+    """Không lấy chính lượt nguội làm "nóng": làm thế là báo cáo chi phí nạp model
+    như thể nó không tồn tại. `n_nong` in ra để `None` đọc được là "chưa có"."""
+    agg = perf_aggregate(perf_rows([kq()]))
+    assert agg.sec_moi_trang_nong_tb is None
+    assert agg.n_nong == 0
+    assert agg.sec_moi_trang_tb is not None
+
+
+def test_luot_nguoi_khong_do_duoc_thi_khong_an_mat_luot_nong():
+    """Nguội hỏng, hai lượt nóng đo được → `n_nong` vẫn là 2."""
+    agg = perf_aggregate(
+        perf_rows(
+            [
+                kq("d1", seconds=None, page_sizes=()),
+                kq("d2", seconds=8.0),
+                kq("d3", seconds=16.0),
+            ]
+        )
+    )
+    assert agg.n_nong == 2
+    assert agg.sec_moi_trang_nong_tb == pytest.approx(3.0)
+
+
+def test_phan_vi_tra_gia_tri_co_that_trong_mau():
+    """Nearest-rank, không nội suy. Nội suy trên `[1, 100]` ra ~95 — một con số
+    chưa từng đo được ở tài liệu nào, nên không tìm lại được."""
+    assert phan_vi_gan_nhat([1.0, 100.0]) == 100.0
+    for mau in ([1.0, 100.0], [3.0, 1.0, 2.0], list(range(1, 11))):
+        assert phan_vi_gan_nhat([float(x) for x in mau]) in [float(x) for x in mau]
+
+
+def test_phan_vi_nearest_rank_dung_cong_thuc_ceil():
+    assert phan_vi_gan_nhat([float(x) for x in range(1, 11)]) == 10.0
+    assert phan_vi_gan_nhat([1.0, 2.0, 3.0, 4.0], p=0.5) == 2.0
+    assert phan_vi_gan_nhat([5.0]) == 5.0
+    # p rất nhỏ vẫn phải trả phần tử thứ 1, không phải chỉ số 0 sau khi làm tròn xuống.
+    assert phan_vi_gan_nhat([1.0, 2.0, 3.0], p=0.01) == 1.0
+
+
+def test_phan_vi_mau_rong_la_None_khong_phai_khong():
+    assert phan_vi_gan_nhat([]) is None
+
+
+def test_p95_cua_aggregate_lay_tu_cac_dong_do_duoc():
+    rows = perf_rows([kq(f"d{i}", seconds=4.0 * i) for i in range(1, 11)])
+    agg = perf_aggregate(rows)
+    assert agg.sec_moi_trang_p95 == pytest.approx(10.0)
+
+
+def test_vram_lay_dinh_cao_nhat_khong_lay_trung_binh():
+    """Cùng lý do với `rss_dinh_mb`: đây là số quyết định card cần bao nhiêu."""
+    agg = perf_aggregate(
+        perf_rows(
+            [
+                kq("d1", peak_vram_mb=1024.0),
+                kq("d2", peak_vram_mb=4096.0),
+                kq("d3", peak_vram_mb=None),
+            ]
+        )
+    )
+    assert agg.vram_dinh_mb == 4096.0
+
+
+def test_khong_tai_lieu_nao_do_vram_thi_None_khong_phai_khong():
+    agg = perf_aggregate(perf_rows([kq()]))
+    assert agg.vram_dinh_mb is None
+
+
+def test_cot_vram_phan_biet_gach_voi_khong():
+    """`—` = không đo được, `0.0` = đã đo và ra 0 MB. Nhập nhằng hai cái này là
+    khai một engine chạy CPU trong khi không có handshake nào nói thế."""
+    def o_vram(bang: str) -> str:
+        dong = bang.splitlines()
+        cot = [c.strip() for c in dong[0].split("|")].index("VRAM đỉnh (MB)")
+        return [c.strip() for c in dong[2].split("|")][cot]
+
+    khong_do = bang_tong_hop(perf_aggregates(perf_rows([kq("d1")])))
+    do_ra_khong = bang_tong_hop(
+        perf_aggregates(perf_rows([kq("d1", peak_vram_mb=0.0)]))
+    )
+    assert o_vram(khong_do) == "—"
+    assert o_vram(do_ra_khong) == "0.0"
+    # Chú thích chỉ xuất hiện khi thật sự có ô `—` để giải thích.
+    assert "ở cột VRAM" in khong_do
+    assert "ở cột VRAM" not in do_ra_khong
+
+
+def test_bang_chi_tiet_hien_luot_nguoi_va_vram():
+    ra = bang_chi_tiet(perf_rows([kq("d1", peak_vram_mb=2048.0), kq("d2")]))
+    assert "0 nguội" in ra
+    assert "2048.0" in ra
+    assert "| — |" in ra  # d2 không đo VRAM
+
+
+def test_bang_tong_hop_canh_bao_so_cot_nong_chu_khong_so_cot_tb():
+    """Chú thích này là thứ ngăn người đọc so hai engine bằng cột gộp cả nguội."""
+    ra = bang_tong_hop(perf_aggregates(perf_rows([kq("d1"), kq("d2")])))
+    assert "s/trang nóng TB" in ra
+    assert "n nóng" in ra
+    assert "so cột nóng" in ra

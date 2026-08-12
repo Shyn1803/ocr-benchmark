@@ -88,7 +88,7 @@ __all__ = [
     "run_engines_cached",
 ]
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 """Tăng khi đổi *hình dạng* file. Prediction schema cũ sẽ bị từ chối thẳng chứ không
 được cố nạp — nạp một nửa rồi chấm là đúng thứ AC-04 cấm.
 
@@ -105,6 +105,11 @@ Lịch sử:
   một nghìn file prediction, riêng marker mất khoảng 3 tiếng để chạy lại — đúng cái
   giá mà module này tồn tại để khỏi phải trả.
 * **3** — thêm danh tính family/profile, raw artifact sidecar và taxonomy lỗi.
+* **4** — thêm `peak_vram_mb` (B10/Task 8). Cũng nâng được **không cần chạy lại
+  engine**: file cũ chạy trước khi bench biết đo VRAM, nên giá trị đúng của chúng
+  là ``null`` = "không đo được", chứ không phải 0. Ghi 0 sẽ nói rằng những lần
+  chạy đó đã được đo và đo ra 0 MB VRAM — một khẳng định về thiết bị mà không lần
+  chạy nào trong số đó đưa ra.
 """
 
 _IMAGE_NAME = re.compile(r"^[A-Za-z0-9._-]+$")
@@ -146,6 +151,7 @@ _ResultKeys = frozenset(
         "model_load_seconds",
         "peak_rss_mb",
         "rss_scope",
+        "peak_vram_mb",
         "failed",
         "error",
         "failure_kind",
@@ -377,6 +383,9 @@ def save_prediction(result: OcrResult, root: Path) -> Path:
         # Đi cùng `peak_rss_mb` trong cả ghi lẫn đọc: một con số RSS không kèm phạm vi
         # là một con số không so sánh được (xem `types.OcrResult.rss_scope`).
         "rss_scope": result.rss_scope,
+        # `None` ≠ 0.0: xem `types.OcrResult.peak_vram_mb`. Không có `vram_scope`
+        # đi kèm vì VRAM được cấp theo tiến trình, không thừa hưởng mốc nước cao.
+        "peak_vram_mb": result.peak_vram_mb,
         "failed": result.failed,
         "error": sanitize_secret_text(result.error),
         "failure_kind": (
@@ -720,6 +729,7 @@ def load_prediction(path: Path) -> OcrResult:
             model_load_seconds=raw["model_load_seconds"],
             peak_rss_mb=raw["peak_rss_mb"],
             rss_scope=raw["rss_scope"],
+            peak_vram_mb=raw["peak_vram_mb"],
             failed=raw["failed"],
             error=raw["error"],
             failure_kind=(

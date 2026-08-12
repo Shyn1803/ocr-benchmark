@@ -109,6 +109,7 @@ def ket_qua_day_du(doc_id: str = "tai-lieu-1") -> OcrResult:
         model_load_seconds=3.25,
         peak_rss_mb=1024.5,
         rss_scope="process+children",
+        peak_vram_mb=2048.0,
         config_fingerprint={"ocr_use_vision_api": False, "ngưỡng": 0.3, "list": [1, 2]},
     )
 
@@ -518,10 +519,14 @@ def _sua(path: Path, **thay) -> Path:
     return path
 
 
-def _ha_xuong_v2(path: Path) -> Path:
+def _ha_xuong(path: Path, dich: int) -> Path:
+    """Hạ một file vừa ghi xuống schema cũ hơn, bằng cách bỏ đúng những trường mà
+    schema đó chưa có. Lấy danh sách trường từ chính script migrate chứ không chép
+    tay: thêm trường mới mà quên sửa ở đây thì fixture sẽ là một file v2 **có** trường
+    v4, tức không phải v2, và phép kiểm sẽ đo nhầm thứ."""
     raw = json.loads(path.read_text(encoding="utf-8"))
-    raw["schema_version"] = 2
-    for field in ("engine_family", "profile", "raw_artifacts", "failure_kind"):
+    raw["schema_version"] = dich
+    for field in set(raw) - migration.KHOA_CU[dich]:
         raw.pop(field)
     path.write_text(
         json.dumps(raw, indent=2, ensure_ascii=False) + "\n",
@@ -531,12 +536,16 @@ def _ha_xuong_v2(path: Path) -> Path:
     return path
 
 
+def _ha_xuong_v2(path: Path) -> Path:
+    return _ha_xuong(path, 2)
+
+
 def test_migration_v2_dry_run_reports_without_writing(tmp_path: Path, capsys):
     path = _ha_xuong_v2(save_prediction(ket_qua_day_du(), tmp_path))
     before = path.read_bytes()
     assert migration.main([str(tmp_path), "--dry-run"]) == 0
     assert path.read_bytes() == before
-    assert "v2 → v3" in capsys.readouterr().out
+    assert "v2 → v4" in capsys.readouterr().out
 
 
 def test_migration_cli_reconfigures_cp1252_console_for_vietnamese_output(
@@ -551,10 +560,10 @@ def test_migration_cli_reconfigures_cp1252_console_for_vietnamese_output(
     monkeypatch.setattr(migration.sys, "stderr", stderr)
     assert migration.main([str(tmp_path), "--dry-run"]) == 0
     stdout.flush()
-    assert "sẽ nâng v2 → v3" in stdout_bytes.getvalue().decode("utf-8")
+    assert "sẽ nâng v2 → v4" in stdout_bytes.getvalue().decode("utf-8")
 
 
-def test_migration_v2_writes_strict_v3_and_warns_for_legacy_failure(
+def test_migration_v2_writes_strict_v4_and_warns_for_legacy_failure(
     tmp_path: Path, capsys
 ):
     legacy = OcrResult(
@@ -575,7 +584,45 @@ def test_migration_v2_writes_strict_v3_and_warns_for_legacy_failure(
     assert got.profile == "legacy"
     assert got.raw_artifacts == ()
     assert got.failure_kind is FailureKind.ENGINE_ERROR
+    assert got.peak_vram_mb is None
     assert "CẢNH BÁO" in capsys.readouterr().err
+
+
+def test_migration_v3_giu_nguyen_identity_that_va_de_vram_none(tmp_path: Path):
+    """Nâng v3 → v4 chỉ được thêm `peak_vram_mb=None`.
+
+    File v3 đã mang identity thật của lần chạy. Bước nâng v2 gán
+    `profile="legacy"` vì file v2 không có identity để giữ — chạy bước đó lên file
+    v3 là xoá dữ liệu thật bằng dữ liệu bịa, và `git diff` sẽ trông như một thay
+    đổi vô hại của migration.
+    """
+    goc = OcrResult(
+        engine="marker_scan",
+        engine_family="marker",
+        profile="scan",
+        engine_version="1",
+        doc_id="x",
+        capabilities=frozenset({Capability.TEXT_MD}),
+        text_md="nội dung",
+        failed=False,
+    )
+    path = _ha_xuong(save_prediction(goc, tmp_path), 3)
+    assert migration.main([str(tmp_path)]) == 0
+
+    got = load_prediction(path)
+    assert got.engine_family == "marker"
+    assert got.profile == "scan"
+    assert got.failure_kind is None
+    assert got.peak_vram_mb is None
+
+
+def test_migration_v4_khong_dung_vao_file_da_moi(tmp_path: Path, capsys):
+    """File đã ở schema đích thì không ghi lại — ghi lại là đẻ diff giả."""
+    path = save_prediction(ket_qua_day_du(), tmp_path)
+    truoc = path.read_bytes()
+    assert migration.main([str(tmp_path)]) == 0
+    assert path.read_bytes() == truoc
+    assert "không đụng" in capsys.readouterr().out
 
 
 def test_migration_refuses_v2_with_extra_v3_field_instead_of_overwriting(
