@@ -694,6 +694,10 @@ def test_runtime_state_probe_stays_fail_closed_when_model_refs_raise(monkeypatch
     assert state.runtime_loaded is False
     assert state.runtime_device is None
     assert state.model_cache_ready is True
+    # Từng thiếu: không có dòng này thì hai trạng thái "đầu dò ném ra" và "runtime sạch
+    # chưa nạp" cho ra `MarkerRuntimeState` giống hệt nhau ở mọi trường được kiểm, nên
+    # `_validate_marker_runtime` cho cái không đọc được đi qua dễ hơn cái đọc được.
+    assert state.probe_failed is True
 
 
 def test_sovereign_pipeline_dynamic_import_creates_no_bytecode(tmp_path, monkeypatch):
@@ -1191,3 +1195,102 @@ def test_run_refuses_to_publish_a_cpu_claim_next_to_a_non_cpu_runtime(tmp_path, 
     monkeypatch.setattr(sov, "marker_runtime_live", lambda: (True, "cuda:0"))
     with pytest.raises(sov.KhaiSaiThietBi, match="cuda:0"):
         adapter.execute(_pdf(tmp_path))
+
+
+def test_fingerprint_khong_khai_cpu_khi_pipeline_nem_tren_runtime_khac_cpu(
+    tmp_path, monkeypatch
+):
+    """Cùng lời khai, nhưng vào từ **đường pipeline ném** — đường mà cổng kia không chắn.
+
+    `run()` ném `SanitizedPipelineError` ngay tại `pipeline(...)`, tức thoát *trước*
+    `_kiem_thiet_bi_song()`. `SanitizedPipelineError` là `RuntimeError`, nên `execute()`
+    bắt được và biến nó thành một dòng `failed=True` — và dòng đó **vẫn mang
+    `config_fingerprint`**. Test anh em ở trên chỉ phủ đường thành công; nếu chỉ có nó
+    thì `device: "cpu"` vẫn đi ra artifact trên mọi tài liệu hỏng, cạnh
+    `marker_runtime_device: "cuda:0"` ngay trong cùng một dict.
+    """
+    adapter = _profile_adapter("sovereign_scan", {"success": True, "fullText": "x"})
+
+    def pipeline_no(_data, _suffix, **_kwargs):
+        raise RuntimeError("BE sập")
+
+    adapter._pipeline = pipeline_no
+    monkeypatch.setattr(sov, "marker_runtime_live", lambda: (True, "cuda:0"))
+
+    ket = adapter.execute(_pdf(tmp_path))
+
+    assert ket.failed is True
+    fp = ket.config_fingerprint
+    assert fp["marker_runtime_device"] == "cuda:0"
+    assert fp["device"] != "cpu", "khai CPU cạnh một runtime cuda là khai sai"
+    assert fp["device"] == "unverified"
+    assert fp["device_evidence"] == "marker-runtime-not-cpu"
+
+
+def test_raw_artifact_duoc_bit_o_tang_chan_doan_va_dem_rieng(tmp_path, monkeypatch):
+    """Artifact bịt rộng hơn văn bản chấm điểm, và có con số riêng nói nó đã bị bịt.
+
+    Hai tầng cố ý khác nhau (xem `_dang_giong_bi_mat`): tầng chấm điểm hẹp để không ăn
+    nhầm cụm từ tự nhiên và làm sai điểm; tầng chẩn đoán rộng vì artifact không được
+    chấm. Dùng lại kết quả tầng hẹp cho artifact — cái bug này — nghĩa là mọi bí mật có
+    khoảng trắng đi thẳng vào `sovereign.json` trên đĩa.
+
+    `MAIL_PASSWORD` là ca thật: `.env` của BE có một giá trị dài, nhiều chữ, có dấu cách,
+    và nó khớp `_SECRET_NAME_HINTS` chứ không nằm trong danh sách cứng.
+    """
+    monkeypatch.setenv("MAIL_PASSWORD", "abcd efgh ijkl mnop")
+    adapter = _profile_adapter(
+        "sovereign_default",
+        {"success": True, "fullText": "văn bản: abcd efgh ijkl mnop"},
+    )
+    sov.thu_thap_bi_mat()  # nạp kho ngay; `_sensitive_values` là property đọc lại
+
+    ket = adapter.run(_pdf(tmp_path))
+
+    tho = ket.raw_artifacts[0].data.decode("utf-8")
+    assert "abcd efgh ijkl mnop" not in tho, "bí mật lọt vào artifact ghi ra đĩa"
+    # Văn bản chấm điểm thì giữ nguyên — đây là nửa kia của đánh đổi, không phải sơ suất.
+    assert "abcd efgh ijkl mnop" in (ket.text_md or "")
+
+    fp = ket.config_fingerprint
+    assert fp["scored_text_redactions"] == 0
+    # Hai lượt quét khác ngưỡng nên khác số. Mượn số của tầng chấm điểm (0) thì artifact
+    # đã lệch khỏi dữ liệu gốc mà không dấu vết nào nói vì sao.
+    assert fp["raw_artifact_redactions"] == 1
+
+
+def test_hai_tang_bit_duoc_noi_day_o_run_chu_khong_chi_o_ham_le(tmp_path, monkeypatch):
+    """Nối dây, không phải hàm lẻ.
+
+    Các test tầng khác gọi thẳng `_sanitize_dem(...)` với `floor=`/`loc_hinh_dang=` do
+    chính chúng truyền vào, nên chúng vẫn xanh kể cả khi `run()` bị revert về chỗ dùng
+    chung một lượt quét cho cả hai. Test này đi qua `run()` và đọc kết quả hai đầu ra,
+    nên nó chết đúng lúc dây bị tháo.
+    """
+    # Khoá dài, ASCII, không khoảng trắng: **vượt cả hai** ngưỡng, nên phải bị bịt ở cả
+    # hai đầu ra. Nó chốt rằng tầng chẩn đoán không hẹp *hơn* tầng chấm điểm.
+    #
+    # Cố ý **không** đặt tiền tố `sk-`: `sanitize_secret_text()` (lớp regex chạy trước)
+    # tự nhận dạng token kiểu đó và bịt luôn, khi ấy vòng khớp-chính-xác không còn gì
+    # để thay và `dem` về 0 — test sẽ xanh/đỏ vì lớp regex chứ không vì cái nó nói là
+    # đang kiểm. Chuỗi này chỉ bị bịt nếu nó thật sự đi qua bộ giá trị `.env`.
+    monkeypatch.setenv("OPENROUTER_API_KEY", "QWERTYUIOP1234567890")
+    adapter = _profile_adapter(
+        "sovereign_default",
+        {"success": True, "fullText": "khoá QWERTYUIOP1234567890 và cụm abcd efgh ijkl mnop"},
+    )
+    monkeypatch.setenv("MAIL_PASSWORD", "abcd efgh ijkl mnop")
+    sov.thu_thap_bi_mat()  # nạp kho ngay; `_sensitive_values` là property đọc lại
+
+    ket = adapter.run(_pdf(tmp_path))
+    tho = ket.raw_artifacts[0].data.decode("utf-8")
+
+    assert "QWERTYUIOP1234567890" not in (ket.text_md or "")
+    assert "QWERTYUIOP1234567890" not in tho
+    # Chỗ hai tầng tách nhau: chỉ artifact bịt cụm có khoảng trắng.
+    assert "abcd efgh ijkl mnop" in (ket.text_md or "")
+    assert "abcd efgh ijkl mnop" not in tho
+
+    fp = ket.config_fingerprint
+    assert fp["scored_text_redactions"] == 1
+    assert fp["raw_artifact_redactions"] == 2

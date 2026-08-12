@@ -54,6 +54,7 @@ import base64
 import importlib.util
 import json
 import os
+import re
 import subprocess
 import sys
 import threading
@@ -157,6 +158,14 @@ _SECRET_ENV_NAMES = (
     "OPENROUTER_API_URL",
     "GDOC_PARSER_URL",
 )
+
+#: So khớp **không phân biệt hoa thường**. `_SECRET_NAME_HINTS` đã casefold từ đầu
+#: (`ten.lower()`), nên danh sách cứng là chỗ duy nhất còn phân biệt — và nó là chỗ
+#: quan trọng hơn, vì tên trong đó bỏ qua cả ngưỡng độ dài lẫn bộ lọc hình dạng.
+#: `.env` viết `openrouter_api_key=` thì bản trước tụt xuống nhánh gợi ý (`key`), tức
+#: mất luôn quyền bỏ qua ngưỡng — một khoá 10 ký tự khi đó không được bịt trong
+#: traceback. Chữ hoa/thường của tên biến không đổi việc giá trị có phải khoá hay không.
+_SECRET_ENV_NAMES_CF = frozenset(t.casefold() for t in _SECRET_ENV_NAMES)
 _BE_EXECUTION_LOCK = threading.RLock()
 
 #: Tên biến *gợi ý* mang bí mật. Danh sách cứng `_SECRET_ENV_NAMES` chỉ phủ được cái
@@ -206,10 +215,38 @@ _SECRET_VALUES: set[str] = set()
 #: ngưỡng độ dài lẫn kiểm tra hình dạng ở mọi chỗ gọi.
 _SECRET_VALUES_CHAC: set[str] = set()
 
+#: Sàn cứng cho tập bỏ-qua-mọi-ngưỡng. Không có nó thì cái bỏ-qua là **vô hạn dưới**:
+#: một biến trong danh sách cứng mang giá trị `" "` (dotenv giữ nguyên khoảng trắng
+#: trong nháy) đưa chuỗi một dấu cách vào tập này, và vì tập này bỏ qua cả sàn độ dài
+#: lẫn bộ lọc hình dạng, mọi dấu cách trong `fullText` bị thay bằng `<redacted>` —
+#: điểm accuracy về gần 0 mà không cột nào trong fingerprint nói vì sao ngoài một con
+#: số `scored_text_redactions` khổng lồ.
+#:
+#: Sàn để **thấp**, và đo trên chuỗi đã strip. Cả điểm của tập này là để khoá ngắn
+#: *thật* vẫn được bịt — `.env` của BE có khoá 10 ký tự, và
+#: `test_secret_inventory_never_filters_a_hard_listed_env_name` chốt rằng một giá trị
+#: 5 ký tự có khoảng trắng vẫn phải bịt ở cả hai tầng. Sàn cao (8, 12) sẽ lặng lẽ mở
+#: lại đúng lỗ rò đó. Chỉ cần chặn cái *thảm hoạ*: 1-2 ký tự, hoặc toàn khoảng trắng.
+#: `" "` bịt được thì mọi dấu cách trong `fullText` thành `<redacted>` — điểm accuracy
+#: về gần 0 mà không cột nào trong fingerprint giải thích ngoài một
+#: `scored_text_redactions` khổng lồ.
+_SAN_CHAC_TOI_THIEU = 3
+
+
+def _du_chac(gia_tri: str) -> bool:
+    """Giá trị có được phép bỏ qua mọi ngưỡng không.
+
+    Đo trên `strip()` chứ không trên chuỗi thô: `"  \\t  "` dài 5 nhưng vẫn là khoảng
+    trắng, và nó tai hại đúng như `" "`.
+    """
+    return len(gia_tri.strip()) >= _SAN_CHAC_TOI_THIEU
+
 
 def _co_ve_bi_mat(ten: str) -> bool:
     t = ten.lower()
-    return ten in _SECRET_ENV_NAMES or any(g in t for g in _SECRET_NAME_HINTS)
+    return ten.casefold() in _SECRET_ENV_NAMES_CF or any(
+        g in t for g in _SECRET_NAME_HINTS
+    )
 
 
 #: Chuỗi thoát trong giá trị nháy kép, theo python-dotenv. Nháy đơn không có thoát.
@@ -308,6 +345,13 @@ def _dang_giong_bi_mat(gia_tri: str) -> bool:
     return gia_tri.isascii()
 
 
+#: Một dòng **bắt đầu một phép gán mới**. Dùng làm mốc dừng cho phần nuốt dòng nối ở
+#: :func:`_doc_env_be`. Cố ý khớp từ đầu dòng và chỉ nhận tên biến hợp lệ: nội dung
+#: giữa một khoá PEM là base64 nên không bao giờ khớp, còn `KEY=` gõ ở cột 0 thì gần
+#: như chắc chắn là dòng `.env` kế tiếp chứ không phải phần thân của giá trị trước.
+_RE_GAN_ENV = re.compile(r"[ \t]*(export[ \t]+)?[A-Za-z_][A-Za-z0-9_]*[ \t]*=")
+
+
 def _doc_env_be() -> dict[str, str]:
     """Đọc `.env` của BE **chỉ để biết chuỗi nào cần bịt**. Không ghi, không lan ra.
 
@@ -344,13 +388,34 @@ def _doc_env_be() -> dict[str, str]:
                 # Nháy chưa đóng = giá trị nhiều dòng (khoá PEM, JSON blob). Nuốt các
                 # dòng sau cho tới khi đóng, thay vì để chúng rơi qua bộ lọc
                 # `"=" not in dong` ở trên và biến mất.
+                #
+                # **Dừng ở dòng gán tiếp theo.** Không có chặn này thì một nháy lẻ —
+                # `PASS="abc` gõ thiếu — nuốt toàn bộ phần còn lại của file: mọi biến
+                # sau nó không bao giờ vào `ra`, nên bí mật của chúng không vào bộ
+                # thay-thế và **lọt ra artifact**. Hỏng theo hướng im lặng: `.env` vẫn
+                # đọc được, hàm vẫn trả dict, chỉ là dict thiếu. Một khoá PEM thật
+                # không chứa dòng nào dạng `TÊN=`, nên chặn này không cắt nhầm nó.
                 while con_mo and i < len(dong_list):
+                    if _RE_GAN_ENV.match(dong_list[i]):
+                        break
                     tho = tho + "\n" + dong_list[i]
                     i += 1
                     gia_tri, con_mo, _ = _quet_gia_tri_env(tho.strip())
+                if con_mo:
+                    # Vẫn ghi `gia_tri` thu được: thiếu chuỗi trong bộ thay-thế là rò
+                    # rỉ, thừa thì chỉ bịt dư. Nhưng phải kêu — `.env` sai cú pháp
+                    # nghĩa là bộ bí mật đang không đầy đủ, và im lặng ở đây là đúng
+                    # cái fail-open mà cả hàm này tồn tại để tránh.
+                    print(
+                        f"CẢNH BÁO: {p}: nháy chưa đóng ở biến {ten!r}; "
+                        "bộ giá trị cần bịt có thể thiếu",
+                        file=sys.stderr,
+                    )
                 ra[ten] = gia_tri
     except BaseException:  # noqa: BLE001 - thu thập bí mật không được làm hỏng lượt chạy
-        return {}
+        # Giữ phần đã phân tích được thay vì vứt sạch: mỗi tên bị bỏ là một chuỗi
+        # không được bịt. **Không** ghi cache — bộ này thiếu, lần gọi sau nên đọc lại.
+        return dict(ra)
     _ENV_BE_CACHE[goc] = ra
     return dict(ra)
 
@@ -377,7 +442,10 @@ def thu_thap_bi_mat() -> tuple[str, ...]:
             # Thu **không lọc**. Mọi ngưỡng (độ dài, hình dạng) áp ở chỗ *dùng*, vì mỗi
             # chỗ dùng chịu một loại thiệt hại khác nhau khi bịt nhầm.
             _SECRET_VALUES.add(gia_tri)
-            if ten in _SECRET_ENV_NAMES:
+            # Sàn cứng chỉ chặn quyền **bỏ qua ngưỡng**, không chặn việc bịt: giá trị
+            # vẫn nằm trong `_SECRET_VALUES` ở trên và vẫn được thay ở mọi chỗ nó vượt
+            # ngưỡng bình thường. Xem `_SAN_CHAC_TOI_THIEU`.
+            if ten.casefold() in _SECRET_ENV_NAMES_CF and _du_chac(gia_tri):
                 _SECRET_VALUES_CHAC.add(gia_tri)
         return tuple(sorted(_SECRET_VALUES, key=len, reverse=True))
 
@@ -639,10 +707,15 @@ def _model_ref_devices(value: object) -> set[str]:
 
 def marker_runtime_state() -> MarkerRuntimeState:
     """Probe package, cache, and already-loaded BE runtime as separate signals."""
+    # `find_spec` ném (ví dụ một `__init__.py` của package cha chạy code và hỏng) là
+    # **không đọc được**, không phải "không có marker". Hai trạng thái đó khác nhau ở
+    # cổng `_validate_marker_runtime`, nên phải ghi lại chứ không nuốt thành `False`.
+    dau_do_hong = False
     try:
         package_available = importlib.util.find_spec("marker") is not None
     except BaseException:
         package_available = False
+        dau_do_hong = True
 
     try:
         with _be_read_only():
@@ -653,9 +726,15 @@ def marker_runtime_state() -> MarkerRuntimeState:
             model_cache_ready=False,
             runtime_loaded=False,
             runtime_device=None,
+            # Chỉ khi package **có mặt**. Máy không cài marker thì `_load_marker_service`
+            # ném là chuyện bình thường và câu trả lời trung thực là "không có" — bật
+            # `probe_failed` ở đó sẽ làm profile `sovereign_default` (vốn yêu cầu
+            # marker_available=False) chết trên mọi máy sạch. Package có mà service của
+            # nó nổ mới là trạng thái *không xác minh được*.
+            probe_failed=dau_do_hong or package_available,
         )
 
-    hong = False
+    hong = dau_do_hong
     with _be_read_only():
         try:
             cache_ready = bool(service._surya_models_cached())
@@ -1142,6 +1221,16 @@ class SovereignAdapter(Adapter):
         co_marker = marker_state.marker_available
         runtime_loaded, runtime_device = marker_runtime_live()
         git = _be_git_metadata()
+        # `_kiem_thiet_bi_song()` là cổng ồn ào cho **đường thành công**. Nó không đủ:
+        # `run()` ném `SanitizedPipelineError` (một `RuntimeError`) *trước* khi tới cổng
+        # đó, và `scripts/preflight_sovereign.py` in fingerprint mà không qua `run()`.
+        # Cả hai đường đó vẫn công bố `device: "cpu"` trong khi Marker đang chạy trên
+        # cuda. Ở đây hạ cấp thay vì ném: hàm này được gọi từ trong except handler của
+        # `execute()`, ném ở đây sẽ biến một tài liệu hỏng thành cả lượt chạy hỏng.
+        thiet_bi_song_khac_cpu = runtime_device is not None and not runtime_device.startswith(
+            "cpu"
+        )
+        khai_cpu = self._hardware_verified and not thiet_bi_song_khac_cpu
         safe_config = {
             **_plain(self.identity.config),
             **(self._config or {}),
@@ -1164,12 +1253,12 @@ class SovereignAdapter(Adapter):
             "python": sys.version.split()[0],
             "profile_config_sha256": self.identity.profile_config_sha256,
             "hardware": "cpu",
-            "device": "cpu" if self._hardware_verified else "unverified",
+            "device": "cpu" if khai_cpu else "unverified",
             "hardware_evidence_version": 1,
             "device_evidence": (
                 "be-settings-ocr-device-cpu"
-                if self._hardware_verified
-                else "none"
+                if khai_cpu
+                else ("marker-runtime-not-cpu" if thiet_bi_song_khac_cpu else "none")
             ),
             # Bao nhiêu lần chuỗi bí mật bị thay **trong chính văn bản được chấm điểm**.
             # Khác 0 nghĩa là điểm accuracy của tài liệu đó đã bị chính lớp bảo vệ này
@@ -1244,12 +1333,12 @@ class SovereignAdapter(Adapter):
         self._kiem_tran_sau(giay, doc_path.stem)
         self._kiem_thiet_bi_song()
 
-        van_ban = ket.get("fullText") or ""
-        if not isinstance(van_ban, str):
-            van_ban = str(van_ban)
+        van_ban_goc = ket.get("fullText") or ""
+        if not isinstance(van_ban_goc, str):
+            van_ban_goc = str(van_ban_goc)
         # Chỉ **ở đây** mới nâng ngưỡng: đây là văn bản đem đi chấm điểm.
         van_ban, so_lan_bit = _sanitize_dem(
-            van_ban,
+            van_ban_goc,
             self._sensitive_values,
             floor=_DO_DAI_BI_MAT_TOI_THIEU,
             loc_hinh_dang=True,
@@ -1259,12 +1348,21 @@ class SovereignAdapter(Adapter):
         # `None`, không có điểm nào để lớp bịt làm giảm — đếm ở đó thì tên trường nói
         # một đằng và con số nói một nẻo.
         self._text_redactions = so_lan_bit if thanh_cong else 0
-        # Trên nhánh thất bại `text_md` là `None` nên `scored_text_redactions` phải là
-        # 0 — nhưng `van_ban` vẫn được bịt và vẫn đi vào `raw_bytes` → `sovereign.json`.
-        # Không có trường này thì lần bịt ấy không được ghi ở đâu cả: artifact khác dữ
-        # liệu gốc mà không có dấu vết nào nói vì sao.
-        self._raw_redactions = so_lan_bit
-        raw_bytes = _canonical_response_bytes(thanh_cong, van_ban)
+        # Artifact bịt ở **tầng chẩn đoán**, quét lại từ văn bản gốc chứ không dùng lại
+        # `van_ban`. Tầng chấm điểm cố ý hẹp hơn (sàn cao + lọc hình dạng) để không ăn
+        # nhầm cụm từ tự nhiên và làm sai điểm; dùng lại nó ở đây nghĩa là mọi bí mật
+        # ngắn hoặc có khoảng trắng — `MAIL_PASSWORD` 19 ký tự có dấu cách là ca thật —
+        # đi thẳng vào `sovereign.json` trên đĩa. Artifact không được chấm nên bịt rộng
+        # ở đây không tốn gì; chỉ chỗ này mới đúng chỗ để bịt rộng.
+        van_ban_raw, so_lan_raw = _sanitize_dem(
+            van_ban_goc,
+            self._sensitive_values,
+            floor=_DO_DAI_CHAN_DOAN_TOI_THIEU,
+        )
+        # Đếm riêng, không mượn `so_lan_bit`: hai lượt quét khác ngưỡng nên khác số, và
+        # con số này là bằng chứng duy nhất nói artifact đã lệch khỏi dữ liệu gốc.
+        self._raw_redactions = so_lan_raw
+        raw_bytes = _canonical_response_bytes(thanh_cong, van_ban_raw)
         error = None
         if not thanh_cong:
             error = _sanitize_runtime_text(
