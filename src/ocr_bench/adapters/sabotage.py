@@ -1,34 +1,10 @@
 """Engine giả `sabotage` — cái cân để kiểm tra chính bộ thước đo.
 
 Nó không đọc PDF. Nó lấy kết quả của một engine khác rồi **cố tình làm hỏng**: xáo
-dòng, cắt còn một nửa, xô lệch bbox, xén bớt hàng trong bảng.
+dòng, cắt bớt, xô lệch bbox, xén bớt hàng trong bảng, xoá ký tự, và bỏ rowspan/colspan.
 
 Công dụng của nó: **metric nào không chấm `sabotage` thấp hơn chính nguồn của nó thì
-metric đó chưa được falsify.** Một metric viết hỏng vẫn cho ra bảng xếp hạng trông rất
-thuyết phục — không nhìn bằng mắt mà phát hiện được. C2 (TASK-086) dùng adapter này
-làm cổng cứng.
-
-⚠️ Phát biểu cũ — *"metric nào không xếp `sabotage` **đứng bét toàn bảng**"* — đã bị bác
-(D-010, 2026-08-10). Nó trộn hai câu hỏi: *phép làm hỏng có bị phạt không* và *engine nào
-giỏi hơn engine nào*. `assert_math_presence` từng báo đỏ chỉ vì `pdf_inspector` thật sự
-chấm 0,0000 (nó không sinh công thức). So sánh đúng là **với nguồn**, và `noop` — vốn là
-sàn theo cấu tạo — bị loại khỏi tập so sánh.
-
-**Giới hạn của chính adapter này:** mọi phép ở đây **chỉ xoá, không bao giờ chèn**. Nên
-nó **không thể** falsify metric nào được thưởng khi văn bản ngắn đi: `assert_text_absence`
-(xoá chữ làm chuỗi cấm biến mất ⇒ khẳng định lật sang đạt) và `assert_baseline`
-(`_keep_half` trả `max(1, ...)` phần tử nên đầu ra không bao giờ rỗng, và xoá thì không
-sinh được U+FFFD ⇒ luôn hoà 1,0000). Hai metric đó **không hỏng** — falsifier thiếu năng
-lực. Bản chèn (`sabotage_insert`) là TASK-097, làm thành engine **thứ hai**, không sửa
-engine này.
-
-Hai ràng buộc bắt buộc:
-
-* **Cùng `capabilities` với nguồn.** Khai ít hơn thì metric trả N/A và `sabotage`
-  *biến mất khỏi bảng* thay vì đứng bét — đúng cái nó sinh ra để phát hiện.
-* **Tất định.** Seed cố định theo `doc_id`, nên C2 chạy lại luôn ra cùng thứ hạng.
-  Xáo ngẫu nhiên thật sẽ làm cổng C2 thỉnh thoảng đỏ thỉnh thoảng xanh, và một cổng
-  như vậy thì người ta tắt đi chứ không đi sửa.
+metric đó chưa được falsify.** C2 (TASK-086) dùng adapter này làm cổng cứng.
 """
 
 from __future__ import annotations
@@ -46,48 +22,48 @@ from ocr_bench.types import Box, Capability, OcrResult, OcrTable
 __all__ = ["SabotageAdapter", "KEEP_RATIO"]
 
 KEEP_RATIO = 0.5
-"""Giữ lại bao nhiêu phần nội dung. 0.5 = cắt còn một nửa."""
+"""Mặc định giữ lại bao nhiêu phần nội dung. 0.5 = cắt còn một nửa."""
 
 _ROW_RE = re.compile(r"<tr\b.*?</tr>", re.IGNORECASE | re.DOTALL)
+_SPAN_RE = re.compile(r'\s*(rowspan|colspan)\s*=\s*(?:"[^"]*"|\'[^\']*\'|\d+)', re.IGNORECASE)
 
 
-def _keep_half(items: list, rng: random.Random) -> list:
-    """Xáo rồi cắt còn ~một nửa. Danh sách 1 phần tử vẫn giữ lại 1 — cắt về rỗng
-    thì mất luôn khả năng phân biệt "hỏng nhiều" với "không trả gì"."""
+def _keep_ratio_items(items: list, rng: random.Random, ratio: float) -> list:
+    """Xáo rồi giữ lại theo `ratio`. Danh sách 1 phần tử vẫn giữ 1."""
     if not items:
         return []
     shuffled = items[:]
     rng.shuffle(shuffled)
-    return shuffled[: max(1, int(len(shuffled) * KEEP_RATIO))]
+    n_keep = max(1, int(len(shuffled) * ratio))
+    return shuffled[:n_keep]
 
 
-def _corrupt_text(text: str, rng: random.Random) -> str:
-    """Xáo dòng rồi cắt còn một nửa.
+def _corrupt_text(text: str, rng: random.Random, severity: float = 0.5) -> str:
+    """Xáo dòng/từ và xoá bớt ký tự theo severity."""
+    ratio = max(0.05, min(0.95, 1.0 - severity))
 
-    Văn bản một dòng thì xáo dòng không đổi gì cả — rơi xuống xáo theo từ. Không có
-    nhánh này, `sabotage` trên tài liệu ngắn sẽ ra điểm **hệt** nguồn, và C2 báo
-    "metric không phân biệt được" trong khi lỗi nằm ở chỗ này.
-    """
     lines = [ln for ln in text.split("\n") if ln.strip()]
     if len(lines) >= 2:
-        return "\n".join(_keep_half(lines, rng))
-    words = text.split()
-    return " ".join(_keep_half(words, rng))
+        kept_lines = _keep_ratio_items(lines, rng, ratio)
+        result = "\n".join(kept_lines)
+    else:
+        words = text.split()
+        kept_words = _keep_ratio_items(words, rng, ratio)
+        result = " ".join(kept_words)
+
+    # Apply character drop only if severity > 0.5
+    if severity > 0.5:
+        char_drop_prob = (severity - 0.5) * 0.3
+        result = "".join(c for c in result if c == "\n" or c == " " or rng.random() >= char_drop_prob)
+
+    return result
 
 
-def _jitter(box: Box | None, rng: random.Random) -> Box | None:
-    """Xô lệch bbox ~10% chiều rộng/cao trang để IoU tụt mà không về 0 hẳn.
-
-    Cố ý *không* đẩy hẳn ra ngoài: IoU = 0 với mọi tài liệu thì mọi metric bbox đều
-    cho `sabotage` cùng một điểm sàn, và ta mất khả năng thấy metric nào nhạy hơn.
-
-    Sắp lại toạ độ **trước khi** dựng `Box`: xô lệch hai mép ngược chiều nhau có thể
-    làm x1 < x0, mà `Box.__post_init__` chặn box lộn ngược — sắp sau khi dựng thì
-    không bao giờ chạy tới.
-    """
+def _jitter(box: Box | None, rng: random.Random, severity: float = 0.5) -> Box | None:
+    """Xô lệch bbox theo mức độ severity."""
     if box is None:
         return None
-    d = 0.1
+    d = max(0.02, min(0.3, 0.2 * severity))
 
     def nudge(v: float) -> float:
         return min(1.0, max(0.0, v + rng.uniform(-d, d)))
@@ -97,85 +73,82 @@ def _jitter(box: Box | None, rng: random.Random) -> Box | None:
     return Box(page=box.page, x0=x0, y0=y0, x1=x1, y1=y1)
 
 
-def _corrupt_table(table: OcrTable, rng: random.Random) -> OcrTable:
-    """Bỏ bớt hàng `<tr>`. TEDS phải bắt được; CER thì gần như không."""
-    rows = _ROW_RE.findall(table.html)
+def _corrupt_table(table: OcrTable, rng: random.Random, severity: float = 0.5) -> OcrTable:
+    """Bỏ rowspan/colspan và bỏ bớt hàng `<tr>`."""
+    ratio = max(0.05, min(0.95, 1.0 - severity))
+    html = table.html
+
+    if severity > 0.5:
+        html = _SPAN_RE.sub("", html)
+
+    rows = _ROW_RE.findall(html)
     if len(rows) < 2:
-        return table
-    kept = _keep_half(rows, rng)
+        return dataclasses.replace(table, html=html)
+    kept = _keep_ratio_items(rows, rng, ratio)
     return dataclasses.replace(
         table, html=f"<table>{''.join(kept)}</table>", n_rows=len(kept)
     )
 
 
 class SabotageAdapter(Adapter):
-    """Bọc một adapter khác và làm hỏng đầu ra của nó.
-
-    `capabilities` là thuộc tính **lớp** (registry đòi vậy) nên nó khai đủ mọi năng
-    lực — nghĩa là "cái gì nguồn có thì tôi chuyển tiếp". Năng lực *thực tế* của mỗi
-    lần chạy lấy theo nguồn và ghi vào `OcrResult`, nên `Metric.score()` vẫn ra N/A
-    đúng chỗ.
-
-    ⚠️ Hệ quả: `registry.applicable_metrics("sabotage")` trả về toàn ``True`` dù
-    nguồn có thể không có năng lực đó — hàm ấy chỉ nhìn được cấp lớp, mà nguồn thì
-    là thuộc tính của thể hiện. Vì vậy `scorer` tính khả dụng từ kết quả **thật**
-    (`Aggregate.applicable`), không từ `applicable_metrics()`.
-    """
+    """Bọc một adapter khác và làm hỏng đầu ra của nó theo severity."""
 
     name: ClassVar[str] = "sabotage"
     capabilities: ClassVar[frozenset[Capability]] = frozenset(Capability)
 
-    def __init__(self, source: Adapter | None = None, *, seed: int = 1337) -> None:
-        # Mặc định là `noop` để adapter này chạy được ngay trên máy chưa cài engine
-        # nào. Thực chiến thì truyền engine tốt nhất vào — hỏng đầu ra của engine
-        # mạnh mới là phép thử có ý nghĩa.
+    def __init__(
+        self,
+        source: Adapter | None = None,
+        *,
+        seed: int = 1337,
+        severity: float = 0.5,
+    ) -> None:
         self.source = source or NoopAdapter()
         self.seed = seed
+        self.severity = max(0.01, min(0.99, severity))
 
     def version(self) -> str:
-        # `ten_engine_that`, không phải `name`: nguồn có thể là `NguonTuDia` phát lại
-        # kết quả đã lưu, và khi đó `name` là `nguon_tu_dia` — bảng công bố sẽ ghi
-        # `sabotage/1+nguon_tu_dia` và giấu mất engine nào thực sự bị làm hỏng.
         return f"sabotage/1+{self.source.ten_engine_that}"
 
     def config_fingerprint(self) -> dict[str, object]:
-        return {
+        fp: dict[str, object] = {
             "source": self.source.ten_engine_that,
             "seed": self.seed,
-            "keep_ratio": KEEP_RATIO,
+            "keep_ratio": round(1.0 - self.severity, 4),
         }
+        if self.severity != 0.5:
+            fp["severity"] = self.severity
+        return fp
 
     def run(self, doc_path: Path) -> OcrResult:
         src = self.source.execute(doc_path)
         if src.failed:
-            # Nguồn hỏng thì `sabotage` cũng hỏng. Trả kết quả "sạch" ở đây sẽ khiến
-            # nó trông tốt hơn nguồn đúng vào lúc nguồn tệ nhất.
             return dataclasses.replace(
                 src,
                 engine=self.name,
                 engine_version=self.version(),
                 capabilities=src.capabilities,
                 error=f"nguồn {self.source.name} hỏng: {src.error}",
-                # Giữ nguyên fingerprint của nguồn (có traceback) rồi chồng thêm
-                # của mình — mất traceback là mất manh mối gỡ lỗi duy nhất.
                 config_fingerprint={
                     **src.config_fingerprint,
                     **self.config_fingerprint(),
                 },
             )
 
-        rng = random.Random(f"{self.seed}:{src.doc_id}")
+        rng = random.Random(f"{self.seed}:{src.doc_id}:{self.severity}")
+        ratio = 1.0 - self.severity
 
         blocks = tuple(
-            dataclasses.replace(b, box=_jitter(b.box, rng))
-            for b in _keep_half(list(src.blocks), rng)
+            dataclasses.replace(b, box=_jitter(b.box, rng, self.severity))
+            for b in _keep_ratio_items(list(src.blocks), rng, ratio)
         )
         images = tuple(
-            dataclasses.replace(i, box=_jitter(i.box, rng))
-            for i in _keep_half(list(src.images), rng)
+            dataclasses.replace(i, box=_jitter(i.box, rng, self.severity))
+            for i in _keep_ratio_items(list(src.images), rng, ratio)
         )
         tables = tuple(
-            _corrupt_table(t, rng) for t in _keep_half(list(src.tables), rng)
+            _corrupt_table(t, rng, self.severity)
+            for t in _keep_ratio_items(list(src.tables), rng, ratio)
         )
         scan_label = (
             dataclasses.replace(
@@ -193,7 +166,9 @@ class SabotageAdapter(Adapter):
             doc_id=src.doc_id,
             capabilities=src.capabilities,
             text_md=(
-                _corrupt_text(src.text_md, rng) if src.text_md is not None else None
+                _corrupt_text(src.text_md, rng, self.severity)
+                if src.text_md is not None
+                else None
             ),
             blocks=blocks,
             images=images,
