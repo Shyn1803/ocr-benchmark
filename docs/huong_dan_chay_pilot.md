@@ -39,6 +39,16 @@ PYTHONIOENCODING="utf-8" ./.venv-marker/Scripts/python.exe scripts/run_research_
 ```
 
 **3. Chạy cặp profile OpenDataLoader:**
+
+> ⚠️ **ĐẶC BIỆT LƯU Ý VỚI OPENDATALOADER:** Chế độ scan của OpenDataLoader là chế độ "lai" (Hybrid) giữa Java và Python. Do đó, bạn **bắt buộc** phải mở thêm một cửa sổ Terminal (Git Bash/PowerShell) thứ hai, và chạy lệnh bật Server mồi này lên TRƯỚC:
+> 
+> ```bash
+> # Bật ở một tab Terminal mới tinh và cứ để nó chạy ngầm
+> PYTHONIOENCODING="utf-8" ./.venv-odl/Scripts/python.exe scripts/run_odl_hybrid.py
+> ```
+> 
+> Sau khi Server đã chạy, bạn quay lại Terminal chính và chạy lệnh chính:
+
 - **PowerShell:**
 ```powershell
 $env:PYTHONIOENCODING="utf-8"
