@@ -47,6 +47,42 @@ def pytest_collection_modifyitems(config, items):
 
 
 @pytest.fixture(autouse=True)
+def _co_lap_bi_mat_sovereign():
+    """Trả `_SECRET_VALUES` và cache `.env` của adapter Sovereign về đúng chỗ cũ.
+
+    `_SECRET_VALUES` **chỉ lớn thêm** theo thiết kế (một profile không được làm mất khả
+    năng bịt của profile sau). Hệ quả trong test: một test seed chuỗi bí mật thì test
+    sau vẫn thấy nó, nên mọi khẳng định dạng `== 1` trở thành phụ thuộc thứ tự chạy —
+    xanh khi chạy riêng, đỏ khi chạy cả file, và không ai đọc ra vì sao.
+
+    Nằm ở `conftest.py` chứ không ở `test_sovereign_adapter.py`: hai file test khác
+    (`test_sovereign_preflight.py` và bất kỳ file nào gọi `thu_thap_bi_mat()`) dùng
+    chung đúng các biến toàn cục ấy trong cùng một tiến trình pytest. Fixture chỉ rộng
+    bằng một file thì nó bảo vệ file đã nghĩ tới nó và bỏ mặc phần còn lại.
+
+    Import trong thân hàm: `ocr_bench.adapters.sovereign` kéo theo `importlib`/`json`
+    ở cấp module, và `conftest.py` được nạp cho **mọi** phiên chạy kể cả những phiên
+    không đụng tới Sovereign.
+    """
+    from ocr_bench.adapters import sovereign as sov
+
+    with sov._SECRET_VALUES_LOCK:
+        anh_chup = set(sov._SECRET_VALUES)
+        anh_chup_chac = set(sov._SECRET_VALUES_CHAC)
+    cache_cu = dict(sov._ENV_BE_CACHE)
+    try:
+        yield
+    finally:
+        with sov._SECRET_VALUES_LOCK:
+            sov._SECRET_VALUES.clear()
+            sov._SECRET_VALUES.update(anh_chup)
+            sov._SECRET_VALUES_CHAC.clear()
+            sov._SECRET_VALUES_CHAC.update(anh_chup_chac)
+        sov._ENV_BE_CACHE.clear()
+        sov._ENV_BE_CACHE.update(cache_cu)
+
+
+@pytest.fixture(autouse=True)
 def _restore_registry():
     adapters = dict(registry._ADAPTERS)
     metrics = dict(registry._METRICS)

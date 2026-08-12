@@ -75,6 +75,8 @@ __all__ = [
     "ProfileEnvironmentError",
     "SanitizedPipelineError",
     "VuotTran",
+    "KhaiSaiThietBi",
+    "THIET_BI_KHONG_RO",
     "ENV_CUONG_BUC",
     "duong_dan_be",
     "nap_pipeline",
@@ -108,6 +110,19 @@ class VuotTran(BaseException):
     biến mọi lỗi thành một dòng ``failed=True`` rồi chạy tiếp tài liệu sau — đúng cho lỗi
     engine, sai chết người cho trần chi phí. AC-02 đòi "vượt thì dừng, không chạy tiếp";
     một exception bị nuốt thành dòng kết quả là *không* dừng.
+    """
+
+
+class KhaiSaiThietBi(BaseException):
+    """Thiết bị đọc lúc chạy mâu thuẫn với nhãn profile → dừng cả lượt chạy.
+
+    Kế thừa ``BaseException`` vì cùng một lý do như :class:`VuotTran`, và ở đây lý do
+    còn gắt hơn. Bản đầu ném ``ProfileEnvironmentError`` (một ``Exception``), nên
+    ``Adapter.execute()`` bắt được, biến thành ``failed=True`` rồi **chạy tiếp** —
+    ``prediction.py`` lưu ngay dòng đó, và ta công bố đủ 204 dòng ``device: "cpu"``
+    nằm cạnh ``marker_runtime_device: "cuda:0"``: đúng cái tuyên bố sai mà cổng này
+    sinh ra để chặn, chỉ khác là giờ có thêm nhãn ``ENGINE_ERROR`` đổ lỗi cho BE.
+    Không bắt được nghĩa là lượt chạy dừng và không có gì được ghi.
     """
 
 
@@ -169,8 +184,27 @@ _SECRET_NAME_HINTS = (
 #: `BIZFLY_KEY` 10 ký tự, tức đúng trường hợp này không phải giả định.
 _DO_DAI_BI_MAT_TOI_THIEU = 12
 
+#: Ngưỡng cho traceback / thông điệp lỗi. Thấp hơn ngưỡng của văn bản được chấm vì ở
+#: đây bịt thừa chỉ tốn khả năng chẩn đoán chứ không làm sai điểm — nhưng *không* bằng
+#: 0. Với 0 thì `.env` thật của BE đẩy `2048`, `4096` và `true` vào bộ thay-thế toàn
+#: cục (chúng là giá trị của biến có chữ `key`/`token` trong tên), và mọi thông điệp
+#: lỗi biến thành `max_tokens=<redacted>, vision=<redacted>` — hỏng đúng cột dùng để
+#: phân loại thất bại. Giá trị ngắn hơn 6 ký tự mà *chắc chắn* là bí mật vẫn được bịt
+#: qua `_SECRET_VALUES_CHAC`.
+_DO_DAI_CHAN_DOAN_TOI_THIEU = 6
+
+#: Nhãn thiết bị nghĩa là "đầu dò ném, không đọc được". Khác `None` ("chưa nạp gì") ở
+#: chỗ nó **không** thoả bất kỳ cổng nào — mọi so sánh `startswith("cpu")` đều trượt.
+THIET_BI_KHONG_RO = "unknown"
+
 _SECRET_VALUES_LOCK = threading.Lock()
 _SECRET_VALUES: set[str] = set()
+
+#: Tập con của `_SECRET_VALUES` đến từ **tên biến trong danh sách cứng**, không phải từ
+#: gợi ý chuỗi con. Ở đây không còn phải đoán: `MAIL_PASSWORD` là mật khẩu bất kể giá
+#: trị của nó dài bao nhiêu hay có dấu cách hay không. Những giá trị này bỏ qua cả
+#: ngưỡng độ dài lẫn kiểm tra hình dạng ở mọi chỗ gọi.
+_SECRET_VALUES_CHAC: set[str] = set()
 
 
 def _co_ve_bi_mat(ten: str) -> bool:
@@ -178,45 +212,97 @@ def _co_ve_bi_mat(ten: str) -> bool:
     return ten in _SECRET_ENV_NAMES or any(g in t for g in _SECRET_NAME_HINTS)
 
 
-def _tach_gia_tri_env(tho: str) -> str:
-    """Gỡ nháy và chú thích cuối dòng theo đúng quy ước dotenv.
+#: Chuỗi thoát trong giá trị nháy kép, theo python-dotenv. Nháy đơn không có thoát.
+_GIAI_THOAT = {"n": "\n", "t": "\t", "r": "\r", "\\": "\\", '"': '"', "'": "'"}
+
+
+def _quet_gia_tri_env(tho: str) -> tuple[str, bool, bool]:
+    """Quét một giá trị dotenv. Trả `(giá_trị, còn_mở_nháy, có_nháy)`.
 
     Parser ngây thơ (`strip().strip("'\"")`) sai ở ba chỗ, và cả ba đều làm **hụt**
     chuỗi cần bịt chứ không thừa: `export A=b` cho tên `export A` nên `_co_ve_bi_mat`
     không nhận ra; `A=b   # ghi chú` cho giá trị `b   # ghi chú` nên chuỗi thật `b`
     không bao giờ khớp; `A="b"c` bị cắt cả hai đầu. Hụt một chuỗi ở đây nghĩa là nó
     không nằm trong bộ thay-thế, tức nó **lọt ra** artifact.
+
+    Bản trước sửa được hai chỗ đầu nhưng vẫn hụt ba dạng, đều cùng hướng rò: `"b"c`
+    cho `b` (dotenv cho `bc`) — đúng cái ví dụ mà docstring cũ nêu ra như thứ nó đã
+    sửa; `"ab\\"cd"` cho `ab\\` vì không hiểu thoát; và giá trị nhiều dòng thì mất
+    sạch từ dòng thứ hai. Khoá PEM và JSON service-account là dạng nhiều dòng có
+    thật — `.env` hôm nay chưa có, nên đây là chặn trước chứ chưa phải lỗ đang chảy.
+
+    `còn_mở_nháy` cho chỗ gọi biết phải nối thêm dòng; `có_nháy` cho biết có được
+    phép `strip()` kết quả không (`A="b "` thì khoảng trắng cuối là một phần mật khẩu).
     """
-    tho = tho.strip()
-    if tho[:1] in ("'", '"'):
-        dau = tho[0]
-        het = tho.find(dau, 1)
-        if het != -1:
-            return tho[1:het]
-        return tho[1:]
-    # Chỉ cắt `#` khi có khoảng trắng đứng trước: `pass#word` là mật khẩu hợp lệ.
-    vi_tri = tho.find(" #")
-    if vi_tri == -1:
-        vi_tri = tho.find("	#")
-    if vi_tri != -1:
-        tho = tho[:vi_tri]
-    return tho.strip()
+    ra: list[str] = []
+    co_nhay = False
+    con_mo = False
+    i, n = 0, len(tho)
+    while i < n:
+        c = tho[i]
+        if c in ("'", '"'):
+            co_nhay = True
+            dau = c
+            i += 1
+            dong = False
+            while i < n:
+                k = tho[i]
+                if k == "\\" and dau == '"' and i + 1 < n:
+                    ra.append(_GIAI_THOAT.get(tho[i + 1], tho[i + 1]))
+                    i += 2
+                    continue
+                if k == dau:
+                    i += 1
+                    dong = True
+                    break
+                ra.append(k)
+                i += 1
+            if not dong:
+                con_mo = True
+                break
+            # Không `return` ở đây: `"b"c` phải cho `bc`, và `"a" "b"` phải nối tiếp.
+            continue
+        # Chỉ cắt `#` khi có khoảng trắng đứng trước: `pass#word` là mật khẩu hợp lệ.
+        if c in (" ", "\t") and tho[i + 1 : i + 2] == "#":
+            break
+        ra.append(c)
+        i += 1
+    gia_tri = "".join(ra)
+    return (gia_tri if co_nhay else gia_tri.strip(), con_mo, co_nhay)
 
 
-_ENV_BE_CACHE: dict[str, str] | None = None
+def _tach_gia_tri_env(tho: str) -> str:
+    """Giá trị dotenv của một dòng đơn. Xem :func:`_quet_gia_tri_env`."""
+    return _quet_gia_tri_env(tho.strip())[0]
+
+
+#: Khoá theo **đường dẫn BE đã giải**, không phải một ô nhớ duy nhất. `duong_dan_be()`
+#: đọc `SOVEREIGN_BE_PATH` lúc gọi và `scripts/preflight_sovereign.py` đặt biến đó lúc
+#: chạy, nên một ô nhớ duy nhất nghĩa là: gọi `main()` lần thứ hai trong cùng tiến
+#: trình với `--be-path` khác sẽ âm thầm dùng lại `.env` của BE thứ nhất — thu bí mật
+#: của BE này rồi đem chạy BE kia.
+_ENV_BE_CACHE: dict[Path, dict[str, str]] = {}
 
 
 def _dang_giong_bi_mat(gia_tri: str) -> bool:
-    """Loại những giá trị mà thay đi thì hỏng số liệu chứ không bảo vệ được gì.
+    """Giá trị có *hình dạng* của một token khoá — dùng ở chỗ **chấm điểm**, không ở
+    chỗ thu thập.
 
     Tên biến khớp `_SECRET_NAME_HINTS` không có nghĩa giá trị là khoá: gợi ý `key` khớp
     luôn cả `SCHEDULER_HOT_KEYWORDS`, mà giá trị của biến đó là một danh sách từ khoá
     tiếng Việt ngăn cách bởi dấu phẩy. Đem một cụm từ tự nhiên thay khỏi `fullText` là
-    làm sai điểm accuracy vì một lý do không liên quan gì tới OCR. Khoá thật là token
-    ASCII liền mạch; ràng buộc này cắt đúng lớp giá trị nguy hiểm mà không bỏ khoá nào.
+    làm sai điểm accuracy vì một lý do không liên quan gì tới OCR.
 
-    Hôm nay chưa có va chạm nào (0/217 file ground-truth), nên đây là chặn trước.
+    Ràng buộc này **từng nằm ở khâu thu thập**, và ở đó nó là một lỗ rò: `MAIL_PASSWORD`
+    trong `.env` thật của BE dài 19 ký tự và có khoảng trắng, nên nó bị loại khỏi bộ
+    thay-thế hoàn toàn — không chỉ khỏi văn bản chấm điểm mà khỏi cả traceback và
+    fingerprint, những chỗ mà lớp regex cũng không cứu được (`_KEY_VALUE_RE` dừng ở dấu
+    cách đầu tiên, nên phần đuôi mật khẩu vẫn ra nguyên văn). Mật khẩu non-ASCII rơi
+    theo đúng cách đó. Lọc *cái gì được thu* và lọc *cái gì được thay ở đâu* là hai
+    việc khác nhau; gộp chúng lại thì việc thứ hai âm thầm làm hỏng việc thứ nhất.
     """
+    if gia_tri in _SECRET_VALUES_CHAC:
+        return True
     if any(k.isspace() for k in gia_tri):
         return False
     return gia_tri.isascii()
@@ -233,28 +319,40 @@ def _doc_env_be() -> dict[str, str]:
     đọc đĩa cho một lượt 204 tài liệu — và mỗi lần lại đọc một file chứa khoá thật vào
     bộ nhớ. `.env` không đổi giữa chừng lượt chạy; đọc lại không cho thêm thông tin gì.
     """
-    global _ENV_BE_CACHE
-    if _ENV_BE_CACHE is not None:
-        return _ENV_BE_CACHE
-    ra: dict[str, str] = {}
     try:
-        p = duong_dan_be() / ".env"
-        if not p.is_file():
-            _ENV_BE_CACHE = ra
-            return ra
-        for dong in p.read_text(encoding="utf-8", errors="replace").splitlines():
-            dong = dong.strip()
-            if not dong or dong.startswith("#") or "=" not in dong:
-                continue
-            ten, _, gia_tri = dong.partition("=")
-            ten = ten.strip()
-            if ten.startswith("export "):
-                ten = ten[len("export ") :].strip()
-            ra[ten] = _tach_gia_tri_env(gia_tri)
+        goc = duong_dan_be()
     except BaseException:  # noqa: BLE001 - thu thập bí mật không được làm hỏng lượt chạy
         return {}
-    _ENV_BE_CACHE = ra
-    return ra
+    if (da_co := _ENV_BE_CACHE.get(goc)) is not None:
+        return dict(da_co)  # bản sao: chỗ gọi không sửa được cache dùng chung
+    ra: dict[str, str] = {}
+    try:
+        p = goc / ".env"
+        if p.is_file():
+            dong_list = p.read_text(encoding="utf-8", errors="replace").splitlines()
+            i = 0
+            while i < len(dong_list):
+                dong = dong_list[i].strip()
+                i += 1
+                if not dong or dong.startswith("#") or "=" not in dong:
+                    continue
+                ten, _, tho = dong.partition("=")
+                ten = ten.strip()
+                if ten.startswith("export "):
+                    ten = ten[len("export ") :].strip()
+                gia_tri, con_mo, _ = _quet_gia_tri_env(tho.strip())
+                # Nháy chưa đóng = giá trị nhiều dòng (khoá PEM, JSON blob). Nuốt các
+                # dòng sau cho tới khi đóng, thay vì để chúng rơi qua bộ lọc
+                # `"=" not in dong` ở trên và biến mất.
+                while con_mo and i < len(dong_list):
+                    tho = tho + "\n" + dong_list[i]
+                    i += 1
+                    gia_tri, con_mo, _ = _quet_gia_tri_env(tho.strip())
+                ra[ten] = gia_tri
+    except BaseException:  # noqa: BLE001 - thu thập bí mật không được làm hỏng lượt chạy
+        return {}
+    _ENV_BE_CACHE[goc] = ra
+    return dict(ra)
 
 
 def thu_thap_bi_mat() -> tuple[str, ...]:
@@ -268,14 +366,19 @@ def thu_thap_bi_mat() -> tuple[str, ...]:
     # Danh sách chứ không phải dict theo tên: `os.environ` và `.env` của BE hay có
     # **cùng một tên với hai giá trị khác nhau**, và bịt cái này rồi bỏ cái kia thì
     # đúng giá trị đang chạy mới là cái lọt ra.
-    ung_vien: list[str] = [
-        gia_tri for ten, gia_tri in os.environ.items() if _co_ve_bi_mat(ten)
+    ung_vien: list[tuple[str, str]] = [
+        (ten, gia_tri) for ten, gia_tri in os.environ.items() if _co_ve_bi_mat(ten)
     ]
-    ung_vien += [v for t, v in _doc_env_be().items() if _co_ve_bi_mat(t)]
+    ung_vien += [(t, v) for t, v in _doc_env_be().items() if _co_ve_bi_mat(t)]
     with _SECRET_VALUES_LOCK:
-        for gia_tri in ung_vien:
-            if gia_tri and _dang_giong_bi_mat(gia_tri):
-                _SECRET_VALUES.add(gia_tri)
+        for ten, gia_tri in ung_vien:
+            if not gia_tri:
+                continue
+            # Thu **không lọc**. Mọi ngưỡng (độ dài, hình dạng) áp ở chỗ *dùng*, vì mỗi
+            # chỗ dùng chịu một loại thiệt hại khác nhau khi bịt nhầm.
+            _SECRET_VALUES.add(gia_tri)
+            if ten in _SECRET_ENV_NAMES:
+                _SECRET_VALUES_CHAC.add(gia_tri)
         return tuple(sorted(_SECRET_VALUES, key=len, reverse=True))
 
 
@@ -295,6 +398,15 @@ class MarkerRuntimeState:
     model_cache_ready: bool
     runtime_loaded: bool
     runtime_device: str | None
+    probe_failed: bool = False
+    """Có đầu dò nào ném ra trong lúc đọc trạng thái Marker hay không.
+
+    Fail-closed mới chỉ là *không cho ngoại lệ thoát ra*; nó chưa nói gì về việc thất
+    bại ấy được **báo cáo** thế nào. Không có trường này thì một runtime GPU đọc không
+    nổi cho ra đúng bộ giá trị như một runtime CPU sạch (`runtime_loaded=False`,
+    `runtime_device=None`), và cả hai cổng dưới đây đều thấy "không có gì để chặn" nên
+    cho qua — rồi ta công bố `device: "cpu"`. Im lặng ở đây là fail-**open**.
+    """
 
     @property
     def marker_available(self) -> bool:
@@ -543,11 +655,13 @@ def marker_runtime_state() -> MarkerRuntimeState:
             runtime_device=None,
         )
 
+    hong = False
     with _be_read_only():
         try:
             cache_ready = bool(service._surya_models_cached())
         except BaseException:
             cache_ready = False
+            hong = True
         # Cùng lý do như trong `_model_ref_devices`: ba dòng này đọc thuộc tính của một
         # module BE mà ta không sở hữu. Không bọc thì một property ném ở đây làm hỏng
         # preflight của cả profile, và thứ nó bảo vệ chỉ là *nhãn thiết bị*.
@@ -555,16 +669,19 @@ def marker_runtime_state() -> MarkerRuntimeState:
             model_refs = getattr(service, "_model_refs", None)
         except BaseException:  # noqa: BLE001 - đầu dò phải fail-closed
             model_refs = None
+            hong = True
         try:
             configured_device = _normalize_device(getattr(service, "_device_str", None))
         except BaseException:  # noqa: BLE001 - đầu dò phải fail-closed
             configured_device = None
+            hong = True
         try:
             model_devices = (
                 _model_ref_devices(model_refs) if model_refs is not None else set()
             )
         except BaseException:  # noqa: BLE001 - đầu dò phải fail-closed
             model_devices = set()
+            hong = True
 
     runtime_loaded = model_refs is not None or configured_device is not None
     observed_devices = set(model_devices)
@@ -580,6 +697,7 @@ def marker_runtime_state() -> MarkerRuntimeState:
         model_cache_ready=cache_ready,
         runtime_loaded=runtime_loaded,
         runtime_device=runtime_device,
+        probe_failed=hong,
     )
 
 
@@ -613,14 +731,26 @@ def marker_runtime_live() -> tuple[bool, str | None]:
             # là một lazy import trong lúc duyệt có thể ghi `.pyc` vào BE read-only.
             devices = set(_model_ref_devices(model_refs)) if model_refs is not None else set()
     except BaseException:  # noqa: BLE001 - probe không được phép làm hỏng lượt chạy
-        return (False, None)
+        # `(False, None)` ở đây là **nói dối theo hướng có lợi cho ta**: nó không phân
+        # biệt được với một runtime CPU sạch, nên cổng thiết bị cho qua và ta công bố
+        # `device: "cpu"` cho một runtime vừa từ chối cho đọc. `THIET_BI_KHONG_RO`
+        # khiến cổng chặn — nuốt ngoại lệ là để lượt chạy không *sập*, không phải để
+        # nó *đi tiếp như chưa có gì*.
+        return (True, THIET_BI_KHONG_RO)
     if device is not None:
         devices.add(device)
     if len(devices) == 1:
         return (True, next(iter(devices)))
     if len(devices) > 1:
         return (True, "conflict:" + ",".join(sorted(devices)))
-    return (model_refs is not None, None)
+    if model_refs is None:
+        return (False, None)
+    # Runtime **đã** nạp nhưng không ref nào chịu khai thiết bị (`_model_ref_devices`
+    # nuốt lỗi từng ref, và một predictor lười trả `set()` thay vì bị nạp ra). Trả
+    # `None` ở đây là cùng một lỗi fail-open với nhánh except: cổng `_kiem_thiet_bi_song`
+    # bỏ qua `None`, nên 204 dòng vẫn đi ra mang `device: "cpu"` cho một runtime chưa ai
+    # đọc được. "Đã nạp mà không đọc được" là `unknown`, không phải "sạch".
+    return (True, THIET_BI_KHONG_RO)
 
 
 def marker_san_sang() -> bool:
@@ -723,27 +853,44 @@ def _be_git_metadata() -> dict[str, object]:
 
 
 def _sanitize_dem(
-    value: str, exact_secrets: tuple[str, ...], *, floor: int = 0
+    value: str,
+    exact_secrets: tuple[str, ...],
+    *,
+    floor: int = _DO_DAI_CHAN_DOAN_TOI_THIEU,
+    loc_hinh_dang: bool = False,
 ) -> tuple[str, int]:
     """Làm sạch và **đếm** số lần thay khớp-chính-xác.
 
     Đếm để chỗ gọi có thể nói ra. Thay chuỗi trong `text_md` là can thiệp vào chính
     thứ đang được chấm điểm; im lặng thì điểm tụt mà không có dấu vết nào giải thích.
 
-    `floor` mặc định 0: traceback và thông điệp lỗi bịt **mọi** bí mật, kể cả ngắn, vì
-    ở đó bịt thừa không tốn gì. Chỉ chỗ gọi trên văn bản được chấm mới nâng ngưỡng lên.
+    `floor` chọn theo thiệt hại của việc bịt nhầm tại chỗ gọi: văn bản được chấm dùng
+    `_DO_DAI_BI_MAT_TOI_THIEU` (bịt nhầm = sai điểm), traceback và thông điệp lỗi dùng
+    `_DO_DAI_CHAN_DOAN_TOI_THIEU` (bịt nhầm = mất khả năng chẩn đoán). Không chỗ nào
+    dùng 0 nữa: xem docstring của hằng chẩn đoán.
+
+    `loc_hinh_dang` **chỉ** bật ở chỗ chấm điểm. Ở traceback thì ngược lại: mật khẩu
+    có khoảng trắng hay ký tự tiếng Việt vẫn phải bịt, vì bịt thừa ở đó không làm sai
+    con số nào. Gộp hai thứ này làm một chính là lỗi của bản trước.
+
+    Giá trị trong `_SECRET_VALUES_CHAC` bỏ qua cả hai điều kiện.
     """
     sanitized = sanitize_secret_text(value) or ""
     dem = 0
     for secret in sorted(set(exact_secrets), key=len, reverse=True):
-        if secret and len(secret) >= floor and secret in sanitized:
-            dem += sanitized.count(secret)
-            sanitized = sanitized.replace(secret, "<redacted>")
+        if not secret or secret not in sanitized:
+            continue
+        if secret not in _SECRET_VALUES_CHAC and (
+            len(secret) < floor or (loc_hinh_dang and not _dang_giong_bi_mat(secret))
+        ):
+            continue
+        dem += sanitized.count(secret)
+        sanitized = sanitized.replace(secret, "<redacted>")
     return sanitized, dem
 
 
 def _sanitize_runtime_text(value: str, exact_secrets: tuple[str, ...]) -> str:
-    return _sanitize_dem(value, exact_secrets)[0]
+    return _sanitize_dem(value, exact_secrets, floor=_DO_DAI_CHAN_DOAN_TOI_THIEU)[0]
 
 
 #: Lỗi *của bench*, không phải của BE — không bọc, không làm sạch. Bọc chúng lại thì
@@ -754,6 +901,7 @@ _LOI_NOI_BO: tuple[type[BaseException], ...] = (
     ProfileEnvironmentError,
     SanitizedPipelineError,
     VuotTran,
+    KhaiSaiThietBi,
 )
 
 
@@ -840,6 +988,7 @@ class SovereignAdapter(Adapter):
         self._hardware: Literal["cpu"] = "cpu"
         self._hardware_verified = False
         self._text_redactions = 0
+        self._raw_redactions = 0
         thu_thap_bi_mat()  # nạp sớm, trước khi `_ap_env` kịp xoá trắng env
 
     @property
@@ -935,6 +1084,13 @@ class SovereignAdapter(Adapter):
             raise ProfileEnvironmentError(
                 f"{self.name}: Marker runtime_loaded=True but device is unverified"
             )
+        if state.probe_failed:
+            # Cùng hạng với "loaded nhưng device chưa xác minh". Một đầu dò ném ra làm
+            # `runtime_loaded` tụt về `False`, nên nếu không chặn ở đây thì trạng thái
+            # *không đọc được* lại đi qua cổng dễ hơn trạng thái đọc được.
+            raise ProfileEnvironmentError(
+                f"{self.name}: đầu dò Marker ném ra, không xác minh được thiết bị"
+            )
         if self.profile == "default" and state.runtime_loaded:
             raise ProfileEnvironmentError(
                 f"{self.name}: default profile rejects Marker runtime_loaded=True"
@@ -1019,6 +1175,7 @@ class SovereignAdapter(Adapter):
             # Khác 0 nghĩa là điểm accuracy của tài liệu đó đã bị chính lớp bảo vệ này
             # làm giảm; im lặng thì nó trông y hệt một lần OCR kém.
             "scored_text_redactions": self._text_redactions,
+            "raw_artifact_redactions": self._raw_redactions,
             "tran_giay_moi_tai_lieu": self.tran_giay_moi_tai_lieu,
             "tran_giay_tong": self.tran_giay_tong,
             "tran_so_tai_lieu": self.tran_so_tai_lieu,
@@ -1048,7 +1205,7 @@ class SovereignAdapter(Adapter):
         """
         _, thiet_bi = marker_runtime_live()
         if thiet_bi is not None and not thiet_bi.startswith("cpu"):
-            raise ProfileEnvironmentError(
+            raise KhaiSaiThietBi(
                 f"{self.name}: marker_runtime_device={thiet_bi!r} lúc chạy, "
                 "trong khi profile khai device='cpu'. Dừng thay vì công bố sai."
             )
@@ -1064,6 +1221,7 @@ class SovereignAdapter(Adapter):
 
     def run(self, doc_path: Path) -> OcrResult:
         self._text_redactions = 0  # đếm lại từng tài liệu, không cộng dồn
+        self._raw_redactions = 0
         self._kiem_tran_truoc()
         pipeline = self._nap()
 
@@ -1091,13 +1249,21 @@ class SovereignAdapter(Adapter):
             van_ban = str(van_ban)
         # Chỉ **ở đây** mới nâng ngưỡng: đây là văn bản đem đi chấm điểm.
         van_ban, so_lan_bit = _sanitize_dem(
-            van_ban, self._sensitive_values, floor=_DO_DAI_BI_MAT_TOI_THIEU
+            van_ban,
+            self._sensitive_values,
+            floor=_DO_DAI_BI_MAT_TOI_THIEU,
+            loc_hinh_dang=True,
         )
         thanh_cong = bool(ket.get("success"))
         # Chỉ đếm khi văn bản **thật sự được chấm**. Trên nhánh thất bại `text_md` là
         # `None`, không có điểm nào để lớp bịt làm giảm — đếm ở đó thì tên trường nói
         # một đằng và con số nói một nẻo.
         self._text_redactions = so_lan_bit if thanh_cong else 0
+        # Trên nhánh thất bại `text_md` là `None` nên `scored_text_redactions` phải là
+        # 0 — nhưng `van_ban` vẫn được bịt và vẫn đi vào `raw_bytes` → `sovereign.json`.
+        # Không có trường này thì lần bịt ấy không được ghi ở đâu cả: artifact khác dữ
+        # liệu gốc mà không có dấu vết nào nói vì sao.
+        self._raw_redactions = so_lan_bit
         raw_bytes = _canonical_response_bytes(thanh_cong, van_ban)
         error = None
         if not thanh_cong:

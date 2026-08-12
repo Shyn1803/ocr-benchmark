@@ -61,25 +61,9 @@ needs_be = pytest.mark.skipif(
 )
 
 
-@pytest.fixture(autouse=True)
-def _co_lap_trang_thai_toan_cuc():
-    """Trả `_SECRET_VALUES` và cache `.env` về đúng chỗ cũ sau mỗi test.
-
-    `_SECRET_VALUES` **chỉ lớn thêm** theo thiết kế (một profile không được làm mất khả
-    năng bịt của profile sau). Hệ quả trong test: một test seed chuỗi bí mật thì test
-    sau vẫn thấy nó, nên mọi khẳng định dạng `== 1` trở thành phụ thuộc thứ tự chạy —
-    xanh khi chạy riêng, đỏ khi chạy cả file, và không ai đọc ra vì sao.
-    """
-    with sov._SECRET_VALUES_LOCK:
-        anh_chup = set(sov._SECRET_VALUES)
-    cache_cu = sov._ENV_BE_CACHE
-    try:
-        yield
-    finally:
-        with sov._SECRET_VALUES_LOCK:
-            sov._SECRET_VALUES.clear()
-            sov._SECRET_VALUES.update(anh_chup)
-        sov._ENV_BE_CACHE = cache_cu
+# Fixture cô lập `_SECRET_VALUES` + cache `.env` đã chuyển sang `tests/conftest.py`:
+# `test_sovereign_preflight.py` đụng đúng những biến toàn cục ấy trong cùng tiến trình,
+# nên một fixture chỉ rộng bằng một file là bảo vệ nửa vời.
 
 
 def _settings(**kw):
@@ -571,6 +555,21 @@ def test_sovereign_scan_cpu_rejects_preloaded_cuda_runtime():
     assert adapter._hardware_verified is False
 
 
+def test_validate_rejects_a_state_whose_probe_threw():
+    """Đầu dò ném → không biết gì về thiết bị, và "không biết" phải chặn.
+
+    `marker_runtime_state()` nuốt ngoại lệ để một BE hỏng không làm sập lượt chạy. Nuốt
+    xong mà trả `runtime_loaded=False, runtime_device=None` thì nó **không phân biệt
+    được với một máy sạch chưa nạp Marker** — cổng cho qua, và 204 dòng đi ra mang lời
+    khai thiết bị mà không ai từng đọc được. `probe_failed` là chỗ khác biệt ấy sống.
+    """
+    adapter = SovereignAdapter.from_profile(CATALOG["sovereign_scan"])
+
+    with pytest.raises(sov.ProfileEnvironmentError, match="đầu dò|không xác minh"):
+        adapter._validate_marker_runtime(_marker_state(probe_failed=True))
+    assert adapter._hardware_verified is False
+
+
 def test_sovereign_default_rejects_loaded_marker_without_package_or_cache():
     adapter = SovereignAdapter.from_profile(CATALOG["sovereign_default"])
 
@@ -669,7 +668,10 @@ def test_runtime_live_probe_stays_fail_closed_when_model_refs_raise(monkeypatch)
     # Đầu dò đọc `sys.modules` chứ không import — nên test cũng phải đặt vào đúng đó.
     monkeypatch.setitem(sys.modules, "app.services.marker_ocr_service", service)
 
-    assert sov.marker_runtime_live() == (True, None)
+    # Không phải `(False, None)`: trạng thái ấy không phân biệt được với một runtime
+    # CPU sạch, nên cổng thiết bị sẽ cho qua và công bố `device: "cpu"` cho một runtime
+    # vừa từ chối cho đọc. `unknown` khiến mọi so sánh `startswith("cpu")` trượt.
+    assert sov.marker_runtime_live() == (True, sov.THIET_BI_KHONG_RO)
 
 
 def test_runtime_state_probe_stays_fail_closed_when_model_refs_raise(monkeypatch):
@@ -1042,7 +1044,7 @@ def test_env_parser_reaches_the_values_a_naive_split_would_miss(tmp_path, monkey
         encoding="utf-8",
     )
     monkeypatch.setenv("SOVEREIGN_BE_PATH", str(goc))
-    monkeypatch.setattr(sov, "_ENV_BE_CACHE", None, raising=False)
+    sov._ENV_BE_CACHE.clear()  # cache là dict theo gốc BE; conftest khôi phục sau test
 
     doc = sov._doc_env_be()
     assert doc["API_KEY"] == "ex-port-1234", "`export ` phải bị gỡ khỏi tên"
@@ -1051,13 +1053,42 @@ def test_env_parser_reaches_the_values_a_naive_split_would_miss(tmp_path, monkey
     assert doc["HASH_SECRET"] == "pass#word-11", "`#` không có khoảng trắng trước là ký tự thường"
 
 
+def test_env_parser_handles_multiline_and_escaped_values(tmp_path, monkeypatch):
+    """Khoá riêng PEM trải nhiều dòng, `\\n` thoát, và hai chuỗi nháy nối liền nhau.
+
+    Một bộ đọc theo từng dòng thấy `PRIVATE_KEY="-----BEGIN` rồi dừng: nó ghi vào kho
+    một mẩu vô hại, còn *thân khoá* — phần thật sự là bí mật — không nằm trong kho nên
+    không bao giờ bị bịt. Bịt hụt kiểu này tệ hơn không bịt, vì nó vẫn báo cáo một con
+    số `redactions` khác 0.
+    """
+    goc = tmp_path / "be"
+    goc.mkdir()
+    (goc / ".env").write_text(
+        'PRIVATE_KEY="-----BEGIN KEY-----\nthan-khoa-that-9931\n-----END KEY-----"\n'
+        'ESCAPED_TOKEN="dong1\\ndong2-7742"\n'
+        'JOINED_TOKEN="phan-a-""phan-b-5510"\n'
+        "TRAILING=sau-cung-3120   # chú thích\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("SOVEREIGN_BE_PATH", str(goc))
+    sov._ENV_BE_CACHE.clear()
+
+    doc = sov._doc_env_be()
+    assert doc["PRIVATE_KEY"] == "-----BEGIN KEY-----\nthan-khoa-that-9931\n-----END KEY-----"
+    assert doc["ESCAPED_TOKEN"] == "dong1\ndong2-7742"
+    assert doc["JOINED_TOKEN"] == "phan-a-phan-b-5510"
+    # Dòng sau một giá trị nhiều dòng vẫn phải được đọc như một cặp bình thường —
+    # không bị nuốt vào phần thân của khoá phía trên.
+    assert doc["TRAILING"] == "sau-cung-3120"
+
+
 def test_env_file_is_read_once_not_once_per_document(tmp_path, monkeypatch):
     """`thu_thap_bi_mat()` chạy vài lần mỗi tài liệu; mỗi lần đọc lại là đọc khoá thật."""
     goc = tmp_path / "be"
     goc.mkdir()
     (goc / ".env").write_text("API_KEY=abcdefghijkl", encoding="utf-8")
     monkeypatch.setenv("SOVEREIGN_BE_PATH", str(goc))
-    monkeypatch.setattr(sov, "_ENV_BE_CACHE", None, raising=False)
+    sov._ENV_BE_CACHE.clear()  # cache là dict theo gốc BE; conftest khôi phục sau test
 
     dem = {"n": 0}
     that = Path.read_text
@@ -1073,18 +1104,90 @@ def test_env_file_is_read_once_not_once_per_document(tmp_path, monkeypatch):
     assert dem["n"] == 1
 
 
-def test_secret_inventory_skips_values_that_would_corrupt_the_score(monkeypatch):
-    """Tên khớp `key` không có nghĩa giá trị là khoá — `SCHEDULER_HOT_KEYWORDS` là ví dụ thật."""
+def test_secret_inventory_collects_everything_and_filters_at_the_scoring_site(monkeypatch):
+    """Thu thập và **dùng** là hai việc khác nhau; lọc phải nằm ở chỗ dùng.
+
+    `SCHEDULER_HOT_KEYWORDS` là ca thật: tên khớp `key`, giá trị là ba cụm từ tiếng Việt
+    xuất hiện y nguyên trong tài liệu hành chính. Bịt nó khỏi văn bản chấm điểm là **hạ
+    điểm engine vì nội dung tài liệu** — hỏng theo hướng không ai đọc ra từ bảng kết quả.
+
+    Nhưng loại nó khỏi kho ngay lúc thu thập thì nó cũng biến mất khỏi *traceback* và
+    *manifest*, nơi lọt một chuỗi cấu hình chẳng làm sai điểm nào cả. Nên kho giữ tất,
+    còn hai chỗ dùng đặt ngưỡng riêng.
+    """
     monkeypatch.setenv("SCHEDULER_HOT_KEYWORDS", "hợp đồng, quyết định, công văn")
     monkeypatch.setenv("OPENROUTER_API_KEY", "sk-real-token-4417")
     bi_mat = sov.thu_thap_bi_mat()
     assert "sk-real-token-4417" in bi_mat
-    assert "hợp đồng, quyết định, công văn" not in bi_mat
+    assert "hợp đồng, quyết định, công văn" in bi_mat, "kho giữ tất — lọc ở chỗ dùng"
+
+    cham_diem, _ = sov._sanitize_dem(
+        "Hợp đồng số 12: hợp đồng, quyết định, công văn",
+        tuple(bi_mat),
+        floor=sov._DO_DAI_BI_MAT_TOI_THIEU,
+        loc_hinh_dang=True,
+    )
+    assert "hợp đồng, quyết định, công văn" in cham_diem, "văn bản chấm điểm không bị đục"
+
+    chan_doan, so_lan = sov._sanitize_dem("cấu hình: hợp đồng, quyết định, công văn", tuple(bi_mat))
+    assert "hợp đồng, quyết định, công văn" not in chan_doan
+    assert so_lan == 1, "traceback/manifest thì bịt — ở đó bịt thừa không hỏng số nào"
+
+
+def test_secret_inventory_never_filters_a_hard_listed_env_name(monkeypatch):
+    """`_SECRET_ENV_NAMES` là danh sách cứng: giá trị của nó bịt ở **mọi** chỗ dùng.
+
+    Hai ngưỡng ở chỗ dùng (độ dài, hình dạng) là để **đoán** biến nào mang bí mật khi ta
+    chỉ có cái tên. Với bốn biến adapter tự ép thì không còn gì phải đoán — chúng không
+    được phép bị một heuristic phủ quyết, kể cả khi giá trị ngắn hoặc trông không giống
+    khoá (test dùng chuỗi 5 ký tự có khoảng trắng: trượt cả hai ngưỡng).
+    """
+    monkeypatch.setenv("OPENROUTER_API_KEY", "ab cd")
+    bi_mat = sov.thu_thap_bi_mat()
+    assert "ab cd" in bi_mat
+
+    for kw in ({}, {"loc_hinh_dang": True}):
+        ra, so_lan = sov._sanitize_dem("khoá: ab cd", tuple(bi_mat), **kw)
+        assert "ab cd" not in ra
+        assert so_lan == 1
+
+
+def test_hint_matched_secret_is_redacted_in_diagnostics_but_not_in_scored_text(monkeypatch):
+    """`MAIL_PASSWORD` — đoán bằng tên, nên hai chỗ dùng xử khác nhau, có chủ ý.
+
+    Giá trị thật dài 19 ký tự và có khoảng trắng. Trong traceback thì bịt (ngưỡng độ dài
+    là đủ; bịt thừa ở đó không làm sai số nào). Trong văn bản đem chấm điểm thì **không**
+    — một chuỗi có khoảng trắng, đoán ra từ một cái tên chứ không phải khai thẳng, hoàn
+    toàn có thể là một cụm từ xuất hiện trong tài liệu; thay nó đi là hạ điểm engine vì
+    nội dung tài liệu. Đây là đánh đổi, không phải sơ suất: chỗ nào bịt hụt gây rò rỉ thì
+    ưu tiên bịt, chỗ nào bịt thừa làm hỏng số thì ưu tiên số.
+    """
+    monkeypatch.setenv("MAIL_PASSWORD", "abcd efgh ijkl mnop")
+    bi_mat = sov.thu_thap_bi_mat()
+    assert "abcd efgh ijkl mnop" in bi_mat, "kho phải giữ — quyết định nằm ở chỗ dùng"
+
+    chan_doan, so_lan = sov._sanitize_dem("traceback: abcd efgh ijkl mnop", tuple(bi_mat))
+    assert "abcd efgh ijkl mnop" not in chan_doan
+    assert so_lan == 1
+
+    cham_diem, _ = sov._sanitize_dem(
+        "văn bản: abcd efgh ijkl mnop",
+        tuple(bi_mat),
+        floor=sov._DO_DAI_BI_MAT_TOI_THIEU,
+        loc_hinh_dang=True,
+    )
+    assert "abcd efgh ijkl mnop" in cham_diem
 
 
 def test_run_refuses_to_publish_a_cpu_claim_next_to_a_non_cpu_runtime(tmp_path, monkeypatch):
-    """Thiết bị đọc lúc chạy khác CPU → dừng, không ghi ra dòng khai `device: "cpu"`."""
+    """Thiết bị đọc lúc chạy khác CPU → dừng, không ghi ra dòng khai `device: "cpu"`.
+
+    Gọi qua `execute()` chứ không `run()`: `execute()` bắt `Exception` và biến nó thành
+    một dòng `failed=True` — mà một dòng `failed=True` **vẫn mang `config_fingerprint`**,
+    tức vẫn công bố đúng lời khai thiết bị mà cổng này sinh ra để chặn. Cổng chỉ có tác
+    dụng nếu nó là `BaseException`.
+    """
     adapter = _profile_adapter("sovereign_scan", {"success": True, "fullText": "x"})
     monkeypatch.setattr(sov, "marker_runtime_live", lambda: (True, "cuda:0"))
-    with pytest.raises(sov.ProfileEnvironmentError, match="cuda:0"):
-        adapter.run(_pdf(tmp_path))
+    with pytest.raises(sov.KhaiSaiThietBi, match="cuda:0"):
+        adapter.execute(_pdf(tmp_path))
