@@ -325,9 +325,8 @@ def run_profile_predictions(
         source="adapter",
     )
     results: list[OcrResult] = []
-    for item in docs:
-        if dataset_manifest is not None and dataset_manifest_sha256 is not None:
-            verify_manifest_unchanged(dataset_manifest, dataset_manifest_sha256)
+    total_docs = len(docs)
+    for i, item in enumerate(docs, 1):
         if isinstance(item, DatasetDocument):
             doc = item.path
             doc_id = item.doc_id
@@ -336,6 +335,11 @@ def run_profile_predictions(
             doc = Path(item)
             doc_id = doc.stem
             pdf_sha256 = None
+            
+        print(f"[{profile.name}] ({i}/{total_docs}) Xử lý {doc_id}... ", end="", flush=True)
+        
+        if dataset_manifest is not None and dataset_manifest_sha256 is not None:
+            verify_manifest_unchanged(dataset_manifest, dataset_manifest_sha256)
         expected = build_cache_identity(
             doc,
             profile,
@@ -373,6 +377,7 @@ def run_profile_predictions(
                     ) from None
             else:
                 results.append(cached)
+                print("CACHE HIT")
                 continue
         result = adapter.execute(doc)
         result = _normalize_profile_identity(
@@ -394,6 +399,10 @@ def run_profile_predictions(
         result = attach_cache_identity(result, expected)
         save_prediction(result, output_root)
         results.append(result)
+        if getattr(result, "failed", False):
+            print(f"FAILED: {getattr(result, 'error', 'Unknown error')}")
+        else:
+            print("OK")
     return results
 
 
