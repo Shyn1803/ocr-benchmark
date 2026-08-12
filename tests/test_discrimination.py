@@ -656,7 +656,8 @@ def test_bao_cao_khop_voi_lan_cham_hien_tai(bang_that: ScoreTable) -> None:
         pytest.skip("chưa sinh báo cáo — chạy scripts/c2_report.py")
 
     ten = sorted(registry.list_metrics())
-    moi = D.phan_nhom_metric([D.do_phan_tan(bang_that, m) for m in ten], moi_metric=ten)
+    cong = {m: D.kiem_sabotage(bang_that, m, nguon=D.NGUON_SABOTAGE) for m in ten}
+    moi = D.phan_nhom_metric([D.do_phan_tan(bang_that, m) for m in ten], moi_metric=ten, cong=cong)
     cu = json.loads(f.read_text(encoding="utf-8"))
     for nhom in ("bang_chinh", "phu_luc"):
         assert [d["metric"] for d in cu[nhom]] == [d["metric"] for d in moi[nhom]], (
