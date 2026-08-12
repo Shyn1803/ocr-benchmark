@@ -1,22 +1,16 @@
 # Tóm tắt Thực thi — OCR Parser Benchmark
 
-## Kết quả Tổng quan theo Nhóm Năng lực
+## Kết quả Tổng quan theo Từng Năng lực
 
-Báo cáo tóm tắt cho lãnh đạo và kiến trúc sư hệ thống về hiệu năng relative của 8 engine profiles trên bộ dữ liệu kiểm thử chuẩn.
+Báo cáo tóm tắt hiệu năng của **7 profile** trên bộ dữ liệu kiểm thử chuẩn. Không sử dụng một điểm số tổng duy nhất để hiển thị trung thực các trade-off.
 
-| Profile | Text OCR | Bố cục | Bảng | Tốc độ | Nhóm Năng lực Tổng thể |
+| Profile | Text & OCR | Layout & Struct | Tables | Reading Order | Robustness |
 |---|---|---|---|---|---|
-| `marker_scan` | Band A | Band A | Band A | Trung bình | **Band A** |
-| `docling_scan` | Band A | Band A | Band A | Trung bình | **Band A** |
-| `opendataloader_scan` | Band A | Band A | Band A | Nhanh | **Band A** |
-| `sovereign_scan` | Band A | Band A | Band A | Nhanh | **Band A** |
-| `marker_default` | Band A | Band A | Band B | Nhanh | **Band A** |
-| `docling_default` | Band B | Band B | Band B | Nhanh | **Band B** |
-| `sovereign_default` | Band B | Band B | Band B | Rất nhanh | **Band B** |
-| `opendataloader_default` | Band B | Band B | Band B | Rất nhanh | **Band B** |
+| `marker` | 0.688 | 0.768 | 0.500 | 0.500 | 0.611 |
+| `noop` | 0.500 | — | 0.000 | 0.000 | 0.000 |
+| `opendataloader` | 0.295 | 0.424 | 0.155 | 0.408 | 0.501 |
+| `pdf_inspector` | 0.352 | 0.118 | 0.405 | 0.202 | 0.222 |
+| `sabotage` | 0.407 | 0.071 | 0.000 | 0.091 | 0.501 |
+| `sovereign_full` | — | — | — | — | — |
+| `sovereign_light` | 0.161 | — | 0.002 | 0.108 | 0.019 |
 
-
-## Các Điểm Cần Lưu Ý Khi Triển Khai
-- Đối với tài liệu thuần văn bản tiếng Việt: Các profile hỗ trợ EasyOCR tiếng Việt (`vi,en`) nâng cao đáng kể độ chính xác dấu thanh (`diacritics`).
-- Đối với phân tích bảng phức tạp: `docling_scan` và `opendataloader_scan` cung cấp độ chính xác cấu trúc ô cao nhất.
-- Tài nguyên tính toán: Xem biểu đồ `figures/accuracy-speed.svg` và `figures/capability-ranking.svg`.

@@ -1,22 +1,214 @@
-# Báo cáo Nghiên cứu So sánh Đánh giá Hiệu năng các Công cụ OCR và Phân tích Bố cục Tài liệu (OCR Parser Benchmark)
+# Báo cáo Nghiên cứu So sánh Đánh giá Hiệu năng các Công cụ OCR và Phân tích Bố cục Tài liệu
 
 **Tác giả:** Đội ngũ Nghiên cứu Sovereign  
 **Ngày công bố:** 2026-08-12  
-**Phiên bản Benchmark:** v1.0 (catalog version: 2)
+**Số engine hiển thị:** 7  
+**Số metric:** 19  
+**Tổng dự đoán:** 7884  
 
 ---
 
-## Tóm tắt Thực thi (Executive Summary)
+## Tóm tắt
 
-Báo cáo này công bố kết quả đánh giá thực nghiệm tái lập được (reproducible benchmark) so sánh 4 họ engine OCR và phân tích cấu trúc tài liệu chính bao gồm **Docling**, **OpenDataLoader**, **Marker** và **Sovereign** trên hai cấu hình (profile) chính: `default` và `scan` (tổng số 8 profile).
+Báo cáo này công bố kết quả đánh giá thực nghiệm trên **7 cấu hình engine** với **19 metric** chuẩn hóa, phân chia thành các nhóm năng lực: OCR, Layout, Bảng, Reading Order, Robustness và Hiệu năng.
 
-Mọi kết quả trong báo cáo này được tổng hợp từ dữ liệu đóng băng, áp dụng các kiểm định thống kê theo cặp (paired bootstrap 10.000 mẫu, kiểm định Wilcoxon signed-rank, hiệu chỉnh Holm-Bonferroni) và tuân thủ nguyên tắc không sử dụng LLM trong bất kỳ công đoạn tính toán số liệu nào.
+Mọi kết quả được tính toán tất định từ dữ liệu dự đoán đã đóng băng tại `prediction/` và nhãn chuẩn tại `ground-truth/`. Không sử dụng LLM trong bất kỳ công đoạn tính toán số liệu nào. Các ô hiển thị `— (0 hỏng, 0 chấm được)` là những profile chưa có đủ dữ liệu.
 
 ---
 
-## 1. Phương pháp Đánh giá & Danh mục Metric
+## Cảnh báo khi Đọc Bảng
 
-<!-- trace: aggregate:text_ocr:marker_scan -->
+- `marker` chỉ có 27/1608 tài liệu — không so ngang hàng được với engine chạy đủ bộ.
+- `sovereign_full` chỉ có 2/1608 tài liệu — không so ngang hàng được với engine chạy đủ bộ.
+- Giao của cả 7 engine là 1 tài liệu. Bảng gộp toàn bộ KHÔNG phải một phép so sánh — xem `common_set.md`.
+
+---
+
+## 1. Phân tích theo Từng Năng lực
+
+Báo cáo không dùng một điểm tổng duy nhất để tránh che khuất trade-off giữa các năng lực.
+
+### Năng lực: Text & OCR
+
+| Metric | marker | noop | opendataloader | pdf_inspector | sabotage | sovereign_full | sovereign_light |
+|---|---|---|---|---|---|---|---|
+| **n (tài liệu)** | 27 | 1424 | 1608 | 1608 | 1608 | 2 | 1607 |
+| `cer` | chưa có nhãn (27 tài liệu) | chưa có nhãn (1424 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (2 tài liệu) | chưa có nhãn (1419 tài liệu) |
+| `wer` | chưa có nhãn (27 tài liệu) | chưa có nhãn (1424 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (2 tài liệu) | chưa có nhãn (1419 tài liệu) |
+| `diacritics_acc` | chưa có nhãn (27 tài liệu) | chưa có nhãn (1424 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (2 tài liệu) | chưa có nhãn (1419 tài liệu) |
+| `assert_text_presence` | 0.375 (fail 0%) | 0.000 (fail 0%) | 0.130 (fail 0%) | 0.076 (fail 0%) | 0.059 (fail 0%) | chưa có nhãn (2 tài liệu) | 0.074 (fail 83%) |
+| `assert_text_absence` | 1.000 (fail 0%) | 1.000 (fail 0%) | 0.459 (fail 0%) | 0.628 (fail 0%) | 0.756 (fail 0%) | chưa có nhãn (2 tài liệu) | 0.248 (fail 43%) |
+
+
+### Năng lực: Layout & Structure
+
+| Metric | marker | noop | opendataloader | pdf_inspector | sabotage | sovereign_full | sovereign_light |
+|---|---|---|---|---|---|---|---|
+| **n (tài liệu)** | 27 | 1424 | 1608 | 1608 | 1608 | 2 | 1607 |
+| `block_f1` | 0.778 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.609 (fail 0%) | 0.181 (fail 0%) | 0.077 (fail 0%) | N/A | N/A |
+| `type_f1` | 0.762 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.273 (fail 0%) | 0.055 (fail 0%) | 0.043 (fail 0%) | N/A | N/A |
+| `heading` | chưa có nhãn (7 tài liệu) | chưa có nhãn (1 tài liệu) | 0.561 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.000 (fail 0%) | N/A | N/A |
+| `img_f1` | 0.867 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.365 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.145 (fail 0%) | N/A | N/A |
+| `img_iou` | 0.664 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.313 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.091 (fail 0%) | N/A | N/A |
+
+
+### Năng lực: Tables
+
+| Metric | marker | noop | opendataloader | pdf_inspector | sabotage | sovereign_full | sovereign_light |
+|---|---|---|---|---|---|---|---|
+| **n (tài liệu)** | 27 | 1424 | 1608 | 1608 | 1608 | 2 | 1607 |
+| `teds` | chưa có nhãn (27 tài liệu) | chưa có nhãn (1 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1 tài liệu) | chưa có nhãn (1608 tài liệu) | N/A | N/A |
+| `teds_struct` | chưa có nhãn (27 tài liệu) | chưa có nhãn (1 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1 tài liệu) | chưa có nhãn (1608 tài liệu) | N/A | N/A |
+| `cell_f1` | 0.000 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.000 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.000 (fail 0%) | N/A | N/A |
+| `table_recall` | chưa có nhãn (27 tài liệu) | chưa có nhãn (1 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1 tài liệu) | chưa có nhãn (1608 tài liệu) | N/A | N/A |
+| `assert_table_relation` | 1.000 (fail 0%) | 0.000 (fail 0%) | 0.310 (fail 0%) | 0.405 (fail 0%) | 0.000 (fail 0%) | chưa có nhãn (2 tài liệu) | 0.002 (fail 52%) |
+
+
+### Năng lực: Reading Order
+
+| Metric | marker | noop | opendataloader | pdf_inspector | sabotage | sovereign_full | sovereign_light |
+|---|---|---|---|---|---|---|---|
+| **n (tài liệu)** | 27 | 1424 | 1608 | 1608 | 1608 | 2 | 1607 |
+| `nid` | chưa có nhãn (27 tài liệu) | chưa có nhãn (1 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | N/A | N/A |
+| `assert_reading_order` | 0.500 (fail 0%) | 0.000 (fail 0%) | 0.408 (fail 0%) | 0.202 (fail 0%) | 0.091 (fail 0%) | chưa có nhãn (2 tài liệu) | 0.108 (fail 46%) |
+
+
+### Năng lực: Robustness & Base
+
+| Metric | marker | noop | opendataloader | pdf_inspector | sabotage | sovereign_full | sovereign_light |
+|---|---|---|---|---|---|---|---|
+| **n (tài liệu)** | 27 | 1424 | 1608 | 1608 | 1608 | 2 | 1607 |
+| `assert_baseline` | chưa có nhãn (27 tài liệu) | 0.000 (fail 0%) | 1.000 (fail 0%) | 0.444 (fail 0%) | 1.000 (fail 0%) | chưa có nhãn (2 tài liệu) | 0.036 (fail 96%) |
+| `assert_math_presence` | 0.611 (fail 0%) | 0.000 (fail 0%) | 0.002 (fail 0%) | 0.000 (fail 0%) | 0.001 (fail 0%) | chưa có nhãn (2 tài liệu) | 0.002 (fail 26%) |
+
+
+---
+
+## 2. Bảng Tổng quan Toàn bộ Metric
+
+<!-- trace: aggregate:all_metrics:all_engines -->
+
+| metric | marker | noop | opendataloader | pdf_inspector | sabotage | sovereign_full | sovereign_light |
+|---|---|---|---|---|---|---|---|
+| **n (tài liệu)** | 27 | 1424 | 1608 | 1608 | 1608 | 2 | 1607 |
+| assert_baseline | chưa có nhãn (27 tài liệu) | 0.000 (fail 0%) | 1.000 (fail 0%) | 0.444 (fail 0%) | 1.000 (fail 0%) | chưa có nhãn (2 tài liệu) | 0.036 (fail 96%) |
+| assert_math_presence | 0.611 (fail 0%) | 0.000 (fail 0%) | 0.002 (fail 0%) | 0.000 (fail 0%) | 0.001 (fail 0%) | chưa có nhãn (2 tài liệu) | 0.002 (fail 26%) |
+| assert_reading_order | 0.500 (fail 0%) | 0.000 (fail 0%) | 0.408 (fail 0%) | 0.202 (fail 0%) | 0.091 (fail 0%) | chưa có nhãn (2 tài liệu) | 0.108 (fail 46%) |
+| assert_table_relation | 1.000 (fail 0%) | 0.000 (fail 0%) | 0.310 (fail 0%) | 0.405 (fail 0%) | 0.000 (fail 0%) | chưa có nhãn (2 tài liệu) | 0.002 (fail 52%) |
+| assert_text_absence | 1.000 (fail 0%) | 1.000 (fail 0%) | 0.459 (fail 0%) | 0.628 (fail 0%) | 0.756 (fail 0%) | chưa có nhãn (2 tài liệu) | 0.248 (fail 43%) |
+| assert_text_presence | 0.375 (fail 0%) | 0.000 (fail 0%) | 0.130 (fail 0%) | 0.076 (fail 0%) | 0.059 (fail 0%) | chưa có nhãn (2 tài liệu) | 0.074 (fail 83%) |
+| block_f1 | 0.778 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.609 (fail 0%) | 0.181 (fail 0%) | 0.077 (fail 0%) | N/A | N/A |
+| cell_f1 | 0.000 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.000 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.000 (fail 0%) | N/A | N/A |
+| cer | chưa có nhãn (27 tài liệu) | chưa có nhãn (1424 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (2 tài liệu) | chưa có nhãn (1419 tài liệu) |
+| diacritics_acc | chưa có nhãn (27 tài liệu) | chưa có nhãn (1424 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (2 tài liệu) | chưa có nhãn (1419 tài liệu) |
+| heading | chưa có nhãn (7 tài liệu) | chưa có nhãn (1 tài liệu) | 0.561 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.000 (fail 0%) | N/A | N/A |
+| img_f1 | 0.867 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.365 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.145 (fail 0%) | N/A | N/A |
+| img_iou | 0.664 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.313 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.091 (fail 0%) | N/A | N/A |
+| nid | chưa có nhãn (27 tài liệu) | chưa có nhãn (1 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | N/A | N/A |
+| table_recall | chưa có nhãn (27 tài liệu) | chưa có nhãn (1 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1 tài liệu) | chưa có nhãn (1608 tài liệu) | N/A | N/A |
+| teds | chưa có nhãn (27 tài liệu) | chưa có nhãn (1 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1 tài liệu) | chưa có nhãn (1608 tài liệu) | N/A | N/A |
+| teds_struct | chưa có nhãn (27 tài liệu) | chưa có nhãn (1 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1 tài liệu) | chưa có nhãn (1608 tài liệu) | N/A | N/A |
+| type_f1 | 0.762 (fail 0%) | chưa có nhãn (1 tài liệu) | 0.273 (fail 0%) | 0.055 (fail 0%) | 0.043 (fail 0%) | N/A | N/A |
+| wer | chưa có nhãn (27 tài liệu) | chưa có nhãn (1424 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (1608 tài liệu) | chưa có nhãn (2 tài liệu) | chưa có nhãn (1419 tài liệu) |
+
+Ô `N/A` = engine không có năng lực để metric chạm tới. `chưa có nhãn` = bộ mẫu chưa có nhãn hợp loại để đối chiếu.
+
+---
+
+## 3. So chéo trên Tập Tài liệu Chung
+
+# So chéo trên tập tài liệu chung
+
+> Sinh bằng `py -3 scripts/d1_report.py`. **Không** sửa tay.
+
+Mỗi bảng dưới đây chỉ chấm trên tài liệu **mọi engine trong bảng đều có**. Đây là bảng duy nhất mà việc so hai ô cạnh nhau là hợp lệ.
+
+## `opendataloader` × `pdf_inspector` × `sovereign_light`
+
+Tập chung: **1607** tài liệu.
+
+| metric | opendataloader | pdf_inspector | sovereign_light |
+|---|---|---|---|
+| **n (tài liệu)** | 1607 | 1607 | 1607 |
+| assert_baseline | 1.000 (fail 0%) | 0.444 (fail 0%) | 0.036 (fail 96%) |
+| assert_math_presence | 0.002 (fail 0%) | 0.000 (fail 0%) | 0.002 (fail 26%) |
+| assert_reading_order | 0.408 (fail 0%) | 0.202 (fail 0%) | 0.108 (fail 46%) |
+| assert_table_relation | 0.310 (fail 0%) | 0.405 (fail 0%) | 0.002 (fail 52%) |
+| assert_text_absence | 0.459 (fail 0%) | 0.628 (fail 0%) | 0.248 (fail 43%) |
+| assert_text_presence | 0.130 (fail 0%) | 0.076 (fail 0%) | 0.074 (fail 83%) |
+| block_f1 | 0.609 (fail 0%) | 0.181 (fail 0%) | N/A |
+| cell_f1 | 0.000 (fail 0%) | N/A | N/A |
+| cer | chưa có nhãn (1607 tài liệu) | chưa có nhãn (1607 tài liệu) | chưa có nhãn (1419 tài liệu) |
+| diacritics_acc | chưa có nhãn (1607 tài liệu) | chưa có nhãn (1607 tài liệu) | chưa có nhãn (1419 tài liệu) |
+| heading | 0.561 (fail 0%) | N/A | N/A |
+| img_f1 | 0.365 (fail 0%) | N/A | N/A |
+| img_iou | 0.313 (fail 0%) | N/A | N/A |
+| nid | chưa có nhãn (1607 tài liệu) | chưa có nhãn (1607 tài liệu) | N/A |
+| table_recall | chưa có nhãn (1607 tài liệu) | N/A | N/A |
+| teds | chưa có nhãn (1607 tài liệu) | N/A | N/A |
+| teds_struct | chưa có nhãn (1607 tài liệu) | N/A | N/A |
+| type_f1 | 0.273 (fail 0%) | 0.055 (fail 0%) | N/A |
+| wer | chưa có nhãn (1607 tài liệu) | chưa có nhãn (1607 tài liệu) | chưa có nhãn (1419 tài liệu) |
+
+## `opendataloader` × `pdf_inspector` × `sovereign_light` × `marker`
+
+Tập chung: **27** tài liệu.
+
+| metric | opendataloader | pdf_inspector | sovereign_light | marker |
+|---|---|---|---|---|
+| **n (tài liệu)** | 27 | 27 | 27 | 27 |
+| assert_baseline | chưa có nhãn (27 tài liệu) | chưa có nhãn (27 tài liệu) | chưa có nhãn (23 tài liệu) | chưa có nhãn (27 tài liệu) |
+| assert_math_presence | 0.000 (fail 0%) | 0.000 (fail 0%) | 0.000 (fail 80%) | 0.611 (fail 0%) |
+| assert_reading_order | 0.400 (fail 0%) | 0.200 (fail 0%) | 0.040 (fail 80%) | 0.500 (fail 0%) |
+| assert_table_relation | 0.000 (fail 0%) | 0.333 (fail 0%) | 0.000 (fail 80%) | 1.000 (fail 0%) |
+| assert_text_absence | 0.750 (fail 0%) | 0.750 (fail 0%) | 0.100 (fail 80%) | 1.000 (fail 0%) |
+| assert_text_presence | 0.000 (fail 0%) | 0.000 (fail 0%) | chưa có nhãn (23 tài liệu) | 0.375 (fail 0%) |
+| block_f1 | 0.684 (fail 0%) | 0.141 (fail 0%) | N/A | 0.778 (fail 0%) |
+| cell_f1 | chưa có nhãn (27 tài liệu) | N/A | N/A | 0.000 (fail 0%) |
+| cer | chưa có nhãn (27 tài liệu) | chưa có nhãn (27 tài liệu) | chưa có nhãn (23 tài liệu) | chưa có nhãn (27 tài liệu) |
+| diacritics_acc | chưa có nhãn (27 tài liệu) | chưa có nhãn (27 tài liệu) | chưa có nhãn (23 tài liệu) | chưa có nhãn (27 tài liệu) |
+| heading | chưa có nhãn (27 tài liệu) | N/A | N/A | chưa có nhãn (7 tài liệu) |
+| img_f1 | 0.467 (fail 0%) | N/A | N/A | 0.867 (fail 0%) |
+| img_iou | 0.386 (fail 0%) | N/A | N/A | 0.664 (fail 0%) |
+| nid | chưa có nhãn (27 tài liệu) | chưa có nhãn (27 tài liệu) | N/A | chưa có nhãn (27 tài liệu) |
+| table_recall | chưa có nhãn (27 tài liệu) | N/A | N/A | chưa có nhãn (27 tài liệu) |
+| teds | chưa có nhãn (27 tài liệu) | N/A | N/A | chưa có nhãn (27 tài liệu) |
+| teds_struct | chưa có nhãn (27 tài liệu) | N/A | N/A | chưa có nhãn (27 tài liệu) |
+| type_f1 | 0.339 (fail 0%) | 0.050 (fail 0%) | N/A | 0.762 (fail 0%) |
+| wer | chưa có nhãn (27 tài liệu) | chưa có nhãn (27 tài liệu) | chưa có nhãn (23 tài liệu) | chưa có nhãn (27 tài liệu) |
+
+## `noop` × `sabotage`
+
+Tập chung: **1424** tài liệu.
+
+| metric | noop | sabotage |
+|---|---|---|
+| **n (tài liệu)** | 1424 | 1424 |
+| assert_baseline | 0.000 (fail 0%) | 1.000 (fail 0%) |
+| assert_math_presence | 0.000 (fail 0%) | 0.001 (fail 0%) |
+| assert_reading_order | 0.000 (fail 0%) | 0.091 (fail 0%) |
+| assert_table_relation | 0.000 (fail 0%) | 0.000 (fail 0%) |
+| assert_text_absence | 1.000 (fail 0%) | 0.756 (fail 0%) |
+| assert_text_presence | 0.000 (fail 0%) | 0.059 (fail 0%) |
+| block_f1 | chưa có nhãn (1 tài liệu) | 0.063 (fail 0%) |
+| cell_f1 | chưa có nhãn (1 tài liệu) | chưa có nhãn (1424 tài liệu) |
+| cer | chưa có nhãn (1424 tài liệu) | chưa có nhãn (1424 tài liệu) |
+| diacritics_acc | chưa có nhãn (1424 tài liệu) | chưa có nhãn (1424 tài liệu) |
+| heading | chưa có nhãn (1 tài liệu) | chưa có nhãn (1424 tài liệu) |
+| img_f1 | chưa có nhãn (1 tài liệu) | 0.000 (fail 0%) |
+| img_iou | chưa có nhãn (1 tài liệu) | 0.000 (fail 0%) |
+| nid | chưa có nhãn (1 tài liệu) | chưa có nhãn (1424 tài liệu) |
+| table_recall | chưa có nhãn (1 tài liệu) | chưa có nhãn (1424 tài liệu) |
+| teds | chưa có nhãn (1 tài liệu) | chưa có nhãn (1424 tài liệu) |
+| teds_struct | chưa có nhãn (1 tài liệu) | chưa có nhãn (1424 tài liệu) |
+| type_f1 | chưa có nhãn (1 tài liệu) | 0.033 (fail 0%) |
+| wer | chưa có nhãn (1424 tài liệu) | chưa có nhãn (1424 tài liệu) |
+
+
+---
+
+## Phụ lục A: Phương pháp Đánh giá Chi tiết
+
 ## Phụ lục A: Phương pháp Đánh giá Chi tiết
 
 1. **Paired Bootstrap**: Tính toán khoảng tin cậy 95% (95% CI) bằng kỹ thuật resampling 10.000 lần theo từng tài liệu chung (common set).
@@ -25,111 +217,12 @@ Mọi kết quả trong báo cáo này được tổng hợp từ dữ liệu đ
 4. **Cổng Phá hoại Sabotage**: Mọi metric hạng `main` bắt buộc phải vượt qua kiểm định đơn điệu (monotonicity qualification test) với các mức phá hoại $0.1, 0.3, 0.6$.
 
 
----
-
-## 2. Kết quả Đánh giá theo Tầng Năng lực
-
-### 2.1 Nhận dạng Văn bản (Text OCR & Dấu tiếng Việt)
-
-| Profile | CER | WER | Diacritics |
-|---|---|---|---|
-| docling_default | 0.08 (fail 0%) | 0.12 (fail 0%) | 0.93 (fail 0%) |
-| docling_scan | 0.06 (fail 0%) | 0.09 (fail 0%) | 0.97 (fail 0%) |
-| opendataloader_default | 0.11 (fail 0%) | 0.15 (fail 0%) | 0.89 (fail 0%) |
-| opendataloader_scan | 0.07 (fail 0%) | 0.10 (fail 0%) | 0.96 (fail 0%) |
-| marker_default | 0.06 (fail 0%) | 0.09 (fail 0%) | 0.95 (fail 0%) |
-| marker_scan | 0.04 (fail 0%) | 0.07 (fail 0%) | 0.98 (fail 0%) |
-| sovereign_default | 0.09 (fail 0%) | 0.13 (fail 0%) | 0.91 (fail 0%) |
-| sovereign_scan | 0.06 (fail 0%) | 0.09 (fail 0%) | 0.96 (fail 0%) |
-
-
-### 2.2 Phân tích Bố cục (Layout Analysis)
-
-| Profile | Block F1 | Type F1 |
-|---|---|---|
-| docling_default | 0.84 (fail 0%) | 0.81 (fail 0%) |
-| docling_scan | 0.86 (fail 0%) | 0.83 (fail 0%) |
-| opendataloader_default | 0.82 (fail 0%) | 0.79 (fail 0%) |
-| opendataloader_scan | 0.85 (fail 0%) | 0.82 (fail 0%) |
-| marker_default | 0.87 (fail 0%) | 0.84 (fail 0%) |
-| marker_scan | 0.88 (fail 0%) | 0.85 (fail 0%) |
-| sovereign_default | 0.83 (fail 0%) | 0.80 (fail 0%) |
-| sovereign_scan | 0.86 (fail 0%) | 0.83 (fail 0%) |
-
-
-### 2.3 Phân tích Bảng (Table Structure)
-
-| Profile | TEDS | TEDS Struct | Cell F1 |
-|---|---|---|---|
-| docling_default | 0.89 (fail 0%) | 0.91 (fail 0%) | 0.86 (fail 0%) |
-| docling_scan | 0.92 (fail 0%) | 0.94 (fail 0%) | 0.90 (fail 0%) |
-| opendataloader_default | 0.87 (fail 0%) | 0.89 (fail 0%) | 0.84 (fail 0%) |
-| opendataloader_scan | 0.91 (fail 0%) | 0.93 (fail 0%) | 0.89 (fail 0%) |
-| marker_default | 0.90 (fail 0%) | 0.92 (fail 0%) | 0.87 (fail 0%) |
-| marker_scan | 0.92 (fail 0%) | 0.94 (fail 0%) | 0.90 (fail 0%) |
-| sovereign_default | 0.88 (fail 0%) | 0.90 (fail 0%) | 0.85 (fail 0%) |
-| sovereign_scan | 0.91 (fail 0%) | 0.93 (fail 0%) | 0.89 (fail 0%) |
-
-
-### 2.4 Thứ tự Đọc (Reading Order)
-
-| Profile | Reading Order |
-|---|---|
-| docling_default | 0.89 (fail 0%) |
-| docling_scan | 0.90 (fail 0%) |
-| opendataloader_default | 0.88 (fail 0%) |
-| opendataloader_scan | 0.90 (fail 0%) |
-| marker_default | 0.90 (fail 0%) |
-| marker_scan | 0.91 (fail 0%) |
-| sovereign_default | 0.88 (fail 0%) |
-| sovereign_scan | 0.90 (fail 0%) |
-
-
-### 2.5 Độ bền bỉ với Tài liệu Scan (Scan Robustness)
-
-| Profile | Digital | Scan | Degradation |
-|---|---|---|---|
-| docling | 0.92 | 0.88 | -4.3% |
-| opendataloader | 0.89 | 0.84 | -5.6% |
-| marker | 0.95 | 0.91 | -4.2% |
-| sovereign | 0.91 | 0.87 | -4.4% |
-
-
-### 2.6 Hiệu năng Xử lý & Tài nguyên (Performance)
-
-| Profile | Warm s/page | Peak RSS (MB) |
-|---|---|---|
-| docling_default | 0.80s | 420MB |
-| docling_scan | 1.40s | 510MB |
-| opendataloader_default | 0.40s | 350MB |
-| opendataloader_scan | 1.60s | 580MB |
-| marker_default | 0.50s | 380MB |
-| marker_scan | 1.10s | 450MB |
-| sovereign_default | 0.90s | 410MB |
-| sovereign_scan | 1.30s | 490MB |
-
-
----
-
-## 3. Khuyến nghị & Quy tắc Lựa chọn Engine
-
-Bảng khuyến nghị tự động (rule-based recommendation):
-
-| Kịch bản Sử dụng | Profile Khuyến nghị | Bằng chứng Metric | Hạn chế |
-|---|---|---|---|
-| Tài liệu Scan Tiếng Việt | `docling_scan / marker_scan` | Diacritics accuracy > 0.97, full page OCR | Thời gian xử lý cao hơn default profile |
-| Phân tích Bảng Phức tạp | `opendataloader_scan / docling_scan` | TEDS Struct > 0.93, Cell F1 > 0.90 | Yêu cầu tài nguyên venv hybrid / EasyOCR |
-| Tối ưu Tốc độ & Tài nguyên | `opendataloader_default / sovereign_default` | Warm seconds/page < 0.5s | Không ép OCR full page với bản scan mờ |
-| Bảo mật Tuyệt đối / On-Premise | `sovereign_scan` | API/Vision disabled, zero external token leak | Phụ thuộc Marker local runtime |
-
-
----
-
-## 4. Hạn chế Nghiên cứu & Hướng phát triển
+## Phụ lục B: Hạn chế Nghiên cứu & Phạm vi Áp dụng
 
 ## Phụ lục B: Hạn chế Nghiên cứu & Phạm vi Áp dụng
 
 1. **Bộ Dữ liệu Tiếng Việt**: Các tài liệu tiếng Việt chưa có nhãn chuẩn hóa công khai (ground truth transcript) được gắn nhãn `N/A` hoặc giới hạn phạm vi, tuyệt đối không tạo nhãn giả.
 2. **Thứ tự Đọc NID**: Metric `nid` chỉ đánh giá trên các bộ mẫu khai báo thứ tự đọc rõ ràng; trên bộ mẫu DocLayNet, kết quả được đánh dấu `N/A` do thiếu thông tin thứ tự đọc gốc.
 3. **Phân lập LLM**: Toàn bộ quá trình tính toán số liệu và đưa ra khuyến nghị được thực hiện tất định bằng mã nguồn Python, không sử dụng LLM tạo số.
+
 

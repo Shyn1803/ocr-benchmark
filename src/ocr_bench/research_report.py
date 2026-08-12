@@ -1,21 +1,30 @@
-"""Deterministic Scientific Report Builder.
+"""Deterministic Scientific Report Builder — dựa trên dữ liệu thật.
 
-Generates data results, tables, SVG charts, and the final Vietnamese research paper
-with complete traceability tags and byte-identical reproducibility.
+Đọc prediction/ đã chạy trên máy, chấm điểm bằng scorer thật, tính thống kê
+bằng statistics.py thật, rồi sinh bài báo và bảng biểu.
+
+**Không hardcode bất kỳ con số nào.** Mọi số trong đầu ra đều truy xuất được
+về `prediction/*.json` + `ground-truth/`.
 """
 
 from __future__ import annotations
 
+import datetime as dt
 import json
 from pathlib import Path
 from typing import Any
 
+from ocr_bench import registry, report
+from ocr_bench.corpus import load_doclaynet, load_olmocr
+from ocr_bench.prediction import load_predictions
 from ocr_bench.research_charts import (
     render_accuracy_speed_chart,
     render_failure_distribution_chart,
     render_forest_plot,
     render_scan_degradation_chart,
 )
+from ocr_bench.scorer import ScoreTable, score_results
+from ocr_bench.statistics import adjust_p_values_holm, paired_compare
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -26,225 +35,430 @@ def _write_lf(path: Path, content: str) -> None:
     path.write_bytes(content.encode("utf-8"))
 
 
-def build_publication(input_dir: Path, out_dir: Path) -> dict[str, Path]:
-    """Run full deterministic publication build pipeline.
+# ---------------------------------------------------------------------------
+# 1. Chấm điểm thật
+# ---------------------------------------------------------------------------
+
+
+def _cham() -> tuple[list, ScoreTable]:
+    """Nạp ground truth + prediction rồi chấm — giống hệt d1_report.py."""
+    gt: dict = {}
+    gt.update(load_doclaynet())
+    gt.update(load_olmocr())
+
+    res = load_predictions(ROOT / "prediction")
+    ten = sorted(registry.list_metrics())
+    metrics = [registry.get_metric(t)() for t in ten]
+    return res, score_results(res, metrics, gt)
+
+
+# ---------------------------------------------------------------------------
+# 2. Trích điểm thô cho thống kê ghép cặp
+# ---------------------------------------------------------------------------
+
+
+def _scores_per_engine(bang: ScoreTable, metric: str) -> dict[str, dict[str, float]]:
+    """Trả {engine: {doc_id: value}} chỉ cho các tài liệu chấm được (value != None)."""
+    ra: dict[str, dict[str, float]] = {}
+    for r in bang.rows:
+        if r.metric == metric and r.value is not None:
+            ra.setdefault(r.engine, {})[r.doc_id] = r.value
+    return ra
+
+
+# ---------------------------------------------------------------------------
+# 3. Sinh aggregate JSON từ ScoreTable thật
+# ---------------------------------------------------------------------------
+
+
+def _aggregate_json(bang: ScoreTable) -> dict:
+    """Sinh dict aggregate {metric: {engine: {mean, fail_rate, n_scored, cell}}}."""
+    ra: dict[str, dict[str, dict]] = {}
+    for m in bang.metrics():
+        ra[m] = {}
+        for e in bang.engines():
+            agg = bang.cell(m, e)
+            ra[m][e] = {
+                "mean": round(agg.mean, 4) if agg.mean is not None else None,
+                "penalized_mean": (
+                    round(agg.penalized_mean, 4)
+                    if agg.penalized_mean is not None
+                    else None
+                ),
+                "fail_rate": round(agg.fail_rate, 4),
+                "n_total": agg.n_total,
+                "n_scored": agg.n_scored,
+                "n_failed": agg.n_failed,
+                "applicable": agg.applicable,
+                "cell": agg.cell(),
+            }
+    return ra
+
+
+# ---------------------------------------------------------------------------
+# 4. Sinh bảng Markdown từ ScoreTable thật
+# ---------------------------------------------------------------------------
+
+
+def _bang_theo_nhom(
+    bang: ScoreTable,
+    nhom_metrics: list[str],
+    tieu_de: str,
+    *,
+    engines: list[str] | None = None,
+) -> str:
+    """Sinh bảng Markdown cho một nhóm metric, dùng Aggregate.cell() thật."""
+    es = engines if engines is not None else bang.engines()
+    cov = report.coverage(bang.rows)
+    lines = [
+        f"| Metric | " + " | ".join(es) + " |",
+        "|---" + "|---" * len(es) + "|",
+        "| **n (tài liệu)** | "
+        + " | ".join(str(len(cov.get(e, ()))) for e in es)
+        + " |",
+    ]
+    for m in nhom_metrics:
+        if m not in bang.metrics():
+            continue
+        row = f"| `{m}` | " + " | ".join(
+            bang.cell(m, e).cell() for e in es
+        ) + " |"
+        lines.append(row)
+    return "\n".join(lines) + "\n"
+
+
+# ---------------------------------------------------------------------------
+# 5. Pipeline chính
+# ---------------------------------------------------------------------------
+
+
+def build_publication(
+    input_dir: Path,
+    out_dir: Path,
+    *,
+    generated_at: str | None = None,
+) -> dict[str, Path]:
+    """Run full deterministic publication build pipeline from REAL data.
 
     Returns mapping of relative artifact names to generated file paths.
     """
     input_dir = Path(input_dir)
     out_dir = Path(out_dir)
-
     out_files: dict[str, Path] = {}
+    moc = generated_at or dt.datetime.now().astimezone().isoformat(timespec="seconds")
 
-    # 1. Generate results/ JSON artifacts
-    raw_results_path = out_dir / "results" / "raw-results.jsonl"
-    _write_lf(raw_results_path, '{"metric": "cer", "engine": "marker_scan", "doc_id": "d1", "value": 0.05}\n')
-    out_files["results/raw-results.jsonl"] = raw_results_path
+    # --- Bước 1: Chấm điểm thật ---
+    res, bang = _cham()
+    engines = bang.engines()
+    ten_metric = bang.metrics()
 
-    agg_data = {
-        "text_ocr": {
-            "docling_default": {"mean": 0.92, "ci_95": [0.90, 0.94]},
-            "docling_scan": {"mean": 0.94, "ci_95": [0.92, 0.96]},
-            "opendataloader_default": {"mean": 0.89, "ci_95": [0.87, 0.91]},
-            "opendataloader_scan": {"mean": 0.93, "ci_95": [0.91, 0.95]},
-            "marker_default": {"mean": 0.95, "ci_95": [0.93, 0.97]},
-            "marker_scan": {"mean": 0.96, "ci_95": [0.94, 0.98]},
-            "sovereign_default": {"mean": 0.91, "ci_95": [0.89, 0.93]},
-            "sovereign_scan": {"mean": 0.93, "ci_95": [0.91, 0.95]},
-        },
-        "layout": {
-            "marker_scan": {"mean": 0.88, "ci_95": [0.85, 0.91]},
-            "docling_scan": {"mean": 0.86, "ci_95": [0.83, 0.89]},
-        },
-    }
+    print(f"nạp {len(res)} dự đoán · {len(ten_metric)} metric · {len(engines)} engine")
+
+    # --- Bước 2: Sinh raw results (điểm thô từng tài liệu) ---
+    raw_json_str = report.raw_json(bang, generated_at=moc)
+    raw_path = out_dir / "results" / "raw-results.json"
+    _write_lf(raw_path, raw_json_str + "\n")
+    out_files["results/raw-results.json"] = raw_path
+
+    # --- Bước 3: Sinh aggregate results ---
+    agg_data = _aggregate_json(bang)
     agg_path = out_dir / "results" / "aggregate-results.json"
-    _write_lf(agg_path, json.dumps(agg_data, indent=2, sort_keys=True) + "\n")
+    _write_lf(
+        agg_path,
+        json.dumps(
+            {"generated_at": moc, "aggregates": agg_data},
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+    )
     out_files["results/aggregate-results.json"] = agg_path
 
-    stat_data = {"comparisons": []}
+    # --- Bước 4: Tính thống kê ghép cặp trên common set ---
+    # Lấy nhóm engine chính (loại noop, sabotage)
+    engine_chinh = [e for e in engines if e not in ("noop", "sabotage")]
+    all_comparisons: list[dict] = []
+
+    for m in ten_metric:
+        scores = _scores_per_engine(bang, m)
+        scores_chinh = {e: s for e, s in scores.items() if e in engine_chinh}
+        if len(scores_chinh) < 2:
+            continue
+        es = sorted(scores_chinh.keys())
+        comps = []
+        for i in range(len(es)):
+            for j in range(i + 1, len(es)):
+                comp = paired_compare(
+                    scores_chinh[es[i]],
+                    scores_chinh[es[j]],
+                    engine_a=es[i],
+                    engine_b=es[j],
+                )
+                comps.append(comp)
+        adjusted = adjust_p_values_holm(comps)
+        for c in adjusted:
+            all_comparisons.append({"metric": m, **c.to_dict()})
+
     stat_path = out_dir / "results" / "statistical-tests.json"
-    _write_lf(stat_path, json.dumps(stat_data, indent=2, sort_keys=True) + "\n")
+    _write_lf(
+        stat_path,
+        json.dumps(
+            {"generated_at": moc, "comparisons": all_comparisons},
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+    )
     out_files["results/statistical-tests.json"] = stat_path
 
-    recs_data = {
-        "recommendations": [
-            {
-                "scenario": "Tài liệu Scan Tiếng Việt",
-                "recommended_profile": "docling_scan / marker_scan",
-                "evidence": "Diacritics accuracy > 0.97, full page OCR",
-                "limitation": "Thời gian xử lý cao hơn default profile",
-            },
-            {
-                "scenario": "Phân tích Bảng Phức tạp",
-                "recommended_profile": "opendataloader_scan / docling_scan",
-                "evidence": "TEDS Struct > 0.93, Cell F1 > 0.90",
-                "limitation": "Yêu cầu tài nguyên venv hybrid / EasyOCR",
-            },
-            {
-                "scenario": "Tối ưu Tốc độ & Tài nguyên",
-                "recommended_profile": "opendataloader_default / sovereign_default",
-                "evidence": "Warm seconds/page < 0.5s",
-                "limitation": "Không ép OCR full page với bản scan mờ",
-            },
-            {
-                "scenario": "Bảo mật Tuyệt đối / On-Premise",
-                "recommended_profile": "sovereign_scan",
-                "evidence": "API/Vision disabled, zero external token leak",
-                "limitation": "Phụ thuộc Marker local runtime",
-            },
-        ]
-    }
-    recs_path = out_dir / "results" / "recommendations.json"
-    _write_lf(recs_path, json.dumps(recs_data, indent=2, sort_keys=True) + "\n")
-    out_files["results/recommendations.json"] = recs_path
-
-    # 2. Render Markdown tables for 8 profiles
-    tables = {
-        "tables/text-ocr.md": (
-            "| Profile | CER | WER | Diacritics |\n"
-            "|---|---|---|---|\n"
-            "| docling_default | 0.08 (fail 0%) | 0.12 (fail 0%) | 0.93 (fail 0%) |\n"
-            "| docling_scan | 0.06 (fail 0%) | 0.09 (fail 0%) | 0.97 (fail 0%) |\n"
-            "| opendataloader_default | 0.11 (fail 0%) | 0.15 (fail 0%) | 0.89 (fail 0%) |\n"
-            "| opendataloader_scan | 0.07 (fail 0%) | 0.10 (fail 0%) | 0.96 (fail 0%) |\n"
-            "| marker_default | 0.06 (fail 0%) | 0.09 (fail 0%) | 0.95 (fail 0%) |\n"
-            "| marker_scan | 0.04 (fail 0%) | 0.07 (fail 0%) | 0.98 (fail 0%) |\n"
-            "| sovereign_default | 0.09 (fail 0%) | 0.13 (fail 0%) | 0.91 (fail 0%) |\n"
-            "| sovereign_scan | 0.06 (fail 0%) | 0.09 (fail 0%) | 0.96 (fail 0%) |\n"
-        ),
-        "tables/layout.md": (
-            "| Profile | Block F1 | Type F1 |\n"
-            "|---|---|---|\n"
-            "| docling_default | 0.84 (fail 0%) | 0.81 (fail 0%) |\n"
-            "| docling_scan | 0.86 (fail 0%) | 0.83 (fail 0%) |\n"
-            "| opendataloader_default | 0.82 (fail 0%) | 0.79 (fail 0%) |\n"
-            "| opendataloader_scan | 0.85 (fail 0%) | 0.82 (fail 0%) |\n"
-            "| marker_default | 0.87 (fail 0%) | 0.84 (fail 0%) |\n"
-            "| marker_scan | 0.88 (fail 0%) | 0.85 (fail 0%) |\n"
-            "| sovereign_default | 0.83 (fail 0%) | 0.80 (fail 0%) |\n"
-            "| sovereign_scan | 0.86 (fail 0%) | 0.83 (fail 0%) |\n"
-        ),
-        "tables/tables.md": (
-            "| Profile | TEDS | TEDS Struct | Cell F1 |\n"
-            "|---|---|---|---|\n"
-            "| docling_default | 0.89 (fail 0%) | 0.91 (fail 0%) | 0.86 (fail 0%) |\n"
-            "| docling_scan | 0.92 (fail 0%) | 0.94 (fail 0%) | 0.90 (fail 0%) |\n"
-            "| opendataloader_default | 0.87 (fail 0%) | 0.89 (fail 0%) | 0.84 (fail 0%) |\n"
-            "| opendataloader_scan | 0.91 (fail 0%) | 0.93 (fail 0%) | 0.89 (fail 0%) |\n"
-            "| marker_default | 0.90 (fail 0%) | 0.92 (fail 0%) | 0.87 (fail 0%) |\n"
-            "| marker_scan | 0.92 (fail 0%) | 0.94 (fail 0%) | 0.90 (fail 0%) |\n"
-            "| sovereign_default | 0.88 (fail 0%) | 0.90 (fail 0%) | 0.85 (fail 0%) |\n"
-            "| sovereign_scan | 0.91 (fail 0%) | 0.93 (fail 0%) | 0.89 (fail 0%) |\n"
-        ),
-        "tables/reading-order.md": (
-            "| Profile | Reading Order |\n"
-            "|---|---|\n"
-            "| docling_default | 0.89 (fail 0%) |\n"
-            "| docling_scan | 0.90 (fail 0%) |\n"
-            "| opendataloader_default | 0.88 (fail 0%) |\n"
-            "| opendataloader_scan | 0.90 (fail 0%) |\n"
-            "| marker_default | 0.90 (fail 0%) |\n"
-            "| marker_scan | 0.91 (fail 0%) |\n"
-            "| sovereign_default | 0.88 (fail 0%) |\n"
-            "| sovereign_scan | 0.90 (fail 0%) |\n"
-        ),
-        "tables/scan-robustness.md": (
-            "| Profile | Digital | Scan | Degradation |\n"
-            "|---|---|---|---|\n"
-            "| docling | 0.92 | 0.88 | -4.3% |\n"
-            "| opendataloader | 0.89 | 0.84 | -5.6% |\n"
-            "| marker | 0.95 | 0.91 | -4.2% |\n"
-            "| sovereign | 0.91 | 0.87 | -4.4% |\n"
-        ),
-        "tables/performance.md": (
-            "| Profile | Warm s/page | Peak RSS (MB) |\n"
-            "|---|---|---|\n"
-            "| docling_default | 0.80s | 420MB |\n"
-            "| docling_scan | 1.40s | 510MB |\n"
-            "| opendataloader_default | 0.40s | 350MB |\n"
-            "| opendataloader_scan | 1.60s | 580MB |\n"
-            "| marker_default | 0.50s | 380MB |\n"
-            "| marker_scan | 1.10s | 450MB |\n"
-            "| sovereign_default | 0.90s | 410MB |\n"
-            "| sovereign_scan | 1.30s | 490MB |\n"
-        ),
-    }
-
-    for rel_path, tbl_content in tables.items():
-        p = out_dir / rel_path
-        _write_lf(p, tbl_content)
-        out_files[rel_path] = p
-
-    # 3. Render SVG figures
-    out_files["figures/capability-ranking.svg"] = render_forest_plot(agg_data, out_dir / "figures" / "capability-ranking.svg")
-    out_files["figures/accuracy-speed.svg"] = render_accuracy_speed_chart(agg_data, out_dir / "figures" / "accuracy-speed.svg")
-    out_files["figures/scan-degradation.svg"] = render_scan_degradation_chart(agg_data, out_dir / "figures" / "scan-degradation.svg")
-    out_files["figures/failure-distribution.svg"] = render_failure_distribution_chart(agg_data, out_dir / "figures" / "failure-distribution.svg")
-
-    # 4. Read Appendices
-    methods_path = ROOT / "paper" / "appendices" / "methods.md"
-    limitations_path = ROOT / "paper" / "appendices" / "limitations.md"
-
-    methods_text = methods_path.read_text(encoding="utf-8") if methods_path.exists() else "Phương pháp."
-    limitations_text = limitations_path.read_text(encoding="utf-8") if limitations_path.exists() else "Hạn chế."
-
-    # 5. Render Paper and Executive Summary Markdown
-    paper_template_path = input_dir / "paper" / "paper-vi.template.md"
-    if not paper_template_path.exists():
-        paper_template_path = ROOT / "paper" / "paper-vi.template.md"
-
-    exec_template_path = input_dir / "paper" / "executive-summary.template.md"
-    if not exec_template_path.exists():
-        exec_template_path = ROOT / "paper" / "executive-summary.template.md"
-
-    paper_tmpl = paper_template_path.read_text(encoding="utf-8")
-    exec_tmpl = exec_template_path.read_text(encoding="utf-8")
-
-    recs_md = (
-        "| Kịch bản Sử dụng | Profile Khuyến nghị | Bằng chứng Metric | Hạn chế |\n"
-        "|---|---|---|---|\n"
+    # --- Bước 5: Sinh bảng Markdown tổng quan (dùng report.bang_markdown thật) ---
+    overall_md = report.bao_cao_overall(
+        bang, report.dung_manifest(res, bang, generated_at=moc)
     )
-    for r in recs_data["recommendations"]:
-        recs_md += f"| {r['scenario']} | `{r['recommended_profile']}` | {r['evidence']} | {r['limitation']} |\n"
+    overall_path = out_dir / "tables" / "overall.md"
+    _write_lf(overall_path, overall_md)
+    out_files["tables/overall.md"] = overall_path
 
-    paper_content = (
-        paper_tmpl.replace("{{publication_date}}", "2026-08-12")
-        .replace("{{benchmark_version}}", "v1.0")
-        .replace("{{catalog_version}}", "2")
-        .replace("{{methods_appendix}}", f"<!-- trace: aggregate:text_ocr:marker_scan -->\n{methods_text}")
-        .replace("{{limitations_appendix}}", limitations_text)
-        .replace("<!-- table: text-ocr -->", tables["tables/text-ocr.md"])
-        .replace("<!-- table: layout -->", tables["tables/layout.md"])
-        .replace("<!-- table: tables -->", tables["tables/tables.md"])
-        .replace("<!-- table: reading-order -->", tables["tables/reading-order.md"])
-        .replace("<!-- table: scan-robustness -->", tables["tables/scan-robustness.md"])
-        .replace("<!-- table: performance -->", tables["tables/performance.md"])
-        .replace("<!-- table: recommendations -->", recs_md)
+    # --- Bước 6: Sinh bảng common set (so chéo hợp lệ) ---
+    cov = report.coverage(res)
+    common_md = report.bao_cao_common_set(bang, cov)
+    common_path = out_dir / "tables" / "common-set.md"
+    _write_lf(common_path, common_md)
+    out_files["tables/common-set.md"] = common_path
+
+    # --- Bước 7: Sinh bảng theo nhóm tài liệu ---
+    by_group_md = report.bao_cao_by_group(bang)
+    by_group_path = out_dir / "tables" / "by-group.md"
+    _write_lf(by_group_path, by_group_md)
+    out_files["tables/by-group.md"] = by_group_path
+
+    # --- Bước 8: Render SVG figures ---
+    out_files["figures/capability-ranking.svg"] = render_forest_plot(
+        agg_data, out_dir / "figures" / "capability-ranking.svg"
+    )
+    out_files["figures/accuracy-speed.svg"] = render_accuracy_speed_chart(
+        agg_data, out_dir / "figures" / "accuracy-speed.svg"
+    )
+    out_files["figures/scan-degradation.svg"] = render_scan_degradation_chart(
+        agg_data, out_dir / "figures" / "scan-degradation.svg"
+    )
+    out_files["figures/failure-distribution.svg"] = render_failure_distribution_chart(
+        agg_data, out_dir / "figures" / "failure-distribution.svg"
     )
 
+    # --- Bước 9: Sinh bài báo paper-vi.md ---
+    paper_content = _render_paper(bang, res, agg_data, moc)
     paper_path = out_dir / "paper" / "paper-vi.md"
     _write_lf(paper_path, paper_content)
     out_files["paper/paper-vi.md"] = paper_path
 
-    exec_matrix = (
-        "| Profile | Text OCR | Bố cục | Bảng | Tốc độ | Nhóm Năng lực Tổng thể |\n"
-        "|---|---|---|---|---|---|\n"
-        "| `marker_scan` | Band A | Band A | Band A | Trung bình | **Band A** |\n"
-        "| `docling_scan` | Band A | Band A | Band A | Trung bình | **Band A** |\n"
-        "| `opendataloader_scan` | Band A | Band A | Band A | Nhanh | **Band A** |\n"
-        "| `sovereign_scan` | Band A | Band A | Band A | Nhanh | **Band A** |\n"
-        "| `marker_default` | Band A | Band A | Band B | Nhanh | **Band A** |\n"
-        "| `docling_default` | Band B | Band B | Band B | Nhanh | **Band B** |\n"
-        "| `sovereign_default` | Band B | Band B | Band B | Rất nhanh | **Band B** |\n"
-        "| `opendataloader_default` | Band B | Band B | Band B | Rất nhanh | **Band B** |\n"
-    )
-
-    exec_content = exec_tmpl.replace("<!-- table: executive-summary-matrix -->", exec_matrix)
+    # --- Bước 10: Sinh executive summary ---
+    exec_content = _render_executive_summary(bang, engines)
     exec_path = out_dir / "paper" / "executive-summary.md"
     _write_lf(exec_path, exec_content)
     out_files["paper/executive-summary.md"] = exec_path
 
     return out_files
+
+
+# ---------------------------------------------------------------------------
+# 6. Định nghĩa 6 nhóm năng lực
+# ---------------------------------------------------------------------------
+
+CAPABILITIES = {
+    "Text & OCR": ["cer", "wer", "diacritics_acc", "assert_text_presence", "assert_text_absence"],
+    "Layout & Structure": ["block_f1", "type_f1", "heading", "img_f1", "img_iou"],
+    "Tables": ["teds", "teds_struct", "cell_f1", "table_recall", "assert_table_relation"],
+    "Reading Order": ["nid", "assert_reading_order"],
+    "Robustness & Base": ["assert_baseline", "assert_math_presence"],
+}
+
+# 8 profiles defined in configs/profiles.json
+TARGET_PROFILES = [
+    "docling_default", "docling_scan",
+    "opendataloader_default", "opendataloader_scan",
+    "marker_default", "marker_scan",
+    "sovereign_default", "sovereign_scan"
+]
+
+# ---------------------------------------------------------------------------
+# 7. Render bài báo từ dữ liệu thật
+# ---------------------------------------------------------------------------
+
+
+def _render_paper(
+    bang: ScoreTable,
+    res: list,
+    agg_data: dict,
+    generated_at: str,
+) -> str:
+    """Render bài báo paper-vi.md từ ScoreTable thật, chia theo 6 nhóm năng lực."""
+    # Hiển thị các engine có thật trong dữ liệu (sẽ bao gồm cả engine cũ vì chưa migrate)
+    # Nếu muốn hiện cả 8 profile (kể cả chưa chạy), có thể uncomment dòng dưới:
+    # engines = sorted(list(set(TARGET_PROFILES) | set(bang.engines())))
+    engines = bang.engines()
+    cov = report.coverage(res)
+    ten = bang.metrics()
+
+    # Bảng tổng quan dùng report.bang_markdown thật
+    bang_tong_quan = report.bang_markdown(bang, engines=engines)
+
+    # Đọc phụ lục nếu có
+    methods_path = ROOT / "paper" / "appendices" / "methods.md"
+    limitations_path = ROOT / "paper" / "appendices" / "limitations.md"
+    methods_text = (
+        methods_path.read_text(encoding="utf-8") if methods_path.exists() else ""
+    )
+    limitations_text = (
+        limitations_path.read_text(encoding="utf-8")
+        if limitations_path.exists()
+        else ""
+    )
+
+    lines = [
+        "# Báo cáo Nghiên cứu So sánh Đánh giá Hiệu năng các Công cụ OCR và Phân tích Bố cục Tài liệu",
+        "",
+        "**Tác giả:** Đội ngũ Nghiên cứu Sovereign  ",
+        f"**Ngày công bố:** {generated_at[:10]}  ",
+        f"**Số engine hiển thị:** {len(engines)}  ",
+        f"**Số metric:** {len(ten)}  ",
+        f"**Tổng dự đoán:** {len(res)}  ",
+        "",
+        "---",
+        "",
+        "## Tóm tắt",
+        "",
+        f"Báo cáo này công bố kết quả đánh giá thực nghiệm trên **{len(engines)} cấu hình engine** "
+        f"với **{len(ten)} metric** chuẩn hóa, phân chia thành các nhóm năng lực: "
+        f"OCR, Layout, Bảng, Reading Order, Robustness và Hiệu năng.",
+        "",
+        "Mọi kết quả được tính toán tất định từ dữ liệu dự đoán đã đóng băng tại "
+        "`prediction/` và nhãn chuẩn tại `ground-truth/`. Không sử dụng LLM trong "
+        "bất kỳ công đoạn tính toán số liệu nào. Các ô hiển thị `— (0 hỏng, 0 chấm được)` "
+        "là những profile chưa có đủ dữ liệu.",
+        "",
+        "---",
+        "",
+    ]
+
+    # Cảnh báo coverage
+    mani = report.dung_manifest(res, bang, generated_at=generated_at)
+    canh_bao = mani.get("canh_bao", [])
+    if canh_bao:
+        lines += [
+            "## Cảnh báo khi Đọc Bảng",
+            "",
+        ]
+        for c in canh_bao:
+            lines.append(f"- {c}")
+        lines += ["", "---", ""]
+
+    lines += [
+        "## 1. Phân tích theo Từng Năng lực",
+        "",
+        "Báo cáo không dùng một điểm tổng duy nhất để tránh che khuất trade-off giữa các năng lực.",
+        "",
+    ]
+
+    for cap_name, cap_metrics in CAPABILITIES.items():
+        lines += [
+            f"### Năng lực: {cap_name}",
+            "",
+            _bang_theo_nhom(bang, cap_metrics, cap_name, engines=engines),
+            "",
+        ]
+
+    lines += [
+        "---",
+        "",
+        "## 2. Bảng Tổng quan Toàn bộ Metric",
+        "",
+        "<!-- trace: aggregate:all_metrics:all_engines -->",
+        "",
+        bang_tong_quan,
+        "",
+        "Ô `N/A` = engine không có năng lực để metric chạm tới. "
+        "`chưa có nhãn` = bộ mẫu chưa có nhãn hợp loại để đối chiếu.",
+        "",
+        "---",
+        "",
+    ]
+
+    # Bảng common set - dùng engines thực sự có mặt để tránh lỗi
+    real_engines = bang.engines()
+    common_md = report.bao_cao_common_set(bang, cov)
+    lines += [
+        "## 3. So chéo trên Tập Tài liệu Chung",
+        "",
+        common_md,
+        "",
+        "---",
+        "",
+    ]
+
+    # Phụ lục
+    if methods_text:
+        lines += [
+            "## Phụ lục A: Phương pháp Đánh giá Chi tiết",
+            "",
+            methods_text,
+            "",
+        ]
+    if limitations_text:
+        lines += [
+            "## Phụ lục B: Hạn chế Nghiên cứu & Phạm vi Áp dụng",
+            "",
+            limitations_text,
+            "",
+        ]
+
+    return "\n".join(lines) + "\n"
+
+
+def _render_executive_summary(bang: ScoreTable, _) -> str:
+    """Render executive summary phân tách rõ năng lực, không dùng 1 điểm tổng."""
+    engines = bang.engines()
+    lines = [
+        "# Tóm tắt Thực thi — OCR Parser Benchmark",
+        "",
+        "## Kết quả Tổng quan theo Từng Năng lực",
+        "",
+        f"Báo cáo tóm tắt hiệu năng của **{len(engines)} profile** "
+        "trên bộ dữ liệu kiểm thử chuẩn. Không sử dụng một điểm số tổng duy nhất "
+        "để hiển thị trung thực các trade-off.",
+        "",
+    ]
+
+    # Bảng matrix Engine x Capability
+    header = "| Profile | Text & OCR | Layout & Struct | Tables | Reading Order | Robustness |"
+    sep = "|---|---|---|---|---|---|"
+    lines += [header, sep]
+
+    for e in engines:
+        row_vals = [f"`{e}`"]
+        for cap_name, cap_metrics in CAPABILITIES.items():
+            scored_metrics = []
+            for m in cap_metrics:
+                if m in bang.metrics():
+                    agg = bang.cell(m, e)
+                    if agg.n_scored > 0 and agg.penalized_mean is not None:
+                        scored_metrics.append(agg.penalized_mean)
+            if scored_metrics:
+                avg = sum(scored_metrics) / len(scored_metrics)
+                row_vals.append(f"{avg:.3f}")
+            else:
+                row_vals.append("—")
+        lines.append("| " + " | ".join(row_vals) + " |")
+
+    lines += [""]
+    return "\n".join(lines) + "\n"
+
+
+# ---------------------------------------------------------------------------
+# 8. Validate trace
+# ---------------------------------------------------------------------------
 
 
 def validate_publication_trace(out_dir: Path) -> list[str]:
