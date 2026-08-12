@@ -6,7 +6,11 @@ Tài liệu này hướng dẫn chi tiết cách chạy 6 profile (Docling, Open
 
 ## Phần 1: Cách Chạy 6 Profile Trên 20 File
 
-Để chạy các công cụ OCR này, bạn cần gọi script chạy của hệ thống (`run_research_predictions.py`) trong chế độ `calibration` (chế độ chạy thử nghiệm). Chế độ này cho phép giới hạn số lượng file (vd: 20 file) thay vì ép chạy hàng nghìn file như chế độ chính thức.
+Để chạy thử nghiệm lấy 20 file chung từ kho dữ liệu thật, bạn cần gọi script (`run_research_predictions.py`) ở chế độ `calibration` kèm theo 2 tham số cực kỳ quan trọng:
+- `--dataset-manifest datasets/manifest.json`: Ép hệ thống dùng danh sách data thật (hơn 1600 file) thay vì danh sách nháp.
+- `--limit 20`: Yêu cầu hệ thống đọc danh sách từ trên xuống dưới và lấy đúng 20 file đầu tiên. Nhờ cơ chế này, bất kỳ profile nào chạy với lệnh này cũng chắc chắn 100% bốc trúng 20 file đề thi giống hệt nhau.
+
+> 💡 **Mẹo phụ:** Nếu bạn không muốn máy tự động bốc 20 file đầu tiên, mà muốn **chỉ định đích danh** tên các file bạn tự chọn để test, hãy bỏ `--limit 20` đi và dùng cờ `--only`. Ví dụ: `--only bao_cao_tai_chinh,hop_dong_vay`. Khi đó mọi profile sẽ chỉ chạy trên các file bạn chỉ định.
 
 ### Các lệnh cần chạy trên Terminal (PowerShell):
 
@@ -16,7 +20,7 @@ Bạn hãy mở PowerShell tại thư mục `D:\vnpt-projects\sovereign\ocr-benc
 ```powershell
 # Chạy Docling (cần môi trường ảo của docling)
 $env:PYTHONIOENCODING="utf-8"
-.\.venv-docling\Scripts\python.exe scripts\run_research_predictions.py --mode calibration --limit 20 --profiles docling_default,docling_scan --hardware cpu
+.\.venv-docling\Scripts\python.exe scripts\run_research_predictions.py --mode calibration --dataset-manifest datasets/manifest.json --limit 20 --profiles docling_default,docling_scan --hardware cpu
 ```
 *(Lưu ý: Bạn thay `\.venv-docling` bằng đường dẫn tới môi trường ảo cài Docling hiện tại của bạn)*
 
@@ -24,14 +28,14 @@ $env:PYTHONIOENCODING="utf-8"
 ```powershell
 # Chạy Marker (môi trường .venv-marker đã có sẵn)
 $env:PYTHONIOENCODING="utf-8"
-.\.venv-marker\Scripts\python.exe scripts\run_research_predictions.py --mode calibration --limit 20 --profiles marker_default,marker_scan --hardware cpu
+.\.venv-marker\Scripts\python.exe scripts\run_research_predictions.py --mode calibration --dataset-manifest datasets/manifest.json --limit 20 --profiles marker_default,marker_scan --hardware cpu
 ```
 
 **3. Chạy cặp profile OpenDataLoader:**
 ```powershell
 # Chạy OpenDataLoader (môi trường .venv-odl đã có sẵn và đã được cài đủ 100% thư viện)
 $env:PYTHONIOENCODING="utf-8"
-.\.venv-odl\Scripts\python.exe scripts\run_research_predictions.py --mode calibration --limit 20 --profiles opendataloader_default,opendataloader_scan --hardware cpu
+.\.venv-odl\Scripts\python.exe scripts\run_research_predictions.py --mode calibration --dataset-manifest datasets/manifest.json --limit 20 --profiles opendataloader_default,opendataloader_scan --hardware cpu
 ```
 *(Cả 2 chế độ default và scan lai AI đều đã được cài đủ thư viện nên sẽ chạy rất mượt)*
 
