@@ -64,13 +64,11 @@ def main() -> int:
     out.mkdir(parents=True, exist_ok=True)
     import json
 
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+
     def ghi(ten: str, noi_dung: str) -> None:
-        # `newline=""` để Python KHÔNG đổi \n → \r\n trên Windows. `.gitattributes`
-        # khai `*.json text eol=lf`, nên blob trong git luôn là LF; nếu để mặc định
-        # thì file trên đĩa là CRLF còn file checkout ra là LF, và người kiểm AC-04
-        # (`diff` bản chạy lại với bản đã commit) thấy **mọi dòng** khác nhau — một
-        # báo động giả đúng ở chỗ nó dạy người ta bỏ qua phép kiểm.
-        (out / ten).write_text(noi_dung, encoding="utf-8", newline="")
+        (out / ten).write_bytes(noi_dung.encode("utf-8"))
 
     ghi("manifest.json", json.dumps(mani, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
     ghi("overall.md", report.bao_cao_overall(bang, mani))

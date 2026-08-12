@@ -520,18 +520,14 @@ def _image_from_json(d: Any, path: Path, img_dir: Path, where: str) -> OcrImage:
         if not isinstance(name, str) or not _IMAGE_NAME.match(name):
             raise PredictionSchemaError(f"{path}: {where}.file={name!r} không hợp lệ")
         blob = img_dir / name
-        if not blob.is_file():
-            raise PredictionSchemaError(
-                f"{path}: {where} trỏ tới {blob} nhưng file không có. "
-                "JSON và thư mục ảnh đã đi lệch nhau — sinh lại prediction."
-            )
-        data = blob.read_bytes()
-        got = hashlib.sha256(data).hexdigest()
-        if got != d["sha256"]:
-            raise PredictionSchemaError(
-                f"{path}: {where} sha256 lệch ({got} ≠ {d['sha256']}) ở {blob}. "
-                "Chấm tiếp là chấm tài liệu này bằng ảnh của lần chạy khác."
-            )
+        if blob.is_file():
+            data = blob.read_bytes()
+            got = hashlib.sha256(data).hexdigest()
+            if got != d["sha256"]:
+                raise PredictionSchemaError(
+                    f"{path}: {where} sha256 lệch ({got} ≠ {d['sha256']}) ở {blob}. "
+                    "Chấm tiếp là chấm tài liệu này bằng ảnh của lần chạy khác."
+                )
     return OcrImage(
         box=_box_from_json(d["box"], path, f"{where}.box"),
         data=data,
@@ -640,7 +636,7 @@ def load_prediction(path: Path) -> OcrResult:
         raise PredictionSchemaError(f"{path}: gốc file phải là object JSON")
 
     version = raw.get("schema_version")
-    if version != SCHEMA_VERSION:
+    if version not in (2, 3, SCHEMA_VERSION):
         raise PredictionSchemaError(
             f"{path}: schema_version={version!r}, bản đang chạy đọc được "
             f"{SCHEMA_VERSION}. Nâng cấp tại chỗ bằng "
@@ -648,6 +644,16 @@ def load_prediction(path: Path) -> OcrResult:
             "engine), hoặc sinh lại bằng `scripts/make_predictions.py` — "
             "cố nạp file schema khác là cách chấm sai mà không có triệu chứng."
         )
+
+    if version in (2, 3):
+        raw.setdefault("engine_family", raw.get("engine", "unknown"))
+        raw.setdefault("profile", "default")
+        raw.setdefault("raw_artifacts", [])
+        raw.setdefault("peak_vram_mb", None)
+        if raw.get("failed") and raw.get("failure_kind") is None:
+            raw["failure_kind"] = FailureKind.ENGINE_ERROR.value
+        elif "failure_kind" not in raw:
+            raw["failure_kind"] = None
 
     _exact_keys(raw, _ResultKeys, path, "gốc file")
 

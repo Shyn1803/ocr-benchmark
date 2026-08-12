@@ -191,7 +191,7 @@ def test_raw_json_sap_xep_on_dinh():
 def _chay_script(out: Path, *them: str) -> subprocess.CompletedProcess:
     return subprocess.run(
         [sys.executable, str(GOC / "scripts" / "d1_report.py"), "--out", str(out), *them],
-        cwd=GOC, capture_output=True, text=True,
+        cwd=GOC, capture_output=True, text=True, encoding="utf-8",
         env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"},
     )
 
