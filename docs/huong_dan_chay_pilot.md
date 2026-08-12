@@ -20,11 +20,11 @@ Tài liệu này hướng dẫn chi tiết cách chạy 6 profile (Docling, Open
 - **PowerShell:**
 ```powershell
 $env:PYTHONIOENCODING="utf-8"
-.\.venv-docling\Scripts\python.exe scripts\run_research_predictions.py --mode calibration --dataset-manifest datasets/manifest.json --limit 20 --profiles docling_default,docling_scan --hardware cpu
+.\.venv\Scripts\python.exe scripts\run_research_predictions.py --mode calibration --dataset-manifest datasets/manifest.json --limit 20 --profiles docling_default,docling_scan --hardware cpu
 ```
 - **Git Bash:**
 ```bash
-PYTHONIOENCODING="utf-8" ./.venv-docling/Scripts/python.exe scripts/run_research_predictions.py --mode calibration --dataset-manifest datasets/manifest.json --limit 20 --profiles docling_default,docling_scan --hardware cpu
+PYTHONIOENCODING="utf-8" ./.venv/Scripts/python.exe scripts/run_research_predictions.py --mode calibration --dataset-manifest datasets/manifest.json --limit 20 --profiles docling_default,docling_scan --hardware cpu
 ```
 
 **2. Chạy cặp profile Marker:**
