@@ -49,6 +49,11 @@ $env:PYTHONIOENCODING="utf-8"
 PYTHONIOENCODING="utf-8" ./.venv-odl/Scripts/python.exe scripts/run_research_predictions.py --mode calibration --dataset-manifest datasets/manifest.json --limit 20 --profiles opendataloader_default,opendataloader_scan --hardware cpu
 ```
 
+> 💡 **Một số hiện tượng bình thường khi chạy:**
+> - **Chờ tải model:** Lần chạy đầu tiên có thể mất 1-3 phút im lặng tuyệt đối để tải hàng GB mô hình AI vào RAM.
+> - **Tiến trình:** Hệ thống sẽ in ra màn hình từng bước dạng `[docling_default] (1/20) Xử lý abc... OK`.
+> - **Cảnh báo `UserWarning: 'pin_memory'`:** Nếu bạn thấy dòng cảnh báo đỏ lè này từ PyTorch, đừng hoảng! Đó chỉ là thông báo cho biết hệ thống đang tắt tính năng của GPU do bạn đang chạy bằng `--hardware cpu`. File vẫn trích xuất thành công 100%.
+
 ---
 
 ## Phần 2: Dữ Liệu Sau Khi Chạy Trông Sẽ Ra Sao?
