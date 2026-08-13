@@ -99,6 +99,8 @@ HYBRID_SERVER_CONFIG = {
     "force_ocr": True,
     "health_url": f"{HYBRID_URL}/health",
     "host": HYBRID_HOST,
+    "jit_enforcement": {"TORCHDYNAMO_DISABLE": "1"},
+    "jit_enforcement_method": "TORCHDYNAMO_DISABLE-before-spawn",
     "ocr_engine": "easyocr",
     "ocr_languages": ["vi", "en"],
     "port": HYBRID_PORT,

@@ -118,6 +118,8 @@ def _hybrid_runtime(
             "force_ocr": True,
             "health_url": "http://127.0.0.1:5002/health",
             "host": "127.0.0.1",
+            "jit_enforcement": {"TORCHDYNAMO_DISABLE": "1"},
+            "jit_enforcement_method": "TORCHDYNAMO_DISABLE-before-spawn",
             "ocr_engine": "easyocr",
             "ocr_languages": ["vi", "en"],
             "port": 5002,
@@ -729,9 +731,13 @@ def test_opendataloader_scan_fingerprint_uses_validated_launcher_evidence(
     assert adapter.configure_hardware("cpu") == "cpu"
     fingerprint = adapter.config_fingerprint()
     assert fingerprint["device"] == "cpu"
-    assert fingerprint["force_ocr"] is True
-    assert fingerprint["ocr_engine"] == "easyocr"
-    assert fingerprint["ocr_languages"] == ["vi", "en"]
+    assert fingerprint["hybrid_server"]["force_ocr"] is True
+    assert fingerprint["hybrid_server"]["ocr_engine"] == "easyocr"
+    assert fingerprint["hybrid_server"]["ocr_languages"] == ["vi", "en"]
+    assert fingerprint["cpu_enforcement"] == {"CUDA_VISIBLE_DEVICES": ""}
+    assert fingerprint["cpu_enforcement_method"] == (
+        "CUDA_VISIBLE_DEVICES-empty-before-spawn"
+    )
     assert fingerprint["opendataloader_version"] == "2.5.0"
     assert fingerprint["docling_version"] == "2.91.0"
     assert fingerprint["easyocr_version"] == "1.7.2"

@@ -279,9 +279,13 @@ def test_owned_ready_server_exposes_manifest_then_removes_it_on_cleanup(
     assert payload["config"]["device_enforcement_method"] == (
         "CUDA_VISIBLE_DEVICES-empty-before-spawn"
     )
+    assert payload["config"]["jit_enforcement_method"] == (
+        "TORCHDYNAMO_DISABLE-before-spawn"
+    )
     assert payload["versions"] == VERSIONS
     assert len(payload["run_id"]) == 64
     assert spawned["env"]["CUDA_VISIBLE_DEVICES"] == ""
+    assert spawned["env"]["TORCHDYNAMO_DISABLE"] == "1"
     output = capsys.readouterr().out
     assert str(manifest.resolve()) in output
     assert f"$env:{module.MANIFEST_ENV}" in output
@@ -304,3 +308,20 @@ def test_manifest_path_precedence_supports_cross_process_default_and_overrides(
     monkeypatch.setenv(module.MANIFEST_ENV, str(environment))
     assert module.resolve_manifest_path(None) == environment.resolve()
     assert module.resolve_manifest_path(cli) == cli.resolve()
+
+
+def test_config_khoa_cua_adapter_khong_duoc_lech_voi_launcher():
+    """Bản khoá ở adapter phải trùng tuyệt đối với cái launcher thật sự ghi ra.
+
+    Hai bản sao độc lập: `run_odl_hybrid.server_config()` sinh manifest, còn
+    `adapters.opendataloader.HYBRID_SERVER_CONFIG` là bản đối chiếu. Không có gì buộc
+    chúng bằng nhau — sửa một bên mà quên bên kia thì mọi lượt chạy hybrid chết với
+    `config is not catalog-locked`, và thông báo đó không chỉ ra bên nào sai.
+
+    Chết khi revert: đây chính là cái bẫy khi thêm biến môi trường vào launcher.
+    """
+    from ocr_bench.adapters.opendataloader import HYBRID_ARGV_TAIL, HYBRID_SERVER_CONFIG
+
+    module = _launcher()
+    assert HYBRID_SERVER_CONFIG == module.server_config()
+    assert HYBRID_ARGV_TAIL == module.build_server_command(Path("python.exe"))[1:]

@@ -131,6 +131,8 @@ def server_config(*, host: str = HOST, port: int = PORT) -> dict[str, object]:
         "force_ocr": True,
         "health_url": f"http://{host}:{port}/health",
         "host": host,
+        "jit_enforcement": {"TORCHDYNAMO_DISABLE": "1"},
+        "jit_enforcement_method": "TORCHDYNAMO_DISABLE-before-spawn",
         "ocr_engine": "easyocr",
         "ocr_languages": ["vi", "en"],
         "port": port,
@@ -356,6 +358,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     command = build_server_command(Path(sys.executable).resolve())
     child_env = os.environ.copy()
     child_env["CUDA_VISIBLE_DEVICES"] = ""
+    # Docling trong hybrid server gọi `torch.compile`; TorchInductor đòi `cl.exe` của MSVC
+    # để biên dịch kernel. Máy không có Build Tools thì mọi PDF đi vào đều chết ở
+    # `InvalidCxxCompiler: Compiler: cl is not found` — nhưng `/health` vẫn trả `{"status":"ok"}`,
+    # nên server trông lành cho tới khi có file thật. Đo trên chính file đầu của bộ pilot:
+    # không đặt biến → HTTP 500; đặt → HTTP 200, 15KB DoclingDocument, 68s/trang trên CPU.
+    # Khai vào `server_config()` để manifest ghi lại, vì đây là thay đổi cấu hình thật
+    # ảnh hưởng tới đầu ra, không phải mẹo vặt của máy này.
+    child_env["TORCHDYNAMO_DISABLE"] = "1"
     process = subprocess.Popen(command, env=child_env)
     manifest: Path | None = None
     manifest_sha256: str | None = None
