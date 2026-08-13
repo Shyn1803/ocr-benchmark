@@ -106,10 +106,24 @@ noop            text_md
 sabotage        (tất cả — engine phá hoại dùng để kiểm metric có phân biệt được không)
 ```
 
-> ⚠️ **Docling KHÔNG khai `image_bbox`.** Đây là điều dễ hiểu nhầm nhất trong cả tài liệu
-> này. Nghĩa là `img_f1` / `img_iou` của `docling_default` và `docling_scan` sẽ là N/A với
-> lý do `MISSING_CAPABILITY` — **không phải** vì thiếu nhãn, mà vì engine không hứa làm
-> việc đó. Hai N/A này phải nằm ở cột khác hẳn N/A vì thiếu nhãn khi lên bảng.
+> ⚠️ **Docling KHÔNG khai `image_bbox`** → `img_f1` / `img_iou` của `docling_default` và
+> `docling_scan` là N/A với lý do `MISSING_CAPABILITY`, phải để ở cột khác hẳn N/A vì thiếu
+> nhãn khi lên bảng.
+>
+> **Nhưng đừng đọc thành "docling không bóc tách được ảnh".** Nó bóc tách được: 20 tài liệu
+> `docling_scan` trong `calibration/` cho ra **14 block `picture`**, mỗi block có `box` đầy đủ
+> (kiểm chứng 2026-08-13). Vấn đề nằm ở chỗ khác — adapter đổ chúng vào `blocks[]` với
+> `block_type: picture` và **không bao giờ ghi gì vào `OcrResult.images`**, trong khi `img_f1`
+> chỉ đọc `result.images` ([imgf1.py:130](../src/ocr_bench/metrics/imgf1.py#L130)). Không có
+> `images[].box` thì không được phép khai `IMAGE_BBOX` — `OcrResult._require` sẽ chặn
+> ([types.py:398](../src/ocr_bench/types.py#L398)).
+>
+> Nói cách khác đây là **quyết định ánh xạ ở adapter, không phải giới hạn của engine**. Phía
+> nhãn đã làm đúng phép ánh xạ đó rồi: `corpus.py:174` làm `if loai is BlockType.PICTURE:
+> images.append(box)`. Muốn docling có điểm nhóm C thì làm đối xứng ở
+> `adapters/docling.py` rồi thêm `Capability.IMAGE_BBOX`. Vẫn không có `IMAGE_BYTES` (docling
+> không trả ảnh cắt trừ khi bật `generate_picture_images`), nhưng `img_f1`/`img_iou` chỉ cần
+> `IMAGE_BBOX` nên thế là đủ.
 
 > ⚠️ **`sovereign` chỉ có `text_md`.** Kể cả khi API cục bộ dựng xong, nó vẫn không bao giờ
 > có dòng nào ở nhóm bố cục hay nhóm ảnh. Đừng chờ đợi điều đó.

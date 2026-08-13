@@ -217,8 +217,12 @@ không đặt thì báo cáo lấy đồng hồ máy và hai lần dựng sẽ k
 ### 6.1 Docling sẽ N/A ở nhóm ảnh, và đó không phải lỗi
 
 `docling` **không khai `image_bbox`**. Nên `img_f1` / `img_iou` của `docling_default` và
-`docling_scan` là N/A với lý do `MISSING_CAPABILITY` — *engine không hứa làm việc đó*, khác
-hẳn N/A vì *thiếu nhãn*. Chỉ hai profile OpenDataLoader có số ở nhóm C.
+`docling_scan` là N/A với lý do `MISSING_CAPABILITY`, khác hẳn N/A vì *thiếu nhãn*. Chỉ hai
+profile OpenDataLoader có số ở nhóm C.
+
+Nhưng N/A này **không** có nghĩa là docling mù ảnh — nó vẫn ra block `picture` kèm toạ độ,
+chỉ là adapter đổ vào `blocks[]` chứ không vào `images[]` mà metric đọc. Xem giải thích đầy
+đủ và cách mở khoá ở [ma-tran-nhan-va-metric.md](ma-tran-nhan-va-metric.md).
 
 ### 6.2 Tám metric N/A vẫn nằm trong `raw-results.json`, đừng xoá
 
