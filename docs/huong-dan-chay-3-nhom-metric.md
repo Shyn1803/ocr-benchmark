@@ -54,6 +54,17 @@ tiếp từ chỗ dở.
 `--refresh` **xoá sạch** cache đó. Với lượt 1403 tài liệu, một lần gõ nhầm là mất hàng chục
 giờ máy.
 
+> **Từ 2026-08-13, cache cũ tự hết hạn — và bạn vẫn không cần `--refresh`.**
+> Khoá cache nay tính cả *năng lực adapter khai báo* (xem mục 6.1). Mọi file dự đoán sinh ra
+> trước ngày đó đều không khớp khoá mới, nên script tự coi là cache miss và **chạy lại đúng
+> tài liệu đó**, không cần bạn xoá gì. Đây chính là điều `--refresh` sẽ làm, nhưng có chọn lọc
+> và không thể gõ nhầm phạm vi.
+>
+> Ngoại lệ duy nhất: `--mode publication` **ném lỗi và dừng** thay vì chạy lại
+> ([`run_research_predictions.py:372`](../scripts/run_research_predictions.py)) — chế độ đó
+> coi cache không khớp là sự cố phải người quyết định, không phải việc để script tự xử. Tài
+> liệu này dùng `--mode calibration` nên không chạm vào đường đó.
+
 ---
 
 ## 1. Tổng thời gian dự kiến
@@ -212,32 +223,49 @@ không đặt thì báo cáo lấy đồng hồ máy và hai lần dựng sẽ k
 
 ---
 
-## 6. Đọc kết quả — 3 điều dễ hiểu nhầm
+## 6. Đọc kết quả — 5 điều dễ hiểu nhầm
 
-### 6.1 Docling vẫn N/A ở nhóm ảnh cho tới khi bạn chạy lại nó
+### 6.1 Docling chỉ có điểm nhóm ảnh sau khi bạn chạy lại nó
 
 Trước 2026-08-13 adapter `docling` (và `pdf_inspector`) dò ra vùng ảnh rồi đổ vào `blocks[]`
 mà **không** ghi gì vào `images[]` — đúng chỗ mà `img_f1` / `img_iou` đọc. Nay đã sửa: cả hai
 adapter đổ song song vào `blocks` **và** `images`, và cùng khai `image_bbox`.
 
-⚠️ **Nhưng dự đoán đã cache thì không tự cập nhật.** Khoá cache không tính năng lực, nên mọi
-kết quả `docling_*` / `pdf_inspector` đang nằm trong `prediction/` vẫn thiếu `images[]` và vẫn
-ra `MISSING_CAPABILITY`. Muốn docling có điểm nhóm C thì phải **chạy lại** hai profile docling
-(mục 4) — chấm lại corpus cũ không đủ. Chưa chạy lại thì bảng vẫn chỉ có OpenDataLoader ở nhóm C,
-và N/A đó là *cache cũ*, không phải giới hạn engine.
+Cùng ngày, **khoá cache được sửa để tính cả năng lực adapter khai báo**. Trước đó nó không
+tính, và hậu quả đúng là cái bẫy vừa sập: adapter khai thêm `image_bbox` nhưng cache cũ *không*
+hết hạn, nên file dự đoán cũ vẫn thiếu `images[]`, metric vẫn trả `MISSING_CAPABILITY` — im
+lặng, vô thời hạn. Nay mọi thay đổi năng lực tự làm hết hạn corpus.
 
-### 6.2 Tám metric N/A vẫn nằm trong `raw-results.json`, đừng xoá
+**Việc bạn cần làm:** chạy lại (mục 3 và 4) như bình thường. Script tự nhận ra file cũ không
+khớp khoá và chạy lại đúng những tài liệu đó. Chưa chạy lại thì bảng nhóm C vẫn chỉ có
+OpenDataLoader, và N/A của docling ở đó là *dữ liệu cũ*, không phải giới hạn engine.
+
+### 6.2 `diacritics_acc` và `cell_f1` đổi điểm — nhưng chỉ cần **chấm lại**, không chạy lại
+
+Cũng ngày 2026-08-13, hai metric này được phát hiện không chuẩn hoá Unicode trước khi so:
+
+- `diacritics_acc` so từng code point, nên nhãn NFC gặp đầu ra NFD thì "ề" một bên là 1 code
+  point còn bên kia 2–3, và **mọi** ký tự có dấu đều trượt — engine đọc đúng hoàn toàn vẫn bị
+  chấm 0.2. Nặng hơn: nhãn ở dạng NFD còn bị kết luận "không có dấu nào" và trả thẳng N/A.
+- `cell_f1` so nội dung ô bằng `==`, cùng bệnh — trong khi `teds` trên *cùng một bảng* thì có
+  chuẩn hoá, nên hai metric lệch nhau.
+
+Khác biệt quan trọng với mục 6.1: lỗi này nằm ở **khâu chấm**, không nằm trong file dự đoán.
+Dự đoán cũ vẫn dùng được — chỉ cần chạy lại bước 4 (mục 5). Với ai đã có sẵn corpus, đây là
+việc vài phút chứ không phải vài chục giờ.
+
+### 6.3 Tám metric N/A vẫn nằm trong `raw-results.json`, đừng xoá
 
 `cer`, `wer`, `diacritics_acc`, `nid`, `teds`, `teds_struct`, `cell_f1`, `table_recall` sẽ
 xuất hiện với `value: null` + `na_reason`. Giữ nguyên — đó là hồ sơ kiểm toán trả lời câu
 *"vì sao không có TEDS"*. Chỉ **bảng in cho người đọc** mới rút gọn.
 
-### 6.3 Nhóm C có hai mẫu số
+### 6.4 Nhóm C có hai mẫu số
 
 64 tài liệu **có** ảnh đo *tìm được không*; 140 tài liệu **không** ảnh đo *có bịa ảnh không*.
 Gộp thành một cột là mất hẳn chỉ số dương tính giả.
 
-### 6.4 `run-manifest.json` chỉ mô tả lượt chạy **cuối cùng**
+### 6.5 `run-manifest.json` chỉ mô tả lượt chạy **cuối cùng**
 
 Mỗi lượt chạy ghi đè file này. Trong khi đó thư mục `prediction/` thì **tích luỹ** — đầu ra
 của các lượt trước vẫn nằm nguyên đó. Nên nếu hôm nay bạn chỉ chạy lại một profile, manifest
@@ -266,6 +294,9 @@ py -3 -c "import json,sys;[print(r['generated_at'],[p['name'] for p in r['profil
 | Im lặng 1–3 phút lúc mới chạy | đang nạp vài GB model vào RAM | bình thường, chờ |
 | `UserWarning: 'pin_memory'` từ PyTorch | đang chạy `--hardware cpu`, tính năng GPU bị tắt | bình thường, kết quả không ảnh hưởng |
 | Bảng ra trông giống hệt lần trước dù vừa chạy xong | quên `--prediction-dir` → chấm nhầm corpus đóng băng | thêm cờ, dựng lại |
+| `CACHE HIT` biến mất, tài liệu cũ chạy lại từ đầu | khoá cache đổi từ 2026-08-13 (thêm năng lực adapter) | **đúng như thiết kế** — để nó chạy, xem mục 0.4 |
+| `--mode publication` dừng ngay với `PreflightError: ... capabilities` | cùng lý do trên, nhưng chế độ publication không tự chạy lại | dùng `--mode calibration`, hoặc thêm `--refresh` nếu thực sự muốn dựng lại bản công bố |
+| `diacritics_acc` của một engine nhảy vọt so với bảng cũ | bản cũ chấm sai vì thiếu chuẩn hoá NFC (mục 6.2) | số mới là số đúng; bỏ bảng cũ đi |
 
 ---
 
@@ -278,4 +309,6 @@ py -3 -c "import json,sys;[print(r['generated_at'],[p['name'] for p in r['profil
 - [ ] Bước 3 — olmOCR, 4 profile, từng cái một (~31h)
 - [ ] Bước 4.1 — `score_assertions.py` có `| tee`
 - [ ] Bước 4.2 — `build_research_report.py` có **cả** `--prediction-dir` **và** `--out runs/pilot`
+- [ ] Đọc mục 6.1 trước khi kết luận docling "không bóc được ảnh"
+- [ ] Nếu chỉ muốn hưởng bản vá `diacritics_acc`/`cell_f1` (mục 6.2): chỉ cần chạy lại **bước 4**
 - [ ] Không lần nào gõ `--refresh`

@@ -119,11 +119,18 @@ sabotage        (tất cả — engine phá hoại dùng để kiểm metric có
 > `generate_picture_images`, pdf-inspector thì không có crop. `img_f1`/`img_iou` chỉ cần
 > `IMAGE_BBOX` nên thế là đủ.
 >
-> ⚠️ **Dự đoán đã cache KHÔNG tự cập nhật.** `build_cache_identity` không tính năng lực vào
-> khoá ([preflight.py:497](../src/ocr_bench/preflight.py#L497)), nên 1608 dự đoán
-> `pdf_inspector` và 40 dự đoán `docling` đang nằm trong `prediction/` vẫn không có
-> `images[]` và vẫn ra `MISSING_CAPABILITY`. Muốn có điểm nhóm C cho hai engine này thì phải
-> **chạy lại** chúng — đọc lại corpus cũ không đủ.
+> ⚠️ **Vẫn phải chạy lại — nhưng nay hệ thống tự bắt.** 1608 dự đoán `pdf_inspector` và 40 dự
+> đoán `docling` đang nằm trong `prediction/` được sinh ra bởi bản adapter cũ, nên vẫn không có
+> `images[]`. Điều nguy hiểm hơn nằm ở chỗ khác: `build_cache_identity` **không tính năng lực
+> vào khoá cache**, nghĩa là khai thêm `image_bbox` cũng *không* làm corpus cũ hết hạn — file
+> cũ vẫn `CACHE HIT`, metric vẫn `MISSING_CAPABILITY`, im lặng và vô thời hạn. Đó là lý do lỗi
+> này sống được lâu đến vậy.
+>
+> Đã vá cùng ngày: `capabilities` nay nằm trong khoá cache
+> ([preflight.py](../src/ocr_bench/preflight.py)), nên mọi thay đổi năng lực adapter tự động
+> làm hết hạn dự đoán cũ và script chạy lại đúng những tài liệu đó. Bạn không cần `--refresh`.
+> Chi tiết thao tác: [`huong-dan-chay-3-nhom-metric.md`](huong-dan-chay-3-nhom-metric.md) mục
+> 0.4 và 6.1.
 
 > ⚠️ **`sovereign` chỉ có `text_md`.** Kể cả khi API cục bộ dựng xong, nó vẫn không bao giờ
 > có dòng nào ở nhóm bố cục hay nhóm ảnh. Đừng chờ đợi điều đó.
@@ -202,6 +209,18 @@ khẳng định rời rạc, không có toàn văn.
 
 **Riêng `diacritics_acc`:** bộ mẫu hiện tại **100% tiếng Anh**. Metric này đo dấu tiếng Việt.
 Không có tài liệu tiếng Việt thì nó vô nghĩa kể cả khi đã có toàn văn.
+
+> 🐛 **Đã vá 2026-08-13, quan trọng cho ngày có dữ liệu tiếng Việt.** `diacritics_acc` so từng
+> code point mà **không** chuẩn hoá Unicode, nên nhãn NFC gặp đầu ra NFD thì "ề" một bên là 1
+> code point còn bên kia 2–3 và *mọi* ký tự có dấu trượt — engine đọc đúng 100% bị chấm **0.2**.
+> Nhãn ở dạng NFD còn tệ hơn: bị kết luận "không có ký tự mang dấu nào" và trả thẳng
+> `NO_GROUND_TRUTH`. `cell_f1` cùng bệnh (so nội dung ô bằng `==`), trong khi `teds` trên *cùng
+> một bảng* thì có chuẩn hoá. Cả hai nay đi qua `normalize_text()` như hợp đồng ghi ở
+> [normalize.py:3](../src/ocr_bench/normalize.py#L3) — *"Mọi metric text phải đi qua
+> `normalize_text()`"* — mà trước đó chỉ `cer` và `teds` tuân.
+>
+> Lỗi này nằm ở khâu **chấm**, không nằm trong file dự đoán: chỉ cần dựng lại báo cáo, không
+> cần chạy lại OCR.
 
 ### 4.2 `nid` (thứ tự đọc) ❌
 
