@@ -3,7 +3,7 @@
 Sinh bằng `py -3 scripts/c2_report.py`. **Không** sửa tay — chạy lại để cập nhật.
 
 Nguồn của `sabotage`: **opendataloader** (không phải `noop` mặc định — làm hỏng đầu ra rỗng thì vẫn rỗng, cổng sẽ xanh mà không kiểm gì).
-Ngưỡng phân tán: **0.02**. Engine tổng hợp bị loại khỏi phép tính phân tán: noop, sabotage.
+Ngưỡng phân tán: **0.02**. Engine tổng hợp bị loại khỏi phép tính phân tán: noop, sabotage, sabotage_s10, sabotage_s30, sabotage_s60.
 
 ## 1. Cổng `sabotage` (AC-01)
 
