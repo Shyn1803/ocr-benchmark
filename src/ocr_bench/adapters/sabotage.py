@@ -19,10 +19,34 @@ from ocr_bench.adapters.base import Adapter
 from ocr_bench.adapters.noop import NoopAdapter
 from ocr_bench.types import Box, Capability, OcrResult, OcrTable
 
-__all__ = ["SabotageAdapter", "KEEP_RATIO"]
+__all__ = [
+    "SabotageAdapter",
+    "KEEP_RATIO",
+    "MUC_SABOTAGE",
+    "SEED_SABOTAGE",
+    "ten_muc_sabotage",
+]
 
 KEEP_RATIO = 0.5
 """Mặc định giữ lại bao nhiêu phần nội dung. 0.5 = cắt còn một nửa."""
+
+SEED_SABOTAGE = 1337
+"""Seed cố định cho mọi mức phá hoại. Đổi seed là đổi quần thể, tức đổi bảng."""
+
+MUC_SABOTAGE: tuple[float, ...] = (0.1, 0.3, 0.6)
+"""Ba mức nghiêm trọng của phép làm hỏng.
+
+Một mức duy nhất chỉ trả lời được "metric có thấy phép làm hỏng không". Ba mức trả lời
+được câu mạnh hơn: **điểm có giảm đơn điệu theo mức hỏng không**. Metric tụt xuống sàn
+ngay ở 0.1 rồi nằm im, hoặc metric nhảy loạn giữa các mức, đều là metric không dùng
+được để xếp hạng — mà phép so một điểm không bắt được cả hai.
+"""
+
+
+def ten_muc_sabotage(severity: float) -> str:
+    """`0.3` → `"sabotage_s30"`. Tên engine của một mức, dùng làm khoá trong bảng điểm."""
+    return f"sabotage_s{int(round(severity * 100)):02d}"
+
 
 _ROW_RE = re.compile(r"<tr\b.*?</tr>", re.IGNORECASE | re.DOTALL)
 _SPAN_RE = re.compile(r'\s*(rowspan|colspan)\s*=\s*(?:"[^"]*"|\'[^\']*\'|\d+)', re.IGNORECASE)
@@ -100,12 +124,17 @@ class SabotageAdapter(Adapter):
         self,
         source: Adapter | None = None,
         *,
-        seed: int = 1337,
+        seed: int = SEED_SABOTAGE,
         severity: float = 0.5,
+        ten: str | None = None,
     ) -> None:
         self.source = source or NoopAdapter()
         self.seed = seed
         self.severity = max(0.01, min(0.99, severity))
+        # Mỗi mức phá hoại phải là một "engine" riêng trong bảng điểm, nếu không ba mức
+        # ghi đè lẫn nhau lên cùng khoá `sabotage` và phép so đơn điệu không có gì để so.
+        if ten is not None:
+            self.name = ten
 
     def version(self) -> str:
         return f"sabotage/1+{self.source.ten_engine_that}"

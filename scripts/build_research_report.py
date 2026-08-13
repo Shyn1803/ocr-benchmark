@@ -29,9 +29,19 @@ def main(argv: list[str] | None = None) -> int:
         default=ROOT,
         help="Output directory for publication artifacts",
     )
+    parser.add_argument(
+        "--prediction-dir",
+        type=Path,
+        default=None,
+        help=(
+            "Thư mục prediction đem đi chấm (mặc định: corpus đóng băng `prediction/`). "
+            "Trỏ sang `calibration/prediction/cpu` để chấm đầu ra pilot — nhớ đổi cả "
+            "`--out` để khỏi ghi đè bảng công bố."
+        ),
+    )
     args = parser.parse_args(argv)
 
-    out_files = build_publication(args.input, args.out)
+    out_files = build_publication(args.input, args.out, prediction_dir=args.prediction_dir)
     sys.stdout.write(f"Generated {len(out_files)} publication artifacts under {args.out}\n")
 
     trace_errors = validate_publication_trace(args.out)

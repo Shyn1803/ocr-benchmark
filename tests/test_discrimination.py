@@ -486,6 +486,177 @@ class TestNguonTuDia:
         assert {r.engine_version for r in sab} == {f"sabotage/1+{NGUON_MANH}"}
 
 
+class TestSabotagePhanMuc:
+    """Ba mức 0.1 / 0.3 / 0.6 — phép thử mạnh hơn cổng một điểm.
+
+    Cổng một điểm chỉ hỏi "metric có thấy phép làm hỏng không". Ba mức hỏi "metric có
+    xếp được **mức độ** hỏng không". Một metric rơi thẳng xuống sàn ở 0.1 rồi nằm im
+    vẫn qua cổng một điểm, dù nó không phân biệt nổi hỏng nhẹ với hỏng nát.
+
+    Chết-khi-revert: trước bản này không có mức nào được khai ở đâu cả —
+    `grep -c sabotage configs/profiles.json` ra 0 — dù spec Task 9 đòi 0.1/0.3/0.6.
+    """
+
+    def _kq(self, doc: str, engine: str = NGUON_MANH) -> OcrResult:
+        return OcrResult(
+            engine=engine,
+            engine_version="test",
+            doc_id=doc,
+            text_md="\n".join(f"dòng số {i} có nội dung" for i in range(40)),
+            capabilities=frozenset({Capability.TEXT_MD}),
+        )
+
+    def test_ten_muc_suy_ra_tu_severity(self) -> None:
+        from ocr_bench.adapters.sabotage import MUC_SABOTAGE, ten_muc_sabotage
+
+        assert MUC_SABOTAGE == (0.1, 0.3, 0.6)
+        assert [ten_muc_sabotage(s) for s in MUC_SABOTAGE] == [
+            "sabotage_s10", "sabotage_s30", "sabotage_s60",
+        ]
+
+    def test_moi_muc_la_mot_cot_rieng(self) -> None:
+        """Chung tên `sabotage` thì mức sau ghi đè mức trước, hết cái để so."""
+        sab = D.dung_sabotage_phan_muc([self._kq("a"), self._kq("b")])
+        assert {r.engine for r in sab} == {"sabotage_s10", "sabotage_s30", "sabotage_s60"}
+        assert len(sab) == 6
+
+    def test_cung_seed_cung_nguon_giua_cac_muc(self) -> None:
+        """Khác seed thì chênh lệch điểm là chênh lệch quần thể, không phải mức hỏng."""
+        from ocr_bench.adapters.sabotage import SEED_SABOTAGE
+
+        sab = D.dung_sabotage_phan_muc([self._kq("a")])
+        assert {r.config_fingerprint["seed"] for r in sab} == {SEED_SABOTAGE}
+        assert {r.config_fingerprint["source"] for r in sab} == {NGUON_MANH}
+        assert {r.config_fingerprint["severity"] for r in sab} == {0.1, 0.3, 0.6}
+
+    def test_muc_nang_hon_thi_hong_nhieu_hon(self) -> None:
+        """Kiểm chính phép làm hỏng, chưa nói tới metric: 0.6 phải cắt nhiều hơn 0.1."""
+        sab = {
+            r.engine: r
+            for r in D.dung_sabotage_phan_muc([self._kq("a")])
+        }
+        dai = {e: len(r.text_md or "") for e, r in sab.items()}
+        assert dai["sabotage_s10"] > dai["sabotage_s30"] > dai["sabotage_s60"]
+
+    def test_muc_khong_duoc_tinh_la_engine_that(self) -> None:
+        """Lọt vào `do_phan_tan` thì **mọi** metric lập tức "phân tán tốt"."""
+        assert {"sabotage_s10", "sabotage_s30", "sabotage_s60"} <= D.ENGINE_TONG_HOP
+
+        # Hai engine thật chênh nhau 0.01 (< ngưỡng 0.02) — metric này không phân biệt
+        # được gì. Ba cột sabotage trải từ 0.6 xuống 0.0 sẽ kéo spread lên 0.9 nếu
+        # chúng bị tính là engine thật, và metric hỏng thành metric "tốt".
+        pt = D.do_phan_tan(
+            _bang({
+                NGUON_MANH: {"a": 0.90},
+                "marker": {"a": 0.89},
+                "sabotage_s10": {"a": 0.60},
+                "sabotage_s30": {"a": 0.30},
+                "sabotage_s60": {"a": 0.00},
+            }),
+            "m",
+        )
+        assert pt.engines == ("marker", NGUON_MANH)
+        assert pt.spread == pytest.approx(0.01)
+        assert pt.phan_quyet == PhanQuyet.KHONG_PHAN_BIET_DUOC
+
+    def _bang_muc(self, nguon: float, s10: float, s30: float, s60: float) -> ScoreTable:
+        return _bang({
+            NGUON_MANH: {"a": nguon},
+            "sabotage_s10": {"a": s10},
+            "sabotage_s30": {"a": s30},
+            "sabotage_s60": {"a": s60},
+        })
+
+    def test_giam_ngat_qua_tung_muc_la_dat(self) -> None:
+        kq = D.kiem_don_dieu_muc(self._bang_muc(0.9, 0.7, 0.4, 0.1), "m")
+        assert kq.phan_quyet == D.KetQuaDonDieu.DAT
+        assert kq.do_duoc
+
+    def test_muc_nang_hon_diem_cao_hon_la_nghich(self) -> None:
+        """Thước đo thưởng cho việc phá nhiều hơn — hỏng thật, không phải bão hoà."""
+        kq = D.kiem_don_dieu_muc(self._bang_muc(0.9, 0.2, 0.5, 0.1), "m")
+        assert kq.phan_quyet == D.KetQuaDonDieu.NGHICH
+        assert "sabotage_s30" in kq.ly_do
+
+    def test_cham_san_roi_nam_im_la_bao_hoa_chu_khong_phai_dat(self) -> None:
+        """Đây đúng là chỗ cổng một điểm không nhìn thấy: 0.1 đã xuống 0.0 và ở đó."""
+        kq = D.kiem_don_dieu_muc(self._bang_muc(0.9, 0.0, 0.0, 0.0), "m")
+        assert kq.phan_quyet == D.KetQuaDonDieu.BAO_HOA
+        assert kq.phan_quyet != D.KetQuaDonDieu.DAT
+        assert kq.do_duoc
+
+    def test_thieu_cot_thi_khong_do_duoc_chu_khong_phai_dat(self) -> None:
+        kq = D.kiem_don_dieu_muc(
+            _bang({NGUON_MANH: {"a": 0.9}, "sabotage_s10": {"a": 0.5}}), "m"
+        )
+        assert kq.phan_quyet == D.KetQuaDonDieu.KHONG_DO_DUOC
+        assert not kq.do_duoc
+
+    def test_na_toan_bo_thi_khong_do_duoc(self) -> None:
+        kq = D.kiem_don_dieu_muc(self._bang_muc(0.9, 0.5, 0.3, 0.1), "khong_co_metric")
+        assert not kq.do_duoc
+
+
+class TestKhaiBaoMucSabotage:
+    """`configs/profiles.json` phải khai đúng ba mức, và khai cho khớp mã."""
+
+    def _muc(self):
+        from ocr_bench.profiles import load_sabotage_levels
+
+        return load_sabotage_levels(GOC / "configs" / "profiles.json")
+
+    def test_catalog_khai_dung_ba_muc(self) -> None:
+        from ocr_bench.adapters.sabotage import MUC_SABOTAGE
+
+        assert tuple(m.severity for m in self._muc()) == MUC_SABOTAGE
+
+    def test_khai_bao_khop_voi_hang_so_trong_ma(self) -> None:
+        """Catalog và mã lệch nhau thì bảng ghi một đằng, phép so chạy một nẻo."""
+        from ocr_bench.adapters.sabotage import SEED_SABOTAGE
+
+        muc = self._muc()
+        assert {m.seed for m in muc} == {SEED_SABOTAGE}
+        assert {m.source for m in muc} == {D.NGUON_SABOTAGE}
+
+    def test_muc_sabotage_khong_nam_trong_danh_muc_engine_cong_bo(self) -> None:
+        """`sabotage` là dụng cụ kiểm thước đo, không phải engine được công bố."""
+        from ocr_bench.profiles import load_profile_catalog
+
+        catalog = load_profile_catalog(GOC / "configs" / "profiles.json")
+        assert not any("sabotage" in ten for ten in catalog)
+
+    @pytest.mark.parametrize(
+        "sua, loi",
+        [
+            ({"name": "sabotage_s99"}, "không khớp severity"),
+            ({"severity": 1.5}, "không khớp severity"),
+            ({"seed": 999}, "chung một seed"),
+            ({"source": "marker"}, "chung một engine nguồn"),
+        ],
+    )
+    def test_khai_sai_thi_nem(self, tmp_path: Path, sua: dict, loi: str) -> None:
+        from ocr_bench.profiles import ProfileConfigError, load_sabotage_levels
+
+        goc = json.loads((GOC / "configs" / "profiles.json").read_text(encoding="utf-8"))
+        goc["sabotage_levels"][1].update(sua)
+        f = tmp_path / "profiles.json"
+        f.write_text(json.dumps(goc), encoding="utf-8")
+
+        with pytest.raises(ProfileConfigError, match=loi):
+            load_sabotage_levels(f)
+
+    def test_severity_trung_nhau_thi_nem(self, tmp_path: Path) -> None:
+        from ocr_bench.profiles import ProfileConfigError, load_sabotage_levels
+
+        goc = json.loads((GOC / "configs" / "profiles.json").read_text(encoding="utf-8"))
+        goc["sabotage_levels"][1] = dict(goc["sabotage_levels"][0])
+        f = tmp_path / "profiles.json"
+        f.write_text(json.dumps(goc), encoding="utf-8")
+
+        with pytest.raises(ProfileConfigError, match="tăng ngặt"):
+            load_sabotage_levels(f)
+
+
 @pytest.mark.needs_corpus
 class TestQuanTheSabotageTrenDia:
     """`prediction/sabotage/` phải là **cùng một** quần thể mà cổng C2 chấm.

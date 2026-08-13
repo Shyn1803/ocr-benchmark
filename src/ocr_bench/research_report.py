@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -29,6 +31,44 @@ from ocr_bench.statistics import adjust_p_values_holm, paired_compare
 ROOT = Path(__file__).resolve().parents[2]
 
 
+MOI_METRIC = "all_metrics"
+"""Khoá năng lực dùng cho bảng tổng quan — bảng đó thật sự trải trên mọi metric."""
+
+
+def moc_tat_dinh(generated_at: str | None = None) -> str:
+    """Mốc thời gian **tái lập được**.
+
+    Thứ tự: tham số truyền vào → `SOURCE_DATE_EPOCH` → đồng hồ máy.
+
+    Trước đây mặc định là `datetime.now()`, nên tuyên bố "dựng hai lần ra byte giống
+    hệt nhau" chỉ đúng khi người gọi tự truyền `generated_at` — tức là chưa từng đúng
+    với lệnh dựng mặc định. `SOURCE_DATE_EPOCH` là quy ước có sẵn của giới build tái
+    lập, dùng lại thay vì bịa cờ mới.
+    """
+    if generated_at is not None:
+        return generated_at
+    epoch = os.environ.get("SOURCE_DATE_EPOCH")
+    if epoch:
+        moc = dt.datetime.fromtimestamp(int(epoch), dt.timezone.utc)
+        return moc.isoformat(timespec="seconds").replace("+00:00", "Z")
+    return dt.datetime.now().astimezone().isoformat(timespec="seconds")
+
+
+def slug_nang_luc(ten: str) -> str:
+    """`"Text & OCR"` → `"text_ocr"` — khoá năng lực dùng trong trace ID."""
+    return re.sub(r"_+", "_", re.sub(r"[^a-z0-9]+", "_", ten.lower())).strip("_")
+
+
+def _trace(nang_luc: str, engines: list[str]) -> list[str]:
+    """Một dòng trace cho **mỗi cột**, không phải một dòng phủ cả bảng.
+
+    `aggregate:all_metrics:all_engines` là trace không truy được gì: nó không trỏ
+    tới bản ghi nào trong `results/aggregate-results.json`, nên bộ kiểm chỉ có thể
+    xác nhận "có chuỗi `<!-- trace:`" chứ không xác nhận được con số nào.
+    """
+    return [f"<!-- trace: aggregate:{nang_luc}:{e} -->" for e in engines]
+
+
 def _write_lf(path: Path, content: str) -> None:
     """Write text file ensuring LF line endings and UTF-8 encoding."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -40,13 +80,24 @@ def _write_lf(path: Path, content: str) -> None:
 # ---------------------------------------------------------------------------
 
 
-def _cham() -> tuple[list, ScoreTable]:
-    """Nạp ground truth + prediction rồi chấm — giống hệt d1_report.py."""
+THU_MUC_PREDICTION_MAC_DINH = ROOT / "prediction"
+"""Corpus đóng băng trong repo — nguồn của mọi bảng công bố."""
+
+
+def _cham(prediction_dir: Path | None = None) -> tuple[list, ScoreTable]:
+    """Nạp ground truth + prediction rồi chấm — giống hệt d1_report.py.
+
+    `prediction_dir` cho phép chấm một corpus khác, ví dụ đầu ra pilot ở
+    `calibration/prediction/cpu/`. Bản trước chốt cứng `ROOT / "prediction"` nên cờ
+    `--input` của `scripts/build_research_report.py` là cờ chết: chạy pilot xong rồi
+    dựng báo cáo vẫn ra bảng của corpus đóng băng, im lặng, không lệch một dòng nào
+    để người đọc nhận ra.
+    """
     gt: dict = {}
     gt.update(load_doclaynet())
     gt.update(load_olmocr())
 
-    res = load_predictions(ROOT / "prediction")
+    res = load_predictions(Path(prediction_dir or THU_MUC_PREDICTION_MAC_DINH))
     ten = sorted(registry.list_metrics())
     metrics = [registry.get_metric(t)() for t in ten]
     return res, score_results(res, metrics, gt)
@@ -111,6 +162,8 @@ def _bang_theo_nhom(
     es = engines if engines is not None else bang.engines()
     cov = report.coverage(bang.rows)
     lines = [
+        *_trace(slug_nang_luc(tieu_de), es),
+        "",
         f"| Metric | " + " | ".join(es) + " |",
         "|---" + "|---" * len(es) + "|",
         "| **n (tài liệu)** | "
@@ -137,18 +190,24 @@ def build_publication(
     out_dir: Path,
     *,
     generated_at: str | None = None,
+    prediction_dir: Path | None = None,
 ) -> dict[str, Path]:
     """Run full deterministic publication build pipeline from REAL data.
+
+    `prediction_dir` mặc định là corpus đóng băng `prediction/`. Trỏ nó sang chỗ khác
+    (ví dụ `calibration/prediction/cpu`) để chấm đầu ra pilot — bảng ra khi đó là bảng
+    tiến độ, **không** phải bảng công bố: corpus pilot không có `sabotage`/`noop` nên
+    cổng D-010 không chạy được trên đó.
 
     Returns mapping of relative artifact names to generated file paths.
     """
     input_dir = Path(input_dir)
     out_dir = Path(out_dir)
     out_files: dict[str, Path] = {}
-    moc = generated_at or dt.datetime.now().astimezone().isoformat(timespec="seconds")
+    moc = moc_tat_dinh(generated_at)
 
     # --- Bước 1: Chấm điểm thật ---
-    res, bang = _cham()
+    res, bang = _cham(prediction_dir)
     engines = bang.engines()
     ten_metric = bang.metrics()
 
@@ -375,7 +434,7 @@ def _render_paper(
         "",
         "## 2. Bảng Tổng quan Toàn bộ Metric",
         "",
-        "<!-- trace: aggregate:all_metrics:all_engines -->",
+        *_trace(MOI_METRIC, list(engines)),
         "",
         bang_tong_quan,
         "",
@@ -461,18 +520,53 @@ def _render_executive_summary(bang: ScoreTable, _) -> str:
 # ---------------------------------------------------------------------------
 
 
-def validate_publication_trace(out_dir: Path) -> list[str]:
-    """Validate that every trace ID comment in paper-vi.md points to valid aggregate data.
+_RE_TRACE = re.compile(r"<!--\s*trace:\s*aggregate:([^:\s]+):([^\s]+?)\s*-->")
 
-    Returns list of validation error messages (empty if clean).
+
+def validate_publication_trace(out_dir: Path) -> list[str]:
+    """Kiểm mọi trace ID trong `paper-vi.md` có **giải được** về aggregate thật không.
+
+    Bản trước chỉ kiểm `"<!-- trace:" in text` — một chuỗi ký tự bất kỳ là qua, kể cả
+    `aggregate:all_metrics:all_engines` vốn không trỏ tới bản ghi nào. Ở đây mỗi trace
+    phải nêu đúng một năng lực đã biết và đúng một engine có mặt trong
+    `results/aggregate-results.json`.
     """
     out_dir = Path(out_dir)
+    loi: list[str] = []
     paper_file = out_dir / "paper" / "paper-vi.md"
     if not paper_file.exists():
         return [f"Paper file {paper_file} does not exist"]
 
     text = paper_file.read_text(encoding="utf-8")
-    if "<!-- trace:" not in text:
-        return [f"No trace comments found in {paper_file}"]
+    traces = _RE_TRACE.findall(text)
+    if not traces:
+        return [f"No resolvable trace comments found in {paper_file}"]
 
-    return []
+    agg_file = out_dir / "results" / "aggregate-results.json"
+    if not agg_file.exists():
+        return [f"Aggregate file {agg_file} does not exist — trace không giải được"]
+    agg = json.loads(agg_file.read_text(encoding="utf-8")).get("aggregates", {})
+
+    engines_co = {e for per_engine in agg.values() for e in per_engine}
+    nang_luc_co = {slug_nang_luc(k): v for k, v in CAPABILITIES.items()}
+
+    for nang_luc, engine in traces:
+        if nang_luc != MOI_METRIC and nang_luc not in nang_luc_co:
+            loi.append(f"trace nêu năng lực không có thật: {nang_luc!r}")
+            continue
+        if engine not in engines_co:
+            loi.append(
+                f"trace aggregate:{nang_luc}:{engine} nêu engine không có trong "
+                f"{agg_file.name}"
+            )
+            continue
+        if nang_luc == MOI_METRIC:
+            continue
+        # Năng lực phải có ít nhất một metric thực sự nằm trong aggregate, nếu không
+        # trace trỏ tới một bảng rỗng.
+        if not any(m in agg and engine in agg[m] for m in nang_luc_co[nang_luc]):
+            loi.append(
+                f"trace aggregate:{nang_luc}:{engine} không giải được về metric nào"
+            )
+
+    return loi

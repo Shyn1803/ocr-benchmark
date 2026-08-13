@@ -53,10 +53,13 @@ __all__ = [
     "PhanQuyet",
     "PhanTan",
     "KetQuaCong",
+    "KetQuaDonDieu",
     "NguonTuDia",
     "do_phan_tan",
     "dung_sabotage",
+    "dung_sabotage_phan_muc",
     "kiem_sabotage",
+    "kiem_don_dieu_muc",
     "phan_nhom_metric",
 ]
 
@@ -68,8 +71,18 @@ là một quyết định về **cách công bố số**, không phải một ch
 test khoá riêng để việc nới phải nhìn thấy được trong diff.
 """
 
-ENGINE_TONG_HOP = frozenset({"sabotage", "noop"})
+def _ten_muc_tong_hop() -> frozenset[str]:
+    from ocr_bench.adapters.sabotage import MUC_SABOTAGE, ten_muc_sabotage
+
+    return frozenset(ten_muc_sabotage(s) for s in MUC_SABOTAGE)
+
+
+ENGINE_TONG_HOP = frozenset({"sabotage", "noop"}) | _ten_muc_tong_hop()
 """Engine không đại diện cho một công cụ OCR thật.
+
+Gồm cả ba mức `sabotage_s??`. Bỏ sót chúng ở đây là cách yên lặng nhất để hỏng bảng:
+ba cột phá hoại sẽ được tính như engine thật trong `do_phan_tan`, và **mọi** metric
+lập tức "phân tán tốt" — ta chỉ đang đo lại phép làm hỏng dưới một cái tên khác.
 
 `noop` không xuất gì; `sabotage` cố tình làm hỏng đầu ra của engine khác. Cả hai đều
 là **dụng cụ đo**, không phải đối tượng đo, nên cả hai bị loại khỏi phép tính phân
@@ -235,6 +248,152 @@ def dung_sabotage(
     tu_dia = NguonTuDia(goc)
     sa = SabotageAdapter(tu_dia)
     return [sa.execute(p) for p in tu_dia.duong_dan()]
+
+
+def dung_sabotage_phan_muc(
+    ket_qua: Iterable[OcrResult],
+    *,
+    nguon: str = NGUON_SABOTAGE,
+    muc: Sequence[float] | None = None,
+    seed: int | None = None,
+) -> list[OcrResult]:
+    """Dựng **một quần thể riêng cho mỗi mức** phá hoại, cùng nguồn và cùng seed.
+
+    Mỗi mức mang một tên engine riêng (`sabotage_s10`, `sabotage_s30`, `sabotage_s60`)
+    để ba mức nằm thành ba cột trong bảng điểm. Nếu để chung một tên `sabotage` thì
+    mức sau ghi đè mức trước và không còn gì để so.
+
+    Đây là phép thử **mạnh hơn** cổng một điểm: cổng một điểm chỉ hỏi "metric có thấy
+    phép làm hỏng không", còn ba mức hỏi "metric có xếp được **mức độ** hỏng không".
+    Một metric tụt thẳng xuống sàn ở mức 0.1 rồi nằm im vẫn qua cổng một điểm, dù nó
+    không phân biệt nổi tài liệu hỏng nhẹ với tài liệu hỏng nát.
+    """
+    from ocr_bench.adapters.sabotage import (
+        MUC_SABOTAGE,
+        SEED_SABOTAGE,
+        SabotageAdapter,
+        ten_muc_sabotage,
+    )
+
+    muc = tuple(MUC_SABOTAGE if muc is None else muc)
+    seed = SEED_SABOTAGE if seed is None else seed
+
+    goc = [r for r in ket_qua if r.engine == nguon]
+    if not goc:
+        raise ValueError(
+            f"không có dự đoán nào của {nguon!r} — không dựng được `sabotage` phân mức."
+        )
+    tu_dia = NguonTuDia(goc)
+    duong_dan = tu_dia.duong_dan()
+
+    ra: list[OcrResult] = []
+    for s in muc:
+        sa = SabotageAdapter(tu_dia, seed=seed, severity=s, ten=ten_muc_sabotage(s))
+        ra.extend(sa.execute(p) for p in duong_dan)
+    return ra
+
+
+@dataclasses.dataclass(frozen=True)
+class KetQuaDonDieu:
+    """Điểm có giảm theo **mức** phá hoại không.
+
+    Bốn kết cục, không phải hai — gộp lại là mất đúng thông tin cần đọc:
+
+    ``dat``
+        Giảm ngặt qua từng mức: nguồn > 0.1 > 0.3 > 0.6. Metric xếp được mức hỏng.
+    ``bao_hoa``
+        Không tăng, nhưng có chỗ hoà. Metric chạm sàn (hoặc trần) rồi nằm im. Không
+        kết tội metric — nhiều metric nhị phân *phải* bão hoà — nhưng phải in ra, vì
+        nó nói rằng cột này không dùng để so hai bản hỏng với nhau được.
+    ``nghich``
+        Có mức nặng hơn lại được điểm **cao hơn** mức nhẹ hơn. Đây là hỏng thật:
+        thước đo thưởng cho việc phá nhiều hơn.
+    ``khong_do_duoc``
+        Thiếu cột hoặc metric N/A. Chưa thử, không phải đã đạt.
+    """
+
+    DAT: ClassVar[str] = "dat"
+    BAO_HOA: ClassVar[str] = "bao_hoa"
+    NGHICH: ClassVar[str] = "nghich"
+    KHONG_DO_DUOC: ClassVar[str] = "khong_do_duoc"
+
+    metric: str
+    nguon: str
+    diem: Mapping[str, float]
+    diem_nguon: float | None
+    phan_quyet: str
+    ly_do: str
+
+    @property
+    def do_duoc(self) -> bool:
+        return self.phan_quyet != KetQuaDonDieu.KHONG_DO_DUOC
+
+
+def kiem_don_dieu_muc(
+    bang: ScoreTable,
+    metric: str,
+    *,
+    nguon: str = NGUON_SABOTAGE,
+    muc: Sequence[float] | None = None,
+) -> KetQuaDonDieu:
+    """Điểm phải giảm dần khi mức phá hoại tăng dần.
+
+    Chỉ đọc bảng — quần thể ba mức phải được dựng trước bằng
+    :func:`dung_sabotage_phan_muc` và chấm cùng bảng.
+    """
+    from ocr_bench.adapters.sabotage import MUC_SABOTAGE, ten_muc_sabotage
+
+    muc = tuple(MUC_SABOTAGE if muc is None else muc)
+    ten = [ten_muc_sabotage(s) for s in muc]
+
+    xh = {a.engine: a for a in bang.ranking(metric)}
+    src = xh.get(nguon)
+
+    thieu = [t for t in ten if t not in xh or not xh[t].n_scored]
+    if thieu or src is None or not src.n_scored:
+        return KetQuaDonDieu(
+            metric=metric,
+            nguon=nguon,
+            diem={},
+            diem_nguon=None if src is None else src.penalized_mean,
+            phan_quyet=KetQuaDonDieu.KHONG_DO_DUOC,
+            ly_do=(
+                f"không đo được: thiếu/N/A ở {thieu or [nguon]} — "
+                "chưa thử thì không phải đã đạt."
+            ),
+        )
+
+    diem = {t: xh[t].penalized_mean for t in ten}
+    chuoi = [src.penalized_mean, *(diem[t] for t in ten)]
+    nhan = [nguon, *ten]
+
+    nghich = [
+        f"{nhan[i + 1]} ({chuoi[i + 1]:.4f}) > {nhan[i]} ({chuoi[i]:.4f})"
+        for i in range(len(chuoi) - 1)
+        if chuoi[i + 1] > chuoi[i]
+    ]
+    if nghich:
+        return KetQuaDonDieu(
+            metric, nguon, diem, src.penalized_mean, KetQuaDonDieu.NGHICH,
+            "phá nặng hơn lại được điểm cao hơn: " + "; ".join(nghich),
+        )
+
+    hoa = [
+        f"{nhan[i]} = {nhan[i + 1]} ({chuoi[i]:.4f})"
+        for i in range(len(chuoi) - 1)
+        if chuoi[i + 1] == chuoi[i]
+    ]
+    if hoa:
+        return KetQuaDonDieu(
+            metric, nguon, diem, src.penalized_mean, KetQuaDonDieu.BAO_HOA,
+            "không tăng nhưng bão hoà: " + "; ".join(hoa),
+        )
+
+    return KetQuaDonDieu(
+        metric, nguon, diem, src.penalized_mean, KetQuaDonDieu.DAT,
+        "giảm ngặt qua từng mức: "
+        + " > ".join(f"{n} {v:.4f}" for n, v in zip(nhan, chuoi, strict=True)),
+    )
 
 
 def _rows(bang: ScoreTable, metric: str, engine: str) -> list[MetricResult]:
