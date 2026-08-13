@@ -23,6 +23,7 @@ from ocr_bench.types import (
     BlockType,
     Capability,
     OcrBlock,
+    OcrImage,
     OcrResult,
     OcrTable,
     RawArtifact,
@@ -333,6 +334,7 @@ def build_result(
 
     blocks: list[OcrBlock] = []
     tables: list[OcrTable] = []
+    images: list[OcrImage] = []
     block_refs: dict[str, str] = {}
     table_refs: dict[str, str] = {}
     raw_refs = _collect_self_refs(raw)
@@ -372,6 +374,17 @@ def build_result(
                 OcrTable(html=html, box=box, n_rows=n_rows, n_cols=n_cols)
             )
             table_refs[str(len(tables) - 1)] = self_ref
+
+        if block_type is BlockType.PICTURE:
+            # Vùng ảnh phải nằm ở CẢ `blocks` lẫn `images`, đúng như phía nhãn làm
+            # (`corpus.py`: `if loai is BlockType.PICTURE: images.append(box)`) và đúng
+            # như OpenDataLoader/Marker làm. `img_f1`/`img_iou` chỉ đọc `result.images`,
+            # nên chỉ đổ vào `blocks` là engine tìm ra ảnh rồi vứt đi — đo ra N/A
+            # `MISSING_CAPABILITY` trong khi toạ độ đang nằm sẵn trong kết quả.
+            #
+            # Không khai `IMAGE_BYTES`: docling chỉ trả toạ độ, không trả ảnh cắt trừ
+            # khi bật `generate_picture_images`. `img_f1`/`img_iou` chỉ cần toạ độ.
+            images.append(OcrImage(box=box, source_id=self_ref))
 
         level: int | None = None
         if block_type in {BlockType.HEADING, BlockType.TITLE}:
@@ -420,6 +433,7 @@ def build_result(
             RawArtifact("docling-map.json", "application/json", trace_bytes),
         ),
         blocks=tuple(blocks),
+        images=tuple(images),
         tables=tuple(tables),
         page_sizes=page_sizes,
         config_fingerprint=fingerprint,
@@ -464,6 +478,7 @@ class DoclingAdapter(Adapter):
             Capability.BLOCK_BBOX,
             Capability.TABLE_HTML,
             Capability.HEADING_LEVEL,
+            Capability.IMAGE_BBOX,
         }
     )
 

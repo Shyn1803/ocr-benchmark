@@ -499,3 +499,50 @@ def test_docling_real_engine_smoke():
     assert first.config_fingerprint["device"] == "cpu"
     assert first.config_fingerprint["hardware_evidence_version"] == 1
     assert first.raw_artifacts[0].sha256 == second.raw_artifacts[0].sha256
+
+
+# --------------------------------------------------------------------------
+# Bất biến vùng ảnh — hộp PICTURE phải nằm ở CẢ `blocks` LẪN `images`
+# --------------------------------------------------------------------------
+
+
+class FakeDocumentWithPicture(FakeDocument):
+    """Docling *có* dò ảnh — 14 hộp trên 20 tài liệu calibration đã chứng minh."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.items.append(
+            FakeItem(
+                self_ref="#/pictures/0",
+                label="picture",
+                page_no=1,
+                bbox=FakeBox(5.0, 100.0, 45.0, 160.0),
+            )
+        )
+
+    def export_to_dict(self):
+        # Item phải truy ngược được trong raw, nếu không adapter chặn ngay.
+        d = super().export_to_dict()
+        d["pictures"] = [{"self_ref": "#/pictures/0"}]
+        return d
+
+
+def test_docling_khai_image_bbox():
+    """Không khai thì img_f1/img_iou ra MISSING_CAPABILITY dù engine dò được ảnh."""
+    module = _docling_module()
+    assert module.Capability.IMAGE_BBOX in module.DoclingAdapter.capabilities
+
+
+def test_docling_hop_picture_vao_ca_blocks_lan_images():
+    module = _docling_module()
+    result = module.build_result(FakeDocumentWithPicture(), identity=module.SCAN_IDENTITY)
+
+    hop_anh = [b.box for b in result.blocks if b.block_type is module.BlockType.PICTURE]
+    assert len(hop_anh) == 1
+    assert [i.box for i in result.images] == hop_anh
+
+
+def test_docling_khong_anh_thi_images_rong():
+    module = _docling_module()
+    result = module.build_result(FakeDocument(), identity=module.SCAN_IDENTITY)
+    assert result.images == ()

@@ -214,15 +214,17 @@ không đặt thì báo cáo lấy đồng hồ máy và hai lần dựng sẽ k
 
 ## 6. Đọc kết quả — 3 điều dễ hiểu nhầm
 
-### 6.1 Docling sẽ N/A ở nhóm ảnh, và đó không phải lỗi
+### 6.1 Docling vẫn N/A ở nhóm ảnh cho tới khi bạn chạy lại nó
 
-`docling` **không khai `image_bbox`**. Nên `img_f1` / `img_iou` của `docling_default` và
-`docling_scan` là N/A với lý do `MISSING_CAPABILITY`, khác hẳn N/A vì *thiếu nhãn*. Chỉ hai
-profile OpenDataLoader có số ở nhóm C.
+Trước 2026-08-13 adapter `docling` (và `pdf_inspector`) dò ra vùng ảnh rồi đổ vào `blocks[]`
+mà **không** ghi gì vào `images[]` — đúng chỗ mà `img_f1` / `img_iou` đọc. Nay đã sửa: cả hai
+adapter đổ song song vào `blocks` **và** `images`, và cùng khai `image_bbox`.
 
-Nhưng N/A này **không** có nghĩa là docling mù ảnh — nó vẫn ra block `picture` kèm toạ độ,
-chỉ là adapter đổ vào `blocks[]` chứ không vào `images[]` mà metric đọc. Xem giải thích đầy
-đủ và cách mở khoá ở [ma-tran-nhan-va-metric.md](ma-tran-nhan-va-metric.md).
+⚠️ **Nhưng dự đoán đã cache thì không tự cập nhật.** Khoá cache không tính năng lực, nên mọi
+kết quả `docling_*` / `pdf_inspector` đang nằm trong `prediction/` vẫn thiếu `images[]` và vẫn
+ra `MISSING_CAPABILITY`. Muốn docling có điểm nhóm C thì phải **chạy lại** hai profile docling
+(mục 4) — chấm lại corpus cũ không đủ. Chưa chạy lại thì bảng vẫn chỉ có OpenDataLoader ở nhóm C,
+và N/A đó là *cache cũ*, không phải giới hạn engine.
 
 ### 6.2 Tám metric N/A vẫn nằm trong `raw-results.json`, đừng xoá
 

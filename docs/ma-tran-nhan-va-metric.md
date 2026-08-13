@@ -97,33 +97,33 @@ xem mục 3.3 để hiểu vì sao đó không phải lỗi.
 ## 2. Năng lực engine — bảng này quyết định profile nào có số
 
 ```
-docling         block_bbox · heading_level · table_html · text_md
+docling         block_bbox · heading_level · table_html · text_md · image_bbox
 opendataloader  block_bbox · heading_level · table_html · text_md · image_bbox · image_bytes
 marker          block_bbox · heading_level · table_html · text_md · image_bbox · image_bytes · section_hierarchy
 sovereign       text_md
-pdf_inspector   block_bbox · scan_label · text_md
+pdf_inspector   block_bbox · scan_label · text_md · image_bbox
 noop            text_md
 sabotage        (tất cả — engine phá hoại dùng để kiểm metric có phân biệt được không)
 ```
 
-> ⚠️ **Docling KHÔNG khai `image_bbox`** → `img_f1` / `img_iou` của `docling_default` và
-> `docling_scan` là N/A với lý do `MISSING_CAPABILITY`, phải để ở cột khác hẳn N/A vì thiếu
-> nhãn khi lên bảng.
+> ✅ **Docling và pdf-inspector đã khai `image_bbox` từ 2026-08-13.** Trước ngày đó tài liệu này
+> ghi hai engine ấy "không hứa xuất ảnh" — **sai**. Cả hai vẫn dò ra vùng ảnh: 20 tài liệu
+> `docling_scan` trong `calibration/` cho **14 block `picture`** có `box` đầy đủ; `pdf_inspector`
+> cho **2384 hộp trên 1608 tài liệu**. Lỗi nằm ở adapter: nó đổ vùng ảnh vào `blocks[]` với
+> `block_type: picture` rồi **không ghi gì vào `OcrResult.images`**, trong khi `img_f1` chỉ đọc
+> `result.images` ([imgf1.py:130](../src/ocr_bench/metrics/imgf1.py#L130)). Phía nhãn thì làm
+> đúng phép ánh xạ đó (`corpus.py:174`: `if loai is BlockType.PICTURE: images.append(box)`), nên
+> hai bên lệch nhau. Nay cả hai adapter đổ song song vào `blocks` **và** `images`.
 >
-> **Nhưng đừng đọc thành "docling không bóc tách được ảnh".** Nó bóc tách được: 20 tài liệu
-> `docling_scan` trong `calibration/` cho ra **14 block `picture`**, mỗi block có `box` đầy đủ
-> (kiểm chứng 2026-08-13). Vấn đề nằm ở chỗ khác — adapter đổ chúng vào `blocks[]` với
-> `block_type: picture` và **không bao giờ ghi gì vào `OcrResult.images`**, trong khi `img_f1`
-> chỉ đọc `result.images` ([imgf1.py:130](../src/ocr_bench/metrics/imgf1.py#L130)). Không có
-> `images[].box` thì không được phép khai `IMAGE_BBOX` — `OcrResult._require` sẽ chặn
-> ([types.py:398](../src/ocr_bench/types.py#L398)).
->
-> Nói cách khác đây là **quyết định ánh xạ ở adapter, không phải giới hạn của engine**. Phía
-> nhãn đã làm đúng phép ánh xạ đó rồi: `corpus.py:174` làm `if loai is BlockType.PICTURE:
-> images.append(box)`. Muốn docling có điểm nhóm C thì làm đối xứng ở
-> `adapters/docling.py` rồi thêm `Capability.IMAGE_BBOX`. Vẫn không có `IMAGE_BYTES` (docling
-> không trả ảnh cắt trừ khi bật `generate_picture_images`), nhưng `img_f1`/`img_iou` chỉ cần
+> Vẫn **không** khai `IMAGE_BYTES`: docling không trả ảnh cắt trừ khi bật
+> `generate_picture_images`, pdf-inspector thì không có crop. `img_f1`/`img_iou` chỉ cần
 > `IMAGE_BBOX` nên thế là đủ.
+>
+> ⚠️ **Dự đoán đã cache KHÔNG tự cập nhật.** `build_cache_identity` không tính năng lực vào
+> khoá ([preflight.py:497](../src/ocr_bench/preflight.py#L497)), nên 1608 dự đoán
+> `pdf_inspector` và 40 dự đoán `docling` đang nằm trong `prediction/` vẫn không có
+> `images[]` và vẫn ra `MISSING_CAPABILITY`. Muốn có điểm nhóm C cho hai engine này thì phải
+> **chạy lại** chúng — đọc lại corpus cũ không đủ.
 
 > ⚠️ **`sovereign` chỉ có `text_md`.** Kể cả khi API cục bộ dựng xong, nó vẫn không bao giờ
 > có dòng nào ở nhóm bố cục hay nhóm ảnh. Đừng chờ đợi điều đó.
@@ -168,7 +168,7 @@ sabotage        (tất cả — engine phá hoại dùng để kiểm metric có
 | **Đối chiếu là gì** | 122 hộp PICTURE |
 | **Bộ mẫu** | DocLayNet — **64 tài liệu có ảnh** + **140 tài liệu không ảnh** |
 | **Năng lực cần** | `image_bbox` |
-| **Có số cho** | `opendataloader_default`, `opendataloader_scan` — **docling: N/A** |
+| **Có số cho** | `opendataloader_*`, `docling_*` — nhưng docling cần **chạy lại** (xem cảnh báo cache ở mục 2) |
 
 `img_f1` (tìm đúng bao nhiêu ảnh) · `img_iou` (khung có sát không)
 
@@ -266,7 +266,7 @@ trường `applicable` / `cell` / `fail_rate` / `mean` / `n_scored` / `n_total` 
 |---|---|---:|---|---|
 | 6 × `assert_*` | olmOCR | 1403 | cả 4 | ✅ |
 | `block_f1`, `type_f1`, `heading` | DocLayNet | 203 | cả 4 | ✅ |
-| `img_f1`, `img_iou` | DocLayNet | 64 (+140) | chỉ OpenDataLoader | ✅ |
+| `img_f1`, `img_iou` | DocLayNet | 64 (+140) | OpenDataLoader; docling sau khi chạy lại | ✅ |
 | `cer`, `wer` | — | 0 | — | ❌ cần bộ toàn văn |
 | `diacritics_acc` | — | 0 | — | ❌ cần tài liệu tiếng Việt |
 | `nid` | — | 0 | — | ❌ cần người đánh thứ tự đọc |
@@ -281,6 +281,6 @@ trường `applicable` / `cell` / `fail_rate` / `mean` / `n_scored` / `n_total` 
    `marker` / `noop` / `sabotage` / `pdf_inspector` / `sovereign_full` — dùng để kiểm xem
    metric có phân biệt được engine tốt/xấu hay không. Luôn dùng `--out runs/pilot`.
 
-2. **N/A không phải một loại.** `MISSING_CAPABILITY` (docling với ảnh) và `NO_GROUND_TRUTH`
+2. **N/A không phải một loại.** `MISSING_CAPABILITY` (ví dụ `sovereign` với bố cục) và `NO_GROUND_TRUTH`
    (TEDS) là hai chuyện ngược nhau. Cái đầu là engine không làm; cái sau là chưa có gì để
    so. In cùng một ký hiệu `·` cho cả hai là xoá mất thông tin quan trọng nhất của bảng.

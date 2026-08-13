@@ -451,3 +451,50 @@ def test_that_hai_api_that_su_bat_dong_tren_bo_mau():
         b = nhan_tu_pages(pi.extract_pages_markdown(str(pdf)))
         bat_dong += a.is_scanned != b.is_scanned
     assert bat_dong > 0, "hai API đồng thuận hết — đọc lại giả định của A6"
+
+
+# --------------------------------------------------------------------------
+# Bất biến vùng ảnh — mỗi hộp PICTURE phải nằm ở CẢ `blocks` LẪN `images`
+# --------------------------------------------------------------------------
+
+
+def _ket_qua_co_anh(*items):
+    return build_result(
+        engine_version="0.2.6",
+        doc_id="t",
+        capabilities=PdfInspectorAdapter.capabilities,
+        classification=classification(),
+        pages_result=pages_result(trang_md()),
+        items=list(items),
+        trang=TRANG_A4,
+        scan_label_api="classify_pdf",
+        config_fingerprint={},
+    )
+
+
+def test_khai_image_bbox_vi_engine_tra_vung_anh():
+    """2384 hộp ảnh trên 1608 tài liệu — không khai là tự bỏ img_f1/img_iou."""
+    assert Capability.IMAGE_BBOX in PdfInspectorAdapter.capabilities
+
+
+def test_hop_picture_vao_ca_blocks_lan_images():
+    """`img_f1` chỉ đọc `result.images`; đổ mỗi vào `blocks` là tìm ra rồi vứt đi."""
+    r = _ket_qua_co_anh(item(item_type="image"), item(item_type="text"))
+
+    hop_anh = [b.box for b in r.blocks if b.block_type is BlockType.PICTURE]
+    assert len(hop_anh) == 1
+    assert [i.box for i in r.images] == hop_anh
+
+
+def test_item_anh_mat_hop_khong_sinh_anh_rong():
+    """`OcrImage` không toạ độ thì không đo được — đếm lên chỉ làm phồng precision."""
+    r = _ket_qua_co_anh(item(item_type="image", width=0.0))
+
+    assert any(b.block_type is BlockType.PICTURE and b.box is None for b in r.blocks)
+    assert r.images == ()
+
+
+def test_tai_lieu_khong_anh_van_hop_le_du_da_khai_image_bbox():
+    """`_require` chỉ ném khi *có* dữ liệu mà *thiếu* năng lực, không chiều ngược lại."""
+    r = _ket_qua_co_anh(item(item_type="text"))
+    assert r.images == ()

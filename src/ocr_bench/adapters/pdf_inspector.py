@@ -86,6 +86,7 @@ from ocr_bench.types import (
     BlockType,
     Capability,
     OcrBlock,
+    OcrImage,
     OcrResult,
     ScanLabel,
 )
@@ -331,6 +332,22 @@ def build_result(
             + f" (tài liệu {len(trang)} trang) — các item đó bị bỏ"
         )
 
+    # Vùng ảnh phải nằm ở CẢ `blocks` lẫn `images`, đúng như phía nhãn làm
+    # (`corpus.py`: `if loai is BlockType.PICTURE: images.append(box)`). `img_f1` chỉ
+    # đọc `result.images`, nên chỉ đổ vào `blocks` là tìm ra ảnh rồi vứt đi.
+    #
+    # Dẫn xuất thẳng từ `blocks` để bất biến "mỗi hộp PICTURE là một ảnh" đúng theo
+    # cấu trúc chứ không nhờ hai vòng lặp song song giữ đồng bộ.
+    #
+    # Bỏ qua block mất hộp (`box is None` — 38% item, xem `blocks_tu_items`): một
+    # `OcrImage` không toạ độ không đo được, thêm vào chỉ làm phồng số đếm. Ảnh đó
+    # thành miss của recall, đúng bản chất — engine không cho biết vùng.
+    images = tuple(
+        OcrImage(box=b.box)
+        for b in blocks
+        if b.block_type is BlockType.PICTURE and b.box is not None
+    )
+
     return OcrResult(
         engine="pdf_inspector",
         engine_version=engine_version,
@@ -338,6 +355,7 @@ def build_result(
         capabilities=capabilities,
         text_md=text_md_tu_pages(pages_result),
         blocks=tuple(blocks),
+        images=images,
         scan_label=nhan[scan_label_api],
         page_sizes=tuple((w, h) for w, h, _, _ in trang),
         error="; ".join(ghi_chu) or None,
@@ -352,11 +370,13 @@ class PdfInspectorAdapter(Adapter):
             Capability.TEXT_MD,  # ← A0 bác bỏ giả định "không trích text" của kế hoạch
             Capability.BLOCK_BBOX,
             Capability.SCAN_LABEL,
+            Capability.IMAGE_BBOX,
         }
     )
-    # KHÔNG khai IMAGE_BYTES / TABLE_HTML / SECTION_HIERARCHY: engine không tách ảnh,
-    # không dựng cấu trúc bảng, và heading chỉ là mức `#` trong Markdown chứ không có
-    # cây mục. Khai thừa thì metric chấm 0.0 cho thứ engine không hứa.
+    # KHÔNG khai IMAGE_BYTES / TABLE_HTML / SECTION_HIERARCHY: engine trả *vùng* ảnh
+    # (item_type ảnh → BlockType.PICTURE, 2384 hộp trên 1608 tài liệu) nhưng không trả
+    # ảnh cắt, không dựng cấu trúc bảng, và heading chỉ là mức `#` trong Markdown chứ
+    # không có cây mục. Khai thừa thì metric chấm 0.0 cho thứ engine không hứa.
 
     def __init__(self, *, scan_label_api: str = "classify_pdf") -> None:
         if scan_label_api not in SCAN_LABEL_APIS:
