@@ -1,7 +1,7 @@
 # Báo cáo Nghiên cứu So sánh Đánh giá Hiệu năng các Công cụ OCR và Phân tích Bố cục Tài liệu
 
 **Tác giả:** Đội ngũ Nghiên cứu Sovereign  
-**Ngày công bố:** 2026-08-12  
+**Ngày công bố:** 2026-08-07  
 **Số engine hiển thị:** 7  
 **Số metric:** 19  
 **Tổng dự đoán:** 7884  
@@ -30,6 +30,14 @@ Báo cáo không dùng một điểm tổng duy nhất để tránh che khuất 
 
 ### Năng lực: Text & OCR
 
+<!-- trace: aggregate:text_ocr:marker -->
+<!-- trace: aggregate:text_ocr:noop -->
+<!-- trace: aggregate:text_ocr:opendataloader -->
+<!-- trace: aggregate:text_ocr:pdf_inspector -->
+<!-- trace: aggregate:text_ocr:sabotage -->
+<!-- trace: aggregate:text_ocr:sovereign_full -->
+<!-- trace: aggregate:text_ocr:sovereign_light -->
+
 | Metric | marker | noop | opendataloader | pdf_inspector | sabotage | sovereign_full | sovereign_light |
 |---|---|---|---|---|---|---|---|
 | **n (tài liệu)** | 27 | 1424 | 1608 | 1608 | 1608 | 2 | 1607 |
@@ -41,6 +49,14 @@ Báo cáo không dùng một điểm tổng duy nhất để tránh che khuất 
 
 
 ### Năng lực: Layout & Structure
+
+<!-- trace: aggregate:layout_structure:marker -->
+<!-- trace: aggregate:layout_structure:noop -->
+<!-- trace: aggregate:layout_structure:opendataloader -->
+<!-- trace: aggregate:layout_structure:pdf_inspector -->
+<!-- trace: aggregate:layout_structure:sabotage -->
+<!-- trace: aggregate:layout_structure:sovereign_full -->
+<!-- trace: aggregate:layout_structure:sovereign_light -->
 
 | Metric | marker | noop | opendataloader | pdf_inspector | sabotage | sovereign_full | sovereign_light |
 |---|---|---|---|---|---|---|---|
@@ -54,6 +70,14 @@ Báo cáo không dùng một điểm tổng duy nhất để tránh che khuất 
 
 ### Năng lực: Tables
 
+<!-- trace: aggregate:tables:marker -->
+<!-- trace: aggregate:tables:noop -->
+<!-- trace: aggregate:tables:opendataloader -->
+<!-- trace: aggregate:tables:pdf_inspector -->
+<!-- trace: aggregate:tables:sabotage -->
+<!-- trace: aggregate:tables:sovereign_full -->
+<!-- trace: aggregate:tables:sovereign_light -->
+
 | Metric | marker | noop | opendataloader | pdf_inspector | sabotage | sovereign_full | sovereign_light |
 |---|---|---|---|---|---|---|---|
 | **n (tài liệu)** | 27 | 1424 | 1608 | 1608 | 1608 | 2 | 1607 |
@@ -66,6 +90,14 @@ Báo cáo không dùng một điểm tổng duy nhất để tránh che khuất 
 
 ### Năng lực: Reading Order
 
+<!-- trace: aggregate:reading_order:marker -->
+<!-- trace: aggregate:reading_order:noop -->
+<!-- trace: aggregate:reading_order:opendataloader -->
+<!-- trace: aggregate:reading_order:pdf_inspector -->
+<!-- trace: aggregate:reading_order:sabotage -->
+<!-- trace: aggregate:reading_order:sovereign_full -->
+<!-- trace: aggregate:reading_order:sovereign_light -->
+
 | Metric | marker | noop | opendataloader | pdf_inspector | sabotage | sovereign_full | sovereign_light |
 |---|---|---|---|---|---|---|---|
 | **n (tài liệu)** | 27 | 1424 | 1608 | 1608 | 1608 | 2 | 1607 |
@@ -74,6 +106,14 @@ Báo cáo không dùng một điểm tổng duy nhất để tránh che khuất 
 
 
 ### Năng lực: Robustness & Base
+
+<!-- trace: aggregate:robustness_base:marker -->
+<!-- trace: aggregate:robustness_base:noop -->
+<!-- trace: aggregate:robustness_base:opendataloader -->
+<!-- trace: aggregate:robustness_base:pdf_inspector -->
+<!-- trace: aggregate:robustness_base:sabotage -->
+<!-- trace: aggregate:robustness_base:sovereign_full -->
+<!-- trace: aggregate:robustness_base:sovereign_light -->
 
 | Metric | marker | noop | opendataloader | pdf_inspector | sabotage | sovereign_full | sovereign_light |
 |---|---|---|---|---|---|---|---|
@@ -86,7 +126,13 @@ Báo cáo không dùng một điểm tổng duy nhất để tránh che khuất 
 
 ## 2. Bảng Tổng quan Toàn bộ Metric
 
-<!-- trace: aggregate:all_metrics:all_engines -->
+<!-- trace: aggregate:all_metrics:marker -->
+<!-- trace: aggregate:all_metrics:noop -->
+<!-- trace: aggregate:all_metrics:opendataloader -->
+<!-- trace: aggregate:all_metrics:pdf_inspector -->
+<!-- trace: aggregate:all_metrics:sabotage -->
+<!-- trace: aggregate:all_metrics:sovereign_full -->
+<!-- trace: aggregate:all_metrics:sovereign_light -->
 
 | metric | marker | noop | opendataloader | pdf_inspector | sabotage | sovereign_full | sovereign_light |
 |---|---|---|---|---|---|---|---|

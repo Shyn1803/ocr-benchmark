@@ -1,21 +1,22 @@
 {
   "run_id": "pilot-common-10",
-  "catalog_version": 2,
-  "created_at": "2026-08-12T09:40:00+07:00",
-  "environment": {
-    "python": "3.14.0",
-    "os": "Windows-11",
-    "ram_total_gb": 15.7
-  },
-  "profiles_evaluated": [
-    "docling_default",
-    "docling_scan",
-    "opendataloader_default",
-    "opendataloader_scan",
-    "marker_default",
-    "marker_scan",
-    "sovereign_default",
-    "sovereign_scan"
+  "status": "dang_chay_do",
+  "note": "Chưa có lượt chạy nào sinh ra file này. Bản trước liệt kê 8 profile ở `profiles_evaluated` và `sample_count: 10` trong khi không có đầu ra nào tương ứng — xem validation-report.md. Đầu ra thật hiện có nằm ở `calibration/prediction/cpu/`, thuộc lượt `calibration --limit 20`, không phải common set 10.",
+  "recorded_at": "2026-08-12",
+  "branch": "feature/ocr-parser-benchmark-research-v2",
+  "profiles_evaluated": [],
+  "profiles_with_output": [
+    {"name": "docling_default", "path": "calibration/prediction/cpu/docling_default", "documents": 20},
+    {"name": "docling_scan", "path": "calibration/prediction/cpu/docling_scan", "documents": 20},
+    {"name": "opendataloader_default", "path": "calibration/prediction/cpu/opendataloader_default", "documents": 20, "failed_documents": 0}
   ],
-  "sample_count": 10
+  "profiles_pending": [
+    {"name": "marker_default", "reason": "chưa chạy — cần .venv-marker"},
+    {"name": "marker_scan", "reason": "chưa chạy — cần .venv-marker"},
+    {"name": "opendataloader_scan", "reason": "đã chạy 2026-08-13 nhưng 20/20 hỏng (failure_kind: engine_error, java exit 1, không có .raw/). Nguyên nhân: docling trong hybrid server gọi torch.compile, TorchInductor đòi cl.exe của MSVC — máy không có Build Tools nên mọi PDF trả HTTP 500 InvalidCxxCompiler, trong khi /health vẫn trả ok. Đã vá bằng TORCHDYNAMO_DISABLE=1 trong scripts/run_odl_hybrid.py (khai vào manifest config). Cần khởi động lại server 5002 rồi chạy lại với --refresh (cache đang giữ 20 bản ghi hỏng)."},
+    {"name": "sovereign_default", "reason": "chưa chạy — BE API cục bộ chưa dựng"},
+    {"name": "sovereign_scan", "reason": "chưa chạy — BE API cục bộ chưa dựng"}
+  ],
+  "sample_count": 0,
+  "documents": []
 }

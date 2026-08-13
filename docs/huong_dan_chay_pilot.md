@@ -44,7 +44,9 @@ PYTHONIOENCODING="utf-8" ./.venv-marker/Scripts/python.exe scripts/run_research_
 > 
 > ```bash
 > # Bật ở một tab Terminal mới tinh và cứ để nó chạy ngầm
-> PYTHONIOENCODING="utf-8" ./.venv-odl/Scripts/python.exe scripts/run_odl_hybrid.py
+> # Nếu dùng PowerShell: $env:TORCH_COMPILE_DISABLE=1; $env:PYTHONIOENCODING="utf-8"; .\.venv-odl\Scripts\python.exe scripts\run_odl_hybrid.py
+> # Nếu dùng Git Bash:
+> TORCH_COMPILE_DISABLE=1 PYTHONIOENCODING="utf-8" ./.venv-odl/Scripts/python.exe scripts/run_odl_hybrid.py
 > ```
 > 
 > Sau khi Server đã chạy, bạn quay lại Terminal chính và chạy lệnh chính:
@@ -94,10 +96,31 @@ Sau khi bạn đã có "bài làm" của 6 công cụ trong thư mục `predicti
 Hệ thống đã chuẩn bị sẵn thư mục `ground-truth/`. Đây là đáp án chuẩn do con người (hoặc các tổ chức quốc tế uy tín như DocLayNet, olmOCR) tạo ra. Đáp án cũng được ghi dưới định dạng Schema v3 y hệt như bài làm của các công cụ.
 
 ### 2. Quá trình chấm điểm (Scorer) diễn ra thế nào?
-Để hệ thống tự động đi chấm 20 bài làm này, bạn chỉ cần chạy lệnh:
+
+> 🚨 **CẢNH BÁO — lệnh dưới đây KHÔNG chấm 20 file bạn vừa chạy.**
+>
+> Lượt `--mode calibration` ghi kết quả vào `calibration/prediction/cpu/`. Nhưng hàm chấm
+> điểm (`_cham()` tại `src/ocr_bench/research_report.py:89`) **chốt cứng** đường dẫn
+> `prediction/` và **bỏ qua cả cờ `--input`**. Chạy lệnh dựng báo cáo sau khi calibration
+> xong sẽ ra bảng của **corpus đóng băng sẵn trong repo**, không phải của 20 file vừa chạy —
+> và nó không hề báo lỗi, nên rất dễ tưởng nhầm là bảng đã cập nhật.
+>
+> Thêm nữa: `prediction/` chỉ có `marker`, `noop`, `opendataloader`, `pdf_inspector`,
+> `sabotage`, `sovereign_full`, `sovereign_light` — **không có `docling`**. Nên kết quả
+> Docling vừa chạy không có đường nào lọt vào bảng xếp hạng.
+>
+> Muốn chấm dữ liệu calibration thì phải nối hai đường đó lại trước (sửa `_cham()` để nhận
+> `input_dir`, hoặc chép kết quả sang `prediction/`). Chừng nào chưa nối, đừng đọc báo cáo
+> như thể nó phản ánh lượt pilot.
+
+Lệnh dựng báo cáo (trên corpus đóng băng):
 ```powershell
 .\.venv\Scripts\python.exe scripts\build_research_report.py --out .
 ```
+
+Đặt `SOURCE_DATE_EPOCH` trước khi chạy nếu bạn cần bản dựng **tái lập được** (hai lần dựng ra
+byte giống hệt nhau); không đặt thì báo cáo lấy đồng hồ máy và hai lần dựng sẽ khác nhau.
+
 Khi lệnh này chạy, hệ thống `scorer.py` sẽ cầm **Bài làm** (tại `prediction/`) và soi với **Đáp án** (tại `ground-truth/`), sau đó dùng các "Thước đo" (Metrics) để trừ điểm:
 
 - **Năng lực OCR (Nhận diện chữ):** Dùng thước đo CER (Đếm xem nhận dạng sai bao nhiêu ký tự, mất bao nhiêu dấu phẩy, dấu chấm).
