@@ -10,12 +10,13 @@ import platform
 import re
 import subprocess
 import sys
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
 
 from ocr_bench.profiles import EngineProfile
+from ocr_bench.types import Capability
 
 __all__ = [
     "CACHE_IDENTITY_KEY",
@@ -500,10 +501,17 @@ def build_cache_identity(
     *,
     engine_version: str,
     hardware: Hardware,
+    capabilities: Iterable[Capability],
     doc_id: str | None = None,
     pdf_sha256: str | None = None,
 ) -> dict[str, str]:
-    """Build the complete identity that authorizes reuse of one prediction."""
+    """Build the complete identity that authorizes reuse of one prediction.
+
+    ``capabilities`` nằm trong khoá vì nó quyết định metric nào chấm được. Thiếu nó
+    thì sửa adapter để khai thêm năng lực **không** làm cache cũ hết hạn: dự đoán cũ
+    vẫn thiếu trường tương ứng và metric vẫn trả ``MISSING_CAPABILITY``, im lặng, mãi
+    mãi. Đúng ca đã xảy ra 2026-08-13 với ``IMAGE_BBOX`` của docling/pdf_inspector.
+    """
     actual_pdf_sha256 = sha256_file(Path(doc))
     if pdf_sha256 is not None and actual_pdf_sha256 != pdf_sha256:
         raise PreflightError(
@@ -516,6 +524,7 @@ def build_cache_identity(
         "profile_config_sha256": profile.fingerprint,
         "engine_version": engine_version,
         "hardware": hardware,
+        "capabilities": ",".join(sorted(c.value for c in capabilities)),
     }
 
 

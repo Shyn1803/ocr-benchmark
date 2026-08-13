@@ -446,6 +446,7 @@ def test_publication_cache_rejects_wrong_result_profile_even_with_matching_key(t
         profile,
         engine_version=adapter.version(),
         hardware="cpu",
+        capabilities=adapter.capabilities,
     )
     wrong_profile = OcrResult(
         engine=profile.name,
@@ -625,7 +626,11 @@ def test_publication_rejects_cached_result_with_missing_perf_without_execute(tmp
     doc.write_bytes(b"%PDF-current")
     adapter = _FakeAdapter(perf=False)
     identity = build_cache_identity(
-        doc, profile, engine_version=adapter.version(), hardware="cpu"
+        doc,
+        profile,
+        engine_version=adapter.version(),
+        hardware="cpu",
+        capabilities=adapter.capabilities,
     )
     output_root = tmp_path / "prediction" / "cpu"
     adapter.configure_hardware("cpu")
@@ -687,7 +692,11 @@ def test_non_object_cache_fingerprint_reruns_only_in_calibration(
     adapter = _FakeAdapter()
     adapter.configure_hardware("cpu")
     identity = build_cache_identity(
-        doc, profile, engine_version=adapter.version(), hardware="cpu"
+        doc,
+        profile,
+        engine_version=adapter.version(),
+        hardware="cpu",
+        capabilities=adapter.capabilities,
     )
     cache = save_prediction(
         runner.attach_cache_identity(adapter.execute(doc), identity), output_root
@@ -725,7 +734,11 @@ def test_old_runner_stamped_cache_without_evidence_version_is_not_reused(
     adapter = _FakeAdapter()
     adapter.configure_hardware("cpu")
     identity = build_cache_identity(
-        doc, profile, engine_version=adapter.version(), hardware="cpu"
+        doc,
+        profile,
+        engine_version=adapter.version(),
+        hardware="cpu",
+        capabilities=adapter.capabilities,
     )
     old_result = adapter.execute(doc)
     old_fingerprint = dict(old_result.config_fingerprint)
@@ -1239,3 +1252,63 @@ def test_cpu_mask_is_applied_before_adapter_construction(tmp_path, monkeypatch):
 
     assert runner.main(["--dataset-manifest", str(manifest), "--out", str(tmp_path / "out")]) == 0
     assert observed == {"hardware": "cpu", "cuda": ""}
+
+
+# --------------------------------------------------------------------------
+# Năng lực nằm trong khoá cache — sửa adapter phải làm cache cũ hết hạn
+# --------------------------------------------------------------------------
+
+
+def test_capabilities_nam_trong_khoa_cache(tmp_path):
+    """Thiếu trường này thì thêm năng lực cho adapter là một thay đổi *im lặng*.
+
+    Ca thật 2026-08-13: docling/pdf_inspector được sửa để khai `IMAGE_BBOX`, nhưng
+    1648 dự đoán đã cache vẫn không có `images[]` và `img_f1` vẫn trả
+    `MISSING_CAPABILITY` — không có gì báo rằng bản sửa chưa có hiệu lực.
+    """
+    from ocr_bench.preflight import build_cache_identity
+
+    doc = tmp_path / "fixture.pdf"
+    doc.write_bytes(b"%PDF-current")
+    chung = dict(engine_version="1.0.0", hardware="cpu")
+
+    hep = build_cache_identity(
+        doc, _profile(), capabilities=frozenset({Capability.TEXT_MD}), **chung
+    )
+    rong = build_cache_identity(
+        doc,
+        _profile(),
+        capabilities=frozenset({Capability.TEXT_MD, Capability.IMAGE_BBOX}),
+        **chung,
+    )
+    assert hep != rong
+    assert hep["capabilities"] == "text_md"
+
+
+def test_khoa_cache_khong_phu_thuoc_thu_tu_nang_luc(tmp_path):
+    """`frozenset` không có thứ tự — khoá phải ổn định giữa hai lần chạy."""
+    from ocr_bench.preflight import build_cache_identity
+
+    doc = tmp_path / "fixture.pdf"
+    doc.write_bytes(b"%PDF-current")
+    caps = (Capability.IMAGE_BBOX, Capability.TEXT_MD, Capability.BLOCK_BBOX)
+    chung = dict(engine_version="1.0.0", hardware="cpu")
+
+    a = build_cache_identity(doc, _profile(), capabilities=frozenset(caps), **chung)
+    b = build_cache_identity(
+        doc, _profile(), capabilities=frozenset(reversed(caps)), **chung
+    )
+    assert a == b
+    assert a["capabilities"] == "block_bbox,image_bbox,text_md"
+
+
+def test_cache_cu_khong_co_capabilities_bi_tu_choi():
+    """Corpus cũ phải bị coi là hết hạn, không được dùng lại im lặng."""
+    from ocr_bench import preflight
+    from ocr_bench.preflight import PreflightError, verify_cached_identity
+
+    expected = {"doc_id": "d", "capabilities": "image_bbox,text_md"}
+    cu = {preflight.CACHE_IDENTITY_KEY: {"doc_id": "d"}}
+
+    with pytest.raises(PreflightError, match="capabilities"):
+        verify_cached_identity(_profile(), cu, expected)

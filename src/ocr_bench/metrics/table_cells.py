@@ -41,6 +41,7 @@ from typing import ClassVar
 
 from ocr_bench.metrics.base import Metric
 from ocr_bench.metrics.matching import NGUONG_MAC_DINH, ghep_toi_uu
+from ocr_bench.normalize import normalize_text
 from ocr_bench.types import (
     AnnotationGT,
     Box,
@@ -115,7 +116,10 @@ class _BoDungLuoi(HTMLParser):
             cot += 1
         # `"  a\n  b "` và `"a b"` là cùng một ô: không chuẩn hoá thì metric đang
         # chấm cách engine xuống dòng HTML chứ không phải nội dung bảng.
-        noi_dung = " ".join("".join(self._chu).split())
+        # `normalize_text` thêm NFC + gộp nháy/gạch — ô so bằng `==`, nên NFD làm
+        # mọi ô có dấu trượt thành fp+fn. `teds` đã đi qua đây từ đầu (`teds.py:203`),
+        # `cell_f1` thì bỏ sót, khiến hai metric trên cùng một bảng lệch nhau.
+        noi_dung = " ".join(normalize_text("".join(self._chu)).split())
         r, c = self._span
         for dr in range(r):
             for dc in range(c):

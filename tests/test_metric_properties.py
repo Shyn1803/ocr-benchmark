@@ -348,6 +348,80 @@ def _fx_heading() -> Fixture:
     )
 
 
+# --- dấu tiếng Việt --------------------------------------------------------
+
+
+def _fx_dau() -> Fixture:
+    # Phá bằng cách **bỏ dấu**, không phải bằng cách đổi chữ: metric này chỉ nhìn
+    # dấu, nên hỏng kiểu khác thì điểm không nhúc nhích.
+    bo_mot_phan = CAU.replace("khoản", "khoan").replace("phép", "phep")
+    bo_het = unicodedata.normalize("NFD", CAU)
+    bo_het = "".join(c for c in bo_het if not unicodedata.combining(c))
+    return Fixture(
+        gt=_GT_CHU,
+        thang=tuple(_kq(_CAP_CHU, text_md=t) for t in (CAU, bo_mot_phan, bo_het)),
+        la_metric_chu=True,
+    )
+
+
+# --- bố cục ----------------------------------------------------------------
+
+_LOAI_KHOI = (BlockType.TEXT, BlockType.TABLE, BlockType.PICTURE)
+_KHOI_NHAN = tuple(
+    OcrBlock(block_type=t, box=b) for t, b in zip(_LOAI_KHOI, _HOP)
+)
+_CAP_KHOI = frozenset({Capability.BLOCK_BBOX})
+
+
+def _fx_block_f1() -> Fixture:
+    return Fixture(
+        gt=AnnotationGT(doc_id="d1", blocks=_KHOI_NHAN),
+        thang=(_kq(_CAP_KHOI, blocks=_KHOI_NHAN),),
+        la_metric_chu=False,
+        mien=_LY_DO_HINH,
+    )
+
+
+def _fx_type_f1() -> Fixture:
+    return Fixture(
+        gt=AnnotationGT(doc_id="d1", blocks=_KHOI_NHAN),
+        thang=(_kq(_CAP_KHOI, blocks=_KHOI_NHAN),),
+        la_metric_chu=False,
+        mien="chỉ ăn loại/khung block, không ăn chữ — AC-02/AC-03 không có nghĩa",
+    )
+
+
+# --- ô bảng / định vị bảng -------------------------------------------------
+
+
+def _fx_cell_f1() -> Fixture:
+    thieu_o = (
+        "<table><tr><td>Điều 5</td></tr>"
+        "<tr><td>về việc</td><td>cấp phép</td></tr></table>"
+    )
+    return Fixture(
+        gt=_GT_BANG,
+        thang=(_kq_bang(BANG_HTML), _kq_bang(thieu_o), _kq_bang(_MOT_O)),
+        la_metric_chu=True,
+    )
+
+
+def _fx_table_recall() -> Fixture:
+    # `table_recall` chỉ nhìn khung, nhưng vẫn qua cổng `TABLE_HTML` — nhãn phải có
+    # cả html lẫn box, nếu không `_na_rieng()` trả NO_GROUND_TRUTH.
+    khung = _box(0)
+    return Fixture(
+        gt=AnnotationGT(
+            doc_id="d1", tables=[OcrTable(html=BANG_HTML, box=khung)]
+        ),
+        thang=(
+            _kq(_CAP_BANG, tables=[OcrTable(html=BANG_HTML, box=khung)]),
+        ),
+        la_metric_chu=False,
+        mien="chỉ ăn khung bảng, không ăn chữ — AC-02/AC-03 không có nghĩa",
+    )
+
+
 # ---------------------------------------------------------------------------
 # BẢNG — nguồn sự thật của AC-04
 # ---------------------------------------------------------------------------
@@ -367,6 +441,11 @@ BANG: dict[str, Fixture] = {
     "img_iou": _fx_anh(),
     "nid": _fx_nid(),
     "heading": _fx_heading(),
+    "diacritics_acc": _fx_dau(),
+    "block_f1": _fx_block_f1(),
+    "type_f1": _fx_type_f1(),
+    "cell_f1": _fx_cell_f1(),
+    "table_recall": _fx_table_recall(),
 }
 
 MOI_METRIC = sorted(BANG)

@@ -345,6 +345,7 @@ def run_profile_predictions(
             profile,
             engine_version=engine_version,
             hardware=hardware,
+            capabilities=adapter.capabilities,
             doc_id=doc_id,
             pdf_sha256=pdf_sha256,
         )
