@@ -2,6 +2,12 @@
 
 Tài liệu này hướng dẫn chi tiết cách chạy 6 profile (Docling, OpenDataLoader, Marker) trên 20 file PDF mẫu, đồng thời giải thích rõ kết quả đầu ra và cách hệ thống chấm điểm hoạt động. Hướng dẫn này được viết theo ngôn ngữ phổ thông, dành cho người mới tiếp cận hệ thống.
 
+> **Đây là bài chạy làm quen trên 20 file.** Khi cần chạy **toàn bộ bộ nhãn** (203 tài liệu
+> DocLayNet + 1403 tài liệu olmOCR) để ra bảng thật, dùng
+> [`huong-dan-chay-3-nhom-metric.md`](huong-dan-chay-3-nhom-metric.md).
+> Muốn biết metric nào có cơ sở đối chiếu và metric nào chưa, xem
+> [`ma-tran-nhan-va-metric.md`](ma-tran-nhan-va-metric.md).
+
 ---
 
 ## Phần 1: Cách Chạy 6 Profile Trên 20 File
@@ -97,26 +103,32 @@ Hệ thống đã chuẩn bị sẵn thư mục `ground-truth/`. Đây là đáp
 
 ### 2. Quá trình chấm điểm (Scorer) diễn ra thế nào?
 
-> 🚨 **CẢNH BÁO — lệnh dưới đây KHÔNG chấm 20 file bạn vừa chạy.**
+> 🚨 **CẢNH BÁO — mặc định lệnh dựng báo cáo KHÔNG chấm 20 file bạn vừa chạy.**
 >
-> Lượt `--mode calibration` ghi kết quả vào `calibration/prediction/cpu/`. Nhưng hàm chấm
-> điểm (`_cham()` tại `src/ocr_bench/research_report.py:89`) **chốt cứng** đường dẫn
-> `prediction/` và **bỏ qua cả cờ `--input`**. Chạy lệnh dựng báo cáo sau khi calibration
-> xong sẽ ra bảng của **corpus đóng băng sẵn trong repo**, không phải của 20 file vừa chạy —
-> và nó không hề báo lỗi, nên rất dễ tưởng nhầm là bảng đã cập nhật.
+> Lượt `--mode calibration` ghi kết quả vào `calibration/prediction/cpu/`, nhưng
+> `build_research_report.py` mặc định chấm **corpus đóng băng** ở `prediction/`. Chạy trơn
+> sẽ ra bảng của corpus cũ chứ không phải 20 file vừa chạy — **và nó không báo lỗi gì cả**,
+> nên rất dễ tưởng nhầm là bảng đã cập nhật.
 >
 > Thêm nữa: `prediction/` chỉ có `marker`, `noop`, `opendataloader`, `pdf_inspector`,
-> `sabotage`, `sovereign_full`, `sovereign_light` — **không có `docling`**. Nên kết quả
-> Docling vừa chạy không có đường nào lọt vào bảng xếp hạng.
+> `sabotage`, `sovereign_full`, `sovereign_light` — **không có `docling`**.
 >
-> Muốn chấm dữ liệu calibration thì phải nối hai đường đó lại trước (sửa `_cham()` để nhận
-> `input_dir`, hoặc chép kết quả sang `prediction/`). Chừng nào chưa nối, đừng đọc báo cáo
-> như thể nó phản ánh lượt pilot.
+> **Cách chấm đúng dữ liệu vừa chạy:** dùng cờ `--prediction-dir`. Cờ này đã được bổ sung
+> (`_cham()` nhận `prediction_dir`, không còn chốt cứng đường dẫn) — bản trước của tài liệu
+> này viết là "cờ bị bỏ qua", nay không còn đúng.
 
-Lệnh dựng báo cáo (trên corpus đóng băng):
+Lệnh dựng báo cáo **trên 20 file vừa chạy** (khuyến nghị):
+```powershell
+.\.venv\Scripts\python.exe scripts\build_research_report.py --prediction-dir calibration/prediction/cpu --out runs\pilot
+```
+
+Lệnh dựng báo cáo trên corpus đóng băng (chỉ khi bạn thật sự muốn dựng lại `results/`):
 ```powershell
 .\.venv\Scripts\python.exe scripts\build_research_report.py --out .
 ```
+
+> ⚠️ Bỏ `--out runs\pilot` là **ghi đè** thư mục `results/` — nơi giữ bộ đối chiếu
+> `noop`/`sabotage` dùng để kiểm metric có phân biệt được engine tốt/xấu hay không.
 
 Đặt `SOURCE_DATE_EPOCH` trước khi chạy nếu bạn cần bản dựng **tái lập được** (hai lần dựng ra
 byte giống hệt nhau); không đặt thì báo cáo lấy đồng hồ máy và hai lần dựng sẽ khác nhau.

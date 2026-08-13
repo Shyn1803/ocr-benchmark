@@ -8,6 +8,15 @@ và mọi câu trong tài liệu đánh giá cuối cùng phải truy được v
 - Backlog đã tạo: **TASK-070 → TASK-089** trong `.claude/tasks/` (A0→D3, đã nối phụ thuộc)
 - Vì sao hợp đồng dữ liệu có hình dạng như hiện tại: [`.claude/context/OCR-BENCH-A0-SPIKE.md`](../.claude/context/OCR-BENCH-A0-SPIKE.md)
 
+Tài liệu vận hành trong `docs/`:
+
+| File | Dùng khi |
+|---|---|
+| [`docs/ma-tran-nhan-va-metric.md`](docs/ma-tran-nhan-va-metric.md) | Muốn biết metric nào **có** cơ sở đối chiếu (11) và metric nào **chưa** (8) — cùng lý do và điều kiện mở khoá |
+| [`docs/huong-dan-chay-3-nhom-metric.md`](docs/huong-dan-chay-3-nhom-metric.md) | Chạy **toàn bộ** bộ nhãn: 203 tài liệu DocLayNet + 1403 tài liệu olmOCR (~36h máy) |
+| [`docs/huong_dan_chay_pilot.md`](docs/huong_dan_chay_pilot.md) | Chạy thử **20 file** để làm quen hệ thống |
+| [`docs/profile_review.md`](docs/profile_review.md) | Rà soát cấu hình profile |
+
 ## Chạy
 
 ```bash
