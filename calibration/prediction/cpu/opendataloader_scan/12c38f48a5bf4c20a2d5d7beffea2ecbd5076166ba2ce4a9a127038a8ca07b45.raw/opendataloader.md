@@ -1,0 +1,24 @@
+WO 2020/081008
+
+16
+
+PCT/SG2019/050511
+
+and primary capsules is/are substantially devoid of substances such as free radicals that react with the active and cause the active to undergo chemical transformation to an undesired form.
+
+5
+
+10
+
+15
+
+20
+
+In various embodiments, providing a mixture (or suspension/dispersion) comprising the organic polymer latex particles and the at least one primary capsule is achieved by introducing the at least one primary capsule into a volume of the polymer latex particles prior to the heterocoagulating step. Accordingly, in various embodiments, the method further comprises a step of adding, in a controlled manner, the at least one primary capsule to the organic polymer latex particles prior to the providing step, not vice versa. In various embodiments, the method does not comprise a step of adding the organic polymer latex particles to the at least one primary capsule. For example, the primary capsules are added bit by bit into a pool of polymer latex particles instead of the other way around. Therefore, the step of adding the at least one primary capsule to the organic polymer latex particles may comprise adding a smaller volume of primary capsules to a larger volume of organic polymer latex particles. Without being bound by theory, it is believed that the manner of adding the primary capsule to the polymer latex particles may better allow for the primary capsule to be sufficiently surrounded by polymer latex particles so that the formation of the polymer coating layer may completely and continuously surround the shell of the primary capsule.
+
+25
+
+30
+
+The method may further comprise a step of adding a second and subsequent primary capsules until the concentration of the primary capsules in the mixture reaches an appropriate range. Without being bound by theory, it is believed that if the concentration of the added primary capsules in the mixture is too high, the polymer latex particles may not sufficiently surround most if not all of the primary capsules to ensure that the subsequent formation of the polymer coating layer may completely and continuously surround the majority of each of the shells of the primary capsules. Accordingly, in various embodiments, the step of adding a second and subsequent primary capsules comprises adding a second
+
