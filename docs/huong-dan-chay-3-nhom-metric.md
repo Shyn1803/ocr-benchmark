@@ -231,6 +231,22 @@ xuất hiện với `value: null` + `na_reason`. Giữ nguyên — đó là hồ
 64 tài liệu **có** ảnh đo *tìm được không*; 140 tài liệu **không** ảnh đo *có bịa ảnh không*.
 Gộp thành một cột là mất hẳn chỉ số dương tính giả.
 
+### 6.4 `run-manifest.json` chỉ mô tả lượt chạy **cuối cùng**
+
+Mỗi lượt chạy ghi đè file này. Trong khi đó thư mục `prediction/` thì **tích luỹ** — đầu ra
+của các lượt trước vẫn nằm nguyên đó. Nên nếu hôm nay bạn chỉ chạy lại một profile, manifest
+sẽ chỉ còn liệt kê đúng profile đó, dù cạnh nó có đầu ra của nhiều profile khác.
+
+Muốn biết corpus hiện tại được sinh ra bởi những lượt nào thì đọc
+`<run_root>/run-manifest-history.jsonl` — sổ chỉ-ghi-thêm, mỗi dòng là manifest đầy đủ của
+đúng một lượt. Không gộp các dòng lại với nhau: mỗi lượt có commit, thời điểm và phiên bản
+thư viện riêng, gộp lại sẽ tạo ra một bản ghi không mô tả lượt chạy nào có thật.
+
+```bash
+# xem nhanh: mỗi lượt chạy những profile nào
+py -3 -c "import json,sys;[print(r['generated_at'],[p['name'] for p in r['profiles']]) for r in map(json.loads,open(sys.argv[1],encoding='utf-8'))]" calibration/run-manifest-history.jsonl
+```
+
 ---
 
 ## 7. Sự cố thường gặp

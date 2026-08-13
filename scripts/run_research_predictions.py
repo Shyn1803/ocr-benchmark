@@ -433,6 +433,25 @@ def _write_manifest(path: Path, payload: Mapping[str, object]) -> None:
     )
 
 
+def _append_manifest_history(path: Path, payload: Mapping[str, object]) -> None:
+    """Ghi thêm một dòng vào sổ lịch sử chạy.
+
+    ``run-manifest.json`` chỉ giữ được **một** lượt chạy: mỗi lần chạy lại là ghi
+    đè. Trong khi đó thư mục ``prediction/`` thì tích luỹ — đầu ra của các lượt
+    trước vẫn nằm đó. Nên nếu chỉ có mỗi manifest thì nó mô tả thiếu chính cái
+    corpus nằm cạnh nó (ví dụ: lượt sau chỉ chạy ``opendataloader_scan`` sẽ xoá
+    mất dấu vết ``opendataloader_default`` của lượt trước).
+
+    Sổ này chỉ ghi thêm, không bao giờ sửa dòng cũ. Mỗi dòng là một manifest đầy
+    đủ của đúng một lượt chạy — không gộp, không trộn, vì mỗi lượt có commit,
+    thời điểm và phiên bản thư viện riêng.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    line = json.dumps(payload, ensure_ascii=False, sort_keys=True, allow_nan=False)
+    with path.open("a", encoding="utf-8", newline="\n") as handle:
+        handle.write(line + "\n")
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mode", choices=("calibration", "publication"), default="publication")
@@ -540,6 +559,7 @@ def main(argv: list[str] | None = None) -> int:
             dependencies=context.dependencies,
         )
         _write_manifest(run_root / "run-manifest.json", manifest)
+        _append_manifest_history(run_root / "run-manifest-history.jsonl", manifest)
 
         prediction_root = run_root / "prediction" / args.hardware
         total: list[OcrResult] = []
