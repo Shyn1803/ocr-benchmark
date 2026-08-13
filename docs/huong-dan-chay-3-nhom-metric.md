@@ -162,6 +162,11 @@ cd /d/vnpt-projects/sovereign/ocr-bench && PYTHONIOENCODING=utf-8 ./.venv/Script
 > ⚠️ **`--dataset-manifest datasets/manifest.json` là BẮT BUỘC.**
 > Mặc định script đọc `datasets/calibration-manifest.json`, mà file đó hiện chỉ có **1 tài
 > liệu** (bản nháp tạm). Quên cờ này là chạy đúng 1 file rồi báo xong.
+>
+> Từ 2026-08-13 script tự in cảnh báo ra **stderr** khi rơi vào bản nháp:
+> `⚠️ ... tự khai provisional=true và chỉ có 1 tài liệu`. Cảnh báo, **không chặn** —
+> chạy thử trên bản nháp vẫn hợp lệ. Nếu thấy dòng đó mà bạn đang định chạy bộ đầy
+> đủ thì dừng ngay, đừng chờ 4 tiếng.
 
 ---
 

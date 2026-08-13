@@ -407,6 +407,38 @@ def run_profile_predictions(
     return results
 
 
+def _canh_bao_manifest_nhap(
+    dataset_manifest: Path,
+    verified_dataset: VerifiedDataset,
+    *,
+    n_doc: int,
+    nguoi_dung_chi_dinh: bool,
+) -> None:
+    """In cảnh báo khi lượt calibration rơi vào manifest bản nháp.
+
+    Chế độ publication từ chối thẳng manifest `provisional` (`preflight.py`), còn
+    calibration thì nhận — đúng, vì bản nháp sinh ra để chạy thử. Nhưng nó cũng là
+    mặc định khi quên `--dataset-manifest`, và hỏng theo kiểu tệ nhất: **không hỏng**.
+    Script chạy đúng 1 tài liệu mẫu, in OK, thoát mã 0, ghi manifest bình thường —
+    người dùng tưởng lượt 1606 tài liệu đang chạy và bỏ đi ngủ.
+
+    Cảnh báo, không chặn: chặn thì mọi lượt chạy thử hợp lệ đều phải gõ thêm cờ.
+    """
+    if not verified_dataset.provisional:
+        return
+    print(
+        f"⚠️  {dataset_manifest} tự khai provisional=true và chỉ có {n_doc} tài liệu."
+        + (
+            ""
+            if nguoi_dung_chi_dinh
+            else "\n    Đây là MẶC ĐỊNH của --mode calibration, không phải lựa chọn của bạn."
+            "\n    Muốn chạy bộ đầy đủ: thêm --dataset-manifest datasets/manifest.json"
+        ),
+        file=sys.stderr,
+        flush=True,
+    )
+
+
 def _calibration_context(
     hardware: str,
     dataset_manifest: Path,
@@ -518,6 +550,12 @@ def main(argv: list[str] | None = None) -> int:
                 limit=args.limit,
                 only=args.only,
                 verified_dataset=verified_dataset,
+            )
+            _canh_bao_manifest_nhap(
+                dataset_manifest,
+                verified_dataset,
+                n_doc=len(docs),
+                nguoi_dung_chi_dinh=args.dataset_manifest is not None,
             )
             context = _calibration_context(
                 args.hardware,

@@ -324,6 +324,78 @@ def test_default_calibration_manifest_is_honest_and_runnable(tmp_path, monkeypat
     assert "JSON không hợp lệ" not in capsys.readouterr().err
 
 
+def test_manifest_nhap_mac_dinh_phai_canh_bao_truoc_khi_chay(
+    tmp_path, monkeypatch, capsys
+):
+    """Quên `--dataset-manifest` là rơi vào bản nháp 1 tài liệu — và nó KHÔNG hỏng.
+
+    Chạy xong, in OK, thoát mã 0. Người dùng tưởng lượt 1606 tài liệu đang chạy rồi
+    bỏ đi. Trước bản vá 2026-08-13, thứ duy nhất chặn tai nạn này là một dòng chữ
+    đậm trong `docs/huong-dan-chay-3-nhom-metric.md` — tức là chặn bằng trí nhớ.
+    """
+    runner = _load_script()
+    profile = _profile()
+    adapter = _FakeAdapter()
+    monkeypatch.setattr(runner, "load_profile_catalog", lambda _path: {profile.name: profile})
+    monkeypatch.setattr(runner.registry, "build_adapter", lambda _profile: adapter)
+
+    rc = runner.main(
+        ["--mode", "calibration", "--profiles", profile.name, "--out", str(tmp_path)]
+    )
+
+    loi = capsys.readouterr().err
+    assert rc == 0, "cảnh báo, không chặn — bản nháp vẫn là thứ chạy thử hợp lệ"
+    assert "provisional" in loi
+    assert "--dataset-manifest datasets/manifest.json" in loi, "phải nói rõ cách sửa"
+    assert "MẶC ĐỊNH" in loi, "phải nói rõ đây không phải lựa chọn của người dùng"
+
+
+def test_manifest_that_phai_chay_im_lang(tmp_path, monkeypatch, capsys):
+    """Manifest thật thì không cảnh báo gì — cảnh báo kêu mọi lượt là cảnh báo chết."""
+    runner = _load_script()
+    profile = _profile()
+    adapter = _FakeAdapter()
+    monkeypatch.setattr(runner, "load_profile_catalog", lambda _path: {profile.name: profile})
+    monkeypatch.setattr(runner.registry, "build_adapter", lambda _profile: adapter)
+    monkeypatch.setattr(runner, "ROOT", tmp_path)
+    # `tmp_path` không phải git repo — cùng lý do và cùng cách vá như
+    # `test_manifest_changed_after_preflight_stops_before_execute_or_run_manifest`.
+    monkeypatch.setattr(
+        runner,
+        "collect_git_metadata",
+        lambda *_args, **_kwargs: {"commit": "a" * 40, "dirty": False},
+    )
+    pdfs = tmp_path / "pdfs"
+    pdfs.mkdir()
+    (pdfs / "that.pdf").write_bytes(b"%PDF-that")
+    manifest = _dataset_manifest(
+        tmp_path / "that.json",
+        [
+            {
+                "document_id": "that",
+                "pdf_path": "pdfs/that.pdf",
+                "pdf_sha256": _sha(b"%PDF-that"),
+            }
+        ],
+    )
+
+    rc = runner.main(
+        [
+            "--mode",
+            "calibration",
+            "--profiles",
+            profile.name,
+            "--dataset-manifest",
+            str(manifest),
+            "--out",
+            str(tmp_path / "out"),
+        ]
+    )
+
+    assert rc == 0
+    assert "provisional" not in capsys.readouterr().err
+
+
 def test_default_publication_requires_verified_non_provisional_manifest(
     tmp_path, monkeypatch, capsys
 ):
