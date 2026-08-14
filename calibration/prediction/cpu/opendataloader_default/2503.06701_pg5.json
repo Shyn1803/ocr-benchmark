@@ -1,0 +1,275 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_default",
+  "engine_family": "opendataloader",
+  "profile": "default",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.06701_pg5",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "- 1) Observations: The observations that were fed to the RL\n\nagent from the environment included current blood glucose levels and their rate of change. It’s worth noting that these observations undergo a normalization process. Normalization is employed to prevent the emergence of excessively large or excessively small parameters, thereby enhancing numerical stability within the system.\n\n- 2) The reward function: The reward function is designed\n\nbased on the error e(t) we carefully considered key criteria derived from the glucose levels of a type 1 diabetes patient. The normal glucose range, defined as 80 to 100 mg/dL, serves\n\n- as a crucial reference point. Within this range, the RL agent receives a significantly higher reward to reinforce behaviors that maintain glucose levels within the healthy boundaries. We also designated an acceptable range, consisting of two sub-ranges (100 to 160 mg/dL and 70 to 80 mg/dL), where the agent receives a moderate reward. This encourages the agent to navigate glucose levels within an acceptable but broader spectrum. Additionally, we identified two distinct bad ranges (160 or higher and 0 to 70 mg/dL) and assigned a negative reward within these intervals.we also considered the derivative de(t) to guide the reinforcement learning agent toward desired performance. Additionally, i(t) the integral of the absolute value of the normalized error, aimed at mitigating large overshooting and oscillations. Furthermore, c(t) denotes the integral of the control signal, serving to penalize the agent for excessive insulin usage. The reward is given to the agent\n- at each step. And the formulation is as follows:\n\n\n- • If the error is less than 90 (the glucose is less than the reference), the reward will be given by the linear function: (1 − |e|)/20\n- • If the error is greater than 90 (the glucose is greater than the reference), the reward will be given by the linear function: (1 − |e|)/70\n- • If the error is less than 10 (the glucose is close to our reference), the reward will be given by the function, which at e = 0 gives the value 20, and at e = 10 gives\n\n0: 1.262 · (|e|)\n\n1 5\n\n+ 2\n\n- • We then apply penalties to our agent as follows: −2 × 10−6 · i − 10−6 · c, where the first term is introduced to mitigate oscillations in the blood glucose signal, ensuring stability, and the second term is designed to optimize the injected insulin, discouraging excessive usage. These penalties contribute to fine-tuning the agent’s behavior for more effective and stable blood glucose regulation.\n\n\n- 3) Stop of episode: In our specific implementation,\n\n\nepisodes conclude under three conditions: after reaching the predefined simulation time of 24 hours, or when the glucose level exceeds 300 (indicating hyperglycemia), or falls below 50 (indicating hypoglycemia). These extreme glucose levels are considered hazardous situations for the patient, demanding immediate intervention. In such instances, we assert that the agent has failed to maintain glucose within the desired range, prompting a termination of the episode. This safety-centric approach aligns with our commitment to avoiding potentially\n\nharmful glucose extremes and ensures that the reinforcement learning agent operates within clinically acceptable bounds during the artificial pancreas control simulations.\n\nIV. EXPERIMENTATION AND RESULTS\n\nWe present a thorough and comprehensive comparative analysis of three distinct and well-defined methods for controlling blood glucose levels, specifically tailored to address the challenges associated with Type 1 diabetes management. The methods evaluated in this study include a direct reinforcement learning agent, which autonomously learns optimal control strategies; a non-adaptive fuzzy logic controller with finely tuned and optimized parameters; and an adaptive fuzzy logic controller, where the parameters are continuously and dynamically adjusted by the RL agent at each simulation timestep.\n\nIt is important to explicitly highlight that all simulations, as well as the tuning processes for each of the proposed methods, were systematically carried out using MATLAB2022b and Simulink.\n\nA. Direct insulin control through Reinforcement Learning The results of the Direct insulin control through Reinforcement Learning in the nominal case are presented below:\n\n![](<2503.06701_pg5_images/imageFile1.png>)\n\nFig. 1. Glucose level (mg/dL) response of the Direct insulin control through Reinforcement Learning, along with corresponding meals intake (mg/dl) and insulin injections in units in the nominal case.\n\nIn the Glucose-level subplot, the two black dotted lines clearly indicate the boundaries of the safe range for blood glucose levels, spanning from 70 to 180 units, while the green dotted line represents our chosen reference value, set at 90 units. It is important to emphasize that this visual representation, including both the safe range and the reference line, will consistently appear in all the glucose-level subplots presented throughout this article to maintain clarity and uniformity.\n\nIn order to thoroughly examine the robustness of the proposed approach, the Reinforcement Learning Controller was subjected to a comprehensive series of tests conducted under various sets of randomly generated time spans and differing quantities of meal intakes, allowing us to assess its performance across a wide range of possible scenarios.\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "26aa2d8c0e51c14eac526ba00893ae64f8c194953fcaed140dc3d874f206692c"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "a89560909713adb5560badfa04eb784ba88878c61a69c3a4abc873f181dafbb9"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "953c2778c8cde754983a4c0a412f79aa88306e9dd6528fb693b1b1af9dbfe8fb"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.0962859477124183,
+        "y0": 0.06275883838383844,
+        "x1": 0.49023202614379086,
+        "y1": 0.07791540404040398
+      },
+      "text": "1) Observations: The observations that were fed to the RL agent from the environment included current blood glucose levels and their rate of change. It’s worth noting that these observations undergo a normalization process. Normalization is employed to prevent the emergence of excessively large or excessively small parameters, thereby enhancing numerical stability within the system.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.0962859477124183,
+        "y0": 0.17069823232323234,
+        "x1": 0.49023202614379086,
+        "y1": 0.18585479797979798
+      },
+      "text": "2) The reward function: The reward function is designed based on the error e(t) we carefully considered key criteria derived from the glucose levels of a type 1 diabetes patient. The normal glucose range, defined as 80 to 100 mg/dL, serves as a crucial reference point. Within this range, the RL agent receives a significantly higher reward to reinforce behaviors that maintain glucose levels within the healthy boundaries. We also designated an acceptable range, consisting of two sub-ranges (100 to 160 mg/dL and 70 to 80 mg/dL), where the agent receives a moderate reward. This encourages the agent to navigate glucose levels within an acceptable but broader spectrum. Additionally, we identified two distinct bad ranges (160 or higher and 0 to 70 mg/dL) and assigned a negative reward within these intervals.we also considered the derivative de(t) to guide the reinforcement learning agent toward desired performance. Additionally, i(t) the integral of the absolute value of the normalized error, aimed at mitigating large overshooting and oscillations. Furthermore, c(t) denotes the integral of the control signal, serving to penalize the agent for excessive insulin usage. The reward is given to the agent at each step. And the formulation is as follows: • If the error is less than 90 (the glucose is less than the reference), the reward will be given by the linear function: (1 − |e|)/20 • If the error is greater than 90 (the glucose is greater than the reference), the reward will be given by the linear function: (1 − |e|)/70 • If the error is less than 10 (the glucose is close to our reference), the reward will be given by the function, which at e = 0 gives the value 20, and at e = 10 gives 0: 1.262 · (|e|) 1 5 + 2 • We then apply penalties to our agent as follows: −2 × 10−6 · i − 10−6 · c, where the first term is introduced to mitigate oscillations in the blood glucose signal, ensuring stability, and the second term is designed to optimize the injected insulin, discouraging excessive usage. These penalties contribute to fine-tuning the agent’s behavior for more effective and stable blood glucose regulation.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.0962859477124183,
+        "y0": 0.757125,
+        "x1": 0.4902385620915033,
+        "y1": 0.7722815656565656
+      },
+      "text": "3) Stop of episode: In our specific implementation,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.772219696969697,
+        "x1": 0.49023202614379086,
+        "y1": 0.9081363636363636
+      },
+      "text": "episodes conclude under three conditions: after reaching the predefined simulation time of 24 hours, or when the glucose level exceeds 300 (indicating hyperglycemia), or falls below 50 (indicating hypoglycemia). These extreme glucose levels are considered hazardous situations for the patient, demanding immediate intervention. In such instances, we assert that the agent has failed to maintain glucose within the desired range, prompting a termination of the episode. This safety-centric approach aligns with our commitment to avoiding potentially",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.06275883838383844,
+        "x1": 0.9199934640522875,
+        "y1": 0.10810606060606065
+      },
+      "text": "harmful glucose extremes and ensures that the reinforcement learning agent operates within clinically acceptable bounds during the artificial pancreas control simulations.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5823316993464053,
+        "y0": 0.1165353535353536,
+        "x1": 0.8474362745098039,
+        "y1": 0.13169191919191914
+      },
+      "text": "IV. EXPERIMENTATION AND RESULTS",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.13559217171717175,
+        "x1": 0.9199934640522875,
+        "y1": 0.28660353535353533
+      },
+      "text": "We present a thorough and comprehensive comparative analysis of three distinct and well-defined methods for controlling blood glucose levels, specifically tailored to address the challenges associated with Type 1 diabetes management. The methods evaluated in this study include a direct reinforcement learning agent, which autonomously learns optimal control strategies; a non-adaptive fuzzy logic controller with finely tuned and optimized parameters; and an adaptive fuzzy logic controller, where the parameters are continuously and dynamically adjusted by the RL agent at each simulation timestep.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.2901212121212121,
+        "x1": 0.9199934640522875,
+        "y1": 0.35056186868686867
+      },
+      "text": "It is important to explicitly highlight that all simulations, as well as the tuning processes for each of the proposed methods, were systematically carried out using MATLAB2022b and Simulink.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.3589911616161616,
+        "x1": 0.9199934640522875,
+        "y1": 0.4083005050505051
+      },
+      "text": "A. Direct insulin control through Reinforcement Learning The results of the Direct insulin control through Reinforcement Learning in the nominal case are presented below:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.5302794117647059,
+        "y0": 0.42484469696969696,
+        "x1": 0.8994803921568627,
+        "y1": 0.6227247474747475
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.6360694444444445,
+        "x1": 0.9199934640522875,
+        "y1": 0.6708383838383838
+      },
+      "text": "Fig. 1. Glucose level (mg/dL) response of the Direct insulin control through Reinforcement Learning, along with corresponding meals intake (mg/dl) and insulin injections in units in the nominal case.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.6837676767676768,
+        "x1": 0.9199934640522875,
+        "y1": 0.8045896464646465
+      },
+      "text": "In the Glucose-level subplot, the two black dotted lines clearly indicate the boundaries of the safe range for blood glucose levels, spanning from 70 to 180 units, while the green dotted line represents our chosen reference value, set at 90 units. It is important to emphasize that this visual representation, including both the safe range and the reference line, will consistently appear in all the glucose-level subplots presented throughout this article to maintain clarity and uniformity.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.811685606060606,
+        "x1": 0.9199934640522875,
+        "y1": 0.9023169191919191
+      },
+      "text": "In order to thoroughly examine the robustness of the proposed approach, the Reinforcement Learning Controller was subjected to a comprehensive series of tests conducted under various sets of randomly generated time spans and differing quantities of meal intakes, allowing us to assess its performance across a wide range of possible scenarios.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.5302794117647059,
+        "y0": 0.42484469696969696,
+        "x1": 0.8994803921568627,
+        "y1": 0.6227247474747475
+      },
+      "source_id": "2503.06701_pg5_images/imageFile1.png",
+      "file": "000.png",
+      "sha256": "b0318b41b20136c1d4ed532263f6db8d0f255f8e4a76055a2a0e3900052702a1"
+    }
+  ],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 1.1767843999987235,
+  "model_load_seconds": null,
+  "peak_rss_mb": 156.91796875,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "parser": "java",
+    "table_method": "cluster",
+    "reading_order": "xycut",
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "java-cpu-only",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "publication_cache": {
+      "doc_id": "2503.06701_pg5",
+      "pdf_sha256": "9ee4008f13e44c54b04e5e8710b1ecf8e87a447df7c3e50cb1e558f9feb3e7a8",
+      "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

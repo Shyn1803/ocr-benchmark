@@ -1,0 +1,254 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "2503.09581_pg21",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "## 6 Numerical Computations\n\nIn this section, we state numerical computations that show several phenomena discussed in the introduction. In particular, we will observe a suppression of Ostwald ripening, splitting scenarios and instabilities of flat fronts and growing particles. The numerical simulations also support the sharp interface asymptotics, as we get a good agreement between phase field computations and exact solutions of the sharp interface problem. All our numerical simulations are for the quartic potential (2.7) and the interpolation functions (2.8), (2.9) and (2.10), for a fixed value r c ∈ (0 , 1].\n\n## 6.1 Finite element method\n\nWe assume that Ω is a polyhedral domain and let T h be a regular triangulation of Ω into disjoint open simplices. Associated with T h is the piecewise linear finite element space\n\n<!-- formula-not-decoded -->\n\nwhere we denote by P 1 ( o ) the set of all affine linear functions on o , see [13]. Let ( · , · ) h be the usual mass lumped L 2 -inner product on Ω associated with T h , and let π h : C 0 (Ω) → S h be the standard interpolation operator. In addition, let τ denote a chosen uniform time step size. Then our finite element approximation of (2.1) is given as follows. Let ϕ 0 h ∈ S h , e.g., ϕ 0 h = π h φ 0 if φ 0 ∈ C 0 (Ω). Then, for n ≥ 0, find ( ϕ n +1 h , µ n +1 h ) ∈ S h × S h such that\n\n<!-- formula-not-decoded -->\n\n<!-- formula-not-decoded -->\n\nWe implemented the scheme (6.1) with the help of the finite element toolbox ALBERTA, see [29]. To increase computational efficiency, we employ adaptive meshes, which have a finer mesh size h f within the diffuse interfacial regions and a coarser mesh size h c away from them. In particular, we use the strategy from [5, 7], and refine an element o if η o = | max o | ϕ n h | -1 | &gt; 0 . 5, unless it is already of size h f , and similarly coarsen an element o if η o &lt; 0 . 1, unless it is already of size h c . For simplicity we assume from now on that Ω = ∏ d i =1 (0 , L i ) ⊂ R d , with L 1 ≥ L 2 ≥ · · · ≥ L d , and then let h f = L d N f , h c = L d N c for two chosen integer parameters N f &gt; N c . Here, unless otherwise specified, for the computations with a phase field parameter ε = (2 k π ) -1 , k ∈ N , we choose N f = 8 N c = 2 3+ k L d . This ensures that the interfacial regions are accurately resolved, while using a relatively coarser mesh in the pure regions. For the time discretization we choose τ = 10 -3 , unless stated otherwise.\n\nThe nonlinear system of equations arising at each time level of (6.1) are solved with the help of Newton's method. The resulting linear systems at each iteration in two spatial dimensions are solved by direct factorization using the package UMFPACK, see [15], and in three spatial dimensions with a V -cycle multigrid solver using a block Gauss-Seidel smoother.\n\nFor the initial data φ 0 we in general choose a diffuse interface representation of a desired sharp interface, with signed distance function d 0 : Ω → R . In particular, unless otherwise stated, we let\n\n<!-- formula-not-decoded -->\n\nFor the definition of S 2 in (2.2), recall (2.4), we need to specify K ± and L . For convenience, for the numerical simulations to follow, we will define the relations ρ ± = K ± 2 β ,",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "3199bbdc5bfe525c3fb3245ebaca17c37c74733e50e555ba48804086977c9924"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "d43592ac58ab8ec55b7e11c5a333f68fd3d898525bdcde8d01bb7d0451db7155"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642266863063,
+        "y0": 0.10233819774662413,
+        "x1": 0.4821253167088452,
+        "y1": 0.11729570194859366
+      },
+      "text": "6 Numerical Computations",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642266863063,
+        "y0": 0.13410312836071064,
+        "x1": 0.8571499742017802,
+        "y1": 0.24326656493513332
+      },
+      "text": "In this section, we state numerical computations that show several phenomena discussed in the introduction. In particular, we will observe a suppression of Ostwald ripening, splitting scenarios and instabilities of flat fronts and growing particles. The numerical simulations also support the sharp interface asymptotics, as we get a good agreement between phase field computations and exact solutions of the sharp interface problem. All our numerical simulations are for the quartic potential (2.7) and the interpolation functions (2.8), (2.9) and (2.10), for a fixed value r c ∈ (0 , 1].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642266863063,
+        "y0": 0.2639878475014436,
+        "x1": 0.41947993507272524,
+        "y1": 0.27645246909011434
+      },
+      "text": "6.1 Finite element method",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642266863063,
+        "y0": 0.28934193357991256,
+        "x1": 0.8571502262193316,
+        "y1": 0.31820390698965956
+      },
+      "text": "We assume that Ω is a polyhedral domain and let T h be a regular triangulation of Ω into disjoint open simplices. Associated with T h is the piecewise linear finite element space",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.33079781425247334,
+        "y0": 0.3284911531056524,
+        "x1": 0.6692014247617625,
+        "y1": 0.3442251207097774
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642266863052,
+        "y0": 0.35515971979411215,
+        "x1": 0.8571480519841909,
+        "y1": 0.4366956318756678
+      },
+      "text": "where we denote by P 1 ( o ) the set of all affine linear functions on o , see [13]. Let ( · , · ) h be the usual mass lumped L 2 -inner product on Ω associated with T h , and let π h : C 0 (Ω) → S h be the standard interpolation operator. In addition, let τ denote a chosen uniform time step size. Then our finite element approximation of (2.1) is given as follows. Let ϕ 0 h ∈ S h , e.g., ϕ 0 h = π h φ 0 if φ 0 ∈ C 0 (Ω). Then, for n ≥ 0, find ( ϕ n +1 h , µ n +1 h ) ∈ S h × S h such that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.22196594484446944,
+        "y0": 0.44549891099090955,
+        "x1": 0.8571423929789658,
+        "y1": 0.4744786299315678
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.16404323345776,
+        "y0": 0.4768854336247886,
+        "x1": 0.8571433101333596,
+        "y1": 0.505865152565447
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642266863044,
+        "y0": 0.5153702706418068,
+        "x1": 0.8571518068138764,
+        "y1": 0.7053330130675404
+      },
+      "text": "We implemented the scheme (6.1) with the help of the finite element toolbox ALBERTA, see [29]. To increase computational efficiency, we employ adaptive meshes, which have a finer mesh size h f within the diffuse interfacial regions and a coarser mesh size h c away from them. In particular, we use the strategy from [5, 7], and refine an element o if η o = | max o | ϕ n h | -1 | > 0 . 5, unless it is already of size h f , and similarly coarsen an element o if η o < 0 . 1, unless it is already of size h c . For simplicity we assume from now on that Ω = ∏ d i =1 (0 , L i ) ⊂ R d , with L 1 ≥ L 2 ≥ · · · ≥ L d , and then let h f = L d N f , h c = L d N c for two chosen integer parameters N f > N c . Here, unless otherwise specified, for the computations with a phase field parameter ε = (2 k π ) -1 , k ∈ N , we choose N f = 8 N c = 2 3+ k L d . This ensures that the interfacial regions are accurately resolved, while using a relatively coarser mesh in the pure regions. For the time discretization we choose τ = 10 -3 , unless stated otherwise.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642266863072,
+        "y0": 0.7101023581443061,
+        "x1": 0.8571455216789245,
+        "y1": 0.7858019565414571
+      },
+      "text": "The nonlinear system of equations arising at each time level of (6.1) are solved with the help of Newton's method. The resulting linear systems at each iteration in two spatial dimensions are solved by direct factorization using the package UMFPACK, see [15], and in three spatial dimensions with a V -cycle multigrid solver using a block Gauss-Seidel smoother.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642266863063,
+        "y0": 0.7905713016182229,
+        "x1": 0.8571423029366987,
+        "y1": 0.8340826099436403
+      },
+      "text": "For the initial data φ 0 we in general choose a diffuse interface representation of a desired sharp interface, with signed distance function d 0 : Ω → R . In particular, unless otherwise stated, we let",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.4089901148384877,
+        "y0": 0.8361805846978357,
+        "x1": 0.8571431489308255,
+        "y1": 0.8666011094194087
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14285642266863052,
+        "y0": 0.8740453882295797,
+        "x1": 0.8571428163456052,
+        "y1": 0.9052663396120364
+      },
+      "text": "For the definition of S 2 in (2.2), recall (2.4), we need to specify K ± and L . For convenience, for the numerical simulations to follow, we will define the relations ρ ± = K ± 2 β ,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      595.2760009765625,
+      841.8900146484375
+    ]
+  ],
+  "seconds": 1.0306623999999829,
+  "model_load_seconds": null,
+  "peak_rss_mb": 71.7421875,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "2503.09581_pg21",
+      "pdf_sha256": "4f94e9fef266e9099a2ddd1bbd45b1260d938b46291b50acb0658766e9f957f5",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

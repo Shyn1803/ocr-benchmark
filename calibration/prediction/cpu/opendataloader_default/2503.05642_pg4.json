@@ -1,0 +1,863 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_default",
+  "engine_family": "opendataloader",
+  "profile": "default",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.05642_pg4",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "BoGrape, Xie and Zhang, et al.\n\nFor graph G, denote lu as the label of node u, eu,v as the shortest path from u to v (which may not be unique), and du,v as the shortest distance from node u to v (which is unique). Borgwardt and Kriegel (2005) define an SP kernel between graphs G1 = (V 1,E1) and G2 = (V 2,E2) as:\n\nkSP(G1,G2) =\n\n2,v2) k(·,·) compares the labels and lengths of two shortest paths:\n\nk(eu\n\n1,v1,eu\n\nu1,v1∈V 1,u2,v2∈V 2\n\n) · ke(du\n\n# 2,v2) · kv(lv\n\nk(eu\n\n1,v1,eu\n\n2,v2) = kv(lu\n\n# ,lu\n\n1,v1,du\n\n# ,lv\n\n# )\n\n1\n\n2\n\n1\n\n2\n\nwhere kv is a kernel comparing node labels, ke is a kernel comparing path lengths. Both kv and ke are usually chosen as Dirac kernels, giving the explicit representation of the SP kernel as:\n\n1 n21n22\n\nkSP(G1,G2) =\n\n) · 1(du\n\n2,v2) · 1(lv\n\n1(lu\n\n# = lu\n\n1,v1 = du\n\n# = lv\n\n) (SP)\n\n1\n\n2\n\n1\n\n2\n\nu1,v1∈V 1,u2,v2∈V 2\n\nwhere n21\n\n1n22 is introduced as a normalizing coefficient with n1,n2 as the number of nodes in graph G1,G2, respectively. Note that each node may have more problem-specific features beyond a single label. From here on, we use X = (G,F) to denote an attributed graph with G as the underlying labeled graph and F as node features. Intuitively, we can compare the features of two nodes instead of labels in kv. However, this could unnecessarily reduce the number of matching paths between two graphs, as requiring identical node features is restrictive and may introduce additional subgraph information into path comparison. Another option is to use a more complicated kernel kv that measures similarity between features of two nodes, which may significantly increase the computational cost of optimization (similarity is computed for all node pairings). Therefore, we borrow from Cui and Yang (2018) the idea to separate the implicit and explicit information of graphs, i.e., the kernel value between two attributed graphs X1,X2 becomes:\n\n# k(X1,X2) = α · kG(G1,G2) + β · kF(F1,F2) (3)\n\nwhere kG is any graph kernel, kF is any kernel over features, and α,β are trainable parameters controlling the trade-off between graph similarity and feature similarity. Appendix A.4 describes an example of kF.\n\nSince node label is usually included as a node feature and considered in kF term, and comparing labels in Eq. (SP) increases the complexity of our optimization formulations, we propose a simplified shortest-path (SSP) kernel corresponding to an unlabeled SP kernel:\n\n1 n21n22\n\n1 n21n22\n\nkSSP(G1,G2) =\n\nDs(G1) · Ds(G2) (SSP)\n\n1(du\n\n1,v1 = du\n\n2,v2) =\n\nu1,v1∈V 1,u2,v2∈V 2\n\n0≤s<min(n1,n2)\n\nwhere Ds(G) := |{(u,v) | u,v ∈ V, du,v = s}| is the number of shortest paths with length s in graph G = (V,E).\n\n- Lemma 3.1. SP and SSP kernels are positive definite (PD).\n\nProof. Borgwardt and Kriegel (2005) prove the SP kernel is PD. The SSP kernel is a special case of the SP kernel where all nodes have the same label, hence is also PD.\n\n<table>\n  <tr>\n    <td> </td>\n  </tr>\n</table>\n\n\nObserve that both the SP and SSP kernels are linear kernels if we pre-process all shortest paths in each graph and count the number of each length of shortest path. Such linearity simplifies the optimization step (which still requires the non-trivial representation of shortest paths), but reduces the representation ability of the graph kernels and limits the maximal rank of the covariance matrix. Motivated by the practically strong performance of exponential kernels such as RBF kernel, Matérn kernel, graph diffusion kernel (Oh et al., 2019), etc., we propose the following two nonlinear graph kernels based on SP and SSP kernels:\n\nkESP(G1,G2) = exp(kSP(G1,G2))/σk2 (ESP) kESSP(G1,G2) = exp(kSSP(G1,G2))/σk2 (ESSP)\n\nwhere variance σk2 is added to control the magnitude of kernel value. Note that we could also add variance to SP and SSP kernels, but it would be absorbed by α,β.\n\n- Lemma 3.2. ESP and ESSP kernels are PD.\n\n\nProof. SP and SSP kernels can be rewritten into linear forms, so ESP and ESSP are exponential kernels, which are known to be PD (Fukumizu, 2010). The nonlinear kernels introduce additional difficulties for optimization as discussed in Section 3.4, but demonstrate better empirical performance compared to their linear counterparts, owing to increased representation ability.\n\n<table>\n  <tr>\n    <td> </td>\n  </tr>\n</table>\n\n\n4\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "11537c8ae6e1bd0ec0ae444c1fce9a4098d48b814626b4741e6e98e79d4e8938"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "2add15b51f9e0aa7a9deb873a635b7ccb4c3217fb62681c190bbaf6bf4c52380"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "194cb9025085b0fbb25f0b913d9d7839c3f33a94a8fc713ecb439e79709302ca"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11714215686274511,
+        "y0": 0.043310606060606105,
+        "x1": 0.3212467320261438,
+        "y1": 0.05846717171717175
+      },
+      "text": "BoGrape, Xie and Zhang, et al.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.09186616161616168,
+        "x1": 0.8823496732026145,
+        "y1": 0.13457070707070717
+      },
+      "text": "For graph G, denote lu as the label of node u, eu,v as the shortest path from u to v (which may not be unique), and du,v as the shortest distance from node u to v (which is unique). Borgwardt and Kriegel (2005) define an SP kernel between graphs G1 = (V 1,E1) and G2 = (V 2,E2) as:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.33229411764705885,
+        "y0": 0.1413207070707071,
+        "x1": 0.436578431372549,
+        "y1": 0.15720580808080797
+      },
+      "text": "kSP(G1,G2) =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.1436830808080808,
+        "x1": 0.667704248366013,
+        "y1": 0.19891035353535358
+      },
+      "text": "2,v2) k(·,·) compares the labels and lengths of two shortest paths:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5604722222222223,
+        "y0": 0.1436830808080808,
+        "x1": 0.5910653594771242,
+        "y1": 0.15720580808080797
+      },
+      "text": "k(eu",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5910669934640523,
+        "y0": 0.1436830808080808,
+        "x1": 0.6374754901960784,
+        "y1": 0.15783459595959592
+      },
+      "text": "1,v1,eu",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4410964052287582,
+        "y0": 0.16146843434343439,
+        "x1": 0.5569444444444445,
+        "y1": 0.17707575757575766
+      },
+      "text": "u1,v1∈V 1,u2,v2∈V 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4898186274509804,
+        "y0": 0.19494065656565662,
+        "x1": 0.5458709150326797,
+        "y1": 0.21676515151515152
+      },
+      "text": ") · ke(du",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5931748366013072,
+        "y0": 0.19494065656565662,
+        "x1": 0.6690686274509804,
+        "y1": 0.21676515151515152
+      },
+      "text": "2,v2) · kv(lv",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2916617647058824,
+        "y0": 0.19525505050505054,
+        "x1": 0.3222565359477124,
+        "y1": 0.20877651515151519
+      },
+      "text": "k(eu",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3222565359477124,
+        "y0": 0.19525505050505054,
+        "x1": 0.36866666666666664,
+        "y1": 0.20940656565656568
+      },
+      "text": "1,v1,eu",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36866666666666664,
+        "y0": 0.19525505050505054,
+        "x1": 0.4556944444444444,
+        "y1": 0.20940656565656568
+      },
+      "text": "2,v2) = kv(lu",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.4628627450980392,
+        "y0": 0.19525505050505054,
+        "x1": 0.4826503267973856,
+        "y1": 0.20877651515151519
+      },
+      "text": ",lu",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5458709150326797,
+        "y0": 0.19525505050505054,
+        "x1": 0.5931732026143791,
+        "y1": 0.20940656565656568
+      },
+      "text": "1,v1,du",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.676235294117647,
+        "y0": 0.19525505050505054,
+        "x1": 0.6948398692810458,
+        "y1": 0.20877651515151519
+      },
+      "text": ",lv",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.7020065359477123,
+        "y0": 0.19525505050505054,
+        "x1": 0.7083366013071896,
+        "y1": 0.20783459595959597
+      },
+      "text": ")",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4556944444444444,
+        "y0": 0.2031174242424243,
+        "x1": 0.4612336601307189,
+        "y1": 0.20940656565656568
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4826503267973856,
+        "y0": 0.2031174242424243,
+        "x1": 0.48818954248366014,
+        "y1": 0.20940656565656568
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6690686274509804,
+        "y0": 0.2031174242424243,
+        "x1": 0.674607843137255,
+        "y1": 0.20940656565656568
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6948398692810458,
+        "y0": 0.2031174242424243,
+        "x1": 0.7003790849673203,
+        "y1": 0.20940656565656568
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.21170075757575757,
+        "x1": 0.8823496732026145,
+        "y1": 0.2406325757575758
+      },
+      "text": "where kv is a kernel comparing node labels, ke is a kernel comparing path lengths. Both kv and ke are usually chosen as Dirac kernels, giving the explicit representation of the SP kernel as:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3206111111111111,
+        "y0": 0.24422222222222223,
+        "x1": 0.35394607843137255,
+        "y1": 0.2763497474747475
+      },
+      "text": "1 n21n22",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.20985620915032677,
+        "y0": 0.25036868686868685,
+        "x1": 0.31413888888888886,
+        "y1": 0.26625378787878795
+      },
+      "text": "kSP(G1,G2) =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5556388888888889,
+        "y0": 0.2524166666666666,
+        "x1": 0.6055866013071896,
+        "y1": 0.2742411616161615
+      },
+      "text": ") · 1(du",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.667359477124183,
+        "y0": 0.2524166666666666,
+        "x1": 0.7364052287581699,
+        "y1": 0.2742411616161615
+      },
+      "text": "2,v2) · 1(lv",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47880065359477125,
+        "y0": 0.25273106060606065,
+        "x1": 0.5070441176470588,
+        "y1": 0.26625378787878795
+      },
+      "text": "1(lu",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5187336601307189,
+        "y0": 0.25273106060606065,
+        "x1": 0.548470588235294,
+        "y1": 0.26625378787878795
+      },
+      "text": "= lu",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6055866013071896,
+        "y0": 0.25273106060606065,
+        "x1": 0.667359477124183,
+        "y1": 0.2668825757575757
+      },
+      "text": "1,v1 = du",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.7480947712418301,
+        "y0": 0.25273106060606065,
+        "x1": 0.7766470588235294,
+        "y1": 0.26625378787878795
+      },
+      "text": "= lv",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7838137254901961,
+        "y0": 0.25273106060606065,
+        "x1": 0.8834444444444445,
+        "y1": 0.26981313131313134
+      },
+      "text": ") (SP)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5070457516339869,
+        "y0": 0.2605934343434343,
+        "x1": 0.5125849673202615,
+        "y1": 0.2668825757575757
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5484722222222222,
+        "y0": 0.2605934343434343,
+        "x1": 0.5540114379084967,
+        "y1": 0.2668825757575757
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7364052287581699,
+        "y0": 0.2605934343434343,
+        "x1": 0.7419444444444444,
+        "y1": 0.2668825757575757
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7766470588235294,
+        "y0": 0.2605934343434343,
+        "x1": 0.7821862745098039,
+        "y1": 0.2668825757575757
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3594248366013072,
+        "y0": 0.27051641414141414,
+        "x1": 0.4752728758169935,
+        "y1": 0.2861237373737374
+      },
+      "text": "u1,v1∈V 1,u2,v2∈V 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.28545328282828275,
+        "x1": 0.17962581699346405,
+        "y1": 0.3039722222222222
+      },
+      "text": "where n21",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.28545328282828275,
+        "x1": 0.885200980392157,
+        "y1": 0.4220669191919192
+      },
+      "text": "1n22 is introduced as a normalizing coefficient with n1,n2 as the number of nodes in graph G1,G2, respectively. Note that each node may have more problem-specific features beyond a single label. From here on, we use X = (G,F) to denote an attributed graph with G as the underlying labeled graph and F as node features. Intuitively, we can compare the features of two nodes instead of labels in kv. However, this could unnecessarily reduce the number of matching paths between two graphs, as requiring identical node features is restrictive and may introduce additional subgraph information into path comparison. Another option is to use a more complicated kernel kv that measures similarity between features of two nodes, which may significantly increase the computational cost of optimization (similarity is computed for all node pairings). Therefore, we borrow from Cui and Yang (2018) the idea to separate the implicit and explicit information of graphs, i.e., the kernel value between two attributed graphs X1,X2 becomes:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.3412728758169935,
+        "y0": 0.42515404040404037,
+        "x1": 0.8834428104575164,
+        "y1": 0.4490757575757576
+      },
+      "text": "k(X1,X2) = α · kG(G1,G2) + β · kF(F1,F2) (3)",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.44339898989898996,
+        "x1": 0.8823415032679739,
+        "y1": 0.4728838383838384
+      },
+      "text": "where kG is any graph kernel, kF is any kernel over features, and α,β are trainable parameters controlling the trade-off between graph similarity and feature similarity. Appendix A.4 describes an example of kF.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.4778661616161617,
+        "x1": 0.8850604575163399,
+        "y1": 0.5205707070707071
+      },
+      "text": "Since node label is usually included as a node feature and considered in kF term, and comparing labels in Eq. (SP) increases the complexity of our optimization formulations, we propose a simplified shortest-path (SSP) kernel corresponding to an unlabeled SP kernel:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2595718954248366,
+        "y0": 0.5241603535353535,
+        "x1": 0.2929084967320261,
+        "y1": 0.5562878787878788
+      },
+      "text": "1 n21n22",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.565282679738562,
+        "y0": 0.5241603535353535,
+        "x1": 0.5986192810457517,
+        "y1": 0.5562878787878788
+      },
+      "text": "1 n21n22",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.14127450980392156,
+        "y0": 0.5303068181818182,
+        "x1": 0.2531013071895425,
+        "y1": 0.5461919191919191
+      },
+      "text": "kSSP(G1,G2) =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7042042483660131,
+        "y0": 0.5303068181818182,
+        "x1": 0.8834444444444445,
+        "y1": 0.5541805555555556
+      },
+      "text": "Ds(G1) · Ds(G2) (SSP)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41776307189542483,
+        "y0": 0.5326704545454546,
+        "x1": 0.4496225490196078,
+        "y1": 0.5461919191919191
+      },
+      "text": "1(du",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4496225490196078,
+        "y0": 0.5326704545454546,
+        "x1": 0.5113954248366013,
+        "y1": 0.5468207070707071
+      },
+      "text": "1,v1 = du",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5113954248366013,
+        "y0": 0.5326704545454546,
+        "x1": 0.5588120915032679,
+        "y1": 0.5468207070707071
+      },
+      "text": "2,v2) =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2983872549019608,
+        "y0": 0.5504558080808081,
+        "x1": 0.41423529411764703,
+        "y1": 0.5660618686868687
+      },
+      "text": "u1,v1∈V 1,u2,v2∈V 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6040980392156863,
+        "y0": 0.5508371212121213,
+        "x1": 0.7014901960784314,
+        "y1": 0.5660972222222223
+      },
+      "text": "0≤s<min(n1,n2)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.5647234848484849,
+        "x1": 0.8691454248366014,
+        "y1": 0.5884217171717172
+      },
+      "text": "where Ds(G) := |{(u,v) | u,v ∈ V, du,v = s}| is the number of shortest paths with length s in graph G = (V,E).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.5813421717171717,
+        "x1": 0.5079624183006536,
+        "y1": 0.5977070707070707
+      },
+      "text": "Lemma 3.1. SP and SSP kernels are positive definite (PD). Proof. Borgwardt and Kriegel (2005) prove the SP kernel is PD. The SSP kernel is a special case of the SP kernel where all nodes have the same label, hence is also PD. Observe that both the SP and SSP kernels are linear kernels if we pre-process all shortest paths in each graph and count the number of each length of shortest path. Such linearity simplifies the optimization step (which still requires the non-trivial representation of shortest paths), but reduces the representation ability of the graph kernels and limits the maximal rank of the covariance matrix. Motivated by the practically strong performance of exponential kernels such as RBF kernel, Matérn kernel, graph diffusion kernel (Oh et al., 2019), etc., we propose the following two nonlinear graph kernels based on SP and SSP kernels: kESP(G1,G2) = exp(kSP(G1,G2))/σk2 (ESP) kESSP(G1,G2) = exp(kSSP(G1,G2))/σk2 (ESSP) where variance σk2 is added to control the magnitude of kernel value. Note that we could also add variance to SP and SSP kernels, but it would be absorbed by α,β.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.8113383838383839,
+        "x1": 0.41030555555555553,
+        "y1": 0.8277032828282829
+      },
+      "text": "Lemma 3.2. ESP and ESSP kernels are PD.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11714215686274511,
+        "y0": 0.8408560606060607,
+        "x1": 0.8823529411764706,
+        "y1": 0.912625
+      },
+      "text": "Proof. SP and SSP kernels can be rewritten into linear forms, so ESP and ESSP are exponential kernels, which are known to be PD (Fukumizu, 2010). The nonlinear kernels introduce additional difficulties for optimization as discussed in Section 3.4, but demonstrate better empirical performance compared to their linear counterparts, owing to increased representation ability.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "table",
+      "box": {
+        "page": 0,
+        "x0": 0.8704885620915033,
+        "y0": 0.8577613636363637,
+        "x1": 0.8815571895424837,
+        "y1": 0.8662525252525253
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4956454248366013,
+        "y0": 0.9352058080808081,
+        "x1": 0.5037843137254902,
+        "y1": 0.9503623737373738
+      },
+      "text": "4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [
+    {
+      "html": "<table><tr><td></td></tr></table>",
+      "box": {
+        "page": 0,
+        "x0": 0.8704885620915033,
+        "y0": 0.8577613636363637,
+        "x1": 0.8815571895424837,
+        "y1": 0.8662525252525253
+      },
+      "n_rows": 1,
+      "n_cols": 1
+    }
+  ],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 1.1440411000003223,
+  "model_load_seconds": null,
+  "peak_rss_mb": 152.84765625,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "parser": "java",
+    "table_method": "cluster",
+    "reading_order": "xycut",
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "java-cpu-only",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "publication_cache": {
+      "doc_id": "2503.05642_pg4",
+      "pdf_sha256": "2614bb5741297e63fd105ba3acf95cf1aca41321caf52d92b90943354ac73178",
+      "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

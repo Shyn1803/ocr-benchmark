@@ -1,0 +1,117 @@
+A dyadic rational is a rational number whose denominator is a power of 2. In the next theorem, we construct isostatic grids with points whose coordinates are dyadic rationals.
+
+Theorem 6.4. For each N ≥ 0 there exists an independent, infinitesimally rigid configuration S = (P, L, I) of points and lines such that every geometric point/line incidence between pi and lj in the plane is recorded as an incidence (i, j) ∈ I, and such that all points with coordinates (n/2N : m/2N : 1), for integers n, m satisfying 0 ≤ n, m ≤ 2N, is either a point of the configuration or is the point of intersection of at least two lines.
+
+Proof. We construct an example for each N recursively.
+
+At the 0-th level, first take the four points of the unit square a = (0 : 0 : 1), b = (0 : 1 : 1), c = (1 : 1 : 1), and d = (1 : 0 : 1). Then form the complete quadrilateral by constructing the lines ab, ac, bc and cd and the intersection p1 = (1 : 0 : 0) of the lines ad and bc, and the intersection p2 = (0 : 1 : 0) of the lines ab and cd. Note that the complete quadrangle is independent, and infinitesimally rigid.
+
+Then add the diagonal lines, ac and bd, and their intersections p3 = (1 : 1 : 0) and p4 = (1 : −1 : 0) with the line through the points p1 and p2, which is the line at infinity. Then construct the lines ap4, bp3, cp4 and dp3. Then construct the points e and f as the intersections of the lines ap4 and bp3 and the lines bp3 and cp4 respectively.
+
+Finally, construct the horizontal line through e, which is the line ep1, and the vertical line through f, which is the line fp2. See Figure 11a. This completes the 0-th level, and yields an independent
+
+<table>
+  <tr>
+    <td>b</td>
+    <td>f</td>
+    <td> </td>
+    <td>c</td>
+  </tr>
+  <tr>
+    <td>e</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>a</td>
+    <td> </td>
+    <td> </td>
+    <td>d</td>
+  </tr>
+</table>
+
+
+<table>
+  <tr>
+    <td>b</td>
+    <td> </td>
+    <td>f</td>
+    <td> </td>
+    <td> </td>
+    <td>c</td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>e</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>a</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>d</td>
+  </tr>
+</table>
+
+
+a)
+
+b) Figure 11: Isostatic dyadic grids for N = 0 and N = 1.
+
+and infinitesimally rigid configuration by Theorem 6.3.
+
+Notice for the purpose of the recursion that the segments ab and cd have points with dyadic coordinates at level N and crossings, by single lines, exactly at heights (2k + 1)/2N+1, with 0 ≤ k ≤ 2N −1. Notice also that segments ae, eb, bf and fc have points exactly those with dyadic coordinates at level N + 1, and are only crossed by lines at those points.
+
+For the recursive step start by the points of intersection of ab and cd with the horizontal lines of the configuration. Add the lines between each of the new points and p3 and p4. Each such new line bisects one of the segments along ae, eb, bf and fc. Add points at each of these intersections. Finally, add horizontal lines through the new points along ae and eb and vertical lines through the new points along bf and fc. These subdivide the grid, with the points along ab and cd again alternating between points and pairs of crossed lines.
+
+The dyadic grids at levels N = 0 and N = 1 are illustrated in Figures 11b and 11a. Each level is created from the previous by intersections of two lines and drawing lines through two points, and so each level is independent and infinitesimally rigid by Theorem 6.3.
+
+<table>
+  <tr>
+    <td> </td>
+  </tr>
+</table>
+
+
+In the construction, the points at level N, i.e. the points with coordinates (n/2N : m/2N : 1), in the interior of abcd occur at the crossings of four lines. If a point is introduced there by the Cayley algebra, then that point will have two incidences recorded in the set I, and two implied geometric incidences. Adding either of these geometric incidences to I results in a loss of constraint independence, in other words, the introduction of an equilibrium stress. This illustrates the connection between self-stresses, constraint independence and projective theorems: certain incidences are implied by projective theorems, and such implied incidences will be dependent of the remaining incidences.
+
+The points at the level N + 1 inside abcd which occur at the crossings of two lines are also the points of a square lattice, and all of these points may be added to form a rigid and independent configuration. See Figure 11b.
+
+# 12
+

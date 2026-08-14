@@ -1,0 +1,341 @@
+{
+  "file name" : "2503.08451_pg2.pdf",
+  "number of pages" : 1,
+  "author" : null,
+  "title" : null,
+  "creation date" : null,
+  "modification date" : null,
+  "kids" : [ {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 5,
+    "page number" : 1,
+    "bounding box" : [ 48.964, 443.366, 300.022, 742.295 ],
+    "font" : "NimbusRomNo9L-Regu",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "10x slower to train [10]. Therefore, subsequent works focused on convolutional neural network based blocks, which are faster to train. However, recently there is renewed interest in efficient RNNs and state space models both of which aim to address the inefficiencies of traditional RNNs. These newer developments aim to combine the sequential processing capabilities of RNNs with improved computational and memory efficiency, making them viable for longer sequences and higher throughput requirements. Key advancements include: 1.) State Space Models (SSMs): Recent models like S4 (Structured State Space for Sequence Modeling) [16] and its variants propose replacing traditional recurrent operations with structured linear systems that can process sequences in parallel while retaining the ability to model long-range dependencies. By leveraging the mathematical properties of state space representations, these models reduce the need for sequential backpropagation, offering significant speed and memory improvements. These efforts culminated in the recently introduced S6 model [17], which uses a specific Mamba block around the SSM core, gaining considerable attention due to its strong performance on sequential tasks. 2.) Work on parallelization of RNNs: where [18] linearized and diagonalized the recurrence; whereas [19] built on improving the LSTM model; and [20] introduced a new minimal version of GRUs and LSTMs, called minLSTM and minGRU."
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 6,
+    "page number" : 1,
+    "bounding box" : [ 48.964, 346.027, 300.022, 441.717 ],
+    "font" : "NimbusRomNo9L-Regu",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "In this work, we analyze the minGRU model for its use in the Turbo autoencoder structure. For that we combine it with the Mamba block for SSMs and integrate it into the parallel Turbo structure of the encoder. We will show that it matches and at times outperforms the convolutional network performance, while being as fast to train as the convolutional networks for smaller sequence length, and having significant advantages at long block lengths."
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 7,
+    "page number" : 1,
+    "bounding box" : [ 48.964, 211.972, 300.027, 343.528 ],
+    "font" : "NimbusRomNo9L-Regu",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "a) Notation: In this work, we distinguish between random vectors in the communication model and deterministic vectors in the neural network: an n-dimensional random vector is denoted by an uppercase letter with a superscript, e.g. Xn, whose components are X1,X2,..., and whose realized value is xn. In contrast, neural-network vectors are written in bold lowercase with a time subscript, e.g. xt, to represent the input at time t in a recurrent model. For example, Xn corresponds to a random codeword of length n transmitted over the channel (Section III), whereas xt is the deterministic input signal at time t in the MinGRU-based block (Section II)."
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 8,
+    "page number" : 1,
+    "bounding box" : [ 113.791, 178.855, 235.201, 190.859 ],
+    "font" : "NimbusRomNo9L-Regu",
+    "font size" : 7.97,
+    "text color" : "[0.0]",
+    "content" : "II. MINGRU-BASED BLOCK"
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 9,
+    "page number" : 1,
+    "bounding box" : [ 48.964, 141.724, 300.022, 165.574 ],
+    "font" : "NimbusRomNo9L-ReguItal",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "A. Introduction to Recurrent Neural Networks and Gated Recurrent Units"
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 10,
+    "page number" : 1,
+    "bounding box" : [ 48.964, 72.756, 300.022, 132.581 ],
+    "font" : "NimbusRomNo9L-Regu",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "Recurrent Neural Networks (RNNs) are a class of neural networks designed to process sequential data by maintaining a hidden state that captures information about previous inputs. Unlike feedforward neural networks, RNNs share parameters across time steps, enabling them to model temporal dependen-"
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 11,
+    "page number" : 1,
+    "bounding box" : [ 311.978, 717.897, 563.037, 742.294 ],
+    "font" : "NimbusRomNo9L-Regu",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "cies effectively. Formally, given an input sequence {xt}Tt=1, the hidden state ht at time t is computed as:"
+  }, {
+    "type" : "heading",
+    "pdfua_tag" : "H1",
+    "id" : 12,
+    "level" : "Doctitle",
+    "page number" : 1,
+    "bounding box" : [ 395.979, 690.245, 563.036, 707.576 ],
+    "heading level" : 1,
+    "font" : "CMBX10",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "ht = f(ht−1,xt;θ), (1)"
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 13,
+    "page number" : 1,
+    "bounding box" : [ 311.978, 636.944, 563.039, 684.813 ],
+    "font" : "NimbusRomNo9L-Regu",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "where f is a non-linear function (e.g., a combination of matrix multiplications and activation functions), ht−1 is the hidden state from the previous time step, xt is the input at time t, and θ are the network parameters."
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 14,
+    "page number" : 1,
+    "bounding box" : [ 311.978, 576.249, 563.036, 636.074 ],
+    "font" : "NimbusRomNo9L-Regu",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "One of the key challenges in training RNNs is the vanishing/exploding gradient problem, which limits their ability to capture long-term dependencies. Gated architectures like the Gated Recurrent Unit (GRU) were introduced to address this limitation."
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 15,
+    "page number" : 1,
+    "bounding box" : [ 311.978, 549.87, 444.241, 561.765 ],
+    "font" : "NimbusRomNo9L-ReguItal",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "B. Gated Recurrent Unit (GRU)"
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 16,
+    "page number" : 1,
+    "bounding box" : [ 311.978, 471.676, 563.037, 543.456 ],
+    "font" : "NimbusRomNo9L-Regu",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "The GRU is a simplified yet effective variant of the Long Short-Term Memory (LSTM) network. It uses gating mechanisms to control the flow of information, which helps in preserving long-term dependencies and mitigating the vanishing gradient issue. The GRU maintains a single hidden state ht, updated as follows:"
+  }, {
+    "type" : "list",
+    "pdfua_tag" : "L",
+    "id" : 17,
+    "level" : "1",
+    "page number" : 1,
+    "bounding box" : [ 321.94, 211.615, 563.04, 468.152 ],
+    "numbering style" : "arabic numbers",
+    "number of list items" : 4,
+    "list items" : [ {
+      "type" : "list item",
+      "pdfua_tag" : "LI",
+      "page number" : 1,
+      "bounding box" : [ 321.94, 438.507, 563.036, 468.152 ],
+      "font" : "NimbusRomNo9L-Regu",
+      "font size" : 9.963,
+      "text color" : "[0.0]",
+      "content" : "1) Update Gate: The update gate zt determines how much of the past hidden state ht−1 should be retained:",
+      "kids" : [ {
+        "type" : "paragraph",
+        "pdfua_tag" : "P",
+        "id" : 1,
+        "page number" : 1,
+        "bounding box" : [ 383.015, 415.744, 516.238, 431.342 ],
+        "font" : "CMBX10",
+        "font size" : 9.963,
+        "text color" : "[0.0]",
+        "content" : "zt = σ(Wzxt + Uzht−1 + bz),"
+      }, {
+        "type" : "paragraph",
+        "pdfua_tag" : "P",
+        "id" : 2,
+        "page number" : 1,
+        "bounding box" : [ 336.217, 385.915, 563.038, 410.312 ],
+        "font" : "NimbusRomNo9L-Regu",
+        "font size" : 9.963,
+        "text color" : "[0.0]",
+        "content" : "where σ is the sigmoid activation function, and Wz,Uz,bz are learnable parameters."
+      } ]
+    }, {
+      "type" : "list item",
+      "pdfua_tag" : "LI",
+      "page number" : 1,
+      "bounding box" : [ 321.94, 350.487, 563.036, 386.761 ],
+      "font" : "NimbusRomNo9L-Regu",
+      "font size" : 9.963,
+      "text color" : "[0.0]",
+      "content" : "2) Reset Gate: The reset gate rt controls how much of the past hidden state should influence the current computation:",
+      "kids" : [ {
+        "type" : "paragraph",
+        "pdfua_tag" : "P",
+        "id" : 3,
+        "page number" : 1,
+        "bounding box" : [ 383.47, 322.397, 515.783, 337.996 ],
+        "font" : "CMBX10",
+        "font size" : 9.963,
+        "text color" : "[0.0]",
+        "content" : "rt = σ(Wrxt + Urht−1 + br)."
+      } ]
+    }, {
+      "type" : "list item",
+      "pdfua_tag" : "LI",
+      "page number" : 1,
+      "bounding box" : [ 321.94, 293.007, 562.539, 317.862 ],
+      "font" : "NimbusRomNo9L-Regu",
+      "font size" : 9.963,
+      "text color" : "[0.0]",
+      "content" : "3) Candidate Hidden State: A candidate hidden state h˜t is computed using the reset gate:",
+      "kids" : [ {
+        "type" : "paragraph",
+        "pdfua_tag" : "P",
+        "id" : 4,
+        "page number" : 1,
+        "bounding box" : [ 336.217, 240.716, 538.746, 283.144 ],
+        "font" : "NimbusRomNo9L-Regu",
+        "font size" : 9.963,
+        "text color" : "[0.0]",
+        "content" : "h˜t = tanh(Whxt + Uh(rt ⊙ ht−1) + bh), where ⊙ denotes the element-wise product."
+      } ]
+    }, {
+      "type" : "list item",
+      "pdfua_tag" : "LI",
+      "page number" : 1,
+      "bounding box" : [ 321.94, 211.615, 563.04, 247.889 ],
+      "font" : "NimbusRomNo9L-Regu",
+      "font size" : 9.963,
+      "text color" : "[0.0]",
+      "content" : "4) Final Hidden State: The final hidden state ht is a convex combination of the previous hidden state and the candidate hidden state, weighted by the update gate:",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "heading",
+    "pdfua_tag" : "H1",
+    "id" : 18,
+    "level" : "Doctitle",
+    "page number" : 1,
+    "bounding box" : [ 382.376, 182.087, 516.878, 201.752 ],
+    "heading level" : 1,
+    "font" : "CMR10",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "ht = (1 − zt) ⊙ ht−1 + zt ⊙ h˜t."
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 19,
+    "page number" : 1,
+    "bounding box" : [ 311.978, 153.696, 563.036, 178.093 ],
+    "font" : "NimbusRomNo9L-Regu",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "Neglecting the bias terms, and streamlining the matrices as linear operations Lineard"
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 21,
+    "page number" : 1,
+    "bounding box" : [ 311.978, 141.741, 563.034, 166.138 ],
+    "font" : "NimbusRomNo9L-Regu",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "with a certain matching hidden dimension dh, a GRU cell has the following simplified form:"
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 20,
+    "page number" : 1,
+    "bounding box" : [ 418.531, 153.137, 422.654, 158.118 ],
+    "font" : "CMMI5",
+    "font size" : 4.981,
+    "text color" : "[0.0]",
+    "content" : "h"
+  }, {
+    "type" : "heading",
+    "pdfua_tag" : "H1",
+    "id" : 22,
+    "level" : "Subtitle",
+    "page number" : 1,
+    "bounding box" : [ 359.971, 118.978, 424.204, 129.687 ],
+    "heading level" : 1,
+    "font" : "CMR10",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "zt = σ(Lineard"
+  }, {
+    "type" : "heading",
+    "pdfua_tag" : "H1",
+    "id" : 24,
+    "level" : "Subtitle",
+    "page number" : 1,
+    "bounding box" : [ 360.233, 104.034, 481.339, 129.687 ],
+    "heading level" : 1,
+    "font" : "CMR10",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "([xt,ht−1])) rt = σ(Lineard"
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 23,
+    "page number" : 1,
+    "bounding box" : [ 424.204, 118.419, 428.327, 123.4 ],
+    "font" : "CMMI5",
+    "font size" : 4.981,
+    "text color" : "[0.0]",
+    "content" : "h"
+  }, {
+    "type" : "heading",
+    "pdfua_tag" : "H1",
+    "id" : 26,
+    "level" : "Subtitle",
+    "page number" : 1,
+    "bounding box" : [ 358.85, 88.176, 481.339, 114.743 ],
+    "heading level" : 1,
+    "font" : "CMR10",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "([xt,ht−1])) h˜t = tanh(Lineard"
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 25,
+    "page number" : 1,
+    "bounding box" : [ 424.204, 103.475, 428.327, 108.456 ],
+    "font" : "CMMI5",
+    "font size" : 4.981,
+    "text color" : "[0.0]",
+    "content" : "h"
+  }, {
+    "type" : "heading",
+    "pdfua_tag" : "H1",
+    "id" : 28,
+    "level" : "Subtitle",
+    "page number" : 1,
+    "bounding box" : [ 358.85, 65.991, 516.166, 99.134 ],
+    "heading level" : 1,
+    "font" : "CMMIB10",
+    "font size" : 9.963,
+    "text color" : "[0.0]",
+    "content" : "([xt,rt ⊙ ht−1])) ht = (1 − zt) ⊙ ht−1 + zt ⊙ h˜t."
+  }, {
+    "type" : "paragraph",
+    "pdfua_tag" : "P",
+    "id" : 27,
+    "page number" : 1,
+    "bounding box" : [ 438.079, 87.617, 442.202, 92.598 ],
+    "font" : "CMMI5",
+    "font size" : 4.981,
+    "text color" : "[0.0]",
+    "content" : "h"
+  } ]
+}

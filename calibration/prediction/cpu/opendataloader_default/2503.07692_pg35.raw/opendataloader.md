@@ -1,0 +1,22 @@
+# 7 Numerical results
+
+In this section, we present a few numerical experiment results to validate the theoretical analysis, including the numerical tests for convergence rate, energy stability, mass conservation and the concentration positivity. Since the proposed numerical scheme (3.13) is nonlinear and coupled, its implementation turns out to be quite technical. A linearized iteration solver is applied to implement the numerical algorithm. In more details, the nonlinear parts are evaluated in terms of the numerical solution at the previous stage, while the linear diﬀusion and temporal derivative parts are implicitly computed at each iteration stage. In turn, only a linear numerical solver is needed at each iteration stage, although the numerical scheme (3.13) is nonlinear. Such a linearized iteration solver has been widely reported for various nonlinear numerical schemes; in particular, a geometric iteration convergence rate has been theoretically justiﬁed for the Poisson-Nernst-Planck (PNP) system [20], a highly nonlinear and singular gradient ﬂow model. A similar theoretical analysis is expected for the linearized iteration approach to the numerical scheme (3.13), while the technical details will be left in the future works. Such a linearized iteration method is highly eﬃcient; the theoretical analysis in [20] indicates a geometric iteration convergence rate, while the practical computations have revealed an even better iteration convergence rate in the implementation process. Only ﬁve to ten linear solvers are needed in the iteration process for most computational examples reported in this article, and the computational cost of the linear solver is comparable with a standard Poisson solver. Moreover, other than the linearized linear solver, some other alternate iteration approaches, such as preconditioned steepest descent (PSD) solver [9, 14], could be chosen, and a comparison between diﬀerence iteration methods will be considered in the future works.
+
+A two dimensional domain is set as Ω = (−2,2)2. At the initial time step, a ﬁrst-order scheme is used to obtain the numerical solution. In the subsequent time steps, an iterative algorithm (similar to the one in [21]) is used to implement the fully nonlinear scheme (3.13).
+
+The initial data is chosen as
+
+p0(x,y) = 0.6 + 0.2cos (πx) cos (0.5πy) , n0(x,y) = 0.6 + 0.2cos (0.5πx) cos (πy) ,
+
+- u0(x,y) = −0.25sin2 (πx)sin (2πy),
+- v0(x,y) = 0.25sin (2πx) sin2 (πy) , ψ0(x,y) = cos (0.5πx) cos (0.5πy) ,
+
+
+(7.1)
+
+where periodic boundary condition is used. The computation is performed with a sequence of uniform mesh resolutions, and the time step size is taken as τ = 0.1h. Since the exact solution could not be explicitly represented, we measure the Cauchy error to test the convergence rate, a similar approach to that of [34]. In particular, the error between coarse and ﬁne grid spacings h and h/2 is recorded by eζ = ζh −ζh/2 . We present the ℓ2 and ℓ∞ errors of all the physical variables at a ﬁnal time T = 0.1. An almost perfect second order accuracy, in both time and space, has been observed in this numerical experiment, which agrees with the theoretical analysis.
+
+In addition, the simulation results are used to demonstrate the numerical performance to preserve certain physical properties. The total mass conservation of the ion concentration variables (over the computational domain) has been perfectly conﬁrmed in the upper panel of the Figure 1. Moreover, in the same ﬁgure, a monotone dissipation property of the discrete total energy Eh is also clearly observed, which conﬁrms the theoretical analysis. To explore the positivity-preserving property, we focus on the evolution of the minimum concentration value, i.e., Cmin := mini,j (mini,j nmi,j,mini,j pmi,j). As displayed in Figure 2, the numerical solutions of ion concentration variables remain positive all the time, even though their values could become very low. Overall, these numerical evidences have
+
+35
+

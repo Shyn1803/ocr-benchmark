@@ -1,0 +1,23 @@
+a comparatively robust “cermet”(ceramic + metal) anode. Fortuitously, similar cermet catalyst systems have shown promise in NOx removal.
+
+The National Ignition Facility at Lawrence Livermore National Laboratory trains many intense pulsed laser beams on inertial confinement fusion
+
+(ICF) targets about the size of BBs. The targets contain fusion fuel—a frozen mixture of deuterium and tritium, two hydrogen isotopes. The laser beams heat and compress the fuel to the temperatures and densities required for fusion reactions to occur. Currently, an ICF target consists of a gold foam shell surrounding a nonporous shell filled with fusion fuel. To ensure that the shock waves generated at the target’s surface travel efficiently into its interior, a shell of high-z nanostructured metal foam, such as copper,
+
+<table>
+  <tr>
+    <td>![](<081875a1035e34dee439b9a2a3a55e319405_page_16_pg1_images/imageFile1.png>)<br><br>Schematic showing localization of illicit agent (green TNT molecule not to scale) into interstitial sites of metal foams for largest enhancements of Raman signal. The green hexagon is part of the TNT molecule. The yellow lines depict electronic effects occurring when a specific wavelength of light interacts with the metal, in turn leading to Raman signal enhancement when these electronic effects interact with the bound TNT. Cumulative electrostatic enhancements (yellow lines) from many surfaces could result when illicit substances (green TNT) bind into these sites.</td>
+  </tr>
+</table>
+
+
+Research is also under way to investigate the applicability of nanostructured copper and silver foams for the detection of explosives and other harmful agents using surfaceenhanced Raman scattering (SERS). Raman spectroscopy can provide information about single molecules by detecting the light scattered inelastically from the molecules. The rather weak Raman effect is strengthened greatly when the molecules are attached to a metal substrate with roughness on the order of nanometers. It has been shown that extremely small quantities of various materials can be detected using SERS that employs nanostructured metal substrates. For example, SERS has been used to detect some environmental biological pollutants at levels as low as 0.1 ng.
+
+should surround the target. However, fabricating copper foam shells with the desired qualities has so far been difficult. We hope that this process for producing nanostructured metal foams will yield the pore sizes and densities that are useful in ICF applications.
+
+SERS relies on electromagnetic interactions between the molecule to be detected and the substrate to which the molecule is attached. Because of the nanostructured foams’ low densities, high surface areas, and stochastic structure, they appear to be ideal for SERS substrates. Materials of interest for SERS detection include chemicals as simple as glucose or as complex as anthrax as well as explosives.
+
+Our metal nanofoam forming technique shows promise as a flexible, general approach to the formation of a wide range of new nanoporous metals not currently accessible by state-of-the-art nanoscience. Possible applications abound, not only in catalysis, fuel cells, and ICF, but also in applications ranging from hydrogen storage to electron field emission. Because the pore sizes, densities, and surface areas
+
+4 Los Alamos National Laboratory
+

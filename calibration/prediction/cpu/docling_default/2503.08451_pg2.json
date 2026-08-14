@@ -1,0 +1,394 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "2503.08451_pg2",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "10x slower to train [10]. Therefore, subsequent works focused on convolutional neural network based blocks, which are faster to train. However, recently there is renewed interest in efficient RNNs and state space models both of which aim to address the inefficiencies of traditional RNNs. These newer developments aim to combine the sequential processing capabilities of RNNs with improved computational and memory efficiency, making them viable for longer sequences and higher throughput requirements. Key advancements include: 1.) State Space Models (SSMs): Recent models like S4 (Structured State Space for Sequence Modeling) [16] and its variants propose replacing traditional recurrent operations with structured linear systems that can process sequences in parallel while retaining the ability to model long-range dependencies. By leveraging the mathematical properties of state space representations, these models reduce the need for sequential backpropagation, offering significant speed and memory improvements. These efforts culminated in the recently introduced S6 model [17], which uses a specific Mamba block around the SSM core, gaining considerable attention due to its strong performance on sequential tasks. 2.) Work on parallelization of RNNs: where [18] linearized and diagonalized the recurrence; whereas [19] built on improving the LSTM model; and [20] introduced a new minimal version of GRUs and LSTMs, called minLSTM and minGRU.\n\nIn this work, we analyze the minGRU model for its use in the Turbo autoencoder structure. For that we combine it with the Mamba block for SSMs and integrate it into the parallel Turbo structure of the encoder. We will show that it matches and at times outperforms the convolutional network performance, while being as fast to train as the convolutional networks for smaller sequence length, and having significant advantages at long block lengths.\n\na) Notation: In this work, we distinguish between random vectors in the communication model and deterministic vectors in the neural network: an n -dimensional random vector is denoted by an uppercase letter with a superscript, e.g. X n , whose components are X 1 , X 2 , . . . , and whose realized value is x n . In contrast, neural-network vectors are written in bold lowercase with a time subscript, e.g. x t , to represent the input at time t in a recurrent model. For example, X n corresponds to a random codeword of length n transmitted over the channel (Section III), whereas x t is the deterministic input signal at time t in the MinGRU-based block (Section II).\n\n## II. MINGRU-BASED BLOCK\n\n## A. Introduction to Recurrent Neural Networks and Gated Recurrent Units\n\nRecurrent Neural Networks (RNNs) are a class of neural networks designed to process sequential data by maintaining a hidden state that captures information about previous inputs. Unlike feedforward neural networks, RNNs share parameters across time steps, enabling them to model temporal dependen- cies effectively. Formally, given an input sequence { x t } T t =1 , the hidden state h t at time t is computed as:\n\n<!-- formula-not-decoded -->\n\nwhere f is a non-linear function (e.g., a combination of matrix multiplications and activation functions), h t -1 is the hidden state from the previous time step, x t is the input at time t , and θ are the network parameters.\n\nOne of the key challenges in training RNNs is the vanishing/exploding gradient problem, which limits their ability to capture long-term dependencies. Gated architectures like the Gated Recurrent Unit (GRU) were introduced to address this limitation.\n\n## B. Gated Recurrent Unit (GRU)\n\nThe GRU is a simplified yet effective variant of the Long Short-Term Memory (LSTM) network. It uses gating mechanisms to control the flow of information, which helps in preserving long-term dependencies and mitigating the vanishing gradient issue. The GRU maintains a single hidden state h t , updated as follows:\n\n- 1) Update Gate : The update gate z t determines how much of the past hidden state h t -1 should be retained:\n\n<!-- formula-not-decoded -->\n\nwhere σ is the sigmoid activation function, and W z , U z , b z are learnable parameters.\n\n- 2) Reset Gate : The reset gate r t controls how much of the past hidden state should influence the current computation:\n\n<!-- formula-not-decoded -->\n\n- 3) Candidate Hidden State : A candidate hidden state ˜ h t is computed using the reset gate:\n\n<!-- formula-not-decoded -->\n\nwhere ⊙ denotes the element-wise product.\n\n- 4) Final Hidden State : The final hidden state h t is a convex combination of the previous hidden state and the candidate hidden state, weighted by the update gate:\n\n<!-- formula-not-decoded -->\n\nNeglecting the bias terms, and streamlining the matrices as linear operations Linear d h with a certain matching hidden dimension d h , a GRU cell has the following simplified form:\n\n<!-- formula-not-decoded -->",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "8d9eb96b352bd1f3498421a1f44722983b2153bb47a34b54fe46e53d28938435"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "1f90a72e0cfd4aafbb41c9c5b38f19b778ce218ef55b830487029fdd504b55ed"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.06619235782828281,
+        "x1": 0.49023124183006567,
+        "y1": 0.439269224251364
+      },
+      "text": "10x slower to train [10]. Therefore, subsequent works focused on convolutional neural network based blocks, which are faster to train. However, recently there is renewed interest in efficient RNNs and state space models both of which aim to address the inefficiencies of traditional RNNs. These newer developments aim to combine the sequential processing capabilities of RNNs with improved computational and memory efficiency, making them viable for longer sequences and higher throughput requirements. Key advancements include: 1.) State Space Models (SSMs): Recent models like S4 (Structured State Space for Sequence Modeling) [16] and its variants propose replacing traditional recurrent operations with structured linear systems that can process sequences in parallel while retaining the ability to model long-range dependencies. By leveraging the mathematical properties of state space representations, these models reduce the need for sequential backpropagation, offering significant speed and memory improvements. These efforts culminated in the recently introduced S6 model [17], which uses a specific Mamba block around the SSM core, gaining considerable attention due to its strong performance on sequential tasks. 2.) Work on parallelization of RNNs: where [18] linearized and diagonalized the recurrence; whereas [19] built on improving the LSTM model; and [20] introduced a new minimal version of GRUs and LSTMs, called minLSTM and minGRU.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.4457100345959604,
+        "x1": 0.49023189542483664,
+        "y1": 0.5621720020291416
+      },
+      "text": "In this work, we analyze the minGRU model for its use in the Turbo autoencoder structure. For that we combine it with the Mamba block for SSMs and integrate it into the parallel Turbo structure of the encoder. We will show that it matches and at times outperforms the convolutional network performance, while being as fast to train as the convolutional networks for smaller sequence length, and having significant advantages at long block lengths.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771226,
+        "y0": 0.5694596219696977,
+        "x1": 0.4902402650326796,
+        "y1": 0.7314333656655053
+      },
+      "text": "a) Notation: In this work, we distinguish between random vectors in the communication model and deterministic vectors in the neural network: an n -dimensional random vector is denoted by an uppercase letter with a superscript, e.g. X n , whose components are X 1 , X 2 , . . . , and whose realized value is x n . In contrast, neural-network vectors are written in bold lowercase with a time subscript, e.g. x t , to represent the input at time t in a recurrent model. For example, X n corresponds to a random codeword of length n transmitted over the channel (Section III), whereas x t is the deterministic input signal at time t in the MinGRU-based block (Section II).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.18593300653594755,
+        "y0": 0.7624499335858592,
+        "x1": 0.38431549133986903,
+        "y1": 0.7732477596048991
+      },
+      "text": "II. MINGRU-BASED BLOCK",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771227,
+        "y0": 0.7941490159090916,
+        "x1": 0.49023124183006517,
+        "y1": 0.8200868457070714
+      },
+      "text": "A. Introduction to Recurrent Neural Networks and Gated Recurrent Units",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771227,
+        "y0": 0.8360332669191926,
+        "x1": 0.49023189542483664,
+        "y1": 0.907211143443283
+      },
+      "text": "Recurrent Neural Networks (RNNs) are a class of neural networks designed to process sequential data by maintaining a hidden state that captures information about previous inputs. Unlike feedforward neural networks, RNNs share parameters across time steps, enabling them to model temporal dependen- cies effectively. Formally, given an input sequence { x t } T t =1 , the hidden state h t at time t is computed as:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.6470245098039216,
+        "y0": 0.10958921262626335,
+        "x1": 0.9199941039215684,
+        "y1": 0.1217859510952472
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562091,
+        "y0": 0.1383681113636371,
+        "x1": 0.9199989169934635,
+        "y1": 0.1948525575846975
+      },
+      "text": "where f is a non-linear function (e.g., a combination of matrix multiplications and activation functions), h t -1 is the hidden state from the previous time step, x t is the input at time t , and θ are the network parameters.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562091,
+        "y0": 0.20030978207070807,
+        "x1": 0.9199926797385616,
+        "y1": 0.27148765859479873
+      },
+      "text": "One of the key challenges in training RNNs is the vanishing/exploding gradient problem, which limits their ability to capture long-term dependencies. Gated architectures like the Gated Recurrent Unit (GRU) were introduced to address this limitation.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562091,
+        "y0": 0.29390785429293054,
+        "x1": 0.7258847673202607,
+        "y1": 0.3047509871212134
+      },
+      "text": "B. Gated Recurrent Unit (GRU)",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562091,
+        "y0": 0.3172517012626275,
+        "x1": 0.9199945261437908,
+        "y1": 0.40352427475641495
+      },
+      "text": "The GRU is a simplified yet effective variant of the Long Short-Term Memory (LSTM) network. It uses gating mechanisms to control the flow of information, which helps in preserving long-term dependencies and mitigating the vanishing gradient issue. The GRU maintains a single hidden state h t , updated as follows:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.526045751633987,
+        "y0": 0.4122952095959608,
+        "x1": 0.9199937699346407,
+        "y1": 0.4396369611962577
+      },
+      "text": "Update Gate : The update gate z t determines how much of the past hidden state h t -1 should be retained:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.6258415032679738,
+        "y0": 0.45618138434343547,
+        "x1": 0.8435255069934641,
+        "y1": 0.4683781228124193
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5493741830065361,
+        "y0": 0.4849602830808092,
+        "x1": 0.919997257843137,
+        "y1": 0.5122139813982779
+      },
+      "text": "where σ is the sigmoid activation function, and W z , U z , b z are learnable parameters.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.526045751633987,
+        "y0": 0.5150616237373749,
+        "x1": 0.9199926702614372,
+        "y1": 0.5565406888978289
+      },
+      "text": "Reset Gate : The reset gate r t controls how much of the past hidden state should influence the current computation:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.6265849673202616,
+        "y0": 0.5740424954545466,
+        "x1": 0.8427820429411764,
+        "y1": 0.5862404965497929
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.5260457516339869,
+        "y0": 0.5995019497474757,
+        "x1": 0.9191811962091503,
+        "y1": 0.6291164464735864
+      },
+      "text": "Candidate Hidden State : A candidate hidden state ˜ h t is computed using the reset gate:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.5890653594771241,
+        "y0": 0.6433378083333343,
+        "x1": 0.8803032847712418,
+        "y1": 0.6588175167518131
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.549374183006536,
+        "y0": 0.6753984143939404,
+        "x1": 0.8405159254901955,
+        "y1": 0.6865987697059097
+      },
+      "text": "where ⊙ denotes the element-wise product.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.5260457516339869,
+        "y0": 0.6904050580808092,
+        "x1": 0.9200005960784315,
+        "y1": 0.7318841232412633
+      },
+      "text": "Final Hidden State : The final hidden state h t is a convex combination of the previous hidden state and the candidate hidden state, weighted by the update gate:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.6247973856209151,
+        "y0": 0.7461054851010113,
+        "x1": 0.844571258627451,
+        "y1": 0.7615839308932273
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562091,
+        "y0": 0.7785686204545466,
+        "x1": 0.919992679738561,
+        "y1": 0.8205144864487829
+      },
+      "text": "Neglecting the bias terms, and streamlining the matrices as linear operations Linear d h with a certain matching hidden dimension d h , a GRU cell has the following simplified form:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.5863562091503263,
+        "y0": 0.8370589095959607,
+        "x1": 0.8434077133333328,
+        "y1": 0.9081697894790859
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.9901227999999946,
+  "model_load_seconds": null,
+  "peak_rss_mb": 77.953125,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "2503.08451_pg2",
+      "pdf_sha256": "e2d44c8bbc516e932c2bfe1ff0eb4b469665bd0bf08ee186e840efb9d5246ec6",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

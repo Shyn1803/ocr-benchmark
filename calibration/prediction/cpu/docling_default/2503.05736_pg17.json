@@ -1,0 +1,254 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "2503.05736_pg17",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "additional bisection refinements: we found that quadratic interpolation produces better results in our numerical case studies.\n\nWe refer to Figure 2 for a practical implementation of the algorithm described above: the colored disks in the center panel correspond to the parameter values at which the pattern statistics was computed for predictorcorrector step as outlined above.\n\n## 4 Assessing dependence on algorithmic parameters\n\nWe now outline the parameters that enter the algorithm and discuss how they affect accuracy and computational efficiency. The implementation of the continuation algorithm described above requires the following choices:\n\n1. Feature function: We choose a feature function f that can differentiate between the patterns we want to distinguish.\n2. Spatial discretization: We choose the number K of Fourier modes so that we can resolve the nonlinearity and the expected patterns at the expected wavelength. Alternatively, and this is how our numerical computations were conducted, we can use finite differences to solve the PDE model for a sufficiently small spatial stepsize that resolves the patterns we are interested in and use the resulting grid also for α -shapes.\n3. Initial data: We choose two fixed functions U b ( x ) and U r ( x ) to construct the initial data in (2.11). The deterministic part U b is selected to ensure that we reach the patterns we are interested in: for domain-filling patterns, U b is typically an unstable homogeneous rest state. The function U r that will be used for the randomized part is given by U r ( x ) = ∑ | k |≤ K a k e k ( x ) for a fixed nonzero choice of coefficients ( a k ) | k |≤ K (we set U r = 0 for deterministic initial data).\n4. Randomization: We select N samples of the random variables ( b k ( ω )) | k |≤ K from a uniform distribution and form the ensemble of N randomized functions U ω r ( x ) := ∑ | k |≤ K a k b k ( ω ) e k ( x ). The resulting N functions U 0 ( x ) = U b ( x ) + U ω r ( x ) are then used as initial data in the numerical solver. The number N of samples that are used to calculate the empirical measure µ N,ω f (or the empirical feature mean E N,ω f if applicable) can be adjusted using, for instance, a small-sample paired t-test (which tests the null hypothesis that the mean of the difference of feature samples is zero) to ensure that there is a statistically significant difference between the two empirical measures in the argument of the bifurcation function g .\n5. Integration time: The integration time T &gt; 0 is chosen so that we reach the relevant pattern regime from the initial data U b + U ω r within the time interval [0 , T ]. It is possible to adapt T during continuation, for instance by choosing shorter or longer values and comparing the resulting feature values.\n6. Sublevel sets: We evaluate the feature function on the sublevel sets U -1 j (( -∞ , c ]) of the j th component of the solution U to (2.1). We choose the index 1 ≤ j ≤ d and the threshold c ∈ R so that the corresponding sublevel sets best reflect the patterns we are interested in.\n7. Alpha-shapes: The evaluation of the feature functions we consider require the computation of the α -shapes of the sublevel sets. We need to pick the radius α of the α -shape and the number M 2 of lattice points on which we evaluate the solution to approximate the sublevel set. We usually choose M := K and set α = 10 /M . We note that we can adapt M and α by comparing the resulting pattern statistics using the Wasserstein metric to ensure that they do not change upon increasing M or varying α .\n8. Predictor-corrector steps: We need to choose the arclength stepsize s and the parameter offset h . We normally pick h := s and note that the stepsize s can be adapted based on the successive changes of the angle of the secants, which are indicative of the curvature of the curve Γ.\n\nOur algorithm is robust with respect to these choices, and we never had to adjust them during continuation. Generally, increasing the number K of Fourier modes (or mesh points when using finite differences) for the PDE solver, the number M of lattice points on which we evaluate patterns and their features, and the ensemble size N of randomized initial data will provide smoother and more accurate continuation curves. The algorithm is",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "3c0fc087a53cbacfb4afb218e35e1ae92d31fe827a49eb17b5f0338056cafd7c"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "d43592ac58ab8ec55b7e11c5a333f68fd3d898525bdcde8d01bb7d0451db7155"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10294117647058823,
+        "y0": 0.07216987904040396,
+        "x1": 0.8970596968954248,
+        "y1": 0.10127665419541226
+      },
+      "text": "additional bisection refinements: we found that quadratic interpolation produces better results in our numerical case studies.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10294117647058823,
+        "y0": 0.11381255580808072,
+        "x1": 0.8970629526470585,
+        "y1": 0.161034229952988
+      },
+      "text": "We refer to Figure 2 for a practical implementation of the algorithm described above: the colored disks in the center panel correspond to the parameter values at which the pattern statistics was computed for predictorcorrector step as outlined above.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.10294117647058823,
+        "y0": 0.19774937727272726,
+        "x1": 0.7071295141503265,
+        "y1": 0.21364909120164166
+      },
+      "text": "4 Assessing dependence on algorithmic parameters",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10294117647058823,
+        "y0": 0.23757013156565643,
+        "x1": 0.8970596968954248,
+        "y1": 0.26667690672066474
+      },
+      "text": "We now outline the parameters that enter the algorithm and discuss how they affect accuracy and computational efficiency. The implementation of the continuation algorithm described above requires the following choices:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.10294117647058823,
+        "y0": 0.2791763338383837,
+        "x1": 0.8970551169607842,
+        "y1": 0.3083208461146041
+      },
+      "text": "Feature function: We choose a feature function f that can differentiate between the patterns we want to distinguish.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.10294117647058816,
+        "y0": 0.3154036065656564,
+        "x1": 0.8970577254248363,
+        "y1": 0.3807766541954122
+      },
+      "text": "Spatial discretization: We choose the number K of Fourier modes so that we can resolve the nonlinearity and the expected patterns at the expected wavelength. Alternatively, and this is how our numerical computations were conducted, we can use finite differences to solve the PDE model for a sufficiently small spatial stepsize that resolves the patterns we are interested in and use the resulting grid also for α -shapes.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.10294117647058833,
+        "y0": 0.3878594146464645,
+        "x1": 0.8970628544444448,
+        "y1": 0.4725119611962565
+      },
+      "text": "Initial data: We choose two fixed functions U b ( x ) and U r ( x ) to construct the initial data in (2.11). The deterministic part U b is selected to ensure that we reach the patterns we are interested in: for domain-filling patterns, U b is typically an unstable homogeneous rest state. The function U r that will be used for the randomized part is given by U r ( x ) = ∑ | k |≤ K a k e k ( x ) for a fixed nonzero choice of coefficients ( a k ) | k |≤ K (we set U r = 0 for deterministic initial data).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.10294117647058881,
+        "y0": 0.4784275964646464,
+        "x1": 0.8970671953267976,
+        "y1": 0.5981415531853113
+      },
+      "text": "Randomization: We select N samples of the random variables ( b k ( ω )) | k |≤ K from a uniform distribution and form the ensemble of N randomized functions U ω r ( x ) := ∑ | k |≤ K a k b k ( ω ) e k ( x ). The resulting N functions U 0 ( x ) = U b ( x ) + U ω r ( x ) are then used as initial data in the numerical solver. The number N of samples that are used to calculate the empirical measure µ N,ω f (or the empirical feature mean E N,ω f if applicable) can be adjusted using, for instance, a small-sample paired t-test (which tests the null hypothesis that the mean of the difference of feature samples is zero) to ensure that there is a statistically significant difference between the two empirical measures in the argument of the bifurcation function g .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.1029411764705888,
+        "y0": 0.6052255762626262,
+        "x1": 0.8970605780065364,
+        "y1": 0.6524837249024831
+      },
+      "text": "Integration time: The integration time T > 0 is chosen so that we reach the relevant pattern regime from the initial data U b + U ω r within the time interval [0 , T ]. It is possible to adapt T during continuation, for instance by choosing shorter or longer values and comparing the resulting feature values.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.10294117647058872,
+        "y0": 0.656800371969697,
+        "x1": 0.8970653969607847,
+        "y1": 0.7068246339933921
+      },
+      "text": "Sublevel sets: We evaluate the feature function on the sublevel sets U -1 j (( -∞ , c ]) of the j th component of the solution U to (2.1). We choose the index 1 ≤ j ≤ d and the threshold c ∈ R so that the corresponding sublevel sets best reflect the patterns we are interested in.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.10294117647058854,
+        "y0": 0.713908657070707,
+        "x1": 0.8970606320588237,
+        "y1": 0.7973940784378366
+      },
+      "text": "Alpha-shapes: The evaluation of the feature functions we consider require the computation of the α -shapes of the sublevel sets. We need to pick the radius α of the α -shape and the number M 2 of lattice points on which we evaluate the solution to approximate the sublevel set. We usually choose M := K and set α = 10 /M . We note that we can adapt M and α by comparing the resulting pattern statistics using the Wasserstein metric to ensure that they do not change upon increasing M or varying α .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.1029411764705886,
+        "y0": 0.8044768388888889,
+        "x1": 0.897057479379085,
+        "y1": 0.8517362501550083
+      },
+      "text": "Predictor-corrector steps: We need to choose the arclength stepsize s and the parameter offset h . We normally pick h := s and note that the stepsize s can be adapted based on the successive changes of the angle of the secants, which are indicative of the curvature of the curve Γ.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10294117647058867,
+        "y0": 0.8642721517676767,
+        "x1": 0.8970629526470596,
+        "y1": 0.9296074622762204
+      },
+      "text": "Our algorithm is robust with respect to these choices, and we never had to adjust them during continuation. Generally, increasing the number K of Fourier modes (or mesh points when using finite differences) for the PDE solver, the number M of lattice points on which we evaluate patterns and their features, and the ensemble size N of randomized initial data will provide smoother and more accurate continuation curves. The algorithm is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 5.100984800000333,
+  "model_load_seconds": null,
+  "peak_rss_mb": 133.125,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "2503.05736_pg17",
+      "pdf_sha256": "f0a619a0324a5bec598f8032b0b9ac3759a9ac6110526906ca4b05fe867d8e3e",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

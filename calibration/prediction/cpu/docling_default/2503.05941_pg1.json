@@ -1,0 +1,240 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "2503.05941_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "## Choosing Augmentation Parameters in OSQPA New Approach based on Conjugate Directions\n\nAvinash Kumar (Email: avishimpu@gmail.com)\n\nAbstract -This work proposes a new method to select the augmentation parameters in the operator splitting quadratic program (OSQP) algorithm so as to reduce the computation time of overall algorithm. The selection is based upon the information of conjugate directions of the coefficient matrix of a linear system of equations present in the algorithm. This selection makes it possible to cache these conjugate directions, instead of computing them at each iteration, resulting in faster computation of the solution of the linear system thus reducing the overall computation time. This reduction is demonstrated by a numerical example.\n\nNotation :Throughout this manuscript, scalars and scalarvalued functions are denoted by small ordinary alphabets, vectors are denoted by bold ordinary alphabets, and matrices are denoted by capital alphabets. X ≻ 0 means that the matrix X is symmetric positive definite. diag ( · ) represents a diagonal matrix. A ' T ' in the superscript represents the transpose. ' k ' in the superscript of a quantity denotes the value of the quantity at the k th iteration.\n\n## I. INTRODUCTION\n\nThe analysis of convex optimization problems is of great importance in applied mathematics. Convex optimization problems arise in numerous fields including - machine learning, control engineering (model predictive control), Lasso and Hubber fitting and so on [1]. With the advent of big data and consequently higher dimensional data availability, the size of the convex optimization problems that are required to be solved continues to grow in size. Therefore, to handle real-time optimization-based tasks, it becomes necessary to develop algorithms that can work efficiently and effectively with the high-dimensional data. Furthermore, study of the solution algorithms for convex optimization problems turns out fruitful for the analysis of non-convex problems.\n\nIn this work, we consider the convex optimization problem, called quadratic program, of the form as stated below.\n\n<!-- formula-not-decoded -->\n\nwhere x ∈ R n is the decision variable, P ∈ R n × n is a positive semi-definite matrix, q ∈ R n , A ∈ R m × n , and l ∈ R m and u ∈ R m define the lower and upper limits on the variable A x . This formulation allows handling equality constraints by setting l i = u i . There exist a plethora of algorithms to solve the optimization problem 1 and can be broadly classified into three categories: (1) active-set methods [2], [3], (2) interior-point methods [4], and (3) fi rstorder methods [5]. The major drawback of active set methods is that their worst-case complexity grows exponentially with the number of constraints [6] while the interior point methods are not scalable for very large scale problems because each iteration requires heavy computational tasks to be performed [7].\n\nAcknowledgement : The author is thankful to Prof. Hoai Nam Nguyen (T´ el´ ecom SudParis) for the fruitful discussions while working at T´ el´ ecom SudParis, Institut Polytechnique de Paris.\n\nIn recent years, the alternating direction method of multipliers (ADMM), which is an operator splitting based firstorder method, has received a lot of attention by the researchers. This is because this method seems to be very well suited for the large scale problems because of the decomposability (inherited from the dual ascent algorithm) and superior convergence properties (inherited from the method of multipliers) [8]. Moreover, the steps involved in the ADMM algorithm are computationally cheap and simple to implement [1]. However, the optimal selection of the parameters, inherited from the augmented Lagrangian, involved in the ADMM algorithm is still an open problem [8]. Operator Splitting Quadratic Program (OSQP), proposed in [1], is one of the most popular general-purpose solvers for the convex quadratic programs. The algorithm is based on a novel splitting technique and subsequent usage of the auxiliary variables leading to a quasi-definite linear system which is always solvable. One of the most computationally expensive step in the OSQP algorithm involves the solution of a linear system-a common trait of the algorithms derived from ADMM. It is this linear system which we propose to solve in a more efficient manner. To do so we use the information about the conjugate directions of the coefficient matrix. The information about the conjugate directions is of grave importance in the study of convex optimization. To the best of author's knowledge, this line of research, where the information of the conjugate directions is exploited to improve the characteristics of the algorithm, remains unexplored in the literature and the author believes that it holds promise. The information about the conjugate directions allows us to compute offline a set of parameters and cache them thus avoiding their computation at each iteration of the algorithm leading to reduction in the computation time of the overall algorithm which is demonstrated by a numerical example.\n\nThe rest of the paper is organised as follows. Section II presents a review of the OSQP solver as reported in [1] followed by the background of conjugate direction and conjugate gradient methods. In Section III, we present the method to choose augmentation parameters by utilising the information of the conjugate directions of a specific coef-",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "c423c02912d74f3f717732ebaca435a6d473d9af692c00aa9291ce141303d80e"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "a5641d42343f5a1a6693330977cbe658168dbef2d91a36bf4927915cae20ed9f"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.23686307189542485,
+        "y0": 0.09342568484848486,
+        "x1": 0.7620929436619016,
+        "y1": 0.13681169646464653
+      },
+      "text": "Choosing Augmentation Parameters in OSQPA New Approach based on Conjugate Directions",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3233334967320262,
+        "y0": 0.16244959191919187,
+        "x1": 0.6769435526141939,
+        "y1": 0.17498590934343428
+      },
+      "text": "Avinash Kumar (Email: avishimpu@gmail.com)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823496732026152,
+        "y0": 0.20640803666666663,
+        "x1": 0.49032911201502133,
+        "y1": 0.34232586022647216
+      },
+      "text": "Abstract -This work proposes a new method to select the augmentation parameters in the operator splitting quadratic program (OSQP) algorithm so as to reduce the computation time of overall algorithm. The selection is based upon the information of conjugate directions of the coefficient matrix of a linear system of equations present in the algorithm. This selection makes it possible to cache these conjugate directions, instead of computing them at each iteration, resulting in faster computation of the solution of the linear system thus reducing the overall computation time. This reduction is demonstrated by a numerical example.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08784307189542491,
+        "y0": 0.34659858979797964,
+        "x1": 0.49091062536071,
+        "y1": 0.4638028857575757
+      },
+      "text": "Notation :Throughout this manuscript, scalars and scalarvalued functions are denoted by small ordinary alphabets, vectors are denoted by bold ordinary alphabets, and matrices are denoted by capital alphabets. X ≻ 0 means that the matrix X is symmetric positive definite. diag ( · ) represents a diagonal matrix. A ' T ' in the superscript represents the transpose. ' k ' in the superscript of a quantity denotes the value of the quantity at the k th iteration.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.2247077777777779,
+        "y0": 0.4780124162626262,
+        "x1": 0.35155958131252146,
+        "y1": 0.4894090726262626
+      },
+      "text": "I. INTRODUCTION",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08764738562091516,
+        "y0": 0.49861885565656555,
+        "x1": 0.49110976116552224,
+        "y1": 0.6912266231313131
+      },
+      "text": "The analysis of convex optimization problems is of great importance in applied mathematics. Convex optimization problems arise in numerous fields including - machine learning, control engineering (model predictive control), Lasso and Hubber fitting and so on [1]. With the advent of big data and consequently higher dimensional data availability, the size of the convex optimization problems that are required to be solved continues to grow in size. Therefore, to handle real-time optimization-based tasks, it becomes necessary to develop algorithms that can work efficiently and effectively with the high-dimensional data. Furthermore, study of the solution algorithms for convex optimization problems turns out fruitful for the analysis of non-convex problems.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08823587581699362,
+        "y0": 0.6951328708080808,
+        "x1": 0.49073726306160614,
+        "y1": 0.7216810423232324
+      },
+      "text": "In this work, we consider the convex optimization problem, called quadratic program, of the form as stated below.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.19039257516339886,
+        "y0": 0.7311886338383838,
+        "x1": 0.4895394302735412,
+        "y1": 0.7789022222222223
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08764799019607847,
+        "y0": 0.788698980429293,
+        "x1": 0.4889260357727792,
+        "y1": 0.8781964084848485
+      },
+      "text": "where x ∈ R n is the decision variable, P ∈ R n × n is a positive semi-definite matrix, q ∈ R n , A ∈ R m × n , and l ∈ R m and u ∈ R m define the lower and upper limits on the variable A x . This formulation allows handling equality constraints by setting l i = u i . There exist a plethora of algorithms to solve the optimization problem 1 and can be broadly classified into three categories: (1) active-set methods [2], [3], (2) interior-point methods [4], and (3) fi rstorder methods [5]. The major drawback of active set methods is that their worst-case complexity grows exponentially with the number of constraints [6] while the interior point methods are not scalable for very large scale problems because each iteration requires heavy computational tasks to be performed [7].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "footnote",
+      "box": {
+        "page": 0,
+        "x0": 0.08784535947712417,
+        "y0": 0.8941368236363636,
+        "x1": 0.4880819802210325,
+        "y1": 0.9258300050252526
+      },
+      "text": "Acknowledgement : The author is thankful to Prof. Hoai Nam Nguyen (T´ el´ ecom SudParis) for the fruitful discussions while working at T´ el´ ecom SudParis, Institut Polytechnique de Paris.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5111782745098037,
+        "y0": 0.32634480262626253,
+        "x1": 0.9148566601307192,
+        "y1": 0.8357718882828283
+      },
+      "text": "In recent years, the alternating direction method of multipliers (ADMM), which is an operator splitting based firstorder method, has received a lot of attention by the researchers. This is because this method seems to be very well suited for the large scale problems because of the decomposability (inherited from the dual ascent algorithm) and superior convergence properties (inherited from the method of multipliers) [8]. Moreover, the steps involved in the ADMM algorithm are computationally cheap and simple to implement [1]. However, the optimal selection of the parameters, inherited from the augmented Lagrangian, involved in the ADMM algorithm is still an open problem [8]. Operator Splitting Quadratic Program (OSQP), proposed in [1], is one of the most popular general-purpose solvers for the convex quadratic programs. The algorithm is based on a novel splitting technique and subsequent usage of the auxiliary variables leading to a quasi-definite linear system which is always solvable. One of the most computationally expensive step in the OSQP algorithm involves the solution of a linear system-a common trait of the algorithms derived from ADMM. It is this linear system which we propose to solve in a more efficient manner. To do so we use the information about the conjugate directions of the coefficient matrix. The information about the conjugate directions is of grave importance in the study of convex optimization. To the best of author's knowledge, this line of research, where the information of the conjugate directions is exploited to improve the characteristics of the algorithm, remains unexplored in the literature and the author believes that it holds promise. The information about the conjugate directions allows us to compute offline a set of parameters and cache them thus avoiding their computation at each iteration of the algorithm leading to reduction in the computation time of the overall algorithm which is demonstrated by a numerical example.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5117676013071898,
+        "y0": 0.8395267470707072,
+        "x1": 0.9146395023078123,
+        "y1": 0.9263776963636365
+      },
+      "text": "The rest of the paper is organised as follows. Section II presents a review of the OSQP solver as reported in [1] followed by the background of conjugate direction and conjugate gradient methods. In Section III, we present the method to choose augmentation parameters by utilising the information of the conjugate directions of a specific coef-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 5.697659200000089,
+  "model_load_seconds": null,
+  "peak_rss_mb": 147.37890625,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "2503.05941_pg1",
+      "pdf_sha256": "bc5883039587189afff2aec88213e267206beb3cc4bc07838b82dc04db53f698",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

@@ -1,0 +1,528 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_default",
+  "engine_family": "opendataloader",
+  "profile": "default",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.06703_pg4",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "4\n\nbeing inspected at the same time. We then denote by Sm ⊂ S the subset of sensing regions inspected by transmit AP m, with S the complete set of all clusters such that |S| = S. On the contrary, receive APs are responsible for only detecting a single target within their sensing region.\n\nDuring the tracking phase, the goal is to confirm the presence of already detected targets and update their parameters. In this case, transmit AP m tracks the detected targets within the subset Lm, and the receive AP focuses on one or more targets. Obviously, the network has no control over the position of the detected targets, and it can happen that close targets are to be tracked: mutual interference effects are thus to be properly taken into account. This is discussed further in Section IV.\n\nIII. SYSTEM MODEL\n\nWe now describe the proposed scalable ISAC-enabled CFmMIMO system model, focusing mainly on the sensing tasks: detection at positions pi, with i ∈ S, and tracking at positions pl, with l ∈ {1,...,L}. Assuming block fading channel and OFDM modulation, each coherence block consists of τc timefrequency samples during which channels and reflections are constant and flat. This way, t ∈ {1,...,τc} will denote the index for the symbols transmitted within a single coherence block to sense the positions pi (detection) or pl (tracking).\n\nIn that sense, hk,m (hHk,m) denotes the N-dimensional UL (DL)1 channel from UE k to AP m; Gm,m′ is the (N × N)dimensional matrix representing the channel from AP m′ ∈ Mtx to AP m ∈ Mrx; and Hp,m,m′ refers to the (N × N)dimensional matrix for the composite channel linking transmit AP m′ to receive AP m through the reflection from the target located in position p (either pi or pl).\n\nA. Propagation Channels\n\nUnder the above assumptions, the N-dimensional UL channel from UE k to AP m is [23]\n\n# hk,m ∼ CN(0,Ck,m), (1)\n\nwhere Ck,m ∈ CN×N refers to the spatial correlation matrix of the Rayleigh-distributed non-line-of-sight (NLoS) components. The corresponding large-scale fading coefficient (LSF), which includes path loss, is tr(Ck,m)/N.\n\nFor the AP-AP link, we adopt a Rician modeling:\n\nbm,m′ 1 + cm,m′\n\nG ¯ m,m′ + √cm,m′ejψm,m′Vm,m′ ,\n\nGm,m′ =\n\n(2) where bm,m′ is the LSF coefficient, cm,m′ is the Rician factor, G¯ m,m′ ∈ CN×N contains the correlated2 NLoS components such that g¯m,m′ = vec(G¯ m,m′) ∼ CN(0N2,Qm,m′), ψm,m′ ∼ U[0,2π] is the phase offset, and Vm,m′ ∈ CN×N is the equivalent array response at the LoS direction:\n\nVm,m′ = am (φm,m′,θm,m′)aHm′ (φm′,m,θm′,m), (3)\n\n- 1We assume that system operations happen within one channel coherence interval, and that time-division-duplex (TDD) protocol is used, to ensure equivalence (reciprocity) of UL and DL channels.\n- 2In line with [11], a popular choice for the channel covariance matrix\n\n\nQm,m′ is the well-known Kronecker model. However, we leave this unspecified until the simulations section to keep our analysis general.\n\nwith am(φm,m′,θm,m′) the response of the array (or steering vector) for the azimuth φm,m′ (φm′,m) and elevation θm,m′ (θm′,m) angles of arrival (departure) from AP m to AP m′. According to [24], the Rician factors can be defined as\n\npLoS (dm,m′) 1 − pLoS (dm,m′)\n\n, (4)\n\ncm,m′ =\n\nwhere pLoS(dm,m′) is the LoS probability that depends on the distance dm,m′ between AP m and m′ [25, Table B.1.2.1-2].\n\nFinally, assuming LoS propagation between the targets and\n\n# the involved APs, a convenient expression for Hp,m,m′ is Hp,m,m′ = α˜p,m,m′ am (φm,p,θm,p)aHm′ (φm′,p,θm′,p)\n\n# ,\n\nAp,m,m′\n\n(5) where α˜p,m,m′ = αp,m,m′ βp,m,m′ is a complex scalar coefficient, with αp,m,m′ the target reflectivity, or radar crosssection (RCS), and βp,m,m′ the product of the path loss from transmit AP m′ to the target at position p and that from the target to receive AP m. As previously mentioned, we follow the Swerling-I model for the RCS, in which αp,m,m′ is kept constant over consecutive symbols within the coherence block [11]. Moreover, φm,p,θm,p are the azimuth and elevation angle of the position p with respect to (w.r.t.) the antenna array of AP m. A similar meaning have the quantities φm′,p and θm′,p w.r.t. AP m′.\n\n- B. Uplink Channel Estimation\n\nAssuming perfect CSI can be overly optimistic in many applications. In practice, obtaining such channel knowledge locally at the APs via UL orthogonal pilots is more realistic. This approach enables the characterization of the sufficient statistics of the channels [26].\n\nA feasible option could be the minimum mean-square error\n\n(MMSE) estimation [27, Subsection V-B]: hˆk,m =\n\n1 τpη¯k\n\nΛk,mφk,m, (6)\n\nwhere Λk,m = τpη¯kCk,mΓ−k,m1 is the MMSE matrix, τp is the number of pilots, η¯k is the UL training power, and\n\nΓk,m =\n\nK j=1\n\nτpη¯jCj,m πjHπk 2 + σm2 IL, (7)\n\ndenotes the covariance matrix of the least-squares observations φk,m ∈ CN providing sufficient statistics, i.e.,\n\nφk,m =\n\nK j=1\n\nτpη¯jhj,mπjHπk + ωk,m, (8) with πk ∈ Cτ\n\np the sequence of pilots sent by UE k to estimate the channel, and ωk,m ∈ CN the equalized ambient noise with variance σω2 [23, Subsection II-B].\n\n- C. Downlink Transmission Assuming to be in the DL transmission and sensing phase,\n\n\nAP m ∈ Mtx sends data to the UEs in the set Km plus additional beams to first, detect the presence of potential targets within the surveillance area and later, track their location.\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "6d8bc38f4dc2134a0ce0be109a34e52832bf948dfaf9db305dddf694f683c330"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "a0694e13c2df52520e28e0970d0573c0ec4ed155b9ae8f2d13dcbb8c8efbc576"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "64d332cdc383f00954c313f0e7ecd3c4e5e8e21c9a9fda77d0bb521a4bbeebe8"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9142957516339869,
+        "y0": 0.03128409090909101,
+        "x1": 0.9199934640522875,
+        "y1": 0.04189520202020203
+      },
+      "text": "4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.06973863636363631,
+        "x1": 0.490233660130719,
+        "y1": 0.14527525252525253
+      },
+      "text": "being inspected at the same time. We then denote by Sm ⊂ S the subset of sensing regions inspected by transmit AP m, with S the complete set of all clusters such that |S| = S. On the contrary, receive APs are responsible for only detecting a single target within their sensing region.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.14493560606060607,
+        "x1": 0.49023529411764705,
+        "y1": 0.2657563131313132
+      },
+      "text": "During the tracking phase, the goal is to confirm the presence of already detected targets and update their parameters. In this case, transmit AP m tracks the detected targets within the subset Lm, and the receive AP focuses on one or more targets. Obviously, the network has no control over the position of the detected targets, and it can happen that close targets are to be tracked: mutual interference effects are thus to be properly taken into account. This is discussed further in Section IV.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21201307189542484,
+        "y0": 0.2782260101010101,
+        "x1": 0.3582401960784314,
+        "y1": 0.29338257575757576
+      },
+      "text": "III. SYSTEM MODEL",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.29700505050505044,
+        "x1": 0.4902385620915033,
+        "y1": 0.43347474747474746
+      },
+      "text": "We now describe the proposed scalable ISAC-enabled CFmMIMO system model, focusing mainly on the sensing tasks: detection at positions pi, with i ∈ S, and tracking at positions pl, with l ∈ {1,...,L}. Assuming block fading channel and OFDM modulation, each coherence block consists of τc timefrequency samples during which channels and reflections are constant and flat. This way, t ∈ {1,...,τc} will denote the index for the symbols transmitted within a single coherence block to sense the positions pi (detection) or pl (tracking).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.432580808080808,
+        "x1": 0.49024019607843133,
+        "y1": 0.5396111111111112
+      },
+      "text": "In that sense, hk,m (hHk,m) denotes the N-dimensional UL (DL)1 channel from UE k to AP m; Gm,m′ is the (N × N)dimensional matrix representing the channel from AP m′ ∈ Mtx to AP m ∈ Mrx; and Hp,m,m′ refers to the (N × N)dimensional matrix for the composite channel linking transmit AP m′ to receive AP m through the reflection from the target located in position p (either pi or pl).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.5543573232323232,
+        "x1": 0.2507712418300654,
+        "y1": 0.5693762626262626
+      },
+      "text": "A. Propagation Channels",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.5731363636363636,
+        "x1": 0.49023529411764705,
+        "y1": 0.6033876262626263
+      },
+      "text": "Under the above assumptions, the N-dimensional UL channel from UE k to AP m is [23]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.20935294117647057,
+        "y0": 0.6105808080808081,
+        "x1": 0.49023202614379086,
+        "y1": 0.6342790404040404
+      },
+      "text": "hk,m ∼ CN(0,Ck,m), (1)",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.6329305555555556,
+        "x1": 0.49023529411764705,
+        "y1": 0.6939255050505051
+      },
+      "text": "where Ck,m ∈ CN×N refers to the spatial correlation matrix of the Rayleigh-distributed non-line-of-sight (NLoS) components. The corresponding large-scale fading coefficient (LSF), which includes path loss, is tr(Ck,m)/N.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0962859477124183,
+        "y0": 0.6930315656565657,
+        "x1": 0.4314656862745098,
+        "y1": 0.7081881313131313
+      },
+      "text": "For the AP-AP link, we adopt a Rician modeling:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17252941176470588,
+        "y0": 0.7197487373737373,
+        "x1": 0.23816993464052286,
+        "y1": 0.7516287878787878
+      },
+      "text": "bm,m′ 1 + cm,m′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2519248366013072,
+        "y0": 0.7200694444444444,
+        "x1": 0.4845522875816993,
+        "y1": 0.7430012626262625
+      },
+      "text": "G ¯ m,m′ + √cm,m′ejψm,m′Vm,m′ ,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08568790849673202,
+        "y0": 0.7282588383838384,
+        "x1": 0.14977614379084966,
+        "y1": 0.7430012626262625
+      },
+      "text": "Gm,m′ =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.7498295454545454,
+        "x1": 0.490233660130719,
+        "y1": 0.840459595959596
+      },
+      "text": "(2) where bm,m′ is the LSF coefficient, cm,m′ is the Rician factor, G¯ m,m′ ∈ CN×N contains the correlated2 NLoS components such that g¯m,m′ = vec(G¯ m,m′) ∼ CN(0N2,Qm,m′), ψm,m′ ∼ U[0,2π] is the phase offset, and Vm,m′ ∈ CN×N is the equivalent array response at the LoS direction:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10769117647058823,
+        "y0": 0.8474785353535353,
+        "x1": 0.49023202614379086,
+        "y1": 0.8658068181818181
+      },
+      "text": "Vm,m′ = am (φm,m′,θm,m′)aHm′ (φm′,m,θm′,m), (3)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.8735088383838384,
+        "x1": 0.4902385620915033,
+        "y1": 0.9095037878787878
+      },
+      "text": "1We assume that system operations happen within one channel coherence interval, and that time-division-duplex (TDD) protocol is used, to ensure equivalence (reciprocity) of UL and DL channels.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.09302941176470587,
+        "y0": 0.908604797979798,
+        "x1": 0.4902385620915033,
+        "y1": 0.9219570707070707
+      },
+      "text": "2In line with [11], a popular choice for the channel covariance matrix",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.9211527777777778,
+        "x1": 0.49022712418300657,
+        "y1": 0.9445997474747475
+      },
+      "text": "Qm,m′ is the well-known Kronecker model. However, we leave this unspecified until the simulations section to keep our analysis general.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.06973989898989907,
+        "x1": 0.9199967320261438,
+        "y1": 0.13039267676767674
+      },
+      "text": "with am(φm,m′,θm,m′) the response of the array (or steering vector) for the azimuth φm,m′ (φm′,m) and elevation θm,m′ (θm′,m) angles of arrival (departure) from AP m to AP m′. According to [24], the Rician factors can be defined as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6856862745098039,
+        "y0": 0.13901262626262623,
+        "x1": 0.8004885620915033,
+        "y1": 0.17766035353535348
+      },
+      "text": "pLoS (dm,m′) 1 − pLoS (dm,m′)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8024428104575164,
+        "y0": 0.14533333333333343,
+        "x1": 0.9199934640522875,
+        "y1": 0.16048989898989896
+      },
+      "text": ", (4)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.622797385620915,
+        "y0": 0.14752146464646465,
+        "x1": 0.6792124183006536,
+        "y1": 0.16226388888888899
+      },
+      "text": "cm,m′ =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.17642550505050514,
+        "x1": 0.9199950980392158,
+        "y1": 0.20845202020202025
+      },
+      "text": "where pLoS(dm,m′) is the LoS probability that depends on the distance dm,m′ between AP m and m′ [25, Table B.1.2.1-2].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5260457516339869,
+        "y0": 0.20682702020202026,
+        "x1": 0.9199918300653595,
+        "y1": 0.2219835858585859
+      },
+      "text": "Finally, assuming LoS propagation between the targets and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.22192171717171705,
+        "x1": 0.9007581699346405,
+        "y1": 0.26460101010101
+      },
+      "text": "the involved APs, a convenient expression for Hp,m,m′ is Hp,m,m′ = α˜p,m,m′ am (φm,p,θm,p)aHm′ (φm′,p,θm′,p)",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.9007581699346405,
+        "y0": 0.24863636363636354,
+        "x1": 0.905281045751634,
+        "y1": 0.2612159090909092
+      },
+      "text": ",",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7563349673202615,
+        "y0": 0.2712032828282829,
+        "x1": 0.805233660130719,
+        "y1": 0.2842133838383838
+      },
+      "text": "Ap,m,m′",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.2795656565656567,
+        "x1": 0.9200016339869282,
+        "y1": 0.4625404040404041
+      },
+      "text": "(5) where α˜p,m,m′ = αp,m,m′ βp,m,m′ is a complex scalar coefficient, with αp,m,m′ the target reflectivity, or radar crosssection (RCS), and βp,m,m′ the product of the path loss from transmit AP m′ to the target at position p and that from the target to receive AP m. As previously mentioned, we follow the Swerling-I model for the RCS, in which αp,m,m′ is kept constant over consecutive symbols within the coherence block [11]. Moreover, φm,p,θm,p are the azimuth and elevation angle of the position p with respect to (w.r.t.) the antenna array of AP m. A similar meaning have the quantities φm′,p and θm′,p w.r.t. AP m′.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.4823143939393939,
+        "x1": 0.7133496732026143,
+        "y1": 0.4973333333333333
+      },
+      "text": "B. Uplink Channel Estimation Assuming perfect CSI can be overly optimistic in many applications. In practice, obtaining such channel knowledge locally at the APs via UL orthogonal pilots is more realistic. This approach enables the characterization of the sufficient statistics of the channels [26]. A feasible option could be the minimum mean-square error (MMSE) estimation [27, Subsection V-B]: hˆk,m = 1 τpη¯k Λk,mφk,m, (6) where Λk,m = τpη¯kCk,mΓ−k,m1 is the MMSE matrix, τp is the number of pilots, η¯k is the UL training power, and Γk,m = K j=1 τpη¯jCj,m πjHπk 2 + σm2 IL, (7) denotes the covariance matrix of the least-squares observations φk,m ∈ CN providing sufficient statistics, i.e., φk,m = K j=1 τpη¯jhj,mπjHπk + ωk,m, (8) with πk ∈ Cτ p the sequence of pilots sent by UE k to estimate the channel, and ωk,m ∈ CN the equalized ambient noise with variance σω2 [23, Subsection II-B].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.8650669191919191,
+        "x1": 0.9199918300653595,
+        "y1": 0.900020202020202
+      },
+      "text": "C. Downlink Transmission Assuming to be in the DL transmission and sensing phase,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.899959595959596,
+        "x1": 0.9199983660130718,
+        "y1": 0.9453055555555555
+      },
+      "text": "AP m ∈ Mtx sends data to the UEs in the set Km plus additional beams to first, detect the presence of potential targets within the surveillance area and later, track their location.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 1.2014047999982722,
+  "model_load_seconds": null,
+  "peak_rss_mb": 152.62109375,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "parser": "java",
+    "table_method": "cluster",
+    "reading_order": "xycut",
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "java-cpu-only",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "publication_cache": {
+      "doc_id": "2503.06703_pg4",
+      "pdf_sha256": "5c23b2fd8746b7379cd2ccd5617a0a981d33ed2c20bd80a4aef5007c839752dd",
+      "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

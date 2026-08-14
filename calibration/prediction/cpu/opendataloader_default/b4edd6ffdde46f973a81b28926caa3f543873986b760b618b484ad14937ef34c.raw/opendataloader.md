@@ -1,0 +1,51 @@
+![](<b4edd6ffdde46f973a81b28926caa3f543873986b760b618b484ad14937ef34c_images/imageFile1.png>)
+
+US 2009/0197849 Al
+
+Aug. 6, 2009
+
+31
+
+Each formulation was applied in a 25 µl dosage and a 50 µl dosage for a total of6 test groups. The receiver chamber was sealed to the atmosphere using parafilm wrap so that it was spill-proof and airtight. Three diffusion cells were used for each test group for a total of 18 cells.
+
+solution was washed away from the skin for 3 cells (cells #4 to 6) that were treated with 2% NaOH solution and 3 cells (cells #13 to 15) that were treated with 4% NaOH solution. After 24 hours, the NaOH solutionwas washed away from the skinfor3 cells (cells #7 to 9) that were treatedwith2% NaOH solution and 3 cells (cells #16 to 18) thatwere treatedwith4% NaOH solution. To wash away the NaOH solution, the receiving fluid was removed and replaced with fresh DI water. This was done twice. DI water was added to the donor chamber to dilute the NaOH solution and then the donor solution was removed. This was repeated several times.
+
+- [0350] The cells were filled with DI water for a receiver solution. The DI water had been degased to remove air bubbles. The receiver solution was completely withdrawn and replaced with fresh DI water at each time point. Samples of the receiver solution were taken and analyzed by HPLC (high pressure liquid chromatography) to determine the leuprolide concentration. The cumulative amount of leuprolide across human cadaver skin was calculated from a 25 µl and a 50 µl solution containing NaOH, using the measured leuprolide concentrations in the receiver solutions for each time point (5 and 24 hours).
+
+TABLE 44
+
+Cumulative Amount ofLeu12rolide (l!g/cm2)
+
+25 l!l solution 50 l!l solution Time Leu-1 Leu-2 Leu-3 Leu-1 Leu-2 Leu-3
+
+5 hours 0.38 0.52 0.58 0.32 0.62 0.3 24 hours 0.52 3.21 4.43 0.32 8.58 10.8
+
+- [0351] The cumulative amount ofleuprolide across human cadaver skin for the 25 µl dosage at 24 hours increased from 0.52 µg/cm2 to 4.43 µg/cm2 when the calculated sodium hydroxide concentration in the dried patch was increased from 0% to 6.7%. The cumulative amount of leuprolide across human cadaver skin for the 50 µl dosage at 24 hours increased from 0.32 µg/cm2 to 10.8 µg/cm2 when the calculated sodium hydroxide concentration in the leuprolide solution was increased from 0% to 6.7%. The cumulative amount ofleuprolide across human cadaver skin at 24 hours from the 50 µl dosage group containing 3.6% NaOH (Leu-2) was 8.58 µg/cm2, which was about 27 times higher than that from the formulation without NaOH (0.32 µg/cm2, Leu-1).
+- [0352] The formulation ofLeu-2 provided up to 6-fold (25 µl solution) and to 27-fold (50 µl solution) more leuprolide flux than inthe absence ofNaOH (Leu-1 ). The formulation of Leu-3 provided up to 9-fold (25 µl solution) and up to 34-fold (50 µl solution) more flux than in the absence ofNaOH.
+
+Example 14
+
+- [0353] The in-vitro permeation ofoxytocin throughhuman cadaver skin was performed using Franz-type diffusion cells with a diffusion area of 1 cm2. The volume ofreceiver solution was 8 ml. Human cadaver skin was cut to a proper size and placed on a flat surface with the stratum corneum side facing up. The skin was clamped between the donor and receiver chambers of the diffusion cell. Eighteen diffusion cells were used in this study. A 2% NaOH aqueous solution (50 µl) was introduced to the donor chambers of nine cells (cells #1 to 9) and a 4% NaOH aqueous solution (50 µl) was introduced to the donor chambers ofthe othernine cells (cells #10 to 18). Once the NaOH solution is applied, the donor chamber was covered with parafilm.
+- [0354] After 5 hours, the NaOH solution was washed away from the skin for 3 cells (cells #1 to 3) that were treated with 2% NaOH solution and 3 cells (cells #10 to 12) that were treated with 4% NaOH solution. After 10 hours, the NaOH
+
+
+- [0355] Afterthe NaOH solutionwas washed away from the skin, the solution in the donor chamber was completely removed and replaced by 50 µl of an oxytocin solution. The formulation of the oxytocin solution is listed in Table 45. Once the oxytocin solution was applied, the donor chamber was covered with parafilm.
+
+TABLE45
+
+Formulation for the Oxytocin Solution Ingredient g Oxytocin 0.005 DI water 0.6 PG 0.6
+
+The cells were filled with DI water as a receiver solution. The DI water had been degased to remove air bubbles. The receiver solution was completely withdrawn and replaced with fresh DI water at each time point. The samples taken were analyzed by HPLC for the concentration ofoxytocin in the receiver solution. The cumulative amount of oxytocin across human cadaver skinwas calculatedusing the measured oxytocin concentrations in the receiver solutions for each time point, which were listed in Table 46. The skin was pretreated with 4% NaOH for the specifiedpretreatment time period.
+
+TABLE46
+
+Cumulative Amount ofOxytocin (l!g/cm2) Time 5 hr Pretreatment 15 hr Pretreatment 24 hr Pretreatment
+
+5 hours 118.95 202.28 193.82 15 hours 200.66 222.45 232.72 24 hours 225.52 231.58 236.80
+
+Example 15
+
+- [0356] The in-vitro permeation ofoxytocin throughhuman cadaver skin was performed as described in Example 14, except that a 0.25% NaOH aqueous solution (50 µl) was introduced to the donor chambers ofnine cells (cells #1 to 9) and a 1.0% NaOH aqueous solution (50 µl) was introduced to the donor chambers ofthe other nine cells (cells #10 to 18).
+- [0357] After 5 hours, the NaOH solution was washed away from the skin for 3 cells (cells #1 to 3) that were treated with 0.5% NaOH solution and 3 cells (cells #10 to 12) that were treated with 1.0% NaOH solution. After 11 hours, the NaOH solution was washed away from the skin for 3 cells (cells #4 to 6) that were treated with 0.25% NaOH solution and 3 cells (cells #13 to 15) that were treated with 1.0% NaOH solution. After 24 hours, the NaOH solutionwas washed away from the
+
+

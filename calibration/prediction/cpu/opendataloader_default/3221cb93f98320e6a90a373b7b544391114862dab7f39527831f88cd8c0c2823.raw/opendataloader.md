@@ -1,0 +1,48 @@
+![](<3221cb93f98320e6a90a373b7b544391114862dab7f39527831f88cd8c0c2823_images/imageFile1.png>)
+
+![](<3221cb93f98320e6a90a373b7b544391114862dab7f39527831f88cd8c0c2823_images/imageFile2.png>)
+
+NAVWEPS OO-BOY-BO STABIUTY AND CoMml
+
+warning, and preserves lateral control effectiveness at high angles of attack. Also, the airplane must maintain positive static longitudinal stability at high lift coe&ients and should demonstrate satisfactory stall recovery characteristics.
+
+damping in roll is generally referred to as “autorotation.”
+
+![](<3221cb93f98320e6a90a373b7b544391114862dab7f39527831f88cd8c0c2823_images/imageFile3.png>)
+
+When the conventional airplane is stalk4 and some rolling-yawing displacement takes place, the resulting autotiotation rolling moments and yawing moments start the airplane into a self-sustaining rolling-yawing motion. The autorotation rolling and yawing tendencies of the airplane at high angles of attack are the principal prospin moments of the conventional airplane configuration and these tendencies accelerate the airplane into the spin until some limiting condition exists. The stabilized spin is not necessaray a simple steady vertical spiral but may involve some coupled unsteady oscillatory motion.
+
+![](<3221cb93f98320e6a90a373b7b544391114862dab7f39527831f88cd8c0c2823_images/imageFile4.png>)
+
+In order to visualize the principal effects of an airplane entering a spin, suppose the airplane is subjected to the rolling and yawing velocities shown in figure 4.32. The yawing velocity to the right tends to produce higher local velocities on the left wing than on the right wing. The rolling velocity tends to increase the angle of attack for the downgoing right wing (a,) and. decrease the angle of attack for the upgoing left wing (al). At airplane angles of attack below the stall this relationship produces roll due to yaw, damping in roll, etc., and some related motion of the airplane in unstalled flight. However, at angles of attack above the stall, important changes take place in the aerodynamic characteristics.
+
+![](<3221cb93f98320e6a90a373b7b544391114862dab7f39527831f88cd8c0c2823_images/imageFile5.png>)
+
+![](<3221cb93f98320e6a90a373b7b544391114862dab7f39527831f88cd8c0c2823_images/imageFile6.png>)
+
+An important characteristic of the mote conventional airplane configuration is that the spin shows a predominating contribution of the autorotation tendency. Generally, the conventional configuration has a spin motion which is primarily rolling with moderate yaw. High directional stability is favorable since it will limit or minimize the yaw displacement of the spinning airplane.
+
+![](<3221cb93f98320e6a90a373b7b544391114862dab7f39527831f88cd8c0c2823_images/imageFile7.png>)
+
+![](<3221cb93f98320e6a90a373b7b544391114862dab7f39527831f88cd8c0c2823_images/imageFile8.png>)
+
+Figure 4.32 illustrates the aerodynamic characteristics typical of a conventional airplane configuration, i.e., moderate or high aspect ratio and little-if any-sweepback. Ifs this airplane is provided a rolling displacement when at some angle of attack above the stall, the upgoing wing experiences a decreasein angle of attack with a corresponding increase in C, and decrease in C,,. In other words, the upgoing wing becomes less stalled. Similarly, the downgoing wing experiences an increase in angle of attack with a corresponding decreasein CL and increase in CD. Essentially, the downgoing wing becomes more stalled. Thus, the rolling motion is aided rather than resisted and a yawing moment is produced in the direction of roll. At angles of attack below stall the rolling motion is resisted by damping in roll and adverse yaw is usually present. At angles of attack above the stall, the damping in roll is negative and a rolling motion produces a rolling moment in the direction of the roll. This negative
+
+The fundamental requirement of the spin is that the airplane be placed at an excessive angle of attack to produce the autorotation rolling and yawing tendencies. Generally speaking, the conventional airplane must be stalled .before a spin can take place. This relationship establishes a fundamental p&rciple of recovery-the airplane must be unstalled by decreasing the wing angle of attack. The most dfective procedure for the conventional configuration is to use opposite rudder to stop the sideslip, then lower the angle of attack with the elevators. With sufficient rudder power this procedure will produce a positive recovery with a minimum loss of altitude. Care should be taken during pullout from the ensuing dive to prevent excessive angle of attack and entry into another spin.
+
+![](<3221cb93f98320e6a90a373b7b544391114862dab7f39527831f88cd8c0c2823_images/imageFile9.png>)
+
+![](<3221cb93f98320e6a90a373b7b544391114862dab7f39527831f88cd8c0c2823_images/imageFile10.png>)
+
+![](<3221cb93f98320e6a90a373b7b544391114862dab7f39527831f88cd8c0c2823_images/imageFile11.png>)
+
+![](<3221cb93f98320e6a90a373b7b544391114862dab7f39527831f88cd8c0c2823_images/imageFile12.png>)
+
+![](<3221cb93f98320e6a90a373b7b544391114862dab7f39527831f88cd8c0c2823_images/imageFile13.png>)
+
+It should be appreciated that a spin is always
+
+a possible corollary of a stall and the selfsustaining motion of a spin will take place at
+
+![](<3221cb93f98320e6a90a373b7b544391114862dab7f39527831f88cd8c0c2823_images/imageFile14.png>)
+

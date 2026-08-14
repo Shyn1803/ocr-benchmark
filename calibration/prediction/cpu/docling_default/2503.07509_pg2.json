@@ -1,0 +1,281 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "2503.07509_pg2",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "Fig. 1: The architecture of the implemented AE-NOMA for two-users. Each FCNN[ ℓ ] represents a fully connected layer with ℓ nodes. The main structure which consists five hidden layers each with 32 neurons is replicated at Tx , Rx1 and Rx2 . The Tx , however, has a side block (Sub-Network 2) which is used to adjust power allocation for each symbol.\n\n<!-- image -->\n\n## II. SYSTEM MODEL\n\nConsider a downlink NOMA system involving a base station (BS) communicating with two users. All nodes are equipped with single antennas. The user with weaker (stronger) channel is referred to as the weak (strong) user. The channels between the BS and the weak and strong users are respectively denoted by h 1 and h 2 satisfying | h 1 | 2 ≤ | h 2 | 2 . Both channel gains are known at the BS, but each user only knows its own channel gain. All channel gains are complex-valued and independently drawn from a continuous distribution.\n\nIn a NOMA system, the BS employs superposition coding to concurrently transmit messages to both users. The transmitted signal x is defined by x = √ αPs 1 + √ ¯ αPs 2 , where s 1 and s 2 are independent and identically distributed complex Gaussian signals with zero mean and unit variance, CN (0 , 1) . Here, P represents the BS's transmit power budget, α ∈ [0 , 1] is the fraction of power allocated to the weak user, and ¯ α ≜ 1 -α . The received signals at the users are expressed as\n\n<!-- formula-not-decoded -->\n\nwhere the noises n 1 and n 2 are independent and identically distributed circularly-symmetric complex Gaussian random variables with zero mean and unit variance, CN (0 , 1) .\n\nThe weak user decodes its message by treating the interfering signal from the other user as noise. In contrast, the strong user first decodes the weak user's message, treating its own interfering signal as noise, and then applies SIC to decode its own message. The combined use of superposition coding and SIC decoding with Gaussian codebooks results in achieving the capacity region of this channel.\n\n## III. NETWORK STRUCTURE\n\n## A. Autoencoder's Structure\n\nAn autoencoder consists of two parts, an encoder and a decoder. The AE processes a binary input vector s ∈ [0 , 1] d by first mapping it to a hidden representation u ∈ [0 , 1] d ′ through a deterministic mapping u = f θ ( s ) = σ ( W s + b ) , where θ = { W, b } , W is a d ′ × d weight matrix, and b is a bias vector. Here, σ ( x ) = 1 1+ e x is the sigmoid function and σ ( x ) = [ σ ( x 1 ) , . . . , σ ( x d )] T . The resulting latent representation u is then transformed back to a reconstructed vector ˆ s ∈ [0 , 1] d in the input space, given by ˆ s = g θ ′ ( u ) = σ ( W ′ u + b ′ ) with θ ′ = { W ′ , b ′ } . For each training sample s ( i ) , the AE maps it to a corresponding u ( i ) and a reconstruction ˆ s ( i ) .\n\nThe proposed AE-NOMA network, illustrated in Fig. 1, consists of one transmitter ( Tx ) encoder and two decoders each at one of the receivers, i.e., Rx1 and Rx2 . Each encoder and decoder, include a fully connected neural network (FCNN) composed of a sequence of fully connected layers and some residual connections. As seen in Fig. 1, the encoder ( Tx ) comprises a main block and a secondary network, referred to as Sub-Network 1 and Sub-Network 2, respectively.\n\nThis main block, replicated at Tx , Rx1 and Rx2 , consists of an input layer, five hidden layers, and an output layer. The hidden layers contain 32 neurons each, while the final layer (output layer) has two neurons representing the in-phase (I) and quadrature-phase (Q) components of the symbol designed by the autoencoder for transmission. In addition to the main block, the Tx has a side block (Sub-network 2) which helps to better adjust the I and Q components under a given average power constraint, thereby optimizing the use of the I/Q plane in a way similar to a quadrature amplitude modulation (QAM).\n\nIn the main block, we have also implemented residual connections to enhance learning capacity and improves performance without the need for additional parameters or a wider network. These shortcuts also play a crucial role in preserving gradients within the network. We have used the activation function exponential linear unit which provides a smooth, nonzero output for negative inputs, and can help improve learning stability and performance.",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "cad588790126c625062f1b1806188e7c2f536e041924071e39552390426bc9f6"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "fbe8b87a732ae21db6339d5721f292b153f1e980f2916ccffe6204a8f96672bb"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.08832430995367711,
+        "y0": 0.0692102981336189,
+        "x1": 0.9193891138812296,
+        "y1": 0.28779671408913354
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771233,
+        "y0": 0.2997772022727272,
+        "x1": 0.9199922892156862,
+        "y1": 0.34116695152409054
+      },
+      "text": "Fig. 1: The architecture of the implemented AE-NOMA for two-users. Each FCNN[ ℓ ] represents a fully connected layer with ℓ nodes. The main structure which consists five hidden layers each with 32 neurons is replicated at Tx , Rx1 and Rx2 . The Tx , however, has a side block (Sub-Network 2) which is used to adjust power allocation for each symbol.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.21512908496732017,
+        "y0": 0.3733893275252526,
+        "x1": 0.35512378284313706,
+        "y1": 0.38418715354429256
+      },
+      "text": "II. SYSTEM MODEL",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771232,
+        "y0": 0.392898165909091,
+        "x1": 0.4902348241830064,
+        "y1": 0.5244560929382319
+      },
+      "text": "Consider a downlink NOMA system involving a base station (BS) communicating with two users. All nodes are equipped with single antennas. The user with weaker (stronger) channel is referred to as the weak (strong) user. The channels between the BS and the weak and strong users are respectively denoted by h 1 and h 2 satisfying | h 1 | 2 ≤ | h 2 | 2 . Both channel gains are known at the BS, but each user only knows its own channel gain. All channel gains are complex-valued and independently drawn from a continuous distribution.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771233,
+        "y0": 0.5288287214646464,
+        "x1": 0.4902330882352943,
+        "y1": 0.6452906888978279
+      },
+      "text": "In a NOMA system, the BS employs superposition coding to concurrently transmit messages to both users. The transmitted signal x is defined by x = √ αPs 1 + √ ¯ αPs 2 , where s 1 and s 2 are independent and identically distributed complex Gaussian signals with zero mean and unit variance, CN (0 , 1) . Here, P represents the BS's transmit power budget, α ∈ [0 , 1] is the fraction of power allocated to the weak user, and ¯ α ≜ 1 -α . The received signals at the users are expressed as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.17985294117647072,
+        "y0": 0.6580107881313131,
+        "x1": 0.49023266601307186,
+        "y1": 0.6701697894790849
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.6819312426767676,
+        "x1": 0.49023124183006545,
+        "y1": 0.7233209919281308
+      },
+      "text": "where the noises n 1 and n 2 are independent and identically distributed circularly-symmetric complex Gaussian random variables with zero mean and unit variance, CN (0 , 1) .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065359477124,
+        "y0": 0.7276936204545454,
+        "x1": 0.49023189542483675,
+        "y1": 0.8290608909180299
+      },
+      "text": "The weak user decodes its message by treating the interfering signal from the other user as noise. In contrast, the strong user first decodes the weak user's message, treating its own interfering signal as noise, and then applies SIC to decode its own message. The combined use of superposition coding and SIC decoding with Gaussian codebooks results in achieving the capacity region of this channel.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.1888970588235294,
+        "y0": 0.8424878123737375,
+        "x1": 0.3813602401960782,
+        "y1": 0.8532856383927774
+      },
+      "text": "III. NETWORK STRUCTURE",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.8617714906565658,
+        "x1": 0.26180770718954266,
+        "y1": 0.8726146234848485
+      },
+      "text": "A. Autoencoder's Structure",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.8813186204545455,
+        "x1": 0.49023189542483675,
+        "y1": 0.9072111434432825
+      },
+      "text": "An autoencoder consists of two parts, an encoder and a decoder. The AE processes a binary input vector s ∈ [0 , 1] d by first mapping it to a hidden representation u ∈ [0 , 1] d ′ through a deterministic mapping u = f θ ( s ) = σ ( W s + b ) , where θ = { W, b } , W is a d ′ × d weight matrix, and b is a bias vector. Here, σ ( x ) = 1 1+ e x is the sigmoid function and σ ( x ) = [ σ ( x 1 ) , . . . , σ ( x d )] T . The resulting latent representation u is then transformed back to a reconstructed vector ˆ s ∈ [0 , 1] d in the input space, given by ˆ s = g θ ′ ( u ) = σ ( W ′ u + b ′ ) with θ ′ = { W ′ , b ′ } . For each training sample s ( i ) , the AE maps it to a corresponding u ( i ) and a reconstruction ˆ s ( i ) .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562094,
+        "y0": 0.5130913477272727,
+        "x1": 0.9199949624183013,
+        "y1": 0.629553315160454
+      },
+      "text": "The proposed AE-NOMA network, illustrated in Fig. 1, consists of one transmitter ( Tx ) encoder and two decoders each at one of the receivers, i.e., Rx1 and Rx2 . Each encoder and decoder, include a fully connected neural network (FCNN) composed of a sequence of fully connected layers and some residual connections. As seen in Fig. 1, the encoder ( Tx ) comprises a main block and a secondary network, referred to as Sub-Network 1 and Sub-Network 2, respectively.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562095,
+        "y0": 0.6364224042929291,
+        "x1": 0.9199926797385624,
+        "y1": 0.7834775575846964
+      },
+      "text": "This main block, replicated at Tx , Rx1 and Rx2 , consists of an input layer, five hidden layers, and an output layer. The hidden layers contain 32 neurons each, while the final layer (output layer) has two neurons representing the in-phase (I) and quadrature-phase (Q) components of the symbol designed by the autoencoder for transmission. In addition to the main block, the Tx has a side block (Sub-network 2) which helps to better adjust the I and Q components under a given average power constraint, thereby optimizing the use of the I/Q plane in a way similar to a quadrature amplitude modulation (QAM).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562096,
+        "y0": 0.7907491760101009,
+        "x1": 0.9200014790849679,
+        "y1": 0.9072111434432824
+      },
+      "text": "In the main block, we have also implemented residual connections to enhance learning capacity and improves performance without the need for additional parameters or a wider network. These shortcuts also play a crucial role in preserving gradients within the network. We have used the activation function exponential linear unit which provides a smooth, nonzero output for negative inputs, and can help improve learning stability and performance.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.08832430995367711,
+        "y0": 0.0692102981336189,
+        "x1": 0.9193891138812296,
+        "y1": 0.28779671408913354
+      },
+      "source_id": "#/pictures/0",
+      "file": null,
+      "sha256": null
+    }
+  ],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 19.88492959999985,
+  "model_load_seconds": null,
+  "peak_rss_mb": 756.92578125,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "2503.07509_pg2",
+      "pdf_sha256": "c78d4ea3a1655e6ef53bb9f77ec64f991c37d7d28426f4d059f988a6443f1432",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

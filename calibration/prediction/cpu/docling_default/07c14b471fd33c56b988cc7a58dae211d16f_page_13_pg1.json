@@ -1,0 +1,576 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "07c14b471fd33c56b988cc7a58dae211d16f_page_13_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "FIG. 9 is a flow chart illustrating operations involved in a  write operation  to  a  memory  element  by  Speculative  thread 203 in  accordance  with  an embodiment of the  present invention. If  a  space-time  dimensioned  version  510  does  not exist, the System  creates a Space-time dimensioned version 510 in speculative heap 406 (step 902). The system also updates  status word  504  to indicate that speculative thread 203 has written to the object if Such updating is necessary (step 903). The system next writes to space-time dimen sioned  version  510  (step 904).  Such  updating  is necessary  if head  thread  202  must  Subsequently  choose  between  writing to both primary version 500 and space-time dimensioned version 510 or writing only to primary version 500 as is described above with reference to FIG. 7.\n\nFIG. 10  is a flow  chart  illustrating operations  involved  in\n\na  join operation between head  thread  202  and  a  speculative\n\nthread 203 in accordance with an embodiment  the present\n\ninvention. A\n\njoin operation occurs for example when  head\n\nthread  202  reaches  a  point  in the  program  where  speculative\n\n20\n\n25\n\nthread  203  began  executing. The  join operation causes  State associated  with  the  speculative  thread  203  to  be  merged  with state  associated with the head thread 202. This involves copying  and/or  merging  the Stack of  Speculative thread  203 into the  stack  of  head  thread  202  (step  1002).  It also  involves merging Space-time  dimension and primary  versions  of objects (step 1004) as well as possibly garbage collecting speculative  heap  406  (step 1006). In one  embodiment  of  the present  invention,  one of  threads  202  or  203  performs  steps\n\n1002 and 1006, while the other  thread  performs step 1004.\n\nFIG. 11 is a flow  chart illustrating operations  involved  in a  join operation between head  thread  202  and  a  speculative thread 203 in accordance with another embodiment  of the present invention. In this embodiment, speculative thread 203 carries on as a pseudo-head thread. As  a pseudo-head thread, speculative thread  203  uses  indirection to reference Space-time dimensioned versions of objects, but does not mark objects or create versions. While speculative thread 203 is  acting as a pseudo-head thread, head thread 202 updates primary versions of  objects.\n\nExtension to Additional Speculative Threads\n\nAlthough  the present  invention has  been  described  for  the case of  a single  Speculative thread,  the  present  invention  can be extended to provide multiple Speculative threads  operat ing on multiple Space-time dimensioned versions of  a data object in parallel.\n\nProcess of  Setting Marking Bits\n\nFIG. 12 is a flow chart illustrating the process of  setting a marking bit associated with a referenced field within an object in accordance with an embodiment of the present invention. First, the System receives a reference to the field within the object  (step 1202). This  reference may  be  a read or  a  write operation.  (Note  that  in the  case of  an  array  object the field is an array element.)\n\nNext, the System identifies a marking  bit associated with the field  (step  1204). In one embodiment of the present invention,  the  System  maintains  a  Separate  Set  of read marking bits  604 for  the  object to  indicate  that  a  read operation  has  occurred  to  the field, and  a  separate  Set  of  write marking bits  606 to  indicate  that  a  write  operation  has occurred to the field. In this embodiment,  if  the operation is a  read  operation,  one  of the  read  marking bits  604 is selected. Otherwise, one of the write marking bits 606 is Selected.\n\nIn one  embodiment  of  the present invention, the marking bit  is  identified  by performing modulo  operation.  For example,  if the object  includes N  marking  bits numbered  0, 1,  2, ...,  N-1 and  M fields numbered  0, 1, 2, ...,  M-1,\n\n30\n\n35\n\n40\n\n45\n\n50\n\n55\n\n60\n\n65\n\n15\n\nthe  system starts:  with a  field  number for the  field,  and applies  a modulo  N operation  to the field number  to  produce a  number for the  associated  marking bit.  This  modulo operation  can  be  efficiently  performed  if  N is a  power  of  two because the modulo  operation reduces  to a  simple  bit mask operation that  isolates  the  lower order bits  of the  field number.\n\nThe selection  a value  of N  for  an object involves a tradeoff. If  N is  too  small,  there  tends  to  be  lot  of  aliasing  and system  performance  suffers  due  to false rollbacks. If  N is  too large,  a  great  deal  of  memory  is  used  for  marking  bits  which can cause cache performance to Suffer. In one  embodiment of the  present invention,  N=8. In  another embodiment, N=16.\n\nIn  the  case  of  an  array  object,  the  System  applies  a  division operation to the  array element number (field  number) to identify the associated array element. For example, if the array object  has  N marking  bits numbered  0,1,2,...,N-1 and  Marray  elements  numbered  0,1,2,...,  M-1,  the step of identifying the marking bit includes dividing the array element  number  by  the ceiling of  M/N  to  produce a number for the associated marking bit. If the ceiling of M/N  is a power  of  two,  the  division  operation  can  be  accomplished  by shifting  the  array  indeX  So  that  the  most Significant  bits  of  the array indeX  become the number  for the associated marking bits\n\nThe above-described mapping between array elements and marking bits for array objects associates consecutive array locations with a single marking  bit. This  ensures that not all of  the marking  bits are Set by common  block copy operations involving only a portion of  the array.\n\nAfter the marking  bit is identified, the marking  bit is Set (step 1206) and the reference is performed to the field (or array element) within the object (step 1208).\n\nIn  general  the  marking mechanism according to  the present invention can be used in any application that must keep track of  accesses to fields within an  object. However, in  one embodiment of the present invention,  marking is performed  for read  operations  by  speculative thread  203. In another  embodiment,  marking  is performed  to write  bits 606 during a write operation by speculative thread 203 and to read bits 604  during a read operation by  speculative thread 2O3.\n\nAfter  the marking  bits have  been  set, if a  head  thread  202 Subsequently performs a write operation to a field in the object, head thread  202  can  identify the associated marking bit  using  the above-described  modulo  or  division  operations. Next,  the marking  bit  is extracted for examination  purposes using a special bit extract operation  that  is  part  of the instruction Set of  the underlying  computer  System.\n\nFIG. 13 illustrates how a marking bit  number can be determined  from  a  field number  or  an  array element  number in accordance with  an  embodiment  of  the present  invention. The system starts will a field number or an array element number 1302. In the case of a field  number, the system performs a modulo operation by masking off all but the lower order three bits of field number 1302 to produce a three  bit  index  (1,0,0)  that  specifies  a  marking  bit. In  the  case of  an array index, he system performs a division operation by  shifting array element  number  1302  until only the three most  significant bits (0,1,1) remain.\n\nFIG. 14 illustrates how a block transfer operation sets multiple marking  bits  in accordance  with an  embodiment  of the present invention. The example illustrated in FIG. 14 includes an array of data elements 1402. These data ele ments  are numbered  0,1,2,...,  31. FIG. 14  also includes an  array of  read  bits 604.  These  read  bits  are numbered  0, 1,",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "fae6f12c99929af8158534e0dc96ecf1e25b2891db604bac8f757c1e2db7fcf8"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "3196c3a06c6975624f06a897b102fcbf908a13d1da88a2e21e6083750f5471b5"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10689654825077653,
+        "y0": 0.10406806118205546,
+        "x1": 0.50344826436794,
+        "y1": 0.27130606939609925
+      },
+      "text": "FIG. 9 is a flow chart illustrating operations involved in a  write operation  to  a  memory  element  by  Speculative  thread 203 in  accordance  with  an embodiment of the  present invention. If  a  space-time  dimensioned  version  510  does  not exist, the System  creates a Space-time dimensioned version 510 in speculative heap 406 (step 902). The system also updates  status word  504  to indicate that speculative thread 203 has written to the object if Such updating is necessary (step 903). The system next writes to space-time dimen sioned  version  510  (step 904).  Such  updating  is necessary  if head  thread  202  must  Subsequently  choose  between  writing to both primary version 500 and space-time dimensioned version 510 or writing only to primary version 500 as is described above with reference to FIG. 7.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12413793272154384,
+        "y0": 0.2748725263119235,
+        "x1": 0.501077585730934,
+        "y1": 0.28547026230375455
+      },
+      "text": "FIG. 10  is a flow  chart  illustrating operations  involved  in",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10775861969106372,
+        "y0": 0.2867953848356909,
+        "x1": 0.5010188003458986,
+        "y1": 0.29739312082752184
+      },
+      "text": "a  join operation between head  thread  202  and  a  speculative",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10732759505466412,
+        "y0": 0.29987562953387564,
+        "x1": 0.501601006895683,
+        "y1": 0.3104733655257067
+      },
+      "text": "thread 203 in accordance with an embodiment  the present",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10732759505466412,
+        "y0": 0.3115631353531951,
+        "x1": 0.2017241577858095,
+        "y1": 0.32216087134502597
+      },
+      "text": "invention. A",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19224139916432595,
+        "y0": 0.3115631353531951,
+        "x1": 0.5024784402278043,
+        "y1": 0.32216087134502597
+      },
+      "text": "join operation occurs for example when  head",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10732759505466412,
+        "y0": 0.3234811910599606,
+        "x1": 0.5009796273798489,
+        "y1": 0.33407892705179165
+      },
+      "text": "thread  202  reaches  a  point  in the  program  where  speculative",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5016762562092512,
+        "y0": 0.33499609463643254,
+        "x1": 0.5184387086840233,
+        "y1": 0.34477700250902915
+      },
+      "text": "20",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5047413847247567,
+        "y0": 0.3988665409332048,
+        "x1": 0.5234913847840822,
+        "y1": 0.4053429351160903
+      },
+      "text": "25",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10732758553196176,
+        "y0": 0.3356030836254452,
+        "x1": 0.5028017431977153,
+        "y1": 0.4439723184324412
+      },
+      "text": "thread  203  began  executing. The  join operation causes  State associated  with  the  speculative  thread  203  to  be  merged  with state  associated with the head thread 202. This involves copying  and/or  merging  the Stack of  Speculative thread  203 into the  stack  of  head  thread  202  (step  1002).  It also  involves merging Space-time  dimension and primary  versions  of objects (step 1004) as well as possibly garbage collecting speculative  heap  406  (step 1006). In one  embodiment  of  the present  invention,  one of  threads  202  or  203  performs  steps",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10775861969106372,
+        "y0": 0.4460393966723684,
+        "x1": 0.5010344919126146,
+        "y1": 0.4566371326641994
+      },
+      "text": "1002 and 1006, while the other  thread  performs step 1004.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10689654825077653,
+        "y0": 0.4576712716219808,
+        "x1": 0.5025862038351803,
+        "y1": 0.5779654726405814
+      },
+      "text": "FIG. 11 is a flow  chart illustrating operations  involved  in a  join operation between head  thread  202  and  a  speculative thread 203 in accordance with another embodiment  of the present invention. In this embodiment, speculative thread 203 carries on as a pseudo-head thread. As  a pseudo-head thread, speculative thread  203  uses  indirection to reference Space-time dimensioned versions of objects, but does not mark objects or create versions. While speculative thread 203 is  acting as a pseudo-head thread, head thread 202 updates primary versions of  objects.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10775861969106372,
+        "y0": 0.5803681491856428,
+        "x1": 0.40880543361486676,
+        "y1": 0.5909658851774738
+      },
+      "text": "Extension to Additional Speculative Threads",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10689654825077653,
+        "y0": 0.5925929730913064,
+        "x1": 0.5025862307908457,
+        "y1": 0.6505703444627717
+      },
+      "text": "Although  the present  invention has  been  described  for  the case of  a single  Speculative thread,  the  present  invention  can be extended to provide multiple Speculative threads  operat ing on multiple Space-time dimensioned versions of  a data object in parallel.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10775861969106372,
+        "y0": 0.6531101002360495,
+        "x1": 0.32510775101926914,
+        "y1": 0.6637078362278804
+      },
+      "text": "Process of  Setting Marking Bits",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10689655227354905,
+        "y0": 0.6652026025427042,
+        "x1": 0.5025862308351807,
+        "y1": 0.7503051468372218
+      },
+      "text": "FIG. 12 is a flow chart illustrating the process of  setting a marking bit associated with a referenced field within an object in accordance with an embodiment of the present invention. First, the System receives a reference to the field within the object  (step 1202). This  reference may  be  a read or  a  write operation.  (Note  that  in the  case of  an  array  object the field is an array element.)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10732758553196176,
+        "y0": 0.7510940039852299,
+        "x1": 0.5020474104928827,
+        "y1": 0.8693107767266536
+      },
+      "text": "Next, the System identifies a marking  bit associated with the field  (step  1204). In one embodiment of the present invention,  the  System  maintains  a  Separate  Set  of read marking bits  604 for  the  object to  indicate  that  a  read operation  has  occurred  to  the field, and  a  separate  Set  of  write marking bits  606 to  indicate  that  a  write  operation  has occurred to the field. In this embodiment,  if  the operation is a  read  operation,  one  of the  read  marking bits  604 is selected. Otherwise, one of the write marking bits 606 is Selected.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10689654825077653,
+        "y0": 0.8731432908663468,
+        "x1": 0.5032327825542177,
+        "y1": 0.9204264970349155
+      },
+      "text": "In one  embodiment  of  the present invention, the marking bit  is  identified  by performing modulo  operation.  For example,  if the object  includes N  marking  bits numbered  0, 1,  2, ...,  N-1 and  M fields numbered  0, 1, 2, ...,  M-1,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5028735742431635,
+        "y0": 0.45644236738783994,
+        "x1": 0.5184387086840233,
+        "y1": 0.4662232752604365
+      },
+      "text": "30",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5047413847247567,
+        "y0": 0.52093227118321,
+        "x1": 0.5234913847840822,
+        "y1": 0.5274086653660955
+      },
+      "text": "35",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5047413860657217,
+        "y0": 0.5822007163900128,
+        "x1": 0.5234913865802366,
+        "y1": 0.588382729103431
+      },
+      "text": "40",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5047413847247567,
+        "y0": 0.6429980014332153,
+        "x1": 0.5234913847840822,
+        "y1": 0.6494743956161008
+      },
+      "text": "45",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5047413847247567,
+        "y0": 0.7040308665582177,
+        "x1": 0.5234913847840822,
+        "y1": 0.7105072607411033
+      },
+      "text": "50",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5047413847247567,
+        "y0": 0.7650637316832204,
+        "x1": 0.5234913847840822,
+        "y1": 0.7715401258661059
+      },
+      "text": "55",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.50517242917862,
+        "y0": 0.8263321768900231,
+        "x1": 0.523275877903098,
+        "y1": 0.8325141896034414
+      },
+      "text": "60",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.505172416748033,
+        "y0": 0.8871294619332256,
+        "x1": 0.5232758651148083,
+        "y1": 0.8936058561161111
+      },
+      "text": "65",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.505172416748033,
+        "y0": 0.27680081068319956,
+        "x1": 0.5232758651148083,
+        "y1": 0.2832772048660852
+      },
+      "text": "15",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5267241426262742,
+        "y0": 0.10473305474055102,
+        "x1": 0.9231681605756095,
+        "y1": 0.18591874366833114
+      },
+      "text": "the  system starts:  with a  field  number for the  field,  and applies  a modulo  N operation  to the field number  to  produce a  number for the  associated  marking bit.  This  modulo operation  can  be  efficiently  performed  if  N is a  power  of  two because the modulo  operation reduces  to a  simple  bit mask operation that  isolates  the  lower order bits  of the  field number.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5271551830547854,
+        "y0": 0.19013863046870041,
+        "x1": 0.9228017563834383,
+        "y1": 0.271247268008432
+      },
+      "text": "The selection  a value  of N  for  an object involves a tradeoff. If  N is  too  small,  there  tends  to  be  lot  of  aliasing  and system  performance  suffers  due  to false rollbacks. If  N is  too large,  a  great  deal  of  memory  is  used  for  marking  bits  which can cause cache performance to Suffer. In one  embodiment of the  present invention,  N=8. In  another embodiment, N=16.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5267241494786964,
+        "y0": 0.27467485934769936,
+        "x1": 0.9227729816983177,
+        "y1": 0.4177262602488699
+      },
+      "text": "In  the  case  of  an  array  object,  the  System  applies  a  division operation to the  array element number (field  number) to identify the associated array element. For example, if the array object  has  N marking  bits numbered  0,1,2,...,N-1 and  Marray  elements  numbered  0,1,2,...,  M-1,  the step of identifying the marking bit includes dividing the array element  number  by  the ceiling of  M/N  to  produce a number for the associated marking bit. If the ceiling of M/N  is a power  of  two,  the  division  operation  can  be  accomplished  by shifting  the  array  indeX  So  that  the  most Significant  bits  of  the array indeX  become the number  for the associated marking bits",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5271551894301617,
+        "y0": 0.4216406514442645,
+        "x1": 0.9220905473343635,
+        "y1": 0.4795638438239875
+      },
+      "text": "The above-described mapping between array elements and marking bits for array objects associates consecutive array locations with a single marking  bit. This  ensures that not all of  the marking  bits are Set by common  block copy operations involving only a portion of  the array.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5271551854427375,
+        "y0": 0.48251752184769786,
+        "x1": 0.9209770389435997,
+        "y1": 0.5180341290732897
+      },
+      "text": "After the marking  bit is identified, the marking  bit is Set (step 1206) and the reference is performed to the field (or array element) within the object (step 1208).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5267241494786964,
+        "y0": 0.5186923289415724,
+        "x1": 0.92241380295452,
+        "y1": 0.625472743462821
+      },
+      "text": "In  general  the  marking mechanism according to  the present invention can be used in any application that must keep track of  accesses to fields within an  object. However, in  one embodiment of the present invention,  marking is performed  for read  operations  by  speculative thread  203. In another  embodiment,  marking  is performed  to write  bits 606 during a write operation by speculative thread 203 and to read bits 604  during a read operation by  speculative thread 2O3.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5267241426262742,
+        "y0": 0.6296276196984517,
+        "x1": 0.9219827735742785,
+        "y1": 0.7122721380055069
+      },
+      "text": "After  the marking  bits have  been  set, if a  head  thread  202 Subsequently performs a write operation to a field in the object, head thread  202  can  identify the associated marking bit  using  the above-described  modulo  or  division  operations. Next,  the marking  bit  is extracted for examination  purposes using a special bit extract operation  that  is  part  of the instruction Set of  the underlying  computer  System.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5267241426262742,
+        "y0": 0.71498746508527,
+        "x1": 0.9227730260332938,
+        "y1": 0.8474391336085499
+      },
+      "text": "FIG. 13 illustrates how a marking bit  number can be determined  from  a  field number  or  an  array element  number in accordance with  an  embodiment  of  the present  invention. The system starts will a field number or an array element number 1302. In the case of a field  number, the system performs a modulo operation by masking off all but the lower order three bits of field number 1302 to produce a three  bit  index  (1,0,0)  that  specifies  a  marking  bit. In  the  case of  an array index, he system performs a division operation by  shifting array element  number  1302  until only the three most  significant bits (0,1,1) remain.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5271551894301617,
+        "y0": 0.8490425579684133,
+        "x1": 0.9226292932382371,
+        "y1": 0.9209049513436112
+      },
+      "text": "FIG. 14 illustrates how a block transfer operation sets multiple marking  bits  in accordance  with an  embodiment  of the present invention. The example illustrated in FIG. 14 includes an array of data elements 1402. These data ele ments  are numbered  0,1,2,...,  31. FIG. 14  also includes an  array of  read  bits 604.  These  read  bits  are numbered  0, 1,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      556.7999877929688,
+      817.9199829101562
+    ]
+  ],
+  "seconds": 34.722295999999915,
+  "model_load_seconds": null,
+  "peak_rss_mb": 3140.59375,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "07c14b471fd33c56b988cc7a58dae211d16f_page_13_pg1",
+      "pdf_sha256": "5ca3d1e1c282e9820bfc8ac804cfefbd7fb21dcfb28b761986af8ecf6575a966",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

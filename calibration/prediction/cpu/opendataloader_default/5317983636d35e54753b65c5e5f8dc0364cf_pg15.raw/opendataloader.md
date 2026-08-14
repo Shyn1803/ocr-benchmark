@@ -1,0 +1,72 @@
+<table>
+  <tr>
+    <td colspan="2">Health System Dimension</td>
+    <td>Strenths</td>
+    <td>Weaknesses</td>
+    <td>Opportunities</td>
+    <td>Threats</td>
+  </tr>
+  <tr>
+    <td rowspan="10">7</td>
+    <td colspan="5">Community and Sociocultural</td>
+  </tr>
+  <tr>
+    <td rowspan="3">a. Communitybased</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td rowspan="3">b. Mobile outreach</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td rowspan="3">c. Social marketing</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+</table>
+
+

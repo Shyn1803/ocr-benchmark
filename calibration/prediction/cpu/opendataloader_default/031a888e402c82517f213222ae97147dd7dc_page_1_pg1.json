@@ -1,0 +1,892 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_default",
+  "engine_family": "opendataloader",
+  "profile": "default",
+  "engine_version": "2.5.0",
+  "doc_id": "031a888e402c82517f213222ae97147dd7dc_page_1_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "# Modiﬁed DISTBIC algorithm for speaker change detection\n\nPetra Zochov´a, Vlasta Radov´a Department of Cybernetics University of West Bohemia, Pilsen, Czech Republic\n\npzochova@kky.zcu.cz, radova@kky.zcu.cz\n\n## Abstract\n\nThe paper deals with the problem of automatic speaker change detection. A metric-based algorithm, called MDISTBIC, which means Modiﬁed DISTBIC, is proposed in this paper. The algorithm originates from the DISTBIC algorithm and modiﬁes it in order to reach a higher efﬁciency. Both the DISTBIC and the MDISTBIC methods are tested in a number of experiments. As the results show, the MDISTBIC algorithm is more efﬁcient than the DISTBIC algorithm in a majority of tests.\n\n## 1. Introduction\n\nThe aim of automatic speaker change detection is to extract homogeneous segments containing the longest possible utterances produced by a single speaker. Many efforts have been devoted to this problem in the last years, mainly due to the large number of possible applications, e.g.:\n\n- • a reliable speaker change detection algorithm could be very helpful for annotators who manually annotate a large amount of speech data in order to organize an archive of audio documents (e.g. recordings of various sessions or meetings, broadcast news, etc.);\n- • performance of a speech recognition system that recognizes conversations or news broadcasts could be improved, when a speaker change detection system would detect the change of the speaker and parameters of the speech recognition system would be adapted accordingly;\n- • in speaker recognition systems it is supposed that the input speech belongs only to one speaker. It may cause problems in many real situations (e.g. in conversations or broadcast news), where the speech stream is continuous and there is no information about the beginning and ending of the speech segment of one speaker. A speaker change detection system could help to eliminate such problems.\n\n\nThere are three main speaker change detection approaches [1], [2]. In the metric-based approach the speaker changes are determined as the moments in which a distance measure computed between two adjacent windows shifted along the speech signal reaches a local maximum. In the model-based approach it is assumed that a model of each speaker the voice of which is contained in an utterance has been trained before the speaker change detection algorithm starts. The speaker changes are then detected as the instants when it is necessary to change the speaker model in order it match the speech signal. The last approach is the decoder-guided approach. Here, the speaker changes are determined according to information provided by a speech recognition system which decodes the spoken audio\n\nstream at ﬁrst (e.g. possible speaker changes are at every silence location).\n\nIn this paper, we are interested in the metric-based approach, because it does not require any other information or things except the speech signal itself (i.e. neither speaker model, nor speech recognizer). We focus on the DISTBIC algorithm introduced in [3]. This algorithm is efﬁcient in detecting speaker changes that are relatively close one another, however at the price that a lot of false speaker changes is detected. We will try to modify the algorithm in this paper and thereby to improve its efﬁciency.\n\nThe paper is organized as follows: In Section 2 the DISTBIC algorithm is brieﬂy described. Next, in Section 3 the modiﬁcations of the DISTBIC algorithm are introduced. Experiments are described and their results are presented in Section 4. Finally, a conclusion is given in Section 5.\n\n## 2. DISTBIC algorithm\n\nThe DISTBIC algorithm is based on a two-step analysis [3]: the ﬁrst pass uses a distance computation to determine the speaker changes candidates and the second pass uses Bayesian Information Criterion (BIC) to validate or discard these candidates.\n\n2.1. First step: detection of speaker change candidate points\n\nThe ﬁrst step relies on a distance-based segmentation deﬁned from the likelihoods of adjacent windows. In each window, the data are assumed to result from a single multi-dimensional Gaussian process. The question is, whether the data from the two adjacent windows together ﬁt better with a single multidimensional Gaussian or whether a two-window representation justiﬁes the data better. In order to answer this question, the Kullback-Leibler distance can be used for example.\n\nA symmetric Kullback-Leibler distance KL2 between a vector X coming from the multi-dimensional Gaussian process N(µX, ΣX) and a vector Y resulting from the multidimensional Gaussian process N(µY , ΣY ) can be computed as\n\nKL2(X, Y ) =\n\n- 1\n\n- 2\n\n\n(µY − µX)T(Σ−X1 + Σ−Y1)(µY − µX)+\n\n- 1\n\n- 2\n\n\n- 1\n\n- 2\n\n\n- 1\n\n- 2\n\n\n- 1\n\n- 2\n\n\n- 1\n\n- 2\n\n\nXΣ−\n\nXΣ−\n\nY )T +\n\ntr (Σ\n\n+\n\nY )(Σ\n\n- 1\n\n- 2\n\n\n- 1\n\n- 2\n\n\n- 1\n\n- 2\n\n\n- 1\n\n- 2\n\n\n- 1\n\n- 2\n\n\nY )(Σ−\n\ntr (Σ−\n\nY )T − d,\n\nX Σ\n\nX Σ\n\n+\n\n(1)\n\nwhere tr denotes the trace of a matrix, and d is the dimension of the vectors X and Y .\n\nThe KL2 distance is computed for two adjacent windows W1 and W2 of the same size (2 s) shifted by a ﬁxed step\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "a38f3161eb1b3bcdc9c66cb0dfce98739347b1410513ab8cb9549cbf670ac097"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "aa8d724e342d857d69249dfe381d9c01541f4ce6a3cdf018656aa2e2639ca46a"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "176498eb7acb8ba20eb39dabc4c0f6e6ca3184750c68115a22a4e27ebbc47114"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.19326797385620914,
+        "y0": 0.1105719696969697,
+        "x1": 0.7823676470588236,
+        "y1": 0.1314621212121213
+      },
+      "text": "Modiﬁed DISTBIC algorithm for speaker change detection",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2811764705882353,
+        "y0": 0.1478901515151515,
+        "x1": 0.6944607843137255,
+        "y1": 0.21470580808080808
+      },
+      "text": "Petra Zochov´a, Vlasta Radov´a Department of Cybernetics University of West Bohemia, Pilsen, Czech Republic",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3208006535947713,
+        "y0": 0.21902651515151517,
+        "x1": 0.65484477124183,
+        "y1": 0.23097474747474744
+      },
+      "text": "pzochova@kky.zcu.cz, radova@kky.zcu.cz",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.2430392156862745,
+        "y0": 0.2611830808080807,
+        "x1": 0.31573692810457515,
+        "y1": 0.2785946969696971
+      },
+      "text": "Abstract",
+      "html": null,
+      "level": 2,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09411764705882353,
+        "y0": 0.2883270202020203,
+        "x1": 0.46465849673202614,
+        "y1": 0.39298611111111115
+      },
+      "text": "The paper deals with the problem of automatic speaker change detection. A metric-based algorithm, called MDISTBIC, which means Modiﬁed DISTBIC, is proposed in this paper. The algorithm originates from the DISTBIC algorithm and modiﬁes it in order to reach a higher efﬁciency. Both the DISTBIC and the MDISTBIC methods are tested in a number of experiments. As the results show, the MDISTBIC algorithm is more efﬁcient than the DISTBIC algorithm in a majority of tests.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.21320261437908494,
+        "y0": 0.4068901515151515,
+        "x1": 0.34558333333333335,
+        "y1": 0.42430176767676775
+      },
+      "text": "1. Introduction",
+      "html": null,
+      "level": 2,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09411764705882353,
+        "y0": 0.43118055555555557,
+        "x1": 0.46465849673202614,
+        "y1": 0.49640782828282826
+      },
+      "text": "The aim of automatic speaker change detection is to extract homogeneous segments containing the longest possible utterances produced by a single speaker. Many efforts have been devoted to this problem in the last years, mainly due to the large number of possible applications, e.g.:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.11915032679738563,
+        "y0": 0.5040972222222222,
+        "x1": 0.46465849673202614,
+        "y1": 0.5693118686868687
+      },
+      "text": "• a reliable speaker change detection algorithm could be very helpful for annotators who manually annotate a large amount of speech data in order to organize an archive of audio documents (e.g. recordings of various sessions or meetings, broadcast news, etc.);",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.11915032679738563,
+        "y0": 0.5711679292929293,
+        "x1": 0.46465849673202614,
+        "y1": 0.6495391414141414
+      },
+      "text": "• performance of a speech recognition system that recognizes conversations or news broadcasts could be improved, when a speaker change detection system would detect the change of the speaker and parameters of the speech recognition system would be adapted accordingly;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.11915032679738563,
+        "y0": 0.6513952020202021,
+        "x1": 0.46465849673202614,
+        "y1": 0.7560416666666667
+      },
+      "text": "• in speaker recognition systems it is supposed that the input speech belongs only to one speaker. It may cause problems in many real situations (e.g. in conversations or broadcast news), where the speech stream is continuous and there is no information about the beginning and ending of the speech segment of one speaker. A speaker change detection system could help to eliminate such problems.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09411764705882353,
+        "y0": 0.7665972222222223,
+        "x1": 0.4646666666666666,
+        "y1": 0.9369760101010101
+      },
+      "text": "There are three main speaker change detection approaches [1], [2]. In the metric-based approach the speaker changes are determined as the moments in which a distance measure computed between two adjacent windows shifted along the speech signal reaches a local maximum. In the model-based approach it is assumed that a model of each speaker the voice of which is contained in an utterance has been trained before the speaker change detection algorithm starts. The speaker changes are then detected as the instants when it is necessary to change the speaker model in order it match the speech signal. The last approach is the decoder-guided approach. Here, the speaker changes are determined according to information provided by a speech recognition system which decodes the spoken audio",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568628,
+        "y0": 0.26513257575757576,
+        "x1": 0.8815212418300653,
+        "y1": 0.29091540404040406
+      },
+      "text": "stream at ﬁrst (e.g. possible speaker changes are at every silence location).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568628,
+        "y0": 0.2914204545454545,
+        "x1": 0.8815294117647059,
+        "y1": 0.4092234848484849
+      },
+      "text": "In this paper, we are interested in the metric-based approach, because it does not require any other information or things except the speech signal itself (i.e. neither speaker model, nor speech recognizer). We focus on the DISTBIC algorithm introduced in [3]. This algorithm is efﬁcient in detecting speaker changes that are relatively close one another, however at the price that a lot of false speaker changes is detected. We will try to modify the algorithm in this paper and thereby to improve its efﬁciency.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568628,
+        "y0": 0.4097285353535354,
+        "x1": 0.8815294117647059,
+        "y1": 0.47495580808080806
+      },
+      "text": "The paper is organized as follows: In Section 2 the DISTBIC algorithm is brieﬂy described. Next, in Section 3 the modiﬁcations of the DISTBIC algorithm are introduced. Experiments are described and their results are presented in Section 4. Finally, a conclusion is given in Section 5.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5992156862745098,
+        "y0": 0.4882411616161616,
+        "x1": 0.7932924836601307,
+        "y1": 0.5056527777777777
+      },
+      "text": "2. DISTBIC algorithm",
+      "html": null,
+      "level": 2,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568628,
+        "y0": 0.5119002525252525,
+        "x1": 0.8815212418300653,
+        "y1": 0.5639835858585859
+      },
+      "text": "The DISTBIC algorithm is based on a two-step analysis [3]: the ﬁrst pass uses a distance computation to determine the speaker changes candidates and the second pass uses Bayesian Information Criterion (BIC) to validate or discard these candidates.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568628,
+        "y0": 0.5772133838383839,
+        "x1": 0.8815212418300653,
+        "y1": 0.6034154040404041
+      },
+      "text": "2.1. First step: detection of speaker change candidate points",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568628,
+        "y0": 0.6104987373737374,
+        "x1": 0.8815212418300653,
+        "y1": 0.715145202020202
+      },
+      "text": "The ﬁrst step relies on a distance-based segmentation deﬁned from the likelihoods of adjacent windows. In each window, the data are assumed to result from a single multi-dimensional Gaussian process. The question is, whether the data from the two adjacent windows together ﬁt better with a single multidimensional Gaussian or whether a two-window representation justiﬁes the data better. In order to answer this question, the Kullback-Leibler distance can be used for example.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568628,
+        "y0": 0.7156502525252525,
+        "x1": 0.8815294117647059,
+        "y1": 0.7684027777777778
+      },
+      "text": "A symmetric Kullback-Leibler distance KL2 between a vector X coming from the multi-dimensional Gaussian process N(µX, ΣX) and a vector Y resulting from the multidimensional Gaussian process N(µY , ΣY ) can be computed as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5260130718954249,
+        "y0": 0.7815467171717172,
+        "x1": 0.6122075163398693,
+        "y1": 0.7945492424242424
+      },
+      "text": "KL2(X, Y ) =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.6141666666666666,
+        "y0": 0.7759002525252525,
+        "x1": 0.6217009803921568,
+        "y1": 0.7872260101010101
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.6141666666666666,
+        "y0": 0.7908989898989899,
+        "x1": 0.6217009803921568,
+        "y1": 0.8022247474747475
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6236437908496733,
+        "y0": 0.7794949494949495,
+        "x1": 0.8664787581699346,
+        "y1": 0.8025669191919191
+      },
+      "text": "(µY − µX)T(Σ−X1 + Σ−Y1)(µY − µX)+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.6832843137254903,
+        "y0": 0.8046767676767677,
+        "x1": 0.6888251633986928,
+        "y1": 0.8123169191919192
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.6832843137254903,
+        "y0": 0.8108762626262627,
+        "x1": 0.6888251633986928,
+        "y1": 0.8185164141414141
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.7149019607843137,
+        "y0": 0.8046767676767677,
+        "x1": 0.7204428104575163,
+        "y1": 0.8123169191919192
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.7149019607843137,
+        "y0": 0.8108762626262627,
+        "x1": 0.7204428104575163,
+        "y1": 0.8185164141414141
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.7477614379084967,
+        "y0": 0.8046767676767677,
+        "x1": 0.7533022875816994,
+        "y1": 0.8123169191919192
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.7477614379084967,
+        "y0": 0.8108762626262627,
+        "x1": 0.7533022875816994,
+        "y1": 0.8185164141414141
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.7793790849673203,
+        "y0": 0.8046767676767677,
+        "x1": 0.7849199346405229,
+        "y1": 0.8123169191919192
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.7793790849673203,
+        "y0": 0.8108762626262627,
+        "x1": 0.7849199346405229,
+        "y1": 0.8185164141414141
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.6325653594771242,
+        "y0": 0.8050277777777778,
+        "x1": 0.6400996732026144,
+        "y1": 0.8163535353535354
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.6325653594771242,
+        "y0": 0.8200277777777778,
+        "x1": 0.6400996732026144,
+        "y1": 0.8313535353535353
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6813235294117648,
+        "y0": 0.8077651515151515,
+        "x1": 0.7129558823529412,
+        "y1": 0.8259027777777778
+      },
+      "text": "XΣ−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7458006535947712,
+        "y0": 0.8077651515151515,
+        "x1": 0.7774330065359477,
+        "y1": 0.8259027777777778
+      },
+      "text": "XΣ−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7680228758169935,
+        "y0": 0.8086237373737374,
+        "x1": 0.8256323529411764,
+        "y1": 0.8259027777777778
+      },
+      "text": "Y )T +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6420424836601307,
+        "y0": 0.810675505050505,
+        "x1": 0.6813300653594772,
+        "y1": 0.8236767676767677
+      },
+      "text": "tr (Σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6155555555555556,
+        "y0": 0.8123510101010101,
+        "x1": 0.627266339869281,
+        "y1": 0.8236767676767677
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7035457516339869,
+        "y0": 0.8123522727272727,
+        "x1": 0.7458055555555555,
+        "y1": 0.8259027777777778
+      },
+      "text": "Y )(Σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.7138235294117647,
+        "y0": 0.8368737373737374,
+        "x1": 0.7193643790849673,
+        "y1": 0.8445138888888889
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.7138235294117647,
+        "y0": 0.8430732323232323,
+        "x1": 0.7193643790849673,
+        "y1": 0.8507133838383838
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.7562581699346405,
+        "y0": 0.8368737373737374,
+        "x1": 0.7617990196078431,
+        "y1": 0.8445138888888889
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.7562581699346405,
+        "y0": 0.8430732323232323,
+        "x1": 0.7617990196078431,
+        "y1": 0.8507133838383838
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.7773856209150327,
+        "y0": 0.8368737373737374,
+        "x1": 0.7829264705882353,
+        "y1": 0.8445138888888889
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.7773856209150327,
+        "y0": 0.8430732323232323,
+        "x1": 0.7829264705882353,
+        "y1": 0.8507133838383838
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.6926797385620915,
+        "y0": 0.8368737373737374,
+        "x1": 0.6982205882352941,
+        "y1": 0.8445138888888889
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.6926797385620915,
+        "y0": 0.8430732323232323,
+        "x1": 0.6982205882352941,
+        "y1": 0.8507133838383838
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.6325653594771242,
+        "y0": 0.8372247474747474,
+        "x1": 0.6400996732026144,
+        "y1": 0.8485517676767677
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.6325653594771242,
+        "y0": 0.8522247474747475,
+        "x1": 0.6400996732026144,
+        "y1": 0.863550505050505
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7118627450980393,
+        "y0": 0.8399747474747474,
+        "x1": 0.754295751633987,
+        "y1": 0.8580997474747475
+      },
+      "text": "Y )(Σ−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6420424836601307,
+        "y0": 0.8399747474747474,
+        "x1": 0.6907336601307189,
+        "y1": 0.8558749999999999
+      },
+      "text": "tr (Σ−",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7754411764705882,
+        "y0": 0.8408333333333333,
+        "x1": 0.8399803921568627,
+        "y1": 0.8638926767676768
+      },
+      "text": "Y )T − d,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6813235294117648,
+        "y0": 0.8445479797979798,
+        "x1": 0.7118725490196078,
+        "y1": 0.8580997474747475
+      },
+      "text": "X Σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7448856209150327,
+        "y0": 0.8445479797979798,
+        "x1": 0.7754346405228758,
+        "y1": 0.8580997474747475
+      },
+      "text": "X Σ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6155555555555556,
+        "y0": 0.8445492424242425,
+        "x1": 0.627266339869281,
+        "y1": 0.8558749999999999
+      },
+      "text": "+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8644444444444443,
+        "y0": 0.8640972222222222,
+        "x1": 0.8815196078431373,
+        "y1": 0.8767361111111112
+      },
+      "text": "(1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568628,
+        "y0": 0.884905303030303,
+        "x1": 0.8815228758169934,
+        "y1": 0.9110505050505051
+      },
+      "text": "where tr denotes the trace of a matrix, and d is the dimension of the vectors X and Y .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568628,
+        "y0": 0.9111931818181819,
+        "x1": 0.8815294117647059,
+        "y1": 0.9376578282828283
+      },
+      "text": "The KL2 distance is computed for two adjacent windows W1 and W2 of the same size (2 s) shifted by a ﬁxed step",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.9329848999987007,
+  "model_load_seconds": null,
+  "peak_rss_mb": 122.69140625,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "parser": "java",
+    "table_method": "cluster",
+    "reading_order": "xycut",
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "java-cpu-only",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "publication_cache": {
+      "doc_id": "031a888e402c82517f213222ae97147dd7dc_page_1_pg1",
+      "pdf_sha256": "3085bc03ed3c4b24cc9d1399323a9e780c13b83fa46ea571f0a1e781f67f23a9",
+      "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

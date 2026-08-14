@@ -1,0 +1,31 @@
+## Producing Nanoporous Metallic Foams
+
+# P
+
+roducing nanoporous metals has been a difficult and, depending on the type of metal,
+
+plexes in an inert atmosphere at different pressures. As a pellet rapidly burns, its volume dramatically increases; the burning complex releases heated metal atoms, which attract each other and coalesce into larger particles. At the same time, decomposition gases such as hydrogen and nitrogen, also released by the reaction, blow tiny holes through the coalescing metal to form nanoscopic pores. The resulting foams typically contain 50% to 70% metal, with the remainder being carbon nitride-type impurities that can be removed later by heat treatment.
+
+elusive task. Recent discoveries by our team of researchers in the LANL Materials Dynamics Group have led to a method for achieving the combustion synthesis of nanoporous transition-metal foams that have ultralow densities and ultrahigh surface areas. (See “What are transition metals?” on page 15.) We have produced nanostructured metal foams of iron, cobalt, silver, and copper, and our nanofoam forming technique can be applied to many other metals. These materials offer a wide variety of potential applications in, for example, catalysis, fuel cells, and hydrogen storage.
+
+Possible applications for our nanostructured metal foams abound,
+
+including catalysis, fuel cells, and hydrogen storage.
+
+Nanofoam pore diameters are measured in nanometers, too small for the unaided human eye to distinguish. In fact, the finest flaxen human hair, at diameters of 17 to 50 μm, is close to the limit of resolution of the human eye. The smallest pores in our metal nanofoams are 10 to 20 nm in diameter, about a thousand times smaller. The largest pores, at 1 to 3 μm, are still too small to see.
+
+The iron foam has the incredibly low density of 0.01 to 0.04 g/cm3. For comparison, ultralow-density aluminum foam has a density of 0.08 to 0.16 g/cm3.
+
+Our nanofoams have pore diameters of 10 to 20 nm to about 1 μm, surface area-to-mass ratios as high as 258 m2/g, and densities as low as 0.01 g/cm3. For comparison, silica aerogels, the lightest known
+
+To produce a nanostructured metal foam, we ignite pressed pellets of high-nitrogen metal com-
+
+<table>
+  <tr>
+    <td>![](<081875a1035e34dee439b9a2a3a55e319405_page_13_pg1_images/imageFile1.png>)<br><br>Copper nanoporous material formed at 00 psi Ar (the production vessel is pressurized with argon) overpressure:<br><br>(a) burn front is dark portion heading top to bottom and (b) heat treated to 00°C in hydrogen gas (,000x, 00-nm scale bar). Illustration (a) shows the actual formation of copper foam from the copper complex;<br>(b) scanning electron micrograph (SEM) of copper heat treated to form copper foam.<br></td>
+  </tr>
+</table>
+
+
+Nuclear Weapons Journal, Issue 2, 2005 
+

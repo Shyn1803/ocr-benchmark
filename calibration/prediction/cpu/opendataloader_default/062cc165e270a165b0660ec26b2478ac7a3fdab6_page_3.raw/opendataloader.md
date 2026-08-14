@@ -1,0 +1,14 @@
+![](<062cc165e270a165b0660ec26b2478ac7a3fdab6_page_3_images/imageFile1.png>)
+
+numerous industrial type structures associated with the water industry. Here the valley widens and the river basin affords room for pools and wetland areas supporting a range of plant and fish life. Approaching the valley head there is a gradual change to wilderness and a sense of being in the heart of the Bowland fells.
+
+# 5.
+
+![](<062cc165e270a165b0660ec26b2478ac7a3fdab6_page_3_images/imageFile2.png>)
+
+(53.97486; -2.52965)
+
+This is the furthest point of the route. After taking in the scenery, retrace your steps back to the bridge then follow the `Short Route` description back to the village.
+
+## 3 / 4
+

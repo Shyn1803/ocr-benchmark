@@ -1,0 +1,419 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "0853d8a05fd1e839887d4bc3004a6770cb7b_page_2_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "and discussed. Section V concludes the paper.\n\n## II. THE ANALYZED GENERATOR\n\nWe analyze the LCT attack on a noised pseudorandom sequence generator involving a primitive known as The Binary Rate Multiplier (BRM). BRM consists of 2 linear feedback shift registers (LFSRs). One of them, the clocking LFSR (LFSR s ), determines the clocking sequence for the clocked LFSR (LFSR u ), see Fig. 1.\n\nFig. 1. The BRM primitive\n\n<!-- image -->\n\nThe BRM operates as follows (Fig. 2): Without clocking by LFSR s , the register LFSR u produces the binary sequence u n . At the clock pulse i of LFSR s , the bits from k positions of LFSR s determine the integer s i that represents the number of bits from the sequence u n that are going to be discarded. The integers s i , i = 1 , 2 , . . . make the sequence s n . The process of discarding bits in this way is called non-uniform decimation of the sequence u n . The maximum value of the integer s i determines the maximum number of bits from the sequence u n that can be discarded at a time. The binary sequence z n is the output sequence of the whole BRM.\n\nun\n\nFig. 2. Operation of the BRM\n\n<!-- image -->\n\nThe BRM primitive has become popular in the design of stream ciphers since it can be shown [2] that the produced sequence z n has extremely long period and high linear complexity preserving at the same time good statistical properties of a single LFSR.\n\n## III. THE NEW LCT ATTACK\n\nIn this section, we give details of the new LCT-based attack against a noised BRM. The general description and remarks about LCT have been exposed in the Introduction. To design an LCT attack against BRM, we have to determine which part of the BRM key (which consists of the initial states of LFSR s and LFSR u , as usual) is to be guessed. It is shown in [5] that assigning a linear system to a BRM when the initial state of LFSR s is guessed is easy. Then the unknowns in the system are the bits of the output sequence of LFSR u without decimation together with the bits of the initial state of the same LFSR and the right-hand side of any equation in the system is the corresponding bit of the intercepted sequence. In our new LCT attack on a noised BRM, we use the same approach. We guess the initial state of LFSR s and make a system of linear equations in the unknowns of the initial state of LFSR u and the unknown bits of the output sequence of LFSR u without decimation. The main point of our attack is the algorithm that eliminates the influence of the bits of the intercepted sequence complemented by noise.\n\n## Example 1\n\nSuppose the BRM from Fig. 1 uses 4-bit LFSRs and the primitive feedback polynomials of LFSR s and LFSR u are f s ( x ) = 1 + x + x 4 and f u ( x ) = 1 + x 3 + x 4 , respectively. Let the number of output taps of LFSR s be k = 2 and the tap positions are the first and the second (from the left). Let the initial states of LFSR s and LFSR u be 1010 and 0110, respectively. Then the clocking sequence for LFSR u (i.e. the integer sequence s n ) is 31021002333 . . . and the output sequence of the BRM is 11010110111 . . .\n\nLet the cryptanalyst's guess of the initial state of LFSR s be right, i.e. 1010. In the LCT attack against the generator without noise, the so-called decimation sequence is generated, containing the symbol '2' in the positions of the unknown bits. Each symbol '2' will correspond to a new variable in the system of equations assigned to the generator. In this case, the decimation sequence will be 2222 | 22212102212011220222122212221 . . . . The symbol | delimits the variables of the initial state of the clocked register LFSR u from the rest of the variables. The variables to the left from the symbol | are given in the order x 4 , x 3 , x 2 , x 1 , whereas the variables to the right from the symbol | are given in the increased order of indexing, i.e. x 5 , x 6 , etc. Then the system of linear equations assigned to the given BRM is:\n\n<!-- formula-not-decoded -->\n\n✷\n\nThe new ciphertext-only attack against a BRM is described below:\n\n1. Guess the initial state of the LFSR s .\n2. Set up a system of equations assigned to such a BRM without involving the intercepted bits. Such a system is homogeneous and always consistent.\n3. Set up a system of equations involving only the equations containing the intercepted bits.\n4. Join the obtained systems and check the consistency of the joint system. The following cases are possible:\n- 4.1 There is no noise and the right initial state of LFSR s was guessed - the joint system will be consistent and",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "7e3500302e5a474f8bb44cbf367adb57eb961d2c491faf9961e079520f4de5c8"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "7cce572aaeae4515e9e15a7486dbf800bef164cbb2145848f761ae39caddad25"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0799983660130719,
+        "y0": 0.07508755984848492,
+        "x1": 0.38906686862745116,
+        "y1": 0.0858853858675249
+      },
+      "text": "and discussed. Section V concludes the paper.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.17386437908496732,
+        "y0": 0.09891710530303044,
+        "x1": 0.39637315392156824,
+        "y1": 0.1097149313220704
+      },
+      "text": "II. THE ANALYZED GENERATOR",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0799983660130719,
+        "y0": 0.11814690328282844,
+        "x1": 0.4902309313725492,
+        "y1": 0.20537812281241855
+      },
+      "text": "We analyze the LCT attack on a noised pseudorandom sequence generator involving a primitive known as The Binary Rate Multiplier (BRM). BRM consists of 2 linear feedback shift registers (LFSRs). One of them, the clocking LFSR (LFSR s ), determines the clocking sequence for the clocked LFSR (LFSR u ), see Fig. 1.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.09483710145638659,
+        "y0": 0.2190853273025667,
+        "x1": 0.47485511131535946,
+        "y1": 0.29656381318063446
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.20802287581699347,
+        "y0": 0.32004730416666677,
+        "x1": 0.3622026370915034,
+        "y1": 0.3286855866586217
+      },
+      "text": "Fig. 1. The BRM primitive",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999836601307181,
+        "y0": 0.3481317517676768,
+        "x1": 0.4902265480392153,
+        "y1": 0.5098790727362117
+      },
+      "text": "The BRM operates as follows (Fig. 2): Without clocking by LFSR s , the register LFSR u produces the binary sequence u n . At the clock pulse i of LFSR s , the bits from k positions of LFSR s determine the integer s i that represents the number of bits from the sequence u n that are going to be discarded. The integers s i , i = 1 , 2 , . . . make the sequence s n . The process of discarding bits in this way is called non-uniform decimation of the sequence u n . The maximum value of the integer s i determines the maximum number of bits from the sequence u n that can be discarded at a time. The binary sequence z n is the output sequence of the whole BRM.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2645551470588235,
+        "y0": 0.5225028724747475,
+        "x1": 0.2779551470588235,
+        "y1": 0.5353816603535354
+      },
+      "text": "un",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.10944830202588848,
+        "y0": 0.5251333063299005,
+        "x1": 0.4599572474660437,
+        "y1": 0.6449033563787286
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.20006535947712417,
+        "y0": 0.6681205364898989,
+        "x1": 0.37015927467320275,
+        "y1": 0.676758818981854
+      },
+      "text": "Fig. 2. Operation of the BRM",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999836601307189,
+        "y0": 0.6962049840909091,
+        "x1": 0.4902335437908498,
+        "y1": 0.7673828606149995
+      },
+      "text": "The BRM primitive has become popular in the design of stream ciphers since it can be shown [2] that the produced sequence z n has extremely long period and high linear complexity preserving at the same time good statistical properties of a single LFSR.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.18883169934640523,
+        "y0": 0.780414580050505,
+        "x1": 0.3813968004901959,
+        "y1": 0.791212406069545
+      },
+      "text": "III. THE NEW LCT ATTACK",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999836601307189,
+        "y0": 0.7996431154040404,
+        "x1": 0.4902321447712417,
+        "y1": 0.9170649914992869
+      },
+      "text": "In this section, we give details of the new LCT-based attack against a noised BRM. The general description and remarks about LCT have been exposed in the Introduction. To design an LCT attack against BRM, we have to determine which part of the BRM key (which consists of the initial states of LFSR s and LFSR u , as usual) is to be guessed. It is shown in [5] that assigning a linear system to a BRM when the initial state of LFSR s is guessed is easy. Then the unknowns in the system are the bits of the output sequence of LFSR u without decimation together with the bits of the initial state of the same LFSR and the right-hand side of any equation in the system is the corresponding bit of the intercepted sequence. In our new LCT attack on a noised BRM, we use the same approach. We guess the initial state of LFSR s and make a system of linear equations in the unknowns of the initial state of LFSR u and the unknown bits of the output sequence of LFSR u without decimation. The main point of our attack is the algorithm that eliminates the influence of the bits of the intercepted sequence complemented by noise.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5260392156862745,
+        "y0": 0.24103258333333383,
+        "x1": 0.6017842774509803,
+        "y1": 0.2523411406565661
+      },
+      "text": "Example 1",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097598039215686,
+        "y0": 0.25700801439393994,
+        "x1": 0.9199932790849679,
+        "y1": 0.3885659414230811
+      },
+      "text": "Suppose the BRM from Fig. 1 uses 4-bit LFSRs and the primitive feedback polynomials of LFSR s and LFSR u are f s ( x ) = 1 + x + x 4 and f u ( x ) = 1 + x 3 + x 4 , respectively. Let the number of output taps of LFSR s be k = 2 and the tap positions are the first and the second (from the left). Let the initial states of LFSR s and LFSR u be 1010 and 0110, respectively. Then the clocking sequence for LFSR u (i.e. the integer sequence s n ) is 31021002333 . . . and the output sequence of the BRM is 11010110111 . . .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097598039215686,
+        "y0": 0.39325296388888964,
+        "x1": 0.9199876794117648,
+        "y1": 0.600285638392778
+      },
+      "text": "Let the cryptanalyst's guess of the initial state of LFSR s be right, i.e. 1010. In the LCT attack against the generator without noise, the so-called decimation sequence is generated, containing the symbol '2' in the positions of the unknown bits. Each symbol '2' will correspond to a new variable in the system of equations assigned to the generator. In this case, the decimation sequence will be 2222 | 22212102212011220222122212221 . . . . The symbol | delimits the variables of the initial state of the clocked register LFSR u from the rest of the variables. The variables to the left from the symbol | are given in the order x 4 , x 3 , x 2 , x 1 , whereas the variables to the right from the symbol | are given in the increased order of indexing, i.e. x 5 , x 6 , etc. Then the system of linear equations assigned to the given BRM is:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.643387254901961,
+        "y0": 0.612993111363637,
+        "x1": 0.7863591671241841,
+        "y1": 0.7079826080897477
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9078218954248377,
+        "y0": 0.7175196265151521,
+        "x1": 0.919985383529413,
+        "y1": 0.7285262868686876
+      },
+      "text": "✷",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097598039215697,
+        "y0": 0.7334082669191926,
+        "x1": 0.9199851633986934,
+        "y1": 0.7593007899079295
+      },
+      "text": "The new ciphertext-only attack against a BRM is described below:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.5341781045751645,
+        "y0": 0.7669385699494956,
+        "x1": 0.7996089052287593,
+        "y1": 0.778695042004338
+      },
+      "text": "Guess the initial state of the LFSR s .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.5341781045751643,
+        "y0": 0.7820332669191926,
+        "x1": 0.9199846732026146,
+        "y1": 0.8230204868776265
+      },
+      "text": "Set up a system of equations assigned to such a BRM without involving the intercepted bits. Such a system is homogeneous and always consistent.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.5341781045751643,
+        "y0": 0.8273173578282835,
+        "x1": 0.9199846732026146,
+        "y1": 0.8532111434432832
+      },
+      "text": "Set up a system of equations involving only the equations containing the intercepted bits.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.5341781045751643,
+        "y0": 0.8575080143939402,
+        "x1": 0.9199846732026146,
+        "y1": 0.8834005373826771
+      },
+      "text": "Join the obtained systems and check the consistency of the joint system. The following cases are possible:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.5423169934640533,
+        "y0": 0.8902138224747482,
+        "x1": 0.9199848366013075,
+        "y1": 0.9161063454634851
+      },
+      "text": "There is no noise and the right initial state of LFSR s was guessed - the joint system will be consistent and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.09483710145638659,
+        "y0": 0.2190853273025667,
+        "x1": 0.47485511131535946,
+        "y1": 0.29656381318063446
+      },
+      "source_id": "#/pictures/0",
+      "file": null,
+      "sha256": null
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.10944830202588848,
+        "y0": 0.5251333063299005,
+        "x1": 0.4599572474660437,
+        "y1": 0.6449033563787286
+      },
+      "source_id": "#/pictures/1",
+      "file": null,
+      "sha256": null
+    }
+  ],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 1.3771488000002137,
+  "model_load_seconds": null,
+  "peak_rss_mb": 43.4453125,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "0853d8a05fd1e839887d4bc3004a6770cb7b_page_2_pg1",
+      "pdf_sha256": "e353219731df25403584647a9cf2bbdd95ee4f798b1e8ea63ddf5e5c0941ae27",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

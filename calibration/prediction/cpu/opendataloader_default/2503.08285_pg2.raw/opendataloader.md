@@ -1,0 +1,20 @@
+a bypass operation, the resulting device would be able to sort only the identity permutations, whereas adding a bypass gives rise to a much more interesting device. In the latter case, an optimal sorting algorithm, called Queuesort, is described in [M] and further studied in [CF1], and sortable permutations can be characterized as those avoiding the pattern 321.
+
+When we move to the “pop” versions, again in the case of a pop queue a bypass operation is necessary in order to have nontrivial algorithms [CF2]. On the other hand, in the case of a pop stack, having or not having a bypass operation gives rise to two diﬀerent (and nontrivial) sorting devices (unlike what happens for a classical stack). Curiously, there is no evidence in the literature of papers investigating the sorting properties of a pop stack with a bypass. This paper aims to ﬁll this gap. Clearly, adding a bypass to a pop stack slightly increases the sorting power of the device and poses interesting combinatorial questions on its properties, which we analyze in some detail. More speciﬁcally, the content of our paper is the following.
+
+In Section 3 we characterize the set of sortable permutations in terms of two forbidden patterns; the enumeration of the resulting class of pattern avoiding permutations was already known (odd-indexed Fibonacci numbers, sequence A001519 in [Sl]); however, in Section 4 we give an independent proof of this enumerative result by describing a bijective link with a restricted class of Motzkin paths. In Section 5 we describe an algorithm to compute the preimage of a given permutation and use it to characterize and enumerate permutations having 0,1, and 2 preimages. Section 6 contains a complete description of the preimages of principal classes of permutations, by determining in which cases we obtain classes (and in such cases by determining the basis of the resulting classes). Section 7 is devoted to the characterization and (partly) enumeration of the sets of sortable permutations for the compositions of our sorting algorithm with other classical sorting algorithms (the characterization being given in terms of forbidden patterns). Finally, in Section 8 we consider the device consisting of two pop stacks in parallel with a bypass, and we determine the basis of the associated set of sortable permutations, and in Section 9 we give some hints for further work.
+
+# 2 Preliminaries on permutations and sorting algorithms
+
+Let [1,n] = {1,... ,n}. A permutation π of size n is a bijection from [1,n] to [1,n]. It can be represented in linear form as π = π1 ··· πn, where πi = π(i), for all 1 ≤ i ≤ n. The identity permutation of size n is 12··· n, and is denoted idn. We denote by Sn the set of all permutations of size n and by S = n∈N Sn the set of all permutations.
+
+For a given permutation π, we say that two elements are adjacent when their positions are consecutive integers, whereas we say that they are consecutive when their values are consecutive integers. For instance, if π = 3645712, the elements 1 and 7 are adjacent, the elements 5 and 6 are consecutive, and the elements 4 and 5 are both adjacent and consecutive. We warn the reader that we will strictly adhere to this terminology regarding the terms “consecutive” and “adjacent” throughout the paper.
+
+Given π = π1 ··· πn ∈ Sn, an element πi is called a left-to-right maximum when it is larger than all the elements to its left (that is, πi = max{πj |j ≤ i}). We denote by LTR(π) the set of left-to-right maxima of π. Therefore, the set of left-to-right maxima of the above permutation is LTR(3645712) = {3,6,7}. Moreover, the reverse of π is the permutation πr = πn ··· π1.
+
+Given π ∈ Sn and τ = τ1 ··· τm ∈ Sm, the direct sum of π and τ is the permutation π ⊕ τ obtained by concatenating π with the sequence (τ1 +n)··· (τm +n) (obtained from τ by adding n to each of its elements). For instance, the direct sum of the permutations 3142 and 42315 is 314286759.
+
+We note that any sequence of n distinct integers can be regarded as a permutation by appropriately rescaling its elements to [1,n]. Indeed, two sequences are said to be order-isomorphic if
+
+2
+

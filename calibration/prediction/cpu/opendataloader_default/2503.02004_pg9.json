@@ -1,0 +1,637 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_default",
+  "engine_family": "opendataloader",
+  "profile": "default",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.02004_pg9",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "9\n\nThe key advance of the MILP model is its global optimality guarantee, since it can explore all possible combinations via branch-and-bound. Furthermore, by employing upper and lower bound pruning strategies, MILP significantly reduces ineffective search efforts, thereby enhancing computational efficiency and guaranteeing the identification of the global optimality. However, despite its global optimality, its computational complexity still grows rapidly as the problem size increases with the time complexity O(2M · K). Empirical results show that when M > 50 and K > 100, the size of the branch-and-bound search tree leads to memory and time costs that exceed practical limits.\n\nAlgorithm 2 GRSIP: Greedy Row Selection with Isolated Preselection.\n\nRequire: G,Nr,Ninit,∆n Ensure: Is\n\n- 1: Initialize: l = 0, T(0) = {∅}\n- 2: while l ≤ Ninit do\n- 3: i = arg max i∈T(cl)\n\ng¯i, s.t. D1({i},T(l)) ≤ ∆n\n\n- 4: l = l + 1\n- 5: T(l) = T(l) ∪ {i}\n- 6: end while\n- 7: while l ≤ Nr do\n- 8: i = arg max i∈T(cl)\n\nmin\n\nk\n\n∥hk∥2, s.t. hk ∈ Col(HT\n\n(l)∪{i})\n\n- 9: l = l + 1\n- 10: T(l) = T(l) ∪ {i}\n- 11: end while\n- 12: return Is = T(l)\n\n\nHence, in the following we also propose a greedy algorithm in Algorithm 2 with the time complexity O(MKNr). The algorithm starts by choosing Ninit positions with the top average channel gains for each subcarrier, maintaining a minimum separation of ∆n between them, where D1(·,·) represents the minimal ℓ1-norm distance between two point\n\nsets. Then it incrementally adds indices to the candidate set, following the principle of maximizing the minimum subcarrier gain, until Nr positions are chosen. Note that HT is formed by the row vectors of G associated with row indices in T.\n\nRemark 2 (Applications to Other Models). The theoretical analysis and algorithms of the two-step framework for FAS proposed in this work could be extended to other problems besides FAS. First, the proposed two-step framework could be directly extended to the antenna selection problem with discrete positions, regardless of whether the exact antennas deployment [38]–[41]. The group-sparse recovery formulation and D-GRIP analysis can be directly adapted to delay-Doppler domain channel estimation [42], [43], where structures induce similar group-wise sparsity patterns in reconstruction. The DC-GOMP algorithm employs a correlation-aware selection mechanism to dynamically resolve coherence conflicts, offering a systematic and efficient approach to sparse event detection. Then, MILP-based spatial equalization offers new insights for the resourceconstrained optimization in RIS configuration on discrete phase [44]. These potential extensions highlight that our methodology effectively tackles the unified challenge of sparsity-aware optimization under structured constraints, making it applicable to a wide range of domains, including computational sensing, adaptive control, and beyond.\n\nV. SIMULATION RESULTS\n\nIn this section, we present the performance of the proposed group-sparsity based frequency-space channel estimation algorithm, i.e., DC-GOMP, in comparison to two traditional algorithms (OMP, GOMP), under FAS-assisted wideband SIMO system. The proposed positions optimization methods, i.e., MILP and GRSIP, are also evaluated through the physical layer simulations and in terms of BER.\n\n![](<2503.02004_pg9_images/imageFile1.png>)\n\nSpace Frequency Grid\n\n<table>\n  <tr>\n    <td>![](<2503.02004_pg9_images/imageFile2.png>)<br><br></td>\n  </tr>\n</table>\n\n\n<table>\n  <tr>\n    <td>![](<2503.02004_pg9_images/imageFile3.png>)</td>\n  </tr>\n</table>\n\n\n<table>\n  <tr>\n    <td>![](<2503.02004_pg9_images/imageFile4.png>)<br><br></td>\n  </tr>\n</table>\n\n\n<table>\n  <tr>\n    <td>![](<2503.02004_pg9_images/imageFile5.png>)</td>\n  </tr>\n</table>\n\n\n<table>\n  <tr>\n    <td>![](<2503.02004_pg9_images/imageFile6.png>)<br><br></td>\n  </tr>\n</table>\n\n\n<table>\n  <tr>\n    <td>![](<2503.02004_pg9_images/imageFile7.png>)</td>\n  </tr>\n</table>\n\n\n<table>\n  <tr>\n    <td>![](<2503.02004_pg9_images/imageFile8.png>)<br><br></td>\n  </tr>\n</table>\n\n\n<table>\n  <tr>\n    <td>![](<2503.02004_pg9_images/imageFile9.png>)</td>\n  </tr>\n</table>\n\n\nFigure 2. (1) The first row has four expressions in frequency-space domain. The first one represents the original SFG and the last three represent the recovered version by three different algorithm (our proposed DC-GOMP, OMP and GOMP). (2) Delay-wavenumber domain expressions corresponding to ones above. Black boxes denote the low power regions and red boxes denote the regions failing to correctly allocate the energy.\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "866d8ba3d07261cebec72357adca2c6025fab660570b5d266276ce083ce06d1f"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "658fbba4acf44781dc5dc1349e98041f8c9865962d263ee59d27f4cb366a9a9e"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "aa983a380d783e8ed5b0f445fc513913fc8b54a95e34c1bdb25be46e35f3c0c9"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9141406675222924,
+        "y0": 0.02769720509805318,
+        "x1": 0.9199984544984177,
+        "y1": 0.03767950682393184
+      },
+      "text": "9",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000154550158246,
+        "y0": 0.06387295252348879,
+        "x1": 0.48996599896518594,
+        "y1": 0.2343358395989975
+      },
+      "text": "The key advance of the MILP model is its global optimality guarantee, since it can explore all possible combinations via branch-and-bound. Furthermore, by employing upper and lower bound pruning strategies, MILP significantly reduces ineffective search efforts, thereby enhancing computational efficiency and guaranteeing the identification of the global optimality. However, despite its global optimality, its computational complexity still grows rapidly as the problem size increases with the time complexity O(2M · K). Empirical results show that when M > 50 and K > 100, the size of the branch-and-bound search tree leads to memory and time costs that exceed practical limits.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000154550158246,
+        "y0": 0.2445521386404399,
+        "x1": 0.48996599896518594,
+        "y1": 0.2734371473707966
+      },
+      "text": "Algorithm 2 GRSIP: Greedy Row Selection with Isolated Preselection.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000154550158246,
+        "y0": 0.2722493437384931,
+        "x1": 0.26348954098603,
+        "y1": 0.3089334711185546
+      },
+      "text": "Require: G,Nr,Ninit,∆n Ensure: Is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08966932985707471,
+        "y0": 0.30107615009086697,
+        "x1": 0.3043227007304175,
+        "y1": 0.3233700364655715
+      },
+      "text": "1: Initialize: l = 0, T(0) = {∅}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08966932985707471,
+        "y0": 0.31484992101105846,
+        "x1": 0.23351688964446746,
+        "y1": 0.33757022888975996
+      },
+      "text": "2: while l ≤ Ninit do",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08966932985707471,
+        "y0": 0.3315349986340258,
+        "x1": 0.21909332813686425,
+        "y1": 0.3582213828409887
+      },
+      "text": "3: i = arg max i∈T(cl) g¯i, s.t. D1({i},T(l)) ≤ ∆n",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08966932985707471,
+        "y0": 0.35554288565014425,
+        "x1": 0.19533796087865127,
+        "y1": 0.36737697323878404
+      },
+      "text": "4: l = l + 1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08966932985707471,
+        "y0": 0.36944731496988914,
+        "x1": 0.24772374495192148,
+        "y1": 0.3899785007542552
+      },
+      "text": "5: T(l) = T(l) ∪ {i}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08966932985707471,
+        "y0": 0.3814595731033745,
+        "x1": 0.17847855448565036,
+        "y1": 0.39685469598166034
+      },
+      "text": "6: end while",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08966932985707471,
+        "y0": 0.395659765527563,
+        "x1": 0.2244639461359101,
+        "y1": 0.4183800734062645
+      },
+      "text": "7: while l ≤ Nr do",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08966932985707471,
+        "y0": 0.4123448431505303,
+        "x1": 0.21909332813686425,
+        "y1": 0.4390312273574932
+      },
+      "text": "8: i = arg max i∈T(cl) min k ∥hk∥2, s.t. hk ∈ Col(HT (l)∪{i})",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08966932985707471,
+        "y0": 0.4363527301666489,
+        "x1": 0.19533796087865127,
+        "y1": 0.4481868177552887
+      },
+      "text": "9: l = l + 1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08297495615479207,
+        "y0": 0.4502571594863938,
+        "x1": 0.24772374495192148,
+        "y1": 0.47078834527075986
+      },
+      "text": "10: T(l) = T(l) ∪ {i}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08297495615479207,
+        "y0": 0.4622682298162467,
+        "x1": 0.17847855448565036,
+        "y1": 0.47766335269453253
+      },
+      "text": "11: end while",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08297495615479207,
+        "y0": 0.4764684222404353,
+        "x1": 0.2256516305041695,
+        "y1": 0.49895235719630826
+      },
+      "text": "12: return Is = T(l)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000154550158246,
+        "y0": 0.5088206297734859,
+        "x1": 0.48996599896518594,
+        "y1": 0.5946014324911806
+      },
+      "text": "Hence, in the following we also propose a greedy algorithm in Algorithm 2 with the time complexity O(MKNr). The algorithm starts by choosing Ninit positions with the top average channel gains for each subcarrier, maintaining a minimum separation of ∆n between them, where D1(·,·) represents the minimal ℓ1-norm distance between two point",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100407206069119,
+        "y0": 0.06387295252348879,
+        "x1": 0.9199984544984177,
+        "y1": 0.13493330482604604
+      },
+      "text": "sets. Then it incrementally adds indices to the candidate set, following the principle of maximizing the minimum subcarrier gain, until Nr positions are chosen. Note that HT is formed by the row vectors of G associated with row indices in T.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100407206069119,
+        "y0": 0.14287377210799512,
+        "x1": 0.9200034941774907,
+        "y1": 0.4414365297129078
+      },
+      "text": "Remark 2 (Applications to Other Models). The theoretical analysis and algorithms of the two-step framework for FAS proposed in this work could be extended to other problems besides FAS. First, the proposed two-step framework could be directly extended to the antenna selection problem with discrete positions, regardless of whether the exact antennas deployment [38]–[41]. The group-sparse recovery formulation and D-GRIP analysis can be directly adapted to delay-Doppler domain channel estimation [42], [43], where structures induce similar group-wise sparsity patterns in reconstruction. The DC-GOMP algorithm employs a correlation-aware selection mechanism to dynamically resolve coherence conflicts, offering a systematic and efficient approach to sparse event detection. Then, MILP-based spatial equalization offers new insights for the resourceconstrained optimization in RIS configuration on discrete phase [44]. These potential extensions highlight that our methodology effectively tackles the unified challenge of sparsity-aware optimization under structured constraints, making it applicable to a wide range of domains, including computational sensing, adaptive control, and beyond.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6228875345218018,
+        "y0": 0.4687441352195655,
+        "x1": 0.8071583601556254,
+        "y1": 0.48300253002173676
+      },
+      "text": "V. SIMULATION RESULTS",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5100407206069119,
+        "y0": 0.4946204373492974,
+        "x1": 0.9199917349263199,
+        "y1": 0.5940811745002317
+      },
+      "text": "In this section, we present the performance of the proposed group-sparsity based frequency-space channel estimation algorithm, i.e., DC-GOMP, in comparison to two traditional algorithms (OMP, GOMP), under FAS-assisted wideband SIMO system. The proposed positions optimization methods, i.e., MILP and GRSIP, are also evaluated through the physical layer simulations and in terms of BER.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.1534750267102991,
+        "y0": 0.614816662509354,
+        "x1": 0.2645377942332633,
+        "y1": 0.6245804083668888
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18145196513885997,
+        "y0": 0.6167230873392011,
+        "x1": 0.26411110140506255,
+        "y1": 0.6239841309434724
+      },
+      "text": "Space Frequency Grid",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.14591382820741974,
+        "y0": 0.6258584850752473,
+        "x1": 0.3031350163621581,
+        "y1": 0.7303982705579113
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.14752484561783105,
+        "y0": 0.7584743850146694,
+        "x1": 0.303538190688017,
+        "y1": 0.86244521255746
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.33450701859305604,
+        "y0": 0.6258584850752473,
+        "x1": 0.49172988664081874,
+        "y1": 0.7303982705579113
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.33551495440770335,
+        "y0": 0.7584743850146694,
+        "x1": 0.49152829947788934,
+        "y1": 0.86244521255746
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.5222384238571688,
+        "y0": 0.6258786777369965,
+        "x1": 0.6793604983234668,
+        "y1": 0.7304184632196605
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.5238511211606045,
+        "y0": 0.7585658458943567,
+        "x1": 0.6797636726493257,
+        "y1": 0.8625366734371473
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.7107325005543648,
+        "y0": 0.6258786777369965,
+        "x1": 0.8679553686021275,
+        "y1": 0.7304184632196605
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.7117404363690121,
+        "y0": 0.7585658458943567,
+        "x1": 0.867753781439198,
+        "y1": 0.8625366734371473
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000154550158246,
+        "y0": 0.8938293601301832,
+        "x1": 0.9199950947123687,
+        "y1": 0.9265367209492926
+      },
+      "text": "Figure 2. (1) The first row has four expressions in frequency-space domain. The first one represents the original SFG and the last three represent the recovered version by three different algorithm (our proposed DC-GOMP, OMP and GOMP). (2) Delay-wavenumber domain expressions corresponding to ones above. Black boxes denote the low power regions and red boxes denote the regions failing to correctly allocate the energy.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.1534750267102991,
+        "y0": 0.614816662509354,
+        "x1": 0.2645377942332633,
+        "y1": 0.6245804083668888
+      },
+      "source_id": "2503.02004_pg9_images/imageFile1.png",
+      "file": "000.png",
+      "sha256": "4e742fe1ba1848521b411a3e0eac0a0eedf2e7b1b5e40371a4665b01e15c7722"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.14591382820741974,
+        "y0": 0.6258584850752473,
+        "x1": 0.3031350163621581,
+        "y1": 0.7303982705579113
+      },
+      "source_id": "2503.02004_pg9_images/imageFile2.png",
+      "file": "001.png",
+      "sha256": "ea3f843302322efc28c85b9a175b48e9abe54b639fa114751bff80565fb9d930"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.14752484561783105,
+        "y0": 0.7584743850146694,
+        "x1": 0.303538190688017,
+        "y1": 0.86244521255746
+      },
+      "source_id": "2503.02004_pg9_images/imageFile3.png",
+      "file": "002.png",
+      "sha256": "7a958be3a09e836b1fea40f6e762bda0159492c30d278872d8511194848c6d64"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.33450701859305604,
+        "y0": 0.6258584850752473,
+        "x1": 0.49172988664081874,
+        "y1": 0.7303982705579113
+      },
+      "source_id": "2503.02004_pg9_images/imageFile4.png",
+      "file": "003.png",
+      "sha256": "f3bc14c06dd866e48c404ca61c85edfed34fd8728a55330330540d4878c817a8"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.33551495440770335,
+        "y0": 0.7584743850146694,
+        "x1": 0.49152829947788934,
+        "y1": 0.86244521255746
+      },
+      "source_id": "2503.02004_pg9_images/imageFile5.png",
+      "file": "004.png",
+      "sha256": "e944e3f97222655f715ebc878fb1a4a8f12932ce8e985a596a6b9412ae955683"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.5222384238571688,
+        "y0": 0.6258786777369965,
+        "x1": 0.6793604983234668,
+        "y1": 0.7304184632196605
+      },
+      "source_id": "2503.02004_pg9_images/imageFile6.png",
+      "file": "005.png",
+      "sha256": "a5bbd90ad6a1e967f959da402710940d9bd3e396a56850029f8f0857ac6aa8c2"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.5238511211606045,
+        "y0": 0.7585658458943567,
+        "x1": 0.6797636726493257,
+        "y1": 0.8625366734371473
+      },
+      "source_id": "2503.02004_pg9_images/imageFile7.png",
+      "file": "006.png",
+      "sha256": "e65e1cca380916fdedff82675339a6b61ad437cd4e0441a79120ad78c475afbc"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.7107325005543648,
+        "y0": 0.6258786777369965,
+        "x1": 0.8679553686021275,
+        "y1": 0.7304184632196605
+      },
+      "source_id": "2503.02004_pg9_images/imageFile8.png",
+      "file": "007.png",
+      "sha256": "fcb64ee9f263390213973e9d2cbb3d2be3ae80002f9c314d1640bc6e4fc40d80"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.7117404363690121,
+        "y0": 0.7585658458943567,
+        "x1": 0.867753781439198,
+        "y1": 0.8625366734371473
+      },
+      "source_id": "2503.02004_pg9_images/imageFile9.png",
+      "file": "008.png",
+      "sha256": "c202884bc6e8375d1f506dbad37f7cf102e07b60ca0a0d45812116b68b840591"
+    }
+  ],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      595.276,
+      841.89
+    ]
+  ],
+  "seconds": 1.888939600001322,
+  "model_load_seconds": null,
+  "peak_rss_mb": 320.125,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "parser": "java",
+    "table_method": "cluster",
+    "reading_order": "xycut",
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "java-cpu-only",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "publication_cache": {
+      "doc_id": "2503.02004_pg9",
+      "pdf_sha256": "f94bed266047731b4b7f317351d26675c5a5e24470066c5389cc6119a08e1144",
+      "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

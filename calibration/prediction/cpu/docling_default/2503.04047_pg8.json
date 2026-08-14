@@ -1,0 +1,296 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "2503.04047_pg8",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "The efficiency of simulated annealing around T c has been reported in numerous studies. Kirkpatrick et al. (1983) demonstrated that during phase transition, the search becomes more efficient. Strobl &amp; Barker (2016) showed that when using simulated annealing to solve phylogeny reconstruction, the search is constrained to a small valley of the search space when the temperature is below T c . The search efficiency around T c can also be seen in Figure 2 of (Cai &amp; Ma, 2010b).\n\nWhile some algorithms (Basu &amp; Frazer, 1990; Cai &amp; Ma, 2010a) have used critical temperature T c to design the initial and final temperatures, its use for reheating is less common. Abramson et al. (1999) proposes a reheating strategy tied to function cost that implicitly involves T c . However, this method lacks theoretical support and is sensitive to hyperparameters. Instead, our approach directly reheats to the critical temperature, which injects just the right amount of stochastic energy back into the system, enabling it to escape 'wandering in contours' without incurring excessive randomness of a high-temperature regime.\n\n## 5.2.2 Specific Heat\n\nDetermining the critical temperature in simulated annealing requires identifying the phase transition point during optimization, which is characterized by peaks in specific heat (Kirkpatrick et al., 1983; Strobl &amp; Barker, 2016). In statistical physics, the system's energy at temperature T , denoted as E ( T ), adheres to the Boltzmann distribution. Thus, the expected energy of a system can be seen as a function of the temperature, E [ E ( T )]. The specific heat at temperature T , denoted as C T , is traditionally defined in thermodynamics as the rate of change of the expected energy E [ E ( T )] to temperature (Aarts et al., 1987), given by C T = ∂ E [ E ( T )] ∂T . Integrating over the Boltzmann distribution allows deriving specific heat in terms of energy variance:\n\n<!-- formula-not-decoded -->\n\nwhere σ 2 ( E ( T )) is the variance of the system energy at T .\n\n## 5.2.3 Determination of Critical Temperature\n\nTo determine the critical temperature based on specific heat, we first denote T ( t ) as the temperature at step t , C ( t ) as the specific heat at temperature T ( t ), and x t as the solution sampled at step t , then by selecting an appropriate sample size M , we define the approximation of C ( t ) as :\n\n<!-- formula-not-decoded -->\n\nwhere σ 2 ( { f ( x t -M +1 ) , · · · , f ( x t ) } ) represents the variance in objective values over the M most recent steps. The critical temperature T c can be determined as T ( t ∗ ), where t ∗ = arg max t ≥ M ˆ C ( t ). However, SA with\n\ngradient-based discrete samplers convergences rapidly in the initial stage, resulting in an abnormal initial peak in specific heat (due to the high variance). As the annealing progresses, the specific heat quickly decreases, eventually stabilizing at a level more typical of a critical temperature. This behavior is shown in Figure 4a&amp;4b.\n\nTo address the abnormal peak, we introduce a 'skip step' threshold, denoted as t skip , ensuring that the initial transient behavior is excluded from the analysis. Thus, the critical temperature is identified as T ( ˜ t ∗ ), where\n\n<!-- formula-not-decoded -->\n\nOur method diverges from traditional SA reheat strategies (Abramson et al., 1999) by accounting for inhomogeneous chains and addressing gradient-based methods' unique abnormal peaks.\n\n## 5.3 Reheated Gradient-based Discrete Sampling for Combinatorial Optimization\n\nCombining results in Section 5.1 and 5.2, we obtain the Re heated S ampling for C ombinatorial O ptimization algorithm (ReSCO), which is summarized in Algorithm 1. ReSCO is compatible with any gradient-based",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "667305a984beff350d480b1edcce8a24a75a8fe007366f927c6574c4d0b2e5db"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "bb7ab7faae95cfb68175a79f61ef1de2b33c66376290d752e54f45fcc93d35ea"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11574183006535949,
+        "y0": 0.10727243510101005,
+        "x1": 0.8855066116304576,
+        "y1": 0.17875977828282832
+      },
+      "text": "The efficiency of simulated annealing around T c has been reported in numerous studies. Kirkpatrick et al. (1983) demonstrated that during phase transition, the search becomes more efficient. Strobl & Barker (2016) showed that when using simulated annealing to solve phylogeny reconstruction, the search is constrained to a small valley of the search space when the temperature is below T c . The search efficiency around T c can also be seen in Figure 2 of (Cai & Ma, 2010b).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11681699346405229,
+        "y0": 0.19029516237373734,
+        "x1": 0.8846186663189541,
+        "y1": 0.27687720252525266
+      },
+      "text": "While some algorithms (Basu & Frazer, 1990; Cai & Ma, 2010a) have used critical temperature T c to design the initial and final temperatures, its use for reheating is less common. Abramson et al. (1999) proposes a reheating strategy tied to function cost that implicitly involves T c . However, this method lacks theoretical support and is sensitive to hyperparameters. Instead, our approach directly reheats to the critical temperature, which injects just the right amount of stochastic energy back into the system, enabling it to escape 'wandering in contours' without incurring excessive randomness of a high-temperature regime.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.2956363075757576,
+        "x1": 0.27222200702614374,
+        "y1": 0.3068064954545455
+      },
+      "text": "5.2.2 Specific Heat",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.3210502128787878,
+        "x1": 0.8855118595986928,
+        "y1": 0.42473957626262626
+      },
+      "text": "Determining the critical temperature in simulated annealing requires identifying the phase transition point during optimization, which is characterized by peaks in specific heat (Kirkpatrick et al., 1983; Strobl & Barker, 2016). In statistical physics, the system's energy at temperature T , denoted as E ( T ), adheres to the Boltzmann distribution. Thus, the expected energy of a system can be seen as a function of the temperature, E [ E ( T )]. The specific heat at temperature T , denoted as C T , is traditionally defined in thermodynamics as the rate of change of the expected energy E [ E ( T )] to temperature (Aarts et al., 1987), given by C T = ∂ E [ E ( T )] ∂T . Integrating over the Boltzmann distribution allows deriving specific heat in terms of energy variance:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.4426290849673203,
+        "y0": 0.4333321361111111,
+        "x1": 0.8842568795424837,
+        "y1": 0.463503926922685
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633981,
+        "y0": 0.4696894593434343,
+        "x1": 0.5338179906535947,
+        "y1": 0.4827623035353535
+      },
+      "text": "where σ 2 ( E ( T )) is the variance of the system energy at T .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352937,
+        "y0": 0.5015214085858585,
+        "x1": 0.46026608202614394,
+        "y1": 0.5126915964646465
+      },
+      "text": "5.2.3 Determination of Critical Temperature",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.5269340512626263,
+        "x1": 0.8823472784860131,
+        "y1": 0.5682320005050505
+      },
+      "text": "To determine the critical temperature based on specific heat, we first denote T ( t ) as the temperature at step t , C ( t ) as the specific heat at temperature T ( t ), and x t as the solution sampled at step t , then by selecting an appropriate sample size M , we define the approximation of C ( t ) as :",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.3371176470588236,
+        "y0": 0.5892993078282828,
+        "x1": 0.8842573697385622,
+        "y1": 0.6195097782828283
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.6257134492424242,
+        "x1": 0.8855175669262745,
+        "y1": 0.6636988298831252
+      },
+      "text": "where σ 2 ( { f ( x t -M +1 ) , · · · , f ( x t ) } ) represents the variance in objective values over the M most recent steps. The critical temperature T c can be determined as T ( t ∗ ), where t ∗ = arg max t ≥ M ˆ C ( t ). However, SA with",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.6661651118686869,
+        "x1": 0.8829607073568613,
+        "y1": 0.7225564954545454
+      },
+      "text": "gradient-based discrete samplers convergences rapidly in the initial stage, resulting in an abnormal initial peak in specific heat (due to the high variance). As the annealing progresses, the specific heat quickly decreases, eventually stabilizing at a level more typical of a critical temperature. This behavior is shown in Figure 4a&4b.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.7340918795454545,
+        "x1": 0.8823478435124181,
+        "y1": 0.7602938691919191
+      },
+      "text": "To address the abnormal peak, we introduce a 'skip step' threshold, denoted as t skip , ensuring that the initial transient behavior is excluded from the analysis. Thus, the critical temperature is identified as T ( ˜ t ∗ ), where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.43511274509803927,
+        "y0": 0.7837446573232324,
+        "x1": 0.8842573697385625,
+        "y1": 0.8086898638888889
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.8241562734848485,
+        "x1": 0.8826701315235282,
+        "y1": 0.8503582631313131
+      },
+      "text": "Our method diverges from traditional SA reheat strategies (Abramson et al., 1999) by accounting for inhomogeneous chains and addressing gradient-based methods' unique abnormal peaks.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.8707423681818182,
+        "x1": 0.7248447385620911,
+        "y1": 0.881912556060606
+      },
+      "text": "5.3 Reheated Gradient-based Discrete Sampling for Combinatorial Optimization",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.897642904040404,
+        "x1": 0.882359630490195,
+        "y1": 0.9239832631313132
+      },
+      "text": "Combining results in Section 5.1 and 5.2, we obtain the Re heated S ampling for C ombinatorial O ptimization algorithm (ReSCO), which is summarized in Algorithm 1. ReSCO is compatible with any gradient-based",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 2.730483099999219,
+  "model_load_seconds": null,
+  "peak_rss_mb": 153.23046875,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "2503.04047_pg8",
+      "pdf_sha256": "676f6c372cefafff7e6ba15a8ce047f2dd84ddd559fb1ac75db58178583e202b",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

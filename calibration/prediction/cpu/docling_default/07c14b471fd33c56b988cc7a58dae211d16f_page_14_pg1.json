@@ -1,0 +1,632 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "07c14b471fd33c56b988cc7a58dae211d16f_page_14_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "2,  ... , 7. In the case  of  a  block  transfer  operation 1404  that reads array  elements Seven through 21, the  System first determines  that read  bits one  through  five must  be  set. Next, the  System  Sets  readbits  one  through  five. Finally,  the  System performs the block transfer operation.\n\nNote that  a  typical block transfer  operation  accesses consecutive array elements and hence Sets a consecutive block  of  read  bits. A shift operation can  be used in combi nation with a  special  byte shuffle operation provided  by  the underlying  machine  architecture to efficiently Set  a  consecu tive block  of  read  bits. For  example,  the byte  shuffle opera tion can  be  used  to wrap  around  bits that overflow  from  the shift operation.\n\nThe foregoing  descriptions  of  embodiments  of  the inven tion have been presented for purposes of illustration and description only. They are not intended to be  exhaustive or to limit the invention to the forms disclosed. Accordingly, many  modifications  and  variations  will be  apparent  to prac titioners  skilled  in  the  art. Additionally,  the  above  disclosure is  not intended to  limit  the  invention. The scope of the invention is defined by the appended  claims.\n\nWhat  is claimed is:\n\n1.  A method  for  marking  objects  defined  within  an  object oriented programming  System to keep track of accesses to fields  within objects,  wherein the  method operates in  a System that Supports  Space and  time dimensional  execution, the  System having a head thread that executeS program instructions and  a  Speculative thread that  executeS  program instructions in advance of  the head  thread, the head  thread accessing  a  primary  version  of  the  object  and  the  Speculative thread accessing a Space-time dimensioned version of the object, comprising:\n\n1O\n\n15\n\n20\n\n25\n\nreceiving a reference to a field within an object;\n\n- identifying a marking  bit within the object that is asso ciated  with  the field, each  marking  bit within  the  object being  associated  with  a  different  Subset  of  fields  within the object;\n- Setting the marking  bit, wherein Setting the marking  bit indicates that at least one field within the associated Subset of  fields has  been  referenced; and\n\nperforming the reference to the field within the object;\n\n- wherein the  Steps  of identifying the  marking bit  and Setting the marking  bit take place for a read operation by the Speculative thread.\n\n45\n\n50\n\n2. The method  of  claim 1, wherein the object includes N marking bits numbered 0, 1, 2, .  .  .  ,  N-1 and M  fields numbered 0, 1, 2, .  .  .  , M-1,  and  wherein identifying the marking  bit associated with the field includes Starting with a  field  number for  the  field,  and applying a  modulo N operation to the field number  to produce a number  for the asSociated marking  bit.\n\n3. The method  of  claim 2, wherein N is a power  of  two.\n\n4. The  method  of  claim 1, wherein  there exists a  separate Set of  marking  bits for write operations, and  wherein  if the reference is a write operation by the Speculative thread, the Steps of  identifying the marking  bit and  Setting the marking bit involve the Separate Set of  marking  bits, So that upon a Subsequent write operation to the field by the head  thread, the head thread writes to both the primary version and the Space-time dimensioned  version if the marking  bit is unset, and  writes to only the primary version if the marking  bit is Set.\n\n5. The method of claim 1, further comprising during a Subsequent write operation to the field by the head  thread, determining if the marking  bit-associated with the field has been Set by executing a special bit extract instruction to examine the marking  bit.\n\n55\n\n60\n\n65\n\n35\n\n40\n\n6. The  method  of  claim  1,  wherein  if  the object  is  an  array object with N  marking  its numbered  0,1,2,...,  N-1  and Marray  elements numbered 0,1,2,...,  M-1,  the step of identifying the marking  bit that is associated with the field includes  identifying  an  array indeX  for  an  array  element,  and dividing  the array index  by  the ceiling  of  M/N  to produce a number  for the associated marking  bit.\n\n7. The method  of  claim 6, wherein the ceiling of  M/N  is a power  of  two and the division operation is accomplished by Shifting the array indeX So that the most  significant bits of the array indeX become the number for the associated marking  bin.\n\n8.  The method of claim  6,  wherein if  the  reference involves  a  block transfer  operation,  the  method further determines if the  block transfer  operation touches array elements associated with multiple marking bits, and if So Sets the multiple marking  bits.\n\n9. The method of claim 1, further comprising resetting marking bits  within  the  object  after  a  Subsequent join operation or rollback operation.\n\n10. The method of  claim 9, wherein the resetting occurs as part  of a  write  operation  that  Sets  the  marking bit associated with the referenced field.\n\n11. The method of claim 1, wherein all  marking bits within the object  are contained  in a Single word  of  memory that additionally contains a time Stamp.\n\n12. A  method for  marking objects defined  within  an object-oriented  programming System  to  keep  track  of accesses to fields within objects, the method  operating in a System that Supports  Space and  time  dimensional  execution, the  System having a head thread that executeS program instructions and  a  Speculative thread that executeS  program instructions in advance of  the head  thread, the head  thread accessing  a  primary  version  of  the object  and  the  Speculative thread  accessing Space-time  dimensioned version  of the object, the method  comprising:\n\n- receiving a reference  to  a field  within  an object,  the reference being a read operation by the Speculative thread;\n- identifying a marking  bit within the object that is asso ciated with  the field, each  marking  bit within  the  object being  associated  with  a  different  subset  of  fields  within the object,\n- wherein the object includes N  marking  bits numbered 0,1,2,...,N-1  and  M fields  numbered  0,1,2,..., M-1,\n- wherein  identifying  the marking  bit  associated  with  the field includes starting with a field  number for the field, and  applying  a modulo  N operation to the field number to  produce  a  number for  the  associated marking  bit, and\n\nwherein N  is a power  of  two;\n\n- Setting the marking  bit, wherein Setting the marking  bit indicates that at least one field within the associated Subset of  fields has  been  referenced;\n- performing  the reference to  the  field  within  the object; and resetting  marking  bits  within  the object  after  a  Subsequent join operation or rollback,  operation,  wherein  the reset ting  occurs  during  a  Subsequent  Setting  of  a marking  bit after the Subsequent  join operation or rollback opera tion.\n\n13. A computer readable Storage medium  Storing  instruc tions that when  executed  by  a  computer  cause  the computer to perform a method  for marking  objects defined within an object-oriented  programming System  to  keep  track  of accesses to fields within objects, wherein the method  oper",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "3d49151ae440d5c9cb4d39795d57dbc6db1b5afa0f8bd73220a2f05a01f87a3a"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "3dd69bce93a81ca0a8c8414ba945adb966ed3b53370d19f9f52703041e76175c"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10689654825077653,
+        "y0": 0.10464448372931069,
+        "x1": 0.5019396373978221,
+        "y1": 0.1607628042990218
+      },
+      "text": "2,  ... , 7. In the case  of  a  block  transfer  operation 1404  that reads array  elements Seven through 21, the  System first determines  that read  bits one  through  five must  be  set. Next, the  System  Sets  readbits  one  through  five. Finally,  the  System performs the block transfer operation.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10689654825077653,
+        "y0": 0.16208164015242307,
+        "x1": 0.5035344750598902,
+        "y1": 0.25431212608934756
+      },
+      "text": "Note that  a  typical block transfer  operation  accesses consecutive array elements and hence Sets a consecutive block  of  read  bits. A shift operation can  be used in combi nation with a  special  byte shuffle operation provided  by  the underlying  machine  architecture to efficiently Set  a  consecu tive block  of  read  bits. For  example,  the byte  shuffle opera tion can  be  used  to wrap  around  bits that overflow  from  the shift operation.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10732759505466412,
+        "y0": 0.256393253625343,
+        "x1": 0.5027299410193996,
+        "y1": 0.3529442742769553
+      },
+      "text": "The foregoing  descriptions  of  embodiments  of  the inven tion have been presented for purposes of illustration and description only. They are not intended to be  exhaustive or to limit the invention to the forms disclosed. Accordingly, many  modifications  and  variations  will be  apparent  to prac titioners  skilled  in  the  art. Additionally,  the  above  disclosure is  not intended to  limit  the  invention. The scope of the invention is defined by the appended  claims.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12327586477160979,
+        "y0": 0.35461268346571223,
+        "x1": 0.25502874103941053,
+        "y1": 0.36285536708360316
+      },
+      "text": "What  is claimed is:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10732759505466412,
+        "y0": 0.3663937967101093,
+        "x1": 0.5021551838096185,
+        "y1": 0.4853915085584284
+      },
+      "text": "1.  A method  for  marking  objects  defined  within  an  object oriented programming  System to keep track of accesses to fields  within objects,  wherein the  method operates in  a System that Supports  Space and  time dimensional  execution, the  System having a head thread that executeS program instructions and  a  Speculative thread that  executeS  program instructions in advance of  the head  thread, the head  thread accessing  a  primary  version  of  the  object  and  the  Speculative thread accessing a Space-time dimensioned version of the object, comprising:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5060344895423471,
+        "y0": 0.21600352563999714,
+        "x1": 0.5228448346867515,
+        "y1": 0.22218553835341542
+      },
+      "text": "1O",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.505172416748033,
+        "y0": 0.27680081068319956,
+        "x1": 0.5232758651148083,
+        "y1": 0.2832772048660852
+      },
+      "text": "15",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5016762562092512,
+        "y0": 0.33499609463643254,
+        "x1": 0.5196360267179356,
+        "y1": 0.34477700250902915
+      },
+      "text": "20",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5047413847247567,
+        "y0": 0.3988665409332048,
+        "x1": 0.5234913847840822,
+        "y1": 0.4053429351160903
+      },
+      "text": "25",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12370690808514427,
+        "y0": 0.4897445889001107,
+        "x1": 0.44796798360522205,
+        "y1": 0.5003423248919416
+      },
+      "text": "receiving a reference to a field within an object;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.12370690808514427,
+        "y0": 0.50291468453914,
+        "x1": 0.502586213677545,
+        "y1": 0.5497824852559438
+      },
+      "text": "identifying a marking  bit within the object that is asso ciated  with  the field, each  marking  bit within  the  object being  associated  with  a  different  Subset  of  fields  within the object;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.12370690808514427,
+        "y0": 0.5528997269567806,
+        "x1": 0.5014655286145927,
+        "y1": 0.588560292917714
+      },
+      "text": "Setting the marking  bit, wherein Setting the marking  bit indicates that at least one field within the associated Subset of  fields has  been  referenced; and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12370690808514427,
+        "y0": 0.5912896907870799,
+        "x1": 0.48971678462579893,
+        "y1": 0.6018874267789109
+      },
+      "text": "performing the reference to the field within the object;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.12327586128125671,
+        "y0": 0.6041464891777791,
+        "x1": 0.5027299188519117,
+        "y1": 0.6392423867730307
+      },
+      "text": "wherein the  Steps  of identifying the  marking bit  and Setting the marking  bit take place for a read operation by the Speculative thread.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5047413847247567,
+        "y0": 0.6429980014332153,
+        "x1": 0.5234913847840822,
+        "y1": 0.6494743956161008
+      },
+      "text": "45",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5047413847247567,
+        "y0": 0.7040308665582177,
+        "x1": 0.5234913847840822,
+        "y1": 0.7105072607411033
+      },
+      "text": "50",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10732759505466412,
+        "y0": 0.641762953285344,
+        "x1": 0.5068965857755326,
+        "y1": 0.7251134349287461
+      },
+      "text": "2. The method  of  claim 1, wherein the object includes N marking bits numbered 0, 1, 2, .  .  .  ,  N-1 and M  fields numbered 0, 1, 2, .  .  .  , M-1,  and  wherein identifying the marking  bit associated with the field includes Starting with a  field  number for  the  field,  and applying a  modulo N operation to the field number  to produce a number  for the asSociated marking  bit.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12327586128125671,
+        "y0": 0.7271253236135296,
+        "x1": 0.5008620783339164,
+        "y1": 0.7377230596053607
+      },
+      "text": "3. The method  of  claim 2, wherein N is a power  of  two.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10689654825077653,
+        "y0": 0.7393771501606025,
+        "x1": 0.5024015162070544,
+        "y1": 0.8570450544103693
+      },
+      "text": "4. The  method  of  claim 1, wherein  there exists a  separate Set of  marking  bits for write operations, and  wherein  if the reference is a write operation by the Speculative thread, the Steps of  identifying the marking  bit and  Setting the marking bit involve the Separate Set of  marking  bits, So that upon a Subsequent write operation to the field by the head  thread, the head thread writes to both the primary version and the Space-time dimensioned  version if the marking  bit is unset, and  writes to only the primary version if the marking  bit is Set.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10689654825077653,
+        "y0": 0.8606639810398731,
+        "x1": 0.502298877368221,
+        "y1": 0.9202704639477249
+      },
+      "text": "5. The method of claim 1, further comprising during a Subsequent write operation to the field by the head  thread, determining if the marking  bit-associated with the field has been Set by executing a special bit extract instruction to examine the marking  bit.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5047413847247567,
+        "y0": 0.7650637316832204,
+        "x1": 0.5234913847840822,
+        "y1": 0.7715401258661059
+      },
+      "text": "55",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.50517242917862,
+        "y0": 0.8263321768900231,
+        "x1": 0.523275877903098,
+        "y1": 0.8325141896034414
+      },
+      "text": "60",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.505172416748033,
+        "y0": 0.8871294619332256,
+        "x1": 0.5232758651148083,
+        "y1": 0.8936058561161111
+      },
+      "text": "65",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5047413847247567,
+        "y0": 0.52093227118321,
+        "x1": 0.5234913847840822,
+        "y1": 0.5274086653660955
+      },
+      "text": "35",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5047413860657217,
+        "y0": 0.5822007163900128,
+        "x1": 0.5234913865802366,
+        "y1": 0.588382729103431
+      },
+      "text": "40",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5271551894301617,
+        "y0": 0.10455484581663961,
+        "x1": 0.9228448649209695,
+        "y1": 0.18819076496600584
+      },
+      "text": "6. The  method  of  claim  1,  wherein  if  the object  is  an  array object with N  marking  its numbered  0,1,2,...,  N-1  and Marray  elements numbered 0,1,2,...,  M-1,  the step of identifying the marking  bit that is associated with the field includes  identifying  an  array indeX  for  an  array  element,  and dividing  the array index  by  the ceiling  of  M/N  to produce a number  for the associated marking  bit.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5267241426262742,
+        "y0": 0.19013426984654352,
+        "x1": 0.9215876433324555,
+        "y1": 0.24815318288554358
+      },
+      "text": "7. The method  of  claim 6, wherein the ceiling of  M/N  is a power  of  two and the division operation is accomplished by Shifting the array indeX So that the most  significant bits of the array indeX become the number for the associated marking  bin.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5271551894301617,
+        "y0": 0.25137995152646225,
+        "x1": 0.9213793355365214,
+        "y1": 0.309389294200239
+      },
+      "text": "8.  The method of claim  6,  wherein if  the  reference involves  a  block transfer  operation,  the  method further determines if the  block transfer  operation touches array elements associated with multiple marking bits, and if So Sets the multiple marking  bits.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5271551894301617,
+        "y0": 0.31157806199669935,
+        "x1": 0.9206896897783798,
+        "y1": 0.3459387242479503
+      },
+      "text": "9. The method of claim 1, further comprising resetting marking bits  within  the  object  after  a  Subsequent join operation or rollback operation.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5275862140665615,
+        "y0": 0.34850551464620594,
+        "x1": 0.9217672512363738,
+        "y1": 0.38104785572663274
+      },
+      "text": "10. The method of  claim 9, wherein the resetting occurs as part  of a  write  operation  that  Sets  the  marking bit associated with the referenced field.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5267241426262742,
+        "y0": 0.3851660186399,
+        "x1": 0.9230603793672483,
+        "y1": 0.4193484828240473
+      },
+      "text": "11. The method of claim 1, wherein all  marking bits within the object  are contained  in a Single word  of  memory that additionally contains a time Stamp.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5271551839709048,
+        "y0": 0.42149006664064864,
+        "x1": 0.9221983129368135,
+        "y1": 0.5413980736957811
+      },
+      "text": "12. A  method for  marking objects defined  within  an object-oriented  programming System  to  keep  track  of accesses to fields within objects, the method  operating in a System that Supports  Space and  time  dimensional  execution, the  System having a head thread that executeS program instructions and  a  Speculative thread that executeS  program instructions in advance of  the head  thread, the head  thread accessing  a  primary  version  of  the object  and  the  Speculative thread  accessing Space-time  dimensioned version  of the object, the method  comprising:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.5431034556567543,
+        "y0": 0.546141233564393,
+        "x1": 0.9208071995878587,
+        "y1": 0.5812246120132665
+      },
+      "text": "receiving a reference  to  a field  within  an object,  the reference being a read operation by the Speculative thread;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.5431034556567543,
+        "y0": 0.5847843341370706,
+        "x1": 0.9224137858855546,
+        "y1": 0.6316536999947523
+      },
+      "text": "identifying a marking  bit within the object that is asso ciated with  the field, each  marking  bit within  the  object being  associated  with  a  different  subset  of  fields  within the object,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.5590517218833468,
+        "y0": 0.6340217629827524,
+        "x1": 0.9222521796666097,
+        "y1": 0.6689005542016296
+      },
+      "text": "wherein the object includes N  marking  bits numbered 0,1,2,...,N-1  and  M fields  numbered  0,1,2,..., M-1,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.5590517218833468,
+        "y0": 0.6704923878644979,
+        "x1": 0.9208620759580624,
+        "y1": 0.7294107011570321
+      },
+      "text": "wherein  identifying  the marking  bit  associated  with  the field includes starting with a field  number for the field, and  applying  a modulo  N operation to the field number to  produce  a  number for  the  associated marking  bit, and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5590517218833468,
+        "y0": 0.7318452491816326,
+        "x1": 0.7617456925936665,
+        "y1": 0.7424429851734636
+      },
+      "text": "wherein N  is a power  of  two;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.5431034556567543,
+        "y0": 0.7456814211256588,
+        "x1": 0.9208620895333913,
+        "y1": 0.7813419870865923
+      },
+      "text": "Setting the marking  bit, wherein Setting the marking  bit indicates that at least one field within the associated Subset of  fields has  been  referenced;",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.5431034556567543,
+        "y0": 0.7853054134441837,
+        "x1": 0.9224137735604315,
+        "y1": 0.8572802600433598
+      },
+      "text": "performing  the reference to  the  field  within  the object; and resetting  marking  bits  within  the object  after  a  Subsequent join operation or rollback,  operation,  wherein  the reset ting  occurs  during  a  Subsequent  Setting  of  a marking  bit after the Subsequent  join operation or rollback opera tion.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5271551894301617,
+        "y0": 0.8604646761648167,
+        "x1": 0.9227370694367459,
+        "y1": 0.920559562838742
+      },
+      "text": "13. A computer readable Storage medium  Storing  instruc tions that when  executed  by  a  computer  cause  the computer to perform a method  for marking  objects defined within an object-oriented  programming System  to  keep  track  of accesses to fields within objects, wherein the method  oper",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      556.7999877929688,
+      817.9199829101562
+    ]
+  ],
+  "seconds": 32.74023860000034,
+  "model_load_seconds": null,
+  "peak_rss_mb": 3201.77734375,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "07c14b471fd33c56b988cc7a58dae211d16f_page_14_pg1",
+      "pdf_sha256": "b2fe287ece7d5858d4d3a7ad49b1ec763ee0551b46755e5ceaf003fd6944f08a",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

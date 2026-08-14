@@ -57,3 +57,10 @@ prediction/*/*.images/
 # NẾU về sau đưa tài liệu thật của khách vào, bỏ comment dòng dưới và chỉ commit
 # manifest.yaml + checksum. Đưa tài liệu khách vào repo là rủi ro rò rỉ.
 # pdfs/customer/
+
+# Ảnh trích của prediction (`<doc_id>.images/`) KHÔNG commit — 1.4 GB, và không cần
+# để chấm lại: img_f1/img_iou đọc bbox trong JSON, không đọc byte ảnh.
+# `_image_from_json` (src/ocr_bench/prediction.py) cố ý tha thứ khi cả thư mục
+# `.images` vắng mặt (data=None) và chỉ ném khi thư mục CÓ mà thiếu file — nên bản
+# clone sạch chấm được bình thường, còn commit lẻ vài file ảnh thì lại làm hỏng.
+*.images/

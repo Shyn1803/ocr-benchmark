@@ -1,29 +1,6 @@
-# Git trên Windows tự đổi LF→CRLF cho file nó đoán là text. Với PDF/ảnh thì đó là
-# **làm hỏng file**: byte 0x0A trong stream nén thành 0x0D0A, và người checkout ra sẽ
-# thấy một PDF mở không được mà không hiểu vì sao — trong khi máy tạo ra nó vẫn tốt.
-*.pdf   binary
-*.png   binary
-*.jpg   binary
-*.jpeg  binary
-
-# Kết quả chạy được commit (A2). Giữ LF để diff giữa các lần chạy không nhiễu loạn
-# chỉ vì đổi máy.
-*.json  text eol=lf
-# `.jsonl` KHÔNG khớp `*.json`. Thiếu dòng này thì với autocrlf=true, Git trả ra CRLF
-# khi clone trong khi checksums.sha256 băm bản LF — `make_manifest.py --verify` đỏ
-# trên máy sạch và xanh trên máy đã tạo ra nó, tức là báo động chỉ nổ với người
-# không sửa gì cả.
-*.jsonl text eol=lf
-*.py    text eol=lf
-*.md    text eol=lf
-
-# Bộ mẫu + nhãn: giữ NGUYÊN BYTE, không đụng vào xuống dòng. Đặt sau các dòng trên
-# để đè lên `*.json text eol=lf`.
-#
-# `checksums.sha256` băm đúng byte trên đĩa lúc tải về. Để Git chuẩn hoá LF↔CRLF thì
-# file sau khi clone khác byte với lúc băm, `make_manifest.py --verify` báo sai
-# checksum hàng loạt, và AC-03 ("kiểm lại được bằng lệnh") thành vô nghĩa — tệ hơn cả
-# không có checksum, vì báo động giả dạy người ta bỏ qua nó.
-ground-truth/**  -text
-pdfs/**          -text
-checksums.sha256 -text
+# Prediction artifact phải được lưu NGUYÊN BYTE. `_raw_artifact_from_json` và
+# `_image_from_json` (src/ocr_bench/prediction.py) băm sha256 file sidecar rồi so
+# với giá trị trong JSON — Git đổi CRLF→LF là sha lệch, và mọi bản clone sẽ ném
+# PredictionSchemaError thay vì chấm được. Đây là lý do duy nhất repo cần .gitattributes.
+calibration/prediction/** -text
+prediction/** -text

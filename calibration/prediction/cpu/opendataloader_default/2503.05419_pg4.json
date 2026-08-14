@@ -1,0 +1,262 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_default",
+  "engine_family": "opendataloader",
+  "profile": "default",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.05419_pg4",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "- 1.4. Objective of the Study\n\nThe current paper aims to explore the potential of φML (by integrating physical knowledge and constraints into artificial neural networks) to enable efficient prediction of the fatigue lifetime of high-strength concrete, explicitly considering the effects of loading sequence in non-uniform loading scenarios. An efficient surrogate model is developed by training a physics-based machine learning framework using fatigue simulations generated from a representative macro-scale anisotropic continuum damage model. The resulting surrogate model offers two key applications:\n\n- • As an advanced tool for estimating cumulative fatigue damage under variable amplitude loading scenarios. It can be directly integrated into digital twin models for real-time assessment in engineering structures, eliminating the need for computationally expensive nonlinear fatigue simulations.\n- • Integration with finite element simulations to efficiently model fatigue behavior over the lifetime of a structure. By accounting for the number of cycles and corresponding stress amplitudes at each material point, it enables precise evaluation of stiffness degradation after individual or multiple load cycles.\n\n\nIn this work, we focus on the first approach, developing a surrogate model for fatigue damage estimation within digital twin frameworks, offering an efficient and practical alternative to nonlinear fatigue simulations.\n\nThe structure of this paper is organized as follows: Section 2 provides a summary of the anisotropic continuum damage fatigue model used to generate the training data for the physics-based machine learning framework, along with details on its calibration and validation. Section 3 describes the development of the φML model, including the data generation process, the chosen architecture, the integration of physical constraints, the customized loss function, and the training procedure. In Section 4, the results obtained using the φML model are presented and discussed. Comparative analyses are performed between purely data-driven models and those incorporating physical constraints, considering both large and small datasets. Section 5 extends the developed φML framework to accommodate arbitrary loading scenarios through a proposed algorithm. This section also includes experimental validation studies of fatigue lifetime predictions under more complex loading conditions.\n\n- 2. Anisotropic continuum damage model\n\n\nThe fatigue damage modeling approach developed by [77–79] is selected for this study due to its computational efficiency. Its incremental formulation ensures compatibility with a wide range of fatigue loading histories, making it adaptable to complex scenarios. The model employs a stress-driven formulation that simplifies the problem to a uniaxial stress state, allowing efficient simulation of compressive loading cycles on cylindrical solids under the assumption of uniform stress distribution. This computational efficiency is critical for conducting the large number of fatigue simulations needed to train the machine learning model. Furthermore, the model effectively captures the nonlinear progression of fatigue damage and incorporates the influence of loading sequence [80]. This is achieved by replacing the conventional yield limit with an irreversibility condition, ensuring accurate representation of loading and unloading behavior. It is important to highlight that the model used in this study primarily serves as a demonstrative example to showcase the potential of physics-based machine learning. Specifically, it illustrates how advanced fatigue damage modeling knowledge can be effectively transferred into ML frameworks for efficient lifetime prediction. While this model was chosen for its simplicity and adaptability, other advanced fatigue modeling approaches [8, 19, 21, 29], could equally serve as the foundation for similar applications.\n\n2.1. Model formulation The model is based on the anisotropic damage framework, defined by the following free energy potential\n\n- 1\n\n- 2\n\n\nλ [tr(ε)]2 + µ tr(ε · ε) + g tr(ε · ω) + α tr(ε) tr(ε · ω) + 2 β tr(ε · ε · ω) , (1)\n\nφ(ε,ω) =\n\nwhere λ,µ are the Lam´e constants and α,β, g are anisotropic material parameters. The thermodynamic conjugate forces, namely the stress tensor and the energy release rate tensor, are obtained by taking the partial derivatives of the free energy potential with respect to the associated state variables: the strain tensor ε and the second order damage tensor ω. Thus, the stress tensor is determined by\n\n∂ φ(ε,ω) ∂ ε\n\n= λ tr(ε)I + 2µε + gω + α tr(ε · ω)I + tr(ε)ω + 2β(ε · ω + ω · ε) . (2)\n\nσ =\n\n4\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "d3ec0497f7ccc67c6020fb406a17997a6961857123dd3a53cdeeefd846ae0617"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "f0c2d1d1038d74ed8d90fbb9b07d3df776e043fe31b9dd0facb5a04017960dbf"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "cf9ac00afea13f93f7c1798a58a8bce178f1b81e0a7649266079a45f6c1dee34"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.09767320261437909,
+        "y0": 0.06992929292929295,
+        "x1": 0.2747042483660131,
+        "y1": 0.08461363636363639
+      },
+      "text": "1.4. Objective of the Study The current paper aims to explore the potential of φML (by integrating physical knowledge and constraints into artificial neural networks) to enable efficient prediction of the fatigue lifetime of high-strength concrete, explicitly considering the effects of loading sequence in non-uniform loading scenarios. An efficient surrogate model is developed by training a physics-based machine learning framework using fatigue simulations generated from a representative macro-scale anisotropic continuum damage model. The resulting surrogate model offers two key applications: • As an advanced tool for estimating cumulative fatigue damage under variable amplitude loading scenarios. It can be directly integrated into digital twin models for real-time assessment in engineering structures, eliminating the need for computationally expensive nonlinear fatigue simulations. • Integration with finite element simulations to efficiently model fatigue behavior over the lifetime of a structure. By accounting for the number of cycles and corresponding stress amplitudes at each material point, it enables precise evaluation of stiffness degradation after individual or multiple load cycles. In this work, we focus on the first approach, developing a surrogate model for fatigue damage estimation within digital twin frameworks, offering an efficient and practical alternative to nonlinear fatigue simulations. The structure of this paper is organized as follows: Section 2 provides a summary of the anisotropic continuum damage fatigue model used to generate the training data for the physics-based machine learning framework, along with details on its calibration and validation. Section 3 describes the development of the φML model, including the data generation process, the chosen architecture, the integration of physical constraints, the customized loss function, and the training procedure. In Section 4, the results obtained using the φML model are presented and discussed. Comparative analyses are performed between purely data-driven models and those incorporating physical constraints, considering both large and small datasets. Section 5 extends the developed φML framework to accommodate arbitrary loading scenarios through a proposed algorithm. This section also includes experimental validation studies of fatigue lifetime predictions under more complex loading conditions.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.09767320261437909,
+        "y0": 0.47392424242424247,
+        "x1": 0.3964918300653595,
+        "y1": 0.48840277777777774
+      },
+      "text": "2. Anisotropic continuum damage model",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767320261437909,
+        "y0": 0.500340909090909,
+        "x1": 0.9104738562091503,
+        "y1": 0.6959583333333333
+      },
+      "text": "The fatigue damage modeling approach developed by [77–79] is selected for this study due to its computational efficiency. Its incremental formulation ensures compatibility with a wide range of fatigue loading histories, making it adaptable to complex scenarios. The model employs a stress-driven formulation that simplifies the problem to a uniaxial stress state, allowing efficient simulation of compressive loading cycles on cylindrical solids under the assumption of uniform stress distribution. This computational efficiency is critical for conducting the large number of fatigue simulations needed to train the machine learning model. Furthermore, the model effectively captures the nonlinear progression of fatigue damage and incorporates the influence of loading sequence [80]. This is achieved by replacing the conventional yield limit with an irreversibility condition, ensuring accurate representation of loading and unloading behavior. It is important to highlight that the model used in this study primarily serves as a demonstrative example to showcase the potential of physics-based machine learning. Specifically, it illustrates how advanced fatigue damage modeling knowledge can be effectively transferred into ML frameworks for efficient lifetime prediction. While this model was chosen for its simplicity and adaptability, other advanced fatigue modeling approaches [8, 19, 21, 29], could equally serve as the foundation for similar applications.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767320261437909,
+        "y0": 0.7114633838383839,
+        "x1": 0.8383284313725491,
+        "y1": 0.7450164141414142
+      },
+      "text": "2.1. Model formulation The model is based on the anisotropic damage framework, defined by the following free energy potential",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.2957418300653595,
+        "y0": 0.7553939393939394,
+        "x1": 0.30443137254901964,
+        "y1": 0.7698724747474748
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.2957418300653595,
+        "y0": 0.7728320707070707,
+        "x1": 0.30443137254901964,
+        "y1": 0.7873106060606061
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3063839869281046,
+        "y0": 0.7622512626262626,
+        "x1": 0.9104738562091503,
+        "y1": 0.7913320707070708
+      },
+      "text": "λ [tr(ε)]2 + µ tr(ε · ε) + g tr(ε · ω) + α tr(ε) tr(ε · ω) + 2 β tr(ε · ε · ω) , (1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.222,
+        "y0": 0.763895202020202,
+        "x1": 0.29015359477124186,
+        "y1": 0.7814532828282829
+      },
+      "text": "φ(ε,ω) =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09767320261437909,
+        "y0": 0.7955138888888889,
+        "x1": 0.9104738562091503,
+        "y1": 0.8557777777777777
+      },
+      "text": "where λ,µ are the Lam´e constants and α,β, g are anisotropic material parameters. The thermodynamic conjugate forces, namely the stress tensor and the energy release rate tensor, are obtained by taking the partial derivatives of the free energy potential with respect to the associated state variables: the strain tensor ε and the second order damage tensor ω. Thus, the stress tensor is determined by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2549166666666666,
+        "y0": 0.8668333333333333,
+        "x1": 0.3181339869281046,
+        "y1": 0.8991957070707071
+      },
+      "text": "∂ φ(ε,ω) ∂ ε",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32371241830065356,
+        "y0": 0.8752790404040404,
+        "x1": 0.910470588235294,
+        "y1": 0.9029217171717172
+      },
+      "text": "= λ tr(ε)I + 2µε + gω + α tr(ε · ω)I + tr(ε)ω + 2β(ε · ω + ω · ε) . (2)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22162908496732026,
+        "y0": 0.8776792929292929,
+        "x1": 0.249328431372549,
+        "y1": 0.8930429292929293
+      },
+      "text": "σ =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4997254901960784,
+        "y0": 0.9506338383838384,
+        "x1": 0.5084150326797385,
+        "y1": 0.9651123737373737
+      },
+      "text": "4",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.9592264000020805,
+  "model_load_seconds": null,
+  "peak_rss_mb": 140.8828125,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "parser": "java",
+    "table_method": "cluster",
+    "reading_order": "xycut",
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "java-cpu-only",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "publication_cache": {
+      "doc_id": "2503.05419_pg4",
+      "pdf_sha256": "72149b217a3637f376de09c47579481d1fb8284597172907feef9dbb6881c8af",
+      "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

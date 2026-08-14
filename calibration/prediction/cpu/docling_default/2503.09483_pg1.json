@@ -1,0 +1,380 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "2503.09483_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "## Learning Spatially Adaptive ℓ 1 -Norms Weights for Convolutional Synthesis Regularization\n\nAndreas Kofler\n\nPhysikalisch-Technische Bundesanstalt (PTB) Braunschweig and Berlin, Germany andreas.kofler@ptb.de\n\nChristoph Kolbitsch Physikalisch-Technische Bundesanstalt (PTB) Braunschweig and Berlin, Germany\n\nchristoph.kolbitsch@ptb.de\n\nAbstract -We propose an unrolled algorithm approach for learning spatially adaptive parameter maps in the framework of convolutional synthesis-based ℓ 1 regularization. More precisely, we consider a family of pre-trained convolutional filters and estimate deeply parametrized spatially varying parameters applied to the sparse feature maps by means of unrolling a FISTA algorithm to solve the underlying sparse estimation problem. The proposed approach is evaluated for image reconstruction of lowfield MRI and compared to spatially adaptive and non-adaptive analysis-type procedures relying on Total Variation regularization and to a well-established model-based deep learning approach. We show that the proposed approach produces visually and quantitatively comparable results with the latter approaches and at the same time remains highly interpretable. In particular, the inferred parameter maps quantify the local contribution of each filter in the reconstruction, which provides valuable insight into the algorithm mechanism and could potentially be used to discard unsuited filters.\n\nIndex Terms -Neural Networks, Convolutional Dictionary Learning, Sparsity, Adaptive Regularization, Low-Field MRI\n\n## I. INTRODUCTION\n\nConvolutional Sparse Coding (CSC) and Convolutional Dictionary Learning (CDL) approaches [1] rely on the assumption that the signal/image of interest x ∈ R N (or C N ) is wellapproximated by a linear combination of convolutions of normalized filters d k ∈ R k f × k f with sparse feature maps s k ∈ R N (or C N ) for k = 1 , . . . , K , that is\n\n<!-- formula-not-decoded -->\n\nThe project (22HLT02 A4IM) has received funding from the European Partnership on Metrology, co-financed from the European Union's Horizon Europe Research and Innovation Programme and by the Participating States. LC acknowledges the financial support of the European Research Council (grant MALIN, 101117133).\n\nLuca Calatroni\n\nMaLGa Center, DIBRIS, Universit` a di Genova , MMS, Istituto Italiano di Tecnologia , Genoa, Italy luca.calatroni@unige.it\n\nKostas Papafitsoros\n\nSchool of Mathematical Sciences Queen Mary University of London London, UK\n\nk.papafitsoros@qmul.ac.uk\n\nBy enforcing sparsity by means of ℓ 1 -regularization, given a set of signals { x l } L l =1 and some λ &gt; 0 , the CDL problem can be thus typically formulated as:\n\n<!-- formula-not-decoded -->\n\nIn the context of image reconstruction, given possibly incomplete observed data y ∈ V modeled as the noisy output of a linear forward operator A : V → W , CDL and CSC are employed as variational regularization methods, see e.g. [2]:\n\n<!-- formula-not-decoded -->\n\nwhere α &gt; 0 enforces the synthesis constraint. Note that in (3) it is implicitly assumed that the underlying sparsifying model is unknown so that the elements x , { d k } , { s k } , k = 1 . . . , K are reconstructed jointly, typically by alternating the minimization between solving (2) and computing the current update of desired image depending on the estimated dictionary. These methods are thus often referred to as blind Compressed Sensing approaches, see, e.g. [3] for MRI applications.\n\nProblem (3) is a non-convex optimization problem whose solution is, typically, computationally demanding, and further requires careful tuning of the regularization parameters λ , α , initializations x 0 , { d 0 k } , { s 0 k } and, depending on the algorithms considered, possibly also of other parameters coupling the image update and the CSC and CDL, see, e.g. [4] for ADMM schemes. Furthermore, the regularization parameter λ dictates the strength of the imposed regularization in terms of the sparsity of the feature maps only globally and independently",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "e5798118f13e054317d8b4fede2caa2c89260a7bf16b7e56e23f8000d0024722"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "f1b024cd37cf65bb9e7587fa6b8a586fd0c9940746e8e18a6e7daea64cdf9b3e"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.09382026143790849,
+        "y0": 0.06970758926767684,
+        "x1": 0.9061810330065359,
+        "y1": 0.1325668609859658
+      },
+      "text": "Learning Spatially Adaptive ℓ 1 -Norms Weights for Convolutional Synthesis Regularization",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2724052287581699,
+        "y0": 0.15692140921717165,
+        "x1": 0.38346257810457507,
+        "y1": 0.16879906119156157
+      },
+      "text": "Andreas Kofler",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17657352941176468,
+        "y0": 0.17326770277777767,
+        "x1": 0.47872355980392167,
+        "y1": 0.21542452728166606
+      },
+      "text": "Physikalisch-Technische Bundesanstalt (PTB) Braunschweig and Berlin, Germany andreas.kofler@ptb.de",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.18621568627450966,
+        "y0": 0.2635224193181813,
+        "x1": 0.4883657166666665,
+        "y1": 0.3064598808170192
+      },
+      "text": "Christoph Kolbitsch Physikalisch-Technische Bundesanstalt (PTB) Braunschweig and Berlin, Germany",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24505555555555544,
+        "y0": 0.31122771136363575,
+        "x1": 0.4238288777777777,
+        "y1": 0.3220255373826757
+      },
+      "text": "christoph.kolbitsch@ptb.de",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065359477122,
+        "y0": 0.3684686666666658,
+        "x1": 0.49023749803921535,
+        "y1": 0.5924911333333327
+      },
+      "text": "Abstract -We propose an unrolled algorithm approach for learning spatially adaptive parameter maps in the framework of convolutional synthesis-based ℓ 1 regularization. More precisely, we consider a family of pre-trained convolutional filters and estimate deeply parametrized spatially varying parameters applied to the sparse feature maps by means of unrolling a FISTA algorithm to solve the underlying sparse estimation problem. The proposed approach is evaluated for image reconstruction of lowfield MRI and compared to spatially adaptive and non-adaptive analysis-type procedures relying on Total Variation regularization and to a well-established model-based deep learning approach. We show that the proposed approach produces visually and quantitatively comparable results with the latter approaches and at the same time remains highly interpretable. In particular, the inferred parameter maps quantify the local contribution of each filter in the reconstruction, which provides valuable insight into the algorithm mechanism and could potentially be used to discard unsuited filters.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771225,
+        "y0": 0.5968929090909084,
+        "x1": 0.4902380392156863,
+        "y1": 0.6196502242424237
+      },
+      "text": "Index Terms -Neural Networks, Convolutional Dictionary Learning, Sparsity, Adaptive Regularization, Low-Field MRI",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.2215996732026142,
+        "y0": 0.6531873073232318,
+        "x1": 0.34864679705882307,
+        "y1": 0.6639851333422718
+      },
+      "text": "I. INTRODUCTION",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771213,
+        "y0": 0.6842529638888883,
+        "x1": 0.49023768594771205,
+        "y1": 0.7714841834184781
+      },
+      "text": "Convolutional Sparse Coding (CSC) and Convolutional Dictionary Learning (CDL) approaches [1] rely on the assumption that the signal/image of interest x ∈ R N (or C N ) is wellapproximated by a linear combination of convolutions of normalized filters d k ∈ R k f × k f with sparse feature maps s k ∈ R N (or C N ) for k = 1 , . . . , K , that is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.1270915032679735,
+        "y0": 0.7890087053030298,
+        "x1": 0.4902326660130716,
+        "y1": 0.8275574157417104
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771213,
+        "y0": 0.8527657385101004,
+        "x1": 0.49023227124183016,
+        "y1": 0.9066893745374089
+      },
+      "text": "The project (22HLT02 A4IM) has received funding from the European Partnership on Metrology, co-financed from the European Union's Horizon Europe Research and Innovation Programme and by the Participating States. LC acknowledges the financial support of the European Research Council (grant MALIN, 101117133).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6452875816993464,
+        "y0": 0.1569214092171715,
+        "x1": 0.7539991534313726,
+        "y1": 0.16879906119156143
+      },
+      "text": "Luca Calatroni",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5695915032679738,
+        "y0": 0.17326770277777753,
+        "x1": 0.8177281862745097,
+        "y1": 0.24655836566550418
+      },
+      "text": "MaLGa Center, DIBRIS, Universit` a di Genova , MMS, Istituto Italiano di Tecnologia , Genoa, Italy luca.calatroni@unige.it",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6364836601307188,
+        "y0": 0.26352241931818116,
+        "x1": 0.7781435586601309,
+        "y1": 0.2754000712925711
+      },
+      "text": "Kostas Papafitsoros",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.588877450980392,
+        "y0": 0.27986871287878723,
+        "x1": 0.8194823392156856,
+        "y1": 0.3220255373826756
+      },
+      "text": "School of Mathematical Sciences Queen Mary University of London London, UK",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6150702614379083,
+        "y0": 0.32679463055555474,
+        "x1": 0.7932901058823524,
+        "y1": 0.3375924565745947
+      },
+      "text": "k.papafitsoros@qmul.ac.uk",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562089,
+        "y0": 0.3668460227272722,
+        "x1": 0.9199926552287578,
+        "y1": 0.40907856768570605
+      },
+      "text": "By enforcing sparsity by means of ℓ 1 -regularization, given a set of signals { x l } L l =1 and some λ > 0 , the CDL problem can be thus typically formulated as:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.5207565359477124,
+        "y0": 0.42029405883838383,
+        "x1": 0.9199941039215687,
+        "y1": 0.4763276177619131
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562093,
+        "y0": 0.4875181154040404,
+        "x1": 0.9199968794117646,
+        "y1": 0.5436012949584339
+      },
+      "text": "In the context of image reconstruction, given possibly incomplete observed data y ∈ V modeled as the noisy output of a linear forward operator A : V → W , CDL and CSC are employed as variational regularization methods, see e.g. [2]:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.5603235294117647,
+        "y0": 0.5522273358585859,
+        "x1": 0.9199941039215687,
+        "y1": 0.6434008500851455
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562093,
+        "y0": 0.6533460227272729,
+        "x1": 0.9200005699346401,
+        "y1": 0.7710533151604542
+      },
+      "text": "where α > 0 enforces the synthesis constraint. Note that in (3) it is implicitly assumed that the underlying sparsifying model is unknown so that the elements x , { d k } , { s k } , k = 1 . . . , K are reconstructed jointly, typically by alternating the minimization between solving (2) and computing the current update of desired image depending on the estimated dictionary. These methods are thus often referred to as blind Compressed Sensing approaches, see, e.g. [3] for MRI applications.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562094,
+        "y0": 0.7756532164141415,
+        "x1": 0.9199946781045759,
+        "y1": 0.9072111434432826
+      },
+      "text": "Problem (3) is a non-convex optimization problem whose solution is, typically, computationally demanding, and further requires careful tuning of the regularization parameters λ , α , initializations x 0 , { d 0 k } , { s 0 k } and, depending on the algorithms considered, possibly also of other parameters coupling the image update and the CSC and CDL, see, e.g. [4] for ADMM schemes. Furthermore, the regularization parameter λ dictates the strength of the imposed regularization in terms of the sparsity of the feature maps only globally and independently",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 1.2974826000000235,
+  "model_load_seconds": null,
+  "peak_rss_mb": 73.125,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "2503.09483_pg1",
+      "pdf_sha256": "2f119efd8a99784b9f3db1c6d72a81b1fec8874d6e3068395f896f1627645fa6",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

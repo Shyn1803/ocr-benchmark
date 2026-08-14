@@ -1,0 +1,248 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_default",
+  "engine_family": "opendataloader",
+  "profile": "default",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.05542_pg2",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "L. Hucker, M. Reiß, T. Stark/Comparing regularisation paths 2\n\nConsider a potentially high-dimensional linear regression setting under random design, where the number of features p can possibly exceed the sample size n. We are given i.i.d. observations (xi,yi), i = 1,...,n, of Rp-valued feature vectors xi and R-valued responses yi satisfying\n\nyi = x⊤i β0 + εi, i = 1,...,n.\n\nHere, β0 ∈ Rp is the unknown true coefficient vector. The error variables εi satisfy E[εi |Xi] = 0 and Var(εi |Xi) = σ2 for some noise level σ > 0. Using the notation y := (y1,...,yn)⊤, X := (x1,...,xn)⊤ and ε := (ε1,...,εn)⊤ for the response vector, the feature matrix and the error vector, respectively, we have the linear model\n\ny = Xβ0 + ε. (1.1) The ridge regression (RR) estimator of β0 is obtained as minimizer of the penalised least squares\n\ncriterion\n\nβˆλRR := argmin\n\nEλ(β) with Eλ(β) := 21n∥y − Xβ∥2 + λ2∥β∥2, (1.2)\n\nβ∈Rp\n\nwhere λ ⩾ 0 is the penalty parameter. For λ = 0 we take the minimum-norm solution for βˆλRR, see Section 2 below. In practice, the RR estimator βˆλRR is calculated by iterative solvers, for which standard gradient descent (GD) or conjugate gradients applied to the normal equations (CGNE) are natural choices. The default option for ridge regression in the standard Python package scikit-learn [17] uses conjugate gradients, profiting from its fast numerical convergence.\n\nAli, Kolter and Tibshirani [2] have shown for the unpenalized criterion (λ = 0 in (1.2)) that the regularisation path of gradient flow (GF), the continuous-time analogue of gradient descent, can be very tightly bounded by the regularisation path of ridge regression, with a prediction error at each GF iterate bounded by a small factor times the RR prediction error under a naturally reparametrized ridge penalty λ′. In Proposition 3.2 below, we generalize this result to gradient flow solving the penalized criterion (1.2). Based on a precise non-asymptotic CG error control, our main result then bounds the prediction error for conjugate gradients after t iterations by the prediction error for gradient flow at iteration τt (Theorem 3.7). The time reparametrisation τt is genuinely data-dependent due to the nonlinear nature of CG, but explicit in terms of the CG residual polynomial. This comparison result is surprisingly strong and implies that CG has the same regularisation effects as gradient flow and a fortiori ridge regression. The constant involved in the bound only depends on the spectrum of the empirical covariance matrix of the feature vectors xi, which is discussed for polynomial eigenvalue decay, Marchenko-Pastur type spectral distributions and spiked covariance models in Example 3.9. This result is thus in line with other recent comparison and implicit regularisation theorems like Ali, Dobriban and Tibshirani [1] for stochastic gradient flow in regression or Wu et al. [22] for standard gradient descent in logistic regression.\n\nThe comparison result allows in particular to bound the CG oracle error (the minimal prediction error along the CG regularisation path) by the corresponding GF and RR oracle errors. Establishing that the GD prediction risk is decaying monotonously along the iterates for large penalties λ in Proposition 3.11, another application of the comparison result is the corresponding monotone bound on the CG errors. Since the main results are derived for in-sample prediction risk due to the intricate nonlinear dependencies in the CG iterates, we provide a transfer from in-sample to out-of-sample prediction risk in Proposition 3.13. This high-probability result is essentially valid if the effective rank of the feature covariance matrix is small compared to the sample size. The theoretical results are then illustrated in a high-dimensional simulation and a real data example, where the regularisation paths of CG, GD and RR indeed closely resemble each other, see Section 4.\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "63431e23ad560e14a4c574eff6c2e6aad303d65face1d80fc101c761d748e982"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "aa7787b178f624e5be38f4f830ddc035508fbe3051066a10402772f6ba5a2cf4"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "e255488ead5fc3ae3b58c41c346f0ce6870f0233cfcc708964f623e162e53793"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.31109150326797386,
+        "y0": 0.09106944444444443,
+        "x1": 0.8610490196078431,
+        "y1": 0.10532828282828277
+      },
+      "text": "L. Hucker, M. Reiß, T. Stark/Comparing regularisation paths 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13895261437908496,
+        "y0": 0.1184040404040404,
+        "x1": 0.8633104575163398,
+        "y1": 0.1680530303030302
+      },
+      "text": "Consider a potentially high-dimensional linear regression setting under random design, where the number of features p can possibly exceed the sample size n. We are given i.i.d. observations (xi,yi), i = 1,...,n, of Rp-valued feature vectors xi and R-valued responses yi satisfying",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3928741830065359,
+        "y0": 0.1761717171717172,
+        "x1": 0.6071209150326797,
+        "y1": 0.19565909090909095
+      },
+      "text": "yi = x⊤i β0 + εi, i = 1,...,n.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13833496732026143,
+        "y0": 0.20375,
+        "x1": 0.8610473856209151,
+        "y1": 0.2668585858585858
+      },
+      "text": "Here, β0 ∈ Rp is the unknown true coefficient vector. The error variables εi satisfy E[εi |Xi] = 0 and Var(εi |Xi) = σ2 for some noise level σ > 0. Using the notation y := (y1,...,yn)⊤, X := (x1,...,xn)⊤ and ε := (ε1,...,εn)⊤ for the response vector, the feature matrix and the error vector, respectively, we have the linear model",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15848856209150328,
+        "y0": 0.2641287878787879,
+        "x1": 0.8629509803921568,
+        "y1": 0.30534848484848487
+      },
+      "text": "y = Xβ0 + ε. (1.1) The ridge regression (RR) estimator of β0 is obtained as minimizer of the penalised least squares",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13895261437908496,
+        "y0": 0.30180808080808086,
+        "x1": 0.19873692810457516,
+        "y1": 0.31963257575757575
+      },
+      "text": "criterion",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.27856209150326794,
+        "y0": 0.313584595959596,
+        "x1": 0.3845392156862745,
+        "y1": 0.33639141414141416
+      },
+      "text": "βˆλRR := argmin",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3873627450980392,
+        "y0": 0.3159886363636364,
+        "x1": 0.8629509803921568,
+        "y1": 0.3431565656565656
+      },
+      "text": "Eλ(β) with Eλ(β) := 21n∥y − Xβ∥2 + λ2∥β∥2, (1.2)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3437957516339869,
+        "y0": 0.3328964646464646,
+        "x1": 0.3747875816993464,
+        "y1": 0.35011111111111115
+      },
+      "text": "β∈Rp",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1383676470588235,
+        "y0": 0.3479444444444445,
+        "x1": 0.8610522875816994,
+        "y1": 0.43117803030303026
+      },
+      "text": "where λ ⩾ 0 is the penalty parameter. For λ = 0 we take the minimum-norm solution for βˆλRR, see Section 2 below. In practice, the RR estimator βˆλRR is calculated by iterative solvers, for which standard gradient descent (GD) or conjugate gradients applied to the normal equations (CGNE) are natural choices. The default option for ridge regression in the standard Python package scikit-learn [17] uses conjugate gradients, profiting from its fast numerical convergence.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1383676470588235,
+        "y0": 0.42844823232323237,
+        "x1": 0.8642042483660132,
+        "y1": 0.6726969696969698
+      },
+      "text": "Ali, Kolter and Tibshirani [2] have shown for the unpenalized criterion (λ = 0 in (1.2)) that the regularisation path of gradient flow (GF), the continuous-time analogue of gradient descent, can be very tightly bounded by the regularisation path of ridge regression, with a prediction error at each GF iterate bounded by a small factor times the RR prediction error under a naturally reparametrized ridge penalty λ′. In Proposition 3.2 below, we generalize this result to gradient flow solving the penalized criterion (1.2). Based on a precise non-asymptotic CG error control, our main result then bounds the prediction error for conjugate gradients after t iterations by the prediction error for gradient flow at iteration τt (Theorem 3.7). The time reparametrisation τt is genuinely data-dependent due to the nonlinear nature of CG, but explicit in terms of the CG residual polynomial. This comparison result is surprisingly strong and implies that CG has the same regularisation effects as gradient flow and a fortiori ridge regression. The constant involved in the bound only depends on the spectrum of the empirical covariance matrix of the feature vectors xi, which is discussed for polynomial eigenvalue decay, Marchenko-Pastur type spectral distributions and spiked covariance models in Example 3.9. This result is thus in line with other recent comparison and implicit regularisation theorems like Ali, Dobriban and Tibshirani [1] for stochastic gradient flow in regression or Wu et al. [22] for standard gradient descent in logistic regression.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13854575163398694,
+        "y0": 0.6699671717171717,
+        "x1": 0.8614836601307189,
+        "y1": 0.8236464646464646
+      },
+      "text": "The comparison result allows in particular to bound the CG oracle error (the minimal prediction error along the CG regularisation path) by the corresponding GF and RR oracle errors. Establishing that the GD prediction risk is decaying monotonously along the iterates for large penalties λ in Proposition 3.11, another application of the comparison result is the corresponding monotone bound on the CG errors. Since the main results are derived for in-sample prediction risk due to the intricate nonlinear dependencies in the CG iterates, we provide a transfer from in-sample to out-of-sample prediction risk in Proposition 3.13. This high-probability result is essentially valid if the effective rank of the feature covariance matrix is small compared to the sample size. The theoretical results are then illustrated in a high-dimensional simulation and a real data example, where the regularisation paths of CG, GD and RR indeed closely resemble each other, see Section 4.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 1.0241109000053257,
+  "model_load_seconds": null,
+  "peak_rss_mb": 151.24609375,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "parser": "java",
+    "table_method": "cluster",
+    "reading_order": "xycut",
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "java-cpu-only",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "publication_cache": {
+      "doc_id": "2503.05542_pg2",
+      "pdf_sha256": "de75fdc8678de05538d0a513c45531f524364cabb391c917e6559b02e53f9b38",
+      "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

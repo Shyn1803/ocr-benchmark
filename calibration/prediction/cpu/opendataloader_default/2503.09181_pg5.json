@@ -1,0 +1,262 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_default",
+  "engine_family": "opendataloader",
+  "profile": "default",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.09181_pg5",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "DFS from Variable Feature Sets Using Features of Features 5\n\nx(sn) = {xλ : λ ∈ s(n)} ⊂ x(n) be the subset of features, which represents the selected and revealed features. Our task is to select features s(n) and make a final prediction about y(n) while s(n) is different for each instance.\n\nOur purpose is to find two functions, implemented as neural networks; the policy to select features and the predictor to make predictions. The policy takes the revealed features x(sn) and the whole features of features z(n) as input. Then, it returns one index and the corresponding feature will be selected and revealed. We denote the policy as π(x(sn),z(n)) ∈ Λ(n). The predictor also takes x(sn) and z(n) as input and it returns the prediction about y(n). We denote the prediction and the predictor as yˆ(n) = f(x(sn),z(n))\n\nWe innovate a way to select features one by one with the policy until the predetermined number of features is selected. Firstly, we determine the budget k, which is the number of selected features in the end. In the initial state, we suppose s(n) = ϕ and x(sn) = ϕ, that is, any features has not revealed. Note that, we assume that features of features z are fully revealed in the initial state and they are given as prior information. This assumption is natural because we consider features of features as the description or the property of each feature on the natural language or numerical expression and they are usually given before the feature values are revealed. Then, we select a feature with the policy π(xs,z) and reveal the selected feature. (In other words, s ← s ∪ π(xs,z) and the size of xs increases by one.) We repeat this process for k times and make the final prediction with the predictor f(xs,z) from |xs| = k features. This procedure is shown in Fig. 1b and 1c.\n\nOur ultimate goal is to minimize the loss of the prediction made by the predictor after selecting features by the policy. Given the loss function l(ˆy,y), the objective function of our problem is\n\nEy,xl(fθ(xs,z),y), (1)\n\nmin\n\nθ,ϕ\n\nwhere θ and ϕ are parameters for parameterized predictor and policy respectively. In addition, s (|s| = k) is constructed by the iterative selection of the policy πϕ(xs,z).\n\n# 4 Greedy Dynamic Feature Selection\n\nThis section explains the existing DFS method based on conditional mutual information (CMI) [3]. Note that this method handles the special case of our problem definition that the feature set is fixed. Namely, Λ = [d] and Λ(n) = Λ for all n = 1,...,N. Therefore, in this section, we note x = {x1,...,xd} and xs = {xi : i ∈ s ⊂ [d]}. Also, the policy π(xs) and the predictor f(xs) take only revealed features xs as input.\n\n## 4.1 Greedy Dynamic Feature Selection\n\nThis method aims to find a greedy policy based on CMI and the predictor based on the naive Bayesian, implemented as neural networks such as MLP. Concretely,\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "f51bfb95e3e3c7051fdde20d85236462d9811923340635e087b697dd4ba2a8f6"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "85bcc982feedbc6b7de0b14825f381f29e2e3c3e0166d292be7de9276470e5ae"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "f95e943d0462e4ba899a3f21dda6a4df21224aaf741a20df92414e63ccf7b667"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3395343137254902,
+        "y0": 0.11552146464646473,
+        "x1": 0.7852875816993464,
+        "y1": 0.12977525252525257
+      },
+      "text": "DFS from Variable Feature Sets Using Features of Features 5",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601304,
+        "y0": 0.1462575757575758,
+        "x1": 0.7852843137254902,
+        "y1": 0.19362247474747485
+      },
+      "text": "x(sn) = {xλ : λ ∈ s(n)} ⊂ x(n) be the subset of features, which represents the selected and revealed features. Our task is to select features s(n) and make a final prediction about y(n) while s(n) is different for each instance.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601304,
+        "y0": 0.1928939393939395,
+        "x1": 0.7852875816993464,
+        "y1": 0.30452777777777784
+      },
+      "text": "Our purpose is to find two functions, implemented as neural networks; the policy to select features and the predictor to make predictions. The policy takes the revealed features x(sn) and the whole features of features z(n) as input. Then, it returns one index and the corresponding feature will be selected and revealed. We denote the policy as π(x(sn),z(n)) ∈ Λ(n). The predictor also takes x(sn) and z(n) as input and it returns the prediction about y(n). We denote the prediction and the predictor as yˆ(n) = f(x(sn),z(n))",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601304,
+        "y0": 0.30379797979797973,
+        "x1": 0.7852859477124183,
+        "y1": 0.5025075757575758
+      },
+      "text": "We innovate a way to select features one by one with the policy until the predetermined number of features is selected. Firstly, we determine the budget k, which is the number of selected features in the end. In the initial state, we suppose s(n) = ϕ and x(sn) = ϕ, that is, any features has not revealed. Note that, we assume that features of features z are fully revealed in the initial state and they are given as prior information. This assumption is natural because we consider features of features as the description or the property of each feature on the natural language or numerical expression and they are usually given before the feature values are revealed. Then, we select a feature with the policy π(xs,z) and reveal the selected feature. (In other words, s ← s ∪ π(xs,z) and the size of xs increases by one.) We repeat this process for k times and make the final prediction with the predictor f(xs,z) from |xs| = k features. This procedure is shown in Fig. 1b and 1c.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601304,
+        "y0": 0.5017777777777779,
+        "x1": 0.7852810457516339,
+        "y1": 0.5477929292929293
+      },
+      "text": "Our ultimate goal is to minimize the loss of the prediction made by the predictor after selecting features by the policy. Given the loss function l(ˆy,y), the objective function of our problem is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4519705882352941,
+        "y0": 0.5553623737373737,
+        "x1": 0.7852810457516339,
+        "y1": 0.5724318181818182
+      },
+      "text": "Ey,xl(fθ(xs,z),y), (1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4221258169934641,
+        "y0": 0.5577146464646464,
+        "x1": 0.44925816993464057,
+        "y1": 0.570294191919192
+      },
+      "text": "min",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42657026143790844,
+        "y0": 0.5687563131313131,
+        "x1": 0.4448169934640523,
+        "y1": 0.577560606060606
+      },
+      "text": "θ,ϕ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601304,
+        "y0": 0.5848358585858586,
+        "x1": 0.7852810457516339,
+        "y1": 0.6309002525252525
+      },
+      "text": "where θ and ϕ are parameters for parameterized predictor and policy respectively. In addition, s (|s| = k) is constructed by the iterative selection of the policy πϕ(xs,z).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601304,
+        "y0": 0.6496780303030303,
+        "x1": 0.5891274509803921,
+        "y1": 0.6684116161616162
+      },
+      "text": "4 Greedy Dynamic Feature Selection",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601304,
+        "y0": 0.6786199494949495,
+        "x1": 0.7852810457516339,
+        "y1": 0.7699684343434343
+      },
+      "text": "This section explains the existing DFS method based on conditional mutual information (CMI) [3]. Note that this method handles the special case of our problem definition that the feature set is fixed. Namely, Λ = [d] and Λ(n) = Λ for all n = 1,...,N. Therefore, in this section, we note x = {x1,...,xd} and xs = {xi : i ∈ s ⊂ [d]}. Also, the policy π(xs) and the predictor f(xs) take only revealed features xs as input.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601304,
+        "y0": 0.7883825757575758,
+        "x1": 0.5494019607843137,
+        "y1": 0.8041691919191919
+      },
+      "text": "4.1 Greedy Dynamic Feature Selection",
+      "html": null,
+      "level": 2,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601304,
+        "y0": 0.8101414141414142,
+        "x1": 0.7852810457516339,
+        "y1": 0.8410618686868687
+      },
+      "text": "This method aims to find a greedy policy based on CMI and the predictor based on the naive Bayesian, implemented as neural networks such as MLP. Concretely,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.9860130000015488,
+  "model_load_seconds": null,
+  "peak_rss_mb": 143.390625,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "parser": "java",
+    "table_method": "cluster",
+    "reading_order": "xycut",
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "java-cpu-only",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "publication_cache": {
+      "doc_id": "2503.09181_pg5",
+      "pdf_sha256": "131b98c71689a6216a9b11f7cbb9ba91ffaeba2957e603c89cb967318cad44d1",
+      "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

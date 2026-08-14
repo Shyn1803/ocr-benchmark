@@ -1,0 +1,29 @@
+![](<0208fbb5d6b646f972f4702428ad2cede5c5_page_2_pg1_images/imageFile1.png>)
+
+approach is presently being utilized in most abandoned bentonite reclamation programs in northeastern Wyoming (Richmond 1989). However, soil incorporation of Ca amendments on previously revegetated sites (such as the 1981 study site) would obviously damage or destroy established vegetation. Consequently, research was initiated in 1987 at the 1981 study site to determine whether gypsum could be an effective Ca amendment if applied to the soil surface without incorporation. The thesis of Meining (1991) reported edaphic responses to varied gypsum and wood residue rate treatments. The following paper will address selected, major plant responses. The vegetation-related objectives of this study included:
+
+amendments to directly ameliorate adverse spoil attributes (Schuman and Sedbrook 1984, Schuman et al 1989, Dollhopf et al 1989, Voorhees and Uresk 1990).
+
+(
+
+.Results of a pilot study in northeastern Wyoming (Schuman and Sedbrook 1984) indicated that softwood residue (Pinus ponderosa sawdust, bark, and chips) from local sawmills was promising as an organic amendment to improve physical conditions of bentonite spoil and enhance revegetation. The present study was based upon this premise, and was initiated in 1981 to further refine wood residue amendment rates, investigate the role and rate of concurrent nitrogen (N) fertilization, evaluate plant species suitable for revegetation of amended spoil, and determine rate of wood residue decomposition. Initial findings (Smith et al 1985, 1986; Belden et al 1990) demonstrated enhanced establishment and growth of seeded plant species with increasing rates of wood residue amendment through the 5th growing season. These beneficial responses were attributed to improved physical (water infiltration and structure) and chemical (reduced salinity) qualities of residue-amended spoil (Belden et al. 1990). Findings also supported the value of N fertilization to insure adequate N for plant growth and residue decomposition (Schuman and Belden 1991 ).
+
+- 1) evaluation of effects of surface-applied gypsum on productivity of seeded and non-seeded plant species,
+- 2) determination of longer-term influence of varied wood residue rates and Nfertilization on seeded and non-seeded plant species, and
+- 3) determination of any interactive effects among gypsum, wood residue and/or Nfertilization treatments on plant response.
+
+
+Methods and Procedures Experimental Design
+
+Despite the rapidly-expressed benefits of wood residue amendment to reclamation, Belden et al (1990) noted an increase in spoil sodicity over time in residue-amended treatments. This was .attributed to the overwhelming dominance of Na.in the spoil cation pool, which resulted in increasing proportions of Na over other cations (i.e., sodium adsorption ratios [SAR]) following soluble cation leaching. The temporally increasing sodication raised concerns over negative impacts on revegetation, ·and led Belden et al (1990) to postulate that a calcium (Ca) amendment to reduce sodicity might be an essential complement to wood residue for successful long-term reclamation. Inorganic Ca amendments such as gypsum, calcium chloride, and phosphogypsum may reduce sodicity by replacing Na with Ca ions on cation exchange sites, thus freeing Na for downward leaching (Prather et al 1978). · ·
+
+The project was conducted at a site 7 km northwest of Upton, in northeastern Wyoming, that was mined and abandoned without reclamation in the 1950s. Climate of the area is semiarid (363 mm annual precipitation) and continental, with roughly 60% of yearly precipitation occurring from April through July. Prior to initiation of the study in 1981, the site was nearly devoid of the sagebrush/grassland and ponderosa pine woodland vegetation characteristic of unmined rangeland in the area. Topography consisted of rolling to steepsloped, angle-of-repose minespoil without topsoil coverage. Table 1 summarizes pretreatment spoil attributes, and reflects the problems with high clay content, salinity, and sodicity that are characteristic of bentonite spoil in this region.
+
+The optimum mode of Ca enrichment is to incorporate Ca amendments into the soil concurrently with wood residue at the outset of reclamation and prior to revegetation. This
+
+Spoils were graded to a nearly level topography in the summer of 1981. All combinations of the following treatments were then applied in a replicated split plot/split block experimental design
+
+# (_
+
+Page 404
+

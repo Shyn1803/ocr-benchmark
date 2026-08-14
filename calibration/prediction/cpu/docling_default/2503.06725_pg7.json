@@ -1,0 +1,421 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "2503.06725_pg7",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "by performing actions, making observations, and receiving rewards, all without prior knowledge of the source's dynamics, the potential usefulness of the updates to be queried, or the status of the update channels.\n\nWithin this framework, the hub takes an action a ( t ) ∈ A while the environment is in state s ( t ) ∈ S during the t -th slot. The action is passed to the environment, and after consulting the updated knowledge base, the hub observes the new state of the environment, s ( t + 1) . Based on this transition, the immediate net reward r ( t ) resulting from the chosen action is computed. The recurring interaction between the hub and the environment over T e steps is represented as a sequence ⟨ s ( t ) , a ( t ) , r ( t ) , s ( t +1) ⟩ T e t =0 . Specifically, the reward r ( t ) at the t -th slot is given by\n\n<!-- formula-not-decoded -->\n\nwhere µ is the Lagrange multiplier (see Section IV).\n\nThis formalism defines the state space S , the action space A , and the net rewards of the modeled CMDP in Section III-B. Leveraging the model-free approach, we develop a learningbased iterative algorithm to derive policies for solving the dual scheduling problem, i.e., ̂ P , from Section IV-A.\n\n## B. Learning-Based Iterative Algorithm\n\nWe adopt a similar iterative process to that outlined in Algorithm 1. The main distinction here is that we use modelfree, learning-based solutions to find the class of effect-aware scheduling policies, π , within the inner loop.\n\n1) Computing π : To derive the scheduling policies, we adapt two prominent on-policy DRL algorithms, advantage actor-critic (A2C) [35] and proximal policy optimization (PPO) [36], along with an off-policy algorithm, Deep Qnetwork (DQN) [37]. These algorithms are particularly wellsuited for decision-making in high-dimensional spaces.\n\nIn each algorithm, the Q-function or the corresponding value function is computed based on the net reward defined in (18).\n\n2) Computing µ ∗ : We employ the same method as in Algorithm 1 to determine the optimal Lagrange multiplier for a given policy from the inner loop. In this context, the bisection search method is employed in the outer loop to iteratively and gradually identify the minimum Lagrange multiplier that meets the cost constraint of the scheduling problem P , as formulated in (6).\n\n## VI. SIMULATION RESULTS\n\nIn this section, we evaluate the performance of the proposed model-based and model-free solutions outlined in Sections IV and V, respectively, within the context of effect-aware query scheduling. To assess their effectiveness, we compare these solutions against several well-established benchmark approaches.\n\n## A. Setup and Assumptions\n\nWe consider a system with N = 4 SAs observing a source characterized by M = 2 attributes and K = 4 AAs performing actions over T = 1 , 000 slots. The usefulness of an update on the m -th attribute is mapped to a value within the range [0 , 1] , determined by applying\n\nTABLE I PARAMETERS FOR SIMULATION RESULTS.\n\n| Parameter                     | Symbol                 | Value         | Parameter                      | Symbol   | Value   |\n|-------------------------------|------------------------|---------------|--------------------------------|----------|---------|\n| Number of slots               | T                      | 10 3          | Parameters shaping v cpt ( · ) | α cpt    | 0 . 5   |\n| Number of SAs                 | N                      | 4             | Parameters shaping v cpt ( · ) | β cpt    | 0 . 5   |\n| Number of attributes          | M                      | 2             | Parameters shaping v cpt ( · ) | λ cpt    | 2       |\n| Number of AAs                 | K                      | 4             | Refs. point                    | GoE ref  | 0 . 2   |\n| Corr. observation probability | p o ,nm , ∀ n, m       | 0 . 8         | Cost per query                 | f c (1)  | 0 . 5   |\n| Required attributes           | &#124;M k &#124; , ∀ k | 2             | Cost flex. index               | Cfl ex   | 0 . 75  |\n| Erasure probability           | p e ,n , ∀ n           | 0 . 2         | Maximum AoI                    | ∆ max    | 4       |\n| Discount factor               | γ                      | 0 . 9         | Converg. sens.                 | ϵ π      | 10 - 6  |\n| Shape parameters              | { α 1 , α 2 }          | { 0 . 5 , 2 } | Tolerance sens.                | ϵ µ      | 10 - 6  |\n| for g m ( · ; · ) , ∀ m       | { β 1 , β 2 }          | { 0 . 5 , 5 } | Mixing factor                  | η        | 0 . 5   |\n| Size of usefulness            | &#124;U&#124;          | 4             | -                              | -        | -       |\n\n<!-- formula-not-decoded -->\n\nat the t -th slot, where α m , β m &gt; 0 , ∀ m , are shape parameters, and B( · , · ) is Beta function. Besides, we consider GoE m ( t ) = u m ( t ) ∆ m ( t ) , ∀ m , and the CPT-based value function for an arbitrary x ∈ R is given by [12]\n\n<!-- formula-not-decoded -->\n\nwith α cpt = β cpt = 0 . 5 , and λ cpt = 2 being shape parameters under the given reference point x ref . For simplicity and to facilitate comparison with non-probabilistic scheduling methods, we assume w cpt ( x ) = x, ∀ x .\n\nFinally, the cost constraint is enforced by introducing a cost flexibility index Cfl ex multiplied by the discounted cumulative cost incurred from querying across all slots. Thus, we have\n\n<!-- formula-not-decoded -->\n\nwhere f c (1) indicates the fixed cost per query. Unless stated otherwise, the default simulation parameter values are outlined in Table I.\n\nTo implement the DRL algorithms, namely A2C, PPO, and DQN, we follow the default hyperparameter settings as considered in their respective original papers, i.e., [35], [36], and [37]. However, we adjust the discount factor according to Table I. We employ the Adaptive Moment Estimation (Adam) optimizer for both DQN and PPO, whereas the Root Mean Square Propagation (RMSprop) optimizer is used for A2C. For each DRL algorithm, a model is trained over 100 episodes of interaction. Each episode comprises 10 , 000 time slots, generating a total of T e = 10 6 environment steps. The key hyperparameters for these algorithms, along with their initial configurations, are summarized in Table II.",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "62b21e307249691eae2065b5075c1ffdba12e2d505a1138a0ff646f4297908a2"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "e46c0d5594852a9e06e2c1075cf46e3f493ea87d93950d8f2ae6c541250838d3"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.07317215580808081,
+        "x1": 0.4902312418300654,
+        "y1": 0.12925533536247444
+      },
+      "text": "by performing actions, making observations, and receiving rewards, all without prior knowledge of the source's dynamics, the potential usefulness of the updates to be queried, or the status of the update channels.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771251,
+        "y0": 0.13317366691919205,
+        "x1": 0.4902381650326799,
+        "y1": 0.28022755758469703
+      },
+      "text": "Within this framework, the hub takes an action a ( t ) ∈ A while the environment is in state s ( t ) ∈ S during the t -th slot. The action is passed to the environment, and after consulting the updated knowledge base, the hub observes the new state of the environment, s ( t + 1) . Based on this transition, the immediate net reward r ( t ) resulting from the chosen action is computed. The recurring interaction between the hub and the environment over T e steps is represented as a sequence ⟨ s ( t ) , a ( t ) , r ( t ) , s ( t +1) ⟩ T e t =0 . Specifically, the reward r ( t ) at the t -th slot is given by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.14032843137254916,
+        "y0": 0.29261306085858624,
+        "x1": 0.49023315620915037,
+        "y1": 0.32511675917605504
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771251,
+        "y0": 0.33533402045454586,
+        "x1": 0.43331433137254927,
+        "y1": 0.3465343757665152
+      },
+      "text": "where µ is the Lagrange multiplier (see Section IV).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065359477125,
+        "y0": 0.3504527073232328,
+        "x1": 0.49023915882352964,
+        "y1": 0.42379111111111145
+      },
+      "text": "This formalism defines the state space S , the action space A , and the net rewards of the modeled CMDP in Section III-B. Leveraging the model-free approach, we develop a learningbased iterative algorithm to derive policies for solving the dual scheduling problem, i.e., ̂ P , from Section IV-A.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771251,
+        "y0": 0.446128766666667,
+        "x1": 0.33939226862745125,
+        "y1": 0.4569593204545458
+      },
+      "text": "B. Learning-Based Iterative Algorithm",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771251,
+        "y0": 0.4654827618686872,
+        "x1": 0.49023189542483653,
+        "y1": 0.5215659414230807
+      },
+      "text": "We adopt a similar iterative process to that outlined in Algorithm 1. The main distinction here is that we use modelfree, learning-based solutions to find the class of effect-aware scheduling policies, π , within the inner loop.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771251,
+        "y0": 0.5254956366161618,
+        "x1": 0.4902360238562089,
+        "y1": 0.6121707394028786
+      },
+      "text": "1) Computing π : To derive the scheduling policies, we adapt two prominent on-policy DRL algorithms, advantage actor-critic (A2C) [35] and proximal policy optimization (PPO) [36], along with an off-policy algorithm, Deep Qnetwork (DQN) [37]. These algorithms are particularly wellsuited for decision-making in high-dimensional spaces.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771251,
+        "y0": 0.6164916002525255,
+        "x1": 0.49023189542483664,
+        "y1": 0.6423841232412624
+      },
+      "text": "In each algorithm, the Q-function or the corresponding value function is computed based on the net reward defined in (18).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771247,
+        "y0": 0.6443268871212123,
+        "x1": 0.49023154444444444,
+        "y1": 0.74808488081702
+      },
+      "text": "2) Computing µ ∗ : We employ the same method as in Algorithm 1 to determine the optimal Lagrange multiplier for a given policy from the inner loop. In this context, the bisection search method is employed in the outer loop to iteratively and gradually identify the minimum Lagrange multiplier that meets the cost constraint of the scheduling problem P , as formulated in (6).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.1913382352941177,
+        "y0": 0.7695648325757577,
+        "x1": 0.3789083305555555,
+        "y1": 0.7803626585947977
+      },
+      "text": "VI. SIMULATION RESULTS",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065359477125,
+        "y0": 0.7887643275252527,
+        "x1": 0.49023189542483675,
+        "y1": 0.8599422040493432
+      },
+      "text": "In this section, we evaluate the performance of the proposed model-based and model-free solutions outlined in Sections IV and V, respectively, within the context of effect-aware query scheduling. To assess their effectiveness, we compare these solutions against several well-established benchmark approaches.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.0800065359477125,
+        "y0": 0.8840391202020205,
+        "x1": 0.25645199575163413,
+        "y1": 0.8948696739898991
+      },
+      "text": "A. Setup and Assumptions",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771251,
+        "y0": 0.9029905861111113,
+        "x1": 0.4902335640522877,
+        "y1": 0.9443803353624746
+      },
+      "text": "We consider a system with N = 4 SAs observing a source characterized by M = 2 attributes and K = 4 AAs performing actions over T = 1 , 000 slots. The usefulness of an update on the m -th attribute is mapped to a value within the range [0 , 1] , determined by applying",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "table",
+      "box": {
+        "page": 0,
+        "x0": 0.5078628141116472,
+        "y0": 0.10438053054038925,
+        "x1": 0.9313950881459354,
+        "y1": 0.3110003423209142
+      },
+      "text": null,
+      "html": "<table><caption><div class=\"caption\">TABLE I PARAMETERS FOR SIMULATION RESULTS.</div></caption><tbody><tr><th>Parameter</th><th>Symbol</th><th>Value</th><th>Parameter</th><th>Symbol</th><th>Value</th></tr><tr><th>Number of slots</th><td>T</td><td>10 3</td><td rowspan=\"3\">Parameters shaping v cpt ( · )</td><td>α cpt</td><td rowspan=\"2\">0 . 5</td></tr><tr><th>Number of SAs</th><td>N</td><td>4</td><td>β cpt</td></tr><tr><th>Number of attributes</th><td>M</td><td>2</td><td>λ cpt</td><td>2</td></tr><tr><th>Number of AAs</th><td>K</td><td>4</td><td>Refs. point</td><td>GoE ref</td><td>0 . 2</td></tr><tr><th>Corr. observation probability</th><td>p o ,nm , ∀ n, m</td><td>0 . 8</td><td>Cost per query</td><td>f c (1)</td><td>0 . 5</td></tr><tr><th>Required attributes</th><td>|M k | , ∀ k</td><td>2</td><td>Cost flex. index</td><td>Cfl ex</td><td>0 . 75</td></tr><tr><th>Erasure probability</th><td>p e ,n , ∀ n</td><td>0 . 2</td><td>Maximum AoI</td><td>∆ max</td><td>4</td></tr><tr><th>Discount factor</th><td>γ</td><td>0 . 9</td><td>Converg. sens.</td><td>ϵ π</td><td rowspan=\"2\">10 - 6</td></tr><tr><th>Shape parameters</th><td>{ α 1 , α 2 }</td><td>{ 0 . 5 , 2 }</td><td>Tolerance sens.</td><td>ϵ µ</td></tr><tr><th>for g m ( · ; · ) , ∀ m</th><td>{ β 1 , β 2 }</td><td>{ 0 . 5 , 5 }</td><td>Mixing factor</td><td>η</td><td>0 . 5</td></tr><tr><th>Size of usefulness</th><td>|U|</td><td>4</td><td>-</td><td>-</td><td>-</td></tr></tbody></table>",
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.6000326797385621,
+        "y0": 0.07481119305555584,
+        "x1": 0.8297296160130719,
+        "y1": 0.09477018261821782
+      },
+      "text": "TABLE I PARAMETERS FOR SIMULATION RESULTS.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.521746732026144,
+        "y0": 0.3874910285353535,
+        "x1": 0.9199929601307189,
+        "y1": 0.4187771127114081
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562091,
+        "y0": 0.4271648285353536,
+        "x1": 0.9199983705882349,
+        "y1": 0.4845154363725754
+      },
+      "text": "at the t -th slot, where α m , β m > 0 , ∀ m , are shape parameters, and B( · , · ) is Beta function. Besides, we consider GoE m ( t ) = u m ( t ) ∆ m ( t ) , ∀ m , and the CPT-based value function for an arbitrary x ∈ R is given by [12]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.5249003267973857,
+        "y0": 0.49312057575757573,
+        "x1": 0.9199929601307193,
+        "y1": 0.544033113140252
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562094,
+        "y0": 0.5545878083333332,
+        "x1": 0.91999937254902,
+        "y1": 0.6120321632164585
+      },
+      "text": "with α cpt = β cpt = 0 . 5 , and λ cpt = 2 being shape parameters under the given reference point x ref . For simplicity and to facilitate comparison with non-probabilistic scheduling methods, we assume w cpt ( x ) = x, ∀ x .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562093,
+        "y0": 0.6199532616161615,
+        "x1": 0.919999183333333,
+        "y1": 0.6611543252614641
+      },
+      "text": "Finally, the cost constraint is enforced by introducing a cost flexibility index Cfl ex multiplied by the discounted cumulative cost incurred from querying across all slots. Thus, we have",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.518387254901961,
+        "y0": 0.6697594646464646,
+        "x1": 0.9199929601307189,
+        "y1": 0.7081445369538322
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562091,
+        "y0": 0.7170537174242424,
+        "x1": 0.9199926797385619,
+        "y1": 0.7584447293018682
+      },
+      "text": "where f c (1) indicates the fixed cost per query. Unless stated otherwise, the default simulation parameter values are outlined in Table I.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562093,
+        "y0": 0.7675383174242424,
+        "x1": 0.9199993133986931,
+        "y1": 0.9443803353624742
+      },
+      "text": "To implement the DRL algorithms, namely A2C, PPO, and DQN, we follow the default hyperparameter settings as considered in their respective original papers, i.e., [35], [36], and [37]. However, we adjust the discount factor according to Table I. We employ the Adaptive Moment Estimation (Adam) optimizer for both DQN and PPO, whereas the Root Mean Square Propagation (RMSprop) optimizer is used for A2C. For each DRL algorithm, a model is trained over 100 episodes of interaction. Each episode comprises 10 , 000 time slots, generating a total of T e = 10 6 environment steps. The key hyperparameters for these algorithms, along with their initial configurations, are summarized in Table II.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [
+    {
+      "html": "<table><caption><div class=\"caption\">TABLE I PARAMETERS FOR SIMULATION RESULTS.</div></caption><tbody><tr><th>Parameter</th><th>Symbol</th><th>Value</th><th>Parameter</th><th>Symbol</th><th>Value</th></tr><tr><th>Number of slots</th><td>T</td><td>10 3</td><td rowspan=\"3\">Parameters shaping v cpt ( · )</td><td>α cpt</td><td rowspan=\"2\">0 . 5</td></tr><tr><th>Number of SAs</th><td>N</td><td>4</td><td>β cpt</td></tr><tr><th>Number of attributes</th><td>M</td><td>2</td><td>λ cpt</td><td>2</td></tr><tr><th>Number of AAs</th><td>K</td><td>4</td><td>Refs. point</td><td>GoE ref</td><td>0 . 2</td></tr><tr><th>Corr. observation probability</th><td>p o ,nm , ∀ n, m</td><td>0 . 8</td><td>Cost per query</td><td>f c (1)</td><td>0 . 5</td></tr><tr><th>Required attributes</th><td>|M k | , ∀ k</td><td>2</td><td>Cost flex. index</td><td>Cfl ex</td><td>0 . 75</td></tr><tr><th>Erasure probability</th><td>p e ,n , ∀ n</td><td>0 . 2</td><td>Maximum AoI</td><td>∆ max</td><td>4</td></tr><tr><th>Discount factor</th><td>γ</td><td>0 . 9</td><td>Converg. sens.</td><td>ϵ π</td><td rowspan=\"2\">10 - 6</td></tr><tr><th>Shape parameters</th><td>{ α 1 , α 2 }</td><td>{ 0 . 5 , 2 }</td><td>Tolerance sens.</td><td>ϵ µ</td></tr><tr><th>for g m ( · ; · ) , ∀ m</th><td>{ β 1 , β 2 }</td><td>{ 0 . 5 , 5 }</td><td>Mixing factor</td><td>η</td><td>0 . 5</td></tr><tr><th>Size of usefulness</th><td>|U|</td><td>4</td><td>-</td><td>-</td><td>-</td></tr></tbody></table>",
+      "box": {
+        "page": 0,
+        "x0": 0.5078628141116472,
+        "y0": 0.10438053054038925,
+        "x1": 0.9313950881459354,
+        "y1": 0.3110003423209142
+      },
+      "n_rows": 12,
+      "n_cols": 6
+    }
+  ],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 19.73252820000016,
+  "model_load_seconds": null,
+  "peak_rss_mb": 159.0078125,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "2503.06725_pg7",
+      "pdf_sha256": "2260ced56fec4de6dcf3d5e7204b4fd537fb330c60d24805f31a6a1639e4b1e3",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

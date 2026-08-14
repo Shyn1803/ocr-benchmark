@@ -1,0 +1,430 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_default",
+  "engine_family": "opendataloader",
+  "profile": "default",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.04047_pg8",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "Published in Transactions on Machine Learning Research (02/2025)\n\nThe efficiency of simulated annealing around Tc has been reported in numerous studies. Kirkpatrick et al. (1983) demonstrated that during phase transition, the search becomes more efficient. Strobl & Barker (2016) showed that when using simulated annealing to solve phylogeny reconstruction, the search is constrained to a small valley of the search space when the temperature is below Tc. The search efficiency around Tc can also be seen in Figure 2 of (Cai & Ma, 2010b).\n\nWhile some algorithms (Basu & Frazer, 1990; Cai & Ma, 2010a) have used critical temperature Tc to design the initial and final temperatures, its use for reheating is less common. Abramson et al. (1999) proposes a reheating strategy tied to function cost that implicitly involves Tc. However, this method lacks theoretical support and is sensitive to hyperparameters. Instead, our approach directly reheats to the critical temperature, which injects just the right amount of stochastic energy back into the system, enabling it to escape “wandering in contours” without incurring excessive randomness of a high-temperature regime.\n\n# 5.2.2 Specific Heat\n\nDetermining the critical temperature in simulated annealing requires identifying the phase transition point during optimization, which is characterized by peaks in specific heat (Kirkpatrick et al., 1983; Strobl & Barker, 2016). In statistical physics, the system’s energy at temperature T, denoted as E(T), adheres to the Boltzmann distribution. Thus, the expected energy of a system can be seen as a function of the temperature, E[E(T)]. The specific heat at temperature T, denoted as CT, is traditionally defined in thermodynamics as the rate of change of the expected energy E[E(T)] to temperature (Aarts et al., 1987), given by CT = ∂E[∂TE(T)]. Integrating over the Boltzmann distribution allows deriving specific heat in terms of energy variance:\n\nσ2(E(T)) T2\n\n(9) where σ2(E(T)) is the variance of the system energy at T.\n\nCT =\n\n# 5.2.3 Determination of Critical Temperature\n\nTo determine the critical temperature based on specific heat, we first denote T(t) as the temperature at step t, C(t) as the specific heat at temperature T(t), and xt as the solution sampled at step t, then by selecting an appropriate sample size M, we define the approximation of C(t) as :\n\nσ2({f(xt−M+1),··· ,f(xt)}) T(t)2\n\nCˆ(t) =\n\n, t ≥ M (10)\n\nwhere σ2({f(xt−M+1),··· ,f(xt)}) represents the variance in objective values over the M most recent steps. The critical temperature Tc can be determined as T(t∗), where t∗ = arg max\n\nCˆ(t). However, SA with\n\nt≥M\n\ngradient-based discrete samplers convergences rapidly in the initial stage, resulting in an abnormal initial peak in specific heat (due to the high variance). As the annealing progresses, the specific heat quickly decreases, eventually stabilizing at a level more typical of a critical temperature. This behavior is shown in Figure 4a&4b.\n\nTo address the abnormal peak, we introduce a “skip step” threshold, denoted as tskip, ensuring that the initial transient behavior is excluded from the analysis. Thus, the critical temperature is identified as T(t˜∗), where\n\nCˆ(t). (11)\n\nt˜∗ = arg max\n\nt≥tskip\n\nOur method diverges from traditional SA reheat strategies (Abramson et al., 1999) by accounting for inhomogeneous chains and addressing gradient-based methods’ unique abnormal peaks.\n\n# 5.3 Reheated Gradient-based Discrete Sampling for Combinatorial Optimization\n\nCombining results in Section 5.1 and 5.2, we obtain the Reheated Sampling for Combinatorial Optimization algorithm (ReSCO), which is summarized in Algorithm 1. ReSCO is compatible with any gradient-based\n\n8\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "57aabf8573f950a1ef1b5c2bafab56fcb902374374081f3db2fabc15cdf5740a"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "d2af97953fe315fcee2a8a9a72805f3548bc18c23fd48dbacf79afbcb52e2507"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "3a15a309efe17fd2625491b070b91e3a5b6a99f232f1424e570e9e4f9b7add19"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.030481060606060595,
+        "x1": 0.6017614379084968,
+        "y1": 0.0483055555555556
+      },
+      "text": "Published in Transactions on Machine Learning Research (02/2025)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11574183006535949,
+        "y0": 0.10176262626262622,
+        "x1": 0.8855065359477123,
+        "y1": 0.1799671717171717
+      },
+      "text": "The efficiency of simulated annealing around Tc has been reported in numerous studies. Kirkpatrick et al. (1983) demonstrated that during phase transition, the search becomes more efficient. Strobl & Barker (2016) showed that when using simulated annealing to solve phylogeny reconstruction, the search is constrained to a small valley of the search space when the temperature is below Tc. The search efficiency around Tc can also be seen in Figure 2 of (Cai & Ma, 2010b).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11681699346405229,
+        "y0": 0.18478535353535352,
+        "x1": 0.8846192810457515,
+        "y1": 0.278084595959596
+      },
+      "text": "While some algorithms (Basu & Frazer, 1990; Cai & Ma, 2010a) have used critical temperature Tc to design the initial and final temperatures, its use for reheating is less common. Abramson et al. (1999) proposes a reheating strategy tied to function cost that implicitly involves Tc. However, this method lacks theoretical support and is sensitive to hyperparameters. Instead, our approach directly reheats to the critical temperature, which injects just the right amount of stochastic energy back into the system, enabling it to escape “wandering in contours” without incurring excessive randomness of a high-temperature regime.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.2901010101010101,
+        "x1": 0.2722222222222222,
+        "y1": 0.30810227272727275
+      },
+      "text": "5.2.2 Specific Heat",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.31554040404040407,
+        "x1": 0.8855114379084967,
+        "y1": 0.42594696969696977
+      },
+      "text": "Determining the critical temperature in simulated annealing requires identifying the phase transition point during optimization, which is characterized by peaks in specific heat (Kirkpatrick et al., 1983; Strobl & Barker, 2016). In statistical physics, the system’s energy at temperature T, denoted as E(T), adheres to the Boltzmann distribution. Thus, the expected energy of a system can be seen as a function of the temperature, E[E(T)]. The specific heat at temperature T, denoted as CT, is traditionally defined in thermodynamics as the rate of change of the expected energy E[E(T)] to temperature (Aarts et al., 1987), given by CT = ∂E[∂TE(T)]. Integrating over the Boltzmann distribution allows deriving specific heat in terms of energy variance:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4881764705882353,
+        "y0": 0.42950126262626265,
+        "x1": 0.5554183006535948,
+        "y1": 0.46424747474747474
+      },
+      "text": "σ2(E(T)) T2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.43829671717171714,
+        "x1": 0.8842565359477124,
+        "y1": 0.48396969696969694
+      },
+      "text": "(9) where σ2(E(T)) is the variance of the system energy at T.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4426290849673203,
+        "y0": 0.43829671717171714,
+        "x1": 0.481702614379085,
+        "y1": 0.4565606060606061
+      },
+      "text": "CT =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.4959861111111111,
+        "x1": 0.46026633986928106,
+        "y1": 0.5139873737373737
+      },
+      "text": "5.2.3 Determination of Critical Temperature",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.5214242424242425,
+        "x1": 0.8823480392156862,
+        "y1": 0.5694393939393939
+      },
+      "text": "To determine the critical temperature based on specific heat, we first denote T(t) as the temperature at step t, C(t) as the specific heat at temperature T(t), and xt as the solution sampled at step t, then by selecting an appropriate sample size M, we define the approximation of C(t) as :",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3921160130718954,
+        "y0": 0.5854684343434343,
+        "x1": 0.5922630718954248,
+        "y1": 0.6207171717171718
+      },
+      "text": "σ2({f(xt−M+1),··· ,f(xt)}) T(t)2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3371176470588235,
+        "y0": 0.591084595959596,
+        "x1": 0.3856437908496732,
+        "y1": 0.6120883838383838
+      },
+      "text": "Cˆ(t) =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5942173202614379,
+        "y0": 0.5942638888888889,
+        "x1": 0.8842581699346406,
+        "y1": 0.6205164141414141
+      },
+      "text": ", t ≥ M (10)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.6218825757575758,
+        "x1": 0.8855179738562091,
+        "y1": 0.6555265151515152
+      },
+      "text": "where σ2({f(xt−M+1),··· ,f(xt)}) represents the variance in objective values over the M most recent steps. The critical temperature Tc can be determined as T(t∗), where t∗ = arg max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6981176470588235,
+        "y0": 0.6340833333333333,
+        "x1": 0.8823611111111112,
+        "y1": 0.6550871212121212
+      },
+      "text": "Cˆ(t). However, SA with",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6529754901960784,
+        "y0": 0.6551313131313131,
+        "x1": 0.6804803921568627,
+        "y1": 0.6703914141414141
+      },
+      "text": "t≥M",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.6606553030303031,
+        "x1": 0.8829607843137254,
+        "y1": 0.7237638888888889
+      },
+      "text": "gradient-based discrete samplers convergences rapidly in the initial stage, resulting in an abnormal initial peak in specific heat (due to the high variance). As the annealing progresses, the specific heat quickly decreases, eventually stabilizing at a level more typical of a critical temperature. This behavior is shown in Figure 4a&4b.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.7285820707070707,
+        "x1": 0.8823480392156862,
+        "y1": 0.7616628787878787
+      },
+      "text": "To address the abnormal peak, we introduce a “skip step” threshold, denoted as tskip, ensuring that the initial transient behavior is excluded from the analysis. Thus, the critical temperature is identified as T(t˜∗), where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5290261437908497,
+        "y0": 0.7782348484848485,
+        "x1": 0.8842581699346406,
+        "y1": 0.7992386363636363
+      },
+      "text": "Cˆ(t). (11)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4351127450980392,
+        "y0": 0.7790934343434344,
+        "x1": 0.5260490196078431,
+        "y1": 0.7992386363636363
+      },
+      "text": "t˜∗ = arg max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.478,
+        "y0": 0.7992828282828283,
+        "x1": 0.5176797385620915,
+        "y1": 0.8145429292929293
+      },
+      "text": "t≥tskip",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.8186464646464646,
+        "x1": 0.8826699346405228,
+        "y1": 0.8515656565656565
+      },
+      "text": "Our method diverges from traditional SA reheat strategies (Abramson et al., 1999) by accounting for inhomogeneous chains and addressing gradient-based methods’ unique abnormal peaks.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.8652070707070707,
+        "x1": 0.7248447712418301,
+        "y1": 0.8832083333333334
+      },
+      "text": "5.3 Reheated Gradient-based Discrete Sampling for Combinatorial Optimization",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.892020202020202,
+        "x1": 0.8823594771241831,
+        "y1": 0.9251906565656566
+      },
+      "text": "Combining results in Section 5.1 and 5.2, we obtain the Reheated Sampling for Combinatorial Optimization algorithm (ReSCO), which is summarized in Algorithm 1. ReSCO is compatible with any gradient-based",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.49592973856209155,
+        "y0": 0.9451035353535353,
+        "x1": 0.5040686274509804,
+        "y1": 0.9629280303030303
+      },
+      "text": "8",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 0.9581904000006034,
+  "model_load_seconds": null,
+  "peak_rss_mb": 159.72265625,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "parser": "java",
+    "table_method": "cluster",
+    "reading_order": "xycut",
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "java-cpu-only",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "publication_cache": {
+      "doc_id": "2503.04047_pg8",
+      "pdf_sha256": "676f6c372cefafff7e6ba15a8ce047f2dd84ddd559fb1ac75db58178583e202b",
+      "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

@@ -1,0 +1,295 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "6e877f30a7743152e9f4e6f22c10b1ff55a3aa6fb6543095d6298f32b2934d47",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "Before we formally introduce this, we require the notion of computation tree and introduce some more notations.\n\nDefinition 1: [16] A computation tree corresponding to a message-passing decoder of the Tanner graph G is a tree that is constructed by choosing an arbitrary variable node in G as its root and then recursively adding edges and leaf nodes to the tree that correspond to the messages passed in the decoder up to a certain number of iterations. For each vertex that is added to the tree, the corresponding node update function in G is also copied.\n\nLet G be the Tanner graph of a 3-left-regular code. Let H be the induced subgraph of a trapping set ( a, b ) contained in G with variable node set P ⊆ V and check node set W ⊆ C . Let N ( u ) denote the set of neighbors of a node u . Let T k i ( G ) be the computation tree of graph G corresponding to a decoder F enumerated for k iterations with variable node v i ∈ V as its root. Let W ′ ⊆ W denote the set of degree-one check nodes in the subgraph H . Let P ′ ⊆ P denote the set of variable nodes in H where each variable node has at least one neighbor in W ′ . During decoding on G , for a node v i ∈ P ′ , let µ l denote the message that v i receives from its neighboring degree-one check node in H in the l th iteration.\n\nDefinition 2: A vertex w ∈ T k i ( G ) is said to be a descendant of a vertex u ∈ T k i ( G ) if there exists a path starting from vertex w to the root v i that traverses through vertex u . The set of all descendants of the vertex u in T k i ( G ) is denoted as D ( u ) . For a given vertex set U , D ( U ) (with some abuse of notation) denotes the set of descendants of all u ∈ U .\n\nDefinition 3: T k i ( H ) is called the computation tree of the subgraph H enumerated for k iterations for the decoder F , if ∀ c j ∈ W ′ , µ l is given for all l ≤ k , and if the root node v i ∈ P requires only the messages computed by the nodes in H and µ l to compute its binary hard-decision value.\n\nDefinition 4 (Isolation assumption): The computation tree T k i ( G ) with the root v i ∈ P is said to be isolated if: (i) for any check node c j ∈ W ′ that is in T k i ( G ) with v t ∈ P ′ as its parent, D ( c j ) ∩ D ( N ( v t ) \\ c j ) = ∅ , and (ii) for any two check nodes c r , c s ∈ W \\ W ′ that are also in T k i ( G ) , D ( c r ) ∩D ( c s ) ⊆ ( P ∪ W ) . If T k i ( G ) is isolated ∀ v i ∈ P , then the subgraph H is said to satisfy the isolation assumption in G for k iterations.\n\nRemark: The isolation assumption can still be satisfied even when there are nodes in H that appear multiple times in T k i ( G ) as long as these nodes are not descendants of the degree-one check nodes. Whereas Gallager's independence assumption will be violated if any node in H is repeated in T k i ( G ) . Hence, isolation assumption is a weaker condition than independence. For clarity, we illustrate with an example shown in Fig. 1.\n\nExample 1: Let us assume that the graph G of code C contains a subgraph H induced by a (6 , 2) trapping set. Fig. 1 shows the subgraph H , and the computation tree T 2 3 ( G ) of graph G with v 3 as its root enumerated for two iterations. The ■ denotes a odd-degree check node. The solid lines represent connections within subgraph H and the dotted lines represent connections from the rest of the graph G outside the subgraph H . The isolation assumption is satisfied for two iterations if none of the descendants of the check nodes c 7 and c 8 appear as a descendant of check node c 9 (similar condition has to hold for c 10 ), and if the only common descendants of the degree-2 check nodes are nodes in H . But the independence assumption does not hold for two iterations.\n\nFig. 1. Subgraph H induced by (6,2) trapping set contained in G : (a) Tanner graph of H ; (b) computational tree T 2 3 ( G )\n\n<!-- image -->\n\nTheorem 1 (Isolation theorem): Let G = { V ∪ C, E } of a 3-left-regular code which contains a subgraph H = { P ∪ W,E ′ } that is induced by a trapping set ( a, b ) . Let W ′ ⊆ W denote the set of degree-one check nodes in H and let P ′ ⊆ P denote the set of variable nodes in H where each has at least one neighbor in W ′ . If r is input to decoder F from the BSC such that supp ( r ) ∈ P , and if H satisfies the isolation assumption in G for k iterations, then for each c j ∈ W ′ , the message from c j to its neighbor in H in the l th iteration denoted by µ l , is determined as the output of Φ v ( µ l -1 , µ l -1 , C) ∀ l ≤ k .\n\nProof: This follows by looking at the computation tree T l i ( G ) where l ≤ k with any v i ∈ P ′ as its root. Let the initial messages passed from a variable node be ± µ 0 ∈ M . Since supp ( r ) ∈ P , due to the isolation assumption, this means that all the variable nodes that are descendants to any c j ∈ W ′ are initially correct. In the initial iteration, from the definition of Φ c , the outgoing message of check nodes that are descendants to c j is µ 0 . In the next iteration, the variable nodes connected to these check nodes receive µ 0 on all their edges due to the isolation assumption and send Φ v ( µ 0 , µ 0 , C) as their outgoing messages. Due to the definition of Φ c , the check nodes connected to these nodes in T l i ( G ) send µ 1 which is simply Φ v ( µ 0 , µ 0 , C) . This process inductively follows while traversing up the tree for l iterations. Moreover, computation of the hard-decision value for any node v i in H requires only messages from nodes in H in addition to µ l .\n\nRemark: Note that the isolation assumption and theorem can be restated for the min-sum decoder.\n\nCorollary 1: Consider the min-sum decoder for 3-leftregular LDPC codes with Y = {± 1 } . If subgraph H contained in G satisfies the isolation assumption for k iterations, and if all variable nodes outside H are initially correct, then µ l of the degree-one check node for the min-sum decoder is 2 µ l -1 +1 .\n\nCorollary 2: If H is a subgraph contained in G such that it satisfies the isolation assumption for k iterations, and if all variable nodes outside H are initially correct, then the computation tree T k i ( G ) with v i ∈ P is equivalent to T k i ( H ) , provided µ l for each degree-one check node in H is computed",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "eae1ec5e9abf5b3b5947925c01e0ccfcbe0cc9b8589fc6f802ac51ab7f26ba3e"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "49a32ed10cc1efa534766a781902cc8f302755fbaf5753e03d3454171a04c6e1"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999836601307189,
+        "y0": 0.07508755984848492,
+        "x1": 0.49022372549019605,
+        "y1": 0.10098008283722192
+      },
+      "text": "Before we formally introduce this, we require the notion of computation tree and introduce some more notations.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0799983660130719,
+        "y0": 0.10505179368686882,
+        "x1": 0.49022523823529407,
+        "y1": 0.22174018384732327
+      },
+      "text": "Definition 1: [16] A computation tree corresponding to a message-passing decoder of the Tanner graph G is a tree that is constructed by choosing an arbitrary variable node in G as its root and then recursively adding edges and leaf nodes to the tree that correspond to the messages passed in the decoder up to a certain number of iterations. For each vertex that is added to the tree, the corresponding node update function in G is also copied.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999836601307195,
+        "y0": 0.22563452550505098,
+        "x1": 0.4902334607843135,
+        "y1": 0.4028790727362124
+      },
+      "text": "Let G be the Tanner graph of a 3-left-regular code. Let H be the induced subgraph of a trapping set ( a, b ) contained in G with variable node set P ⊆ V and check node set W ⊆ C . Let N ( u ) denote the set of neighbors of a node u . Let T k i ( G ) be the computation tree of graph G corresponding to a decoder F enumerated for k iterations with variable node v i ∈ V as its root. Let W ′ ⊆ W denote the set of degree-one check nodes in the subgraph H . Let P ′ ⊆ P denote the set of variable nodes in H where each variable node has at least one neighbor in W ′ . During decoding on G , for a node v i ∈ P ′ , let µ l denote the message that v i receives from its neighboring degree-one check node in H in the l th iteration.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0799983660130719,
+        "y0": 0.4047864830808087,
+        "x1": 0.4902302241830065,
+        "y1": 0.49344851718065674
+      },
+      "text": "Definition 2: A vertex w ∈ T k i ( G ) is said to be a descendant of a vertex u ∈ T k i ( G ) if there exists a path starting from vertex w to the root v i that traverses through vertex u . The set of all descendants of the vertex u in T k i ( G ) is denoted as D ( u ) . For a given vertex set U , D ( U ) (with some abuse of notation) denotes the set of descendants of all u ∈ U .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999836601307184,
+        "y0": 0.49535592752525304,
+        "x1": 0.49023266339869287,
+        "y1": 0.5698819106912065
+      },
+      "text": "Definition 3: T k i ( H ) is called the computation tree of the subgraph H enumerated for k iterations for the decoder F , if ∀ c j ∈ W ′ , µ l is given for all l ≤ k , and if the root node v i ∈ P requires only the messages computed by the nodes in H and µ l to compute its binary hard-decision value.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999836601307181,
+        "y0": 0.5729937128787884,
+        "x1": 0.4902327107843136,
+        "y1": 0.6896821030392425
+      },
+      "text": "Definition 4 (Isolation assumption): The computation tree T k i ( G ) with the root v i ∈ P is said to be isolated if: (i) for any check node c j ∈ W ′ that is in T k i ( G ) with v t ∈ P ′ as its parent, D ( c j ) ∩ D ( N ( v t ) \\ c j ) = ∅ , and (ii) for any two check nodes c r , c s ∈ W \\ W ′ that are also in T k i ( G ) , D ( c r ) ∩D ( c s ) ⊆ ( P ∪ W ) . If T k i ( G ) is isolated ∀ v i ∈ P , then the subgraph H is said to satisfy the isolation assumption in G for k iterations.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999836601307204,
+        "y0": 0.6937525512626268,
+        "x1": 0.49023275457516363,
+        "y1": 0.8104422040493435
+      },
+      "text": "Remark: The isolation assumption can still be satisfied even when there are nodes in H that appear multiple times in T k i ( G ) as long as these nodes are not descendants of the degree-one check nodes. Whereas Gallager's independence assumption will be violated if any node in H is repeated in T k i ( G ) . Hence, isolation assumption is a weaker condition than independence. For clarity, we illustrate with an example shown in Fig. 1.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07999836601307204,
+        "y0": 0.8143365457070713,
+        "x1": 0.4902325140522877,
+        "y1": 0.9161063454634849
+      },
+      "text": "Example 1: Let us assume that the graph G of code C contains a subgraph H induced by a (6 , 2) trapping set. Fig. 1 shows the subgraph H , and the computation tree T 2 3 ( G ) of graph G with v 3 as its root enumerated for two iterations. The ■ denotes a odd-degree check node. The solid lines represent connections within subgraph H and the dotted lines represent connections from the rest of the graph G outside the subgraph H . The isolation assumption is satisfied for two iterations if none of the descendants of the check nodes c 7 and c 8 appear as a descendant of check node c 9 (similar condition has to hold for c 10 ), and if the only common descendants of the degree-2 check nodes are nodes in H . But the independence assumption does not hold for two iterations.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.5172157038271038,
+        "y0": 0.07763905958695845,
+        "x1": 0.9128725139144199,
+        "y1": 0.19574205803148675
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.5097598039215686,
+        "y0": 0.20810027992424243,
+        "x1": 0.9199859155228757,
+        "y1": 0.23085893145285724
+      },
+      "text": "Fig. 1. Subgraph H induced by (6,2) trapping set contained in G : (a) Tanner graph of H ; (b) computational tree T 2 3 ( G )",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097598039215682,
+        "y0": 0.3319804851010104,
+        "x1": 0.9199930856209144,
+        "y1": 0.4950902440245396
+      },
+      "text": "Theorem 1 (Isolation theorem): Let G = { V ∪ C, E } of a 3-left-regular code which contains a subgraph H = { P ∪ W,E ′ } that is induced by a trapping set ( a, b ) . Let W ′ ⊆ W denote the set of degree-one check nodes in H and let P ′ ⊆ P denote the set of variable nodes in H where each has at least one neighbor in W ′ . If r is input to decoder F from the BSC such that supp ( r ) ∈ P , and if H satisfies the isolation assumption in G for k iterations, then for each c j ∈ W ′ , the message from c j to its neighbor in H in the l th iteration denoted by µ l , is determined as the output of Φ v ( µ l -1 , µ l -1 , C) ∀ l ≤ k .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097598039215682,
+        "y0": 0.4980303290404043,
+        "x1": 0.9199935774509808,
+        "y1": 0.7364374662467618
+      },
+      "text": "Proof: This follows by looking at the computation tree T l i ( G ) where l ≤ k with any v i ∈ P ′ as its root. Let the initial messages passed from a variable node be ± µ 0 ∈ M . Since supp ( r ) ∈ P , due to the isolation assumption, this means that all the variable nodes that are descendants to any c j ∈ W ′ are initially correct. In the initial iteration, from the definition of Φ c , the outgoing message of check nodes that are descendants to c j is µ 0 . In the next iteration, the variable nodes connected to these check nodes receive µ 0 on all their edges due to the isolation assumption and send Φ v ( µ 0 , µ 0 , C) as their outgoing messages. Due to the definition of Φ c , the check nodes connected to these nodes in T l i ( G ) send µ 1 which is simply Φ v ( µ 0 , µ 0 , C) . This process inductively follows while traversing up the tree for l iterations. Moreover, computation of the hard-decision value for any node v i in H requires only messages from nodes in H in addition to µ l .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097598039215686,
+        "y0": 0.7393788138888888,
+        "x1": 0.9199786983660121,
+        "y1": 0.7654977596048985
+      },
+      "text": "Remark: Note that the isolation assumption and theorem can be restated for the min-sum decoder.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097598039215686,
+        "y0": 0.7693977532828283,
+        "x1": 0.9199910640522879,
+        "y1": 0.8417606985699938
+      },
+      "text": "Corollary 1: Consider the min-sum decoder for 3-leftregular LDPC codes with Y = {± 1 } . If subgraph H contained in G satisfies the isolation assumption for k iterations, and if all variable nodes outside H are initially correct, then µ l of the degree-one check node for the min-sum decoder is 2 µ l -1 +1 .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097598039215687,
+        "y0": 0.8445259396464646,
+        "x1": 0.9199930486928104,
+        "y1": 0.9170649914992869
+      },
+      "text": "Corollary 2: If H is a subgraph contained in G such that it satisfies the isolation assumption for k iterations, and if all variable nodes outside H are initially correct, then the computation tree T k i ( G ) with v i ∈ P is equivalent to T k i ( H ) , provided µ l for each degree-one check node in H is computed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.5172157038271038,
+        "y0": 0.07763905958695845,
+        "x1": 0.9128725139144199,
+        "y1": 0.19574205803148675
+      },
+      "source_id": "#/pictures/0",
+      "file": null,
+      "sha256": null
+    }
+  ],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 1.1257704999989073,
+  "model_load_seconds": null,
+  "peak_rss_mb": 73.453125,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "6e877f30a7743152e9f4e6f22c10b1ff55a3aa6fb6543095d6298f32b2934d47",
+      "pdf_sha256": "d68d5af643805cad3cc54d6515ca850abb4cbba1b6f1744948a0be44e17e8c51",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

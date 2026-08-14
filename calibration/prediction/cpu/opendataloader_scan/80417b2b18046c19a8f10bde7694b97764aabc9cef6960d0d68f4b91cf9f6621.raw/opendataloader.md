@@ -1,0 +1,24 @@
+H
+
+PROJECT AREA
+
+Racks 40Om long HAULAGE ROUTE
+
+WB 3
+
+WB 4
+
+WB 5
+
+1
+
+SLIPWAY
+
+EXISTING GROYNE
+
+K i n g LEASE BOUNDARY
+
+B a y Washdown HALLIBURTON
+
+E}
+

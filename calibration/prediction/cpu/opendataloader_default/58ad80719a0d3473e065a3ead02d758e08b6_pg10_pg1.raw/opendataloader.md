@@ -1,0 +1,149 @@
+# 1.1.2 Enflasyon
+
+IMF, “World Economic Outlook” Ekim-2018 raporunda enflasyonun yüksek enerji fiyatlarına rağmen gelişmiş ve gelişmekte olan ülkelerde Venezuella hariç hedeflerin altında gerçekleştiğini vurgulandı.
+
+Türkiye Cumhuriyeti Hazine ve Maliye Bakanlığı’nın yayınladığı 2019-2021 Orta Vadeli Program’da (OVP) enflasyon oranının 2019 yılında %15.9, 2020 yılında %9.8 ve 2021 yılında ise %6.0 seviyesinde gerçekleşmesi hedeflenmiştir. 2018 yılında ise Türkiye’de enflasyon %20.3 olarak gerçekleşmiştir (tablo 1, Grafik 3).
+
+TABLO-1 TÜKETİCİ FİYATLARI (YILLIK ORTALAMA, %)
+
+<table>
+  <tr>
+    <td rowspan="2"> </td>
+    <td rowspan="2">2017</td>
+    <td colspan="4">TAHMİN</td>
+  </tr>
+  <tr>
+    <td>2018</td>
+    <td>2019</td>
+    <td>2020</td>
+    <td>2021</td>
+  </tr>
+  <tr>
+    <td>Gelişmiş Ülkeler</td>
+    <td>1.7</td>
+    <td>2.0</td>
+    <td>1.9</td>
+    <td>2.0</td>
+    <td>2.0</td>
+  </tr>
+  <tr>
+    <td>ABD</td>
+    <td>2.1</td>
+    <td>2.4</td>
+    <td>2.1</td>
+    <td>2.3</td>
+    <td>2.2</td>
+  </tr>
+  <tr>
+    <td>Euro Bölgesi</td>
+    <td>1.5</td>
+    <td>1.7</td>
+    <td>1.7</td>
+    <td>1.8</td>
+    <td>1.9</td>
+  </tr>
+  <tr>
+    <td>Almanya</td>
+    <td>1.7</td>
+    <td>1.8</td>
+    <td>1.8</td>
+    <td>2.1</td>
+    <td>2.3</td>
+  </tr>
+  <tr>
+    <td>Fransa</td>
+    <td>1.2</td>
+    <td>1.9</td>
+    <td>1.8</td>
+    <td>1.8</td>
+    <td>1.8</td>
+  </tr>
+  <tr>
+    <td>İtalya</td>
+    <td>1.3</td>
+    <td>1.3</td>
+    <td>1.4</td>
+    <td>1.5</td>
+    <td>1.6</td>
+  </tr>
+  <tr>
+    <td>İspanya</td>
+    <td>2.0</td>
+    <td>1.8</td>
+    <td>1.8</td>
+    <td>1.9</td>
+    <td>1.9</td>
+  </tr>
+  <tr>
+    <td>Japonya</td>
+    <td>0.5</td>
+    <td>1.2</td>
+    <td>1.3</td>
+    <td>1.7</td>
+    <td>1.1</td>
+  </tr>
+  <tr>
+    <td>İngiltere</td>
+    <td>2.7</td>
+    <td>2.5</td>
+    <td>2.2</td>
+    <td>2.0</td>
+    <td>2.0</td>
+  </tr>
+  <tr>
+    <td>Kanada</td>
+    <td>1.6</td>
+    <td>2.6</td>
+    <td>2.2</td>
+    <td>2.1</td>
+    <td>2.1</td>
+  </tr>
+  <tr>
+    <td>Diğer Gelişmiş Ülkeler</td>
+    <td>1.5</td>
+    <td>1.7</td>
+    <td>1.8</td>
+    <td>1.9</td>
+    <td>2.0</td>
+  </tr>
+  <tr>
+    <td>Yeni Sanayileşen Asya Ülkeleri</td>
+    <td>2.4</td>
+    <td>3.0</td>
+    <td>3.2</td>
+    <td>3.3</td>
+    <td>3.3</td>
+  </tr>
+  <tr>
+    <td>Gelişmekte Olan Ülkeler</td>
+    <td>4.3</td>
+    <td>5.0</td>
+    <td>5.2</td>
+    <td>4.6</td>
+    <td>4.3</td>
+  </tr>
+  <tr>
+    <td>Türkiye (Yıl sonu itibarıyla)</td>
+    <td>11.9</td>
+    <td>20.3*</td>
+    <td>15.9</td>
+    <td>9.8</td>
+    <td>6.0</td>
+  </tr>
+  <tr>
+    <td>KKTC (Yıl sonu itibarıyla)</td>
+    <td>14.7</td>
+    <td>30.0*</td>
+    <td>16.7</td>
+    <td>10.5</td>
+    <td>9.5</td>
+  </tr>
+</table>
+
+
+* Gerçekleşme rakamları
+
+Kaynak: IMF, World Economic Outlook, Ekim 2018, TC Kalkınma Bakanlığı-OVP(2019-2021), Devlet Planlama Örgütü
+
+4
+

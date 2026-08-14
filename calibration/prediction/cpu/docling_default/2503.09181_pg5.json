@@ -1,0 +1,212 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "2503.09181_pg5",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "x ( n ) s = { x λ : λ ∈ s ( n ) } ⊂ x ( n ) be the subset of features, which represents the selected and revealed features. Our task is to select features s ( n ) and make a final prediction about y ( n ) while s ( n ) is different for each instance.\n\nOur purpose is to find two functions, implemented as neural networks; the policy to select features and the predictor to make predictions. The policy takes the revealed features x ( n ) s and the whole features of features z ( n ) as input. Then, it returns one index and the corresponding feature will be selected and revealed. We denote the policy as π ( x ( n ) s , z ( n ) ) ∈ Λ ( n ) . The predictor also takes x ( n ) s and z ( n ) as input and it returns the prediction about y ( n ) . We denote the prediction and the predictor as ˆ y ( n ) = f ( x ( n ) s , z ( n ) )\n\nWe innovate a way to select features one by one with the policy until the predetermined number of features is selected. Firstly, we determine the budget k , which is the number of selected features in the end. In the initial state, we suppose s ( n ) = ϕ and x ( n ) s = ϕ , that is, any features has not revealed. Note that, we assume that features of features z are fully revealed in the initial state and they are given as prior information. This assumption is natural because we consider features of features as the description or the property of each feature on the natural language or numerical expression and they are usually given before the feature values are revealed. Then, we select a feature with the policy π ( x s , z ) and reveal the selected feature. (In other words, s ← s ∪ π ( x s , z ) and the size of x s increases by one.) We repeat this process for k times and make the final prediction with the predictor f ( x s , z ) from | x s | = k features. This procedure is shown in Fig. 1b and 1c.\n\nOur ultimate goal is to minimize the loss of the prediction made by the predictor after selecting features by the policy. Given the loss function l (ˆ y, y ) , the objective function of our problem is\n\n<!-- formula-not-decoded -->\n\nwhere θ and ϕ are parameters for parameterized predictor and policy respectively. In addition, s ( | s | = k ) is constructed by the iterative selection of the policy π ϕ ( x s , z ) .\n\n## 4 Greedy Dynamic Feature Selection\n\nThis section explains the existing DFS method based on conditional mutual information (CMI) [3]. Note that this method handles the special case of our problem definition that the feature set is fixed. Namely, Λ = [ d ] and Λ ( n ) = Λ for all n = 1 , ..., N . Therefore, in this section, we note x = { x 1 , ..., x d } and x s = { x i : i ∈ s ⊂ [ d ] } . Also, the policy π ( x s ) and the predictor f ( x s ) take only revealed features x s as input.\n\n## 4.1 Greedy Dynamic Feature Selection\n\nThis method aims to find a greedy policy based on CMI and the predictor based on the naive Bayesian, implemented as neural networks such as MLP. Concretely,",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "2a33582f0493e1f2a31c9d919978e77ef535d89d981bf2369ec93f8e8d73a9b1"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "036878610347b2fb99e898aac5f0f78755597eb1ebd1a9b099e4d3a006e04d16"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601302,
+        "y0": 0.14684708914141423,
+        "x1": 0.7852846218300653,
+        "y1": 0.19202492979798008
+      },
+      "text": "x ( n ) s = { x λ : λ ∈ s ( n ) } ⊂ x ( n ) be the subset of features, which represents the selected and revealed features. Our task is to select features s ( n ) and make a final prediction about y ( n ) while s ( n ) is different for each instance.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601304,
+        "y0": 0.19601359671717197,
+        "x1": 0.7852871528431374,
+        "y1": 0.30364201170130806
+      },
+      "text": "Our purpose is to find two functions, implemented as neural networks; the policy to select features and the predictor to make predictions. The policy takes the revealed features x ( n ) s and the whole features of features z ( n ) as input. Then, it returns one index and the corresponding feature will be selected and revealed. We denote the policy as π ( x ( n ) s , z ( n ) ) ∈ Λ ( n ) . The predictor also takes x ( n ) s and z ( n ) as input and it returns the prediction about y ( n ) . We denote the prediction and the predictor as ˆ y ( n ) = f ( x ( n ) s , z ( n ) )",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601304,
+        "y0": 0.3069176371212133,
+        "x1": 0.785285688366013,
+        "y1": 0.5009100308080818
+      },
+      "text": "We innovate a way to select features one by one with the policy until the predetermined number of features is selected. Firstly, we determine the budget k , which is the number of selected features in the end. In the initial state, we suppose s ( n ) = ϕ and x ( n ) s = ϕ , that is, any features has not revealed. Note that, we assume that features of features z are fully revealed in the initial state and they are given as prior information. This assumption is natural because we consider features of features as the description or the property of each feature on the natural language or numerical expression and they are usually given before the feature values are revealed. Then, we select a feature with the policy π ( x s , z ) and reveal the selected feature. (In other words, s ← s ∪ π ( x s , z ) and the size of x s increases by one.) We repeat this process for k times and make the final prediction with the predictor f ( x s , z ) from | x s | = k features. This procedure is shown in Fig. 1b and 1c.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601304,
+        "y0": 0.5048974351010111,
+        "x1": 0.7852804150653595,
+        "y1": 0.5461953843434353
+      },
+      "text": "Our ultimate goal is to minimize the loss of the prediction made by the predictor after selecting features by the policy. Given the loss function l (ˆ y, y ) , the objective function of our problem is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.4221258169934641,
+        "y0": 0.5584820310606071,
+        "x1": 0.7852814076797388,
+        "y1": 0.5770410016002979
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601324,
+        "y0": 0.587955515909092,
+        "x1": 0.7852817491830067,
+        "y1": 0.6303806480649444
+      },
+      "text": "where θ and ϕ are parameters for parameterized predictor and policy respectively. In addition, s ( | s | = k ) is constructed by the iterative selection of the policy π ϕ ( x s , z ) .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601318,
+        "y0": 0.6532258989899,
+        "x1": 0.5891276554248367,
+        "y1": 0.6665698343434353
+      },
+      "text": "4 Greedy Dynamic Feature Selection",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601316,
+        "y0": 0.6817396068181829,
+        "x1": 0.7852806533006536,
+        "y1": 0.7694488298831262
+      },
+      "text": "This section explains the existing DFS method based on conditional mutual information (CMI) [3]. Note that this method handles the special case of our problem definition that the feature set is fixed. Namely, Λ = [ d ] and Λ ( n ) = Λ for all n = 1 , ..., N . Therefore, in this section, we note x = { x 1 , ..., x d } and x s = { x i : i ∈ s ⊂ [ d ] } . Also, the policy π ( x s ) and the predictor f ( x s ) take only revealed features x s as input.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601316,
+        "y0": 0.7915149065656576,
+        "x1": 0.5494014354575165,
+        "y1": 0.8026347782828294
+      },
+      "text": "4.1 Greedy Dynamic Feature Selection",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22020424836601316,
+        "y0": 0.8132610714646474,
+        "x1": 0.7852806413398694,
+        "y1": 0.8394643237373748
+      },
+      "text": "This method aims to find a greedy policy based on CMI and the predictor based on the naive Bayesian, implemented as neural networks such as MLP. Concretely,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 1.1018397999999934,
+  "model_load_seconds": null,
+  "peak_rss_mb": 165.45703125,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "2503.09181_pg5",
+      "pdf_sha256": "131b98c71689a6216a9b11f7cbb9ba91ffaeba2957e603c89cb967318cad44d1",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

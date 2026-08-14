@@ -1,0 +1,419 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "01460d3dc3eca92c0d1a17eff846fa682f3d_page_6_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "Fig. 5. The network nodes are partitioned into cluster c 1 , c 2 and c 3 . (a) The nodes { v 2 , v 3 , v 4 , v 5 } are the border nodes of cluster c 1 after Step II of Section III-B3b. (b) Node v 1 replaces v 2 and v 3 as the border node.\n\n<!-- image -->\n\n## Algorithm 2: Reduce Redundant Border Nodes\n\n- 1 for Each cluster c i do\n- 2 Set cluster weight as 1 / ( | b i ∪ β i | ) .\n- 3 Calculate MVC on cluster-level topology.\n- 4 if Border node in non-VC cluster then\n- 5 Change to the cluster-ID of neighbor VC cluster.\n- 6 Calculate MVC on b i m ∪ δ i m as λ i .\n- 7 Select Min {| b i m | , | λ i |} as the border nodes of c i m .\n\nc 2 are { v 3 , v 5 , v 8 , v 9 } , and the cluster border nodes between c 1 and c 3 are { v 2 , v 3 , v 4 , v 6 , v 7 } . Secondly, the intersection area between c 2 1 and c 3 1 becomes cluster c 1 with border nodes { v 2 , v 3 , v 4 , v 5 } . Although we select the minimum number of border nodes for c 2 1 and c 3 1 , v 1 can replace v 2 and v 3 as the border node of c 1 as shown in Fig. 5(b) to further decrease the total number of border nodes. We formalize the approach to reduce redundant border nodes as follows. The main operation flow is shown in Alg. 2.\n\n(i) We reset the cluster-ID of all the border nodes selected in Section III-B3b to a minimum number of clusters. We convert it to the Minimum Vertex Cover (MVC) problem [12] as follows. In the first place, we abstract the clusters into a cluster-level topology as shown in Fig. 6, where each clusterlevel node represents a cluster. If there exists edges between two clusters as in Fig. 6.(a), we connect the two cluster-level nodes. Next, we set the weight of each node in the cluster-level topology. The border nodes in cluster c i are b i after Alg. 1, and we call all the other border nodes that have edge connections with cluster c i as β i . The nodes set b i ∪ β i represents the maximum set of border nodes in c i if re-categorizing the cluster-ID of β i . To concentrate more border nodes in fewer clusters using MVC, we set weight value to each cluster. If the number of all the possible border nodes | b i ∪ β i | is high, we set a low weight value to the cluster c i . In the implementation, we set the weight of cluster c i to 1 / ( | b i ∪ β i | ) . After that, we run the MVC algorithm on the cluster-level topology. If a border node belongs to a non-VC cluster, it changes its cluster-ID to the neighbor VC cluster. To differentiate with the notations before this step, c i changes to c i m after re-categorizing the border nodes, and b i changes to b i m .\n\n- (ii) Name δ i m as the subset of c i m -b i m , in which each node\n\nFig. 6. (a) The network nodes are partitioned into clusters with different colors. (b) The clusters are abstracted into a cluster-level topology. The nodes in solid blue are vertex cover clusters.\n\n<!-- image -->\n\nhas at least a neighbor in b i m . To simplify the analysis, we suppose there are not sink nodes at b i m or δ i m . The nodes in b i m and δ i m are not in cluster-contained-subnets. Name Φ i = b i m ∪ δ i m . Fig. 5(a) illustrates the example Φ 1 of c 1 . Then we calculate MVC on Φ i as λ i . We use λ i as alternative border nodes to b i m . Because each edge in Φ i has at least one endpoint in the MVC nodes λ i , so monitoring λ i can capture all the flows passing over Φ i . The number of λ i is not necessarily smaller than b i m . Therefore, we select Min {| b i m | , | λ i |} as the new border nodes of c i m . If λ i are selected as the border nodes of cluster c i m , the non-VC nodes in b i m do not need to monitor the flow, and their cluster-ID are set to the neighbor cluster.\n\n## C. Protocol for Cluster based SD-WSN\n\nCluFlow makes the SDN controller estimate flow among clusters by monitoring the flow at border nodes. The SDN controller controls traffic flow by injecting cluster-level routing rules to the border nodes. The management procedure of the SDN controller and nodes in WSN is shown in Alg. 3.\n\nThere are at least two benefits of utilizing SDN control in cluster-level routing. Firstly, compared with SDN management for every node in WSN, CluFlow trades granularity of SDN control for less communication load. Only cluster border nodes communicate with the SDN controller. The number of nodes that communicate with the SDN controller decreases. Secondly, cluster-level routing and local routing are decoupled. The nodes inside the clusters use only distributed local routing and do not need to request flow table entries from the SDN controller. The communication delay caused by requesting flow table entries therefore decreases.\n\n## IV. EXPERIMENTAL SETUP AND RESULTS\n\nIn this section, we test and evaluate CluFlow in simulation and a real deployed WSN.\n\n## A. Benchmark Approaches\n\nTo evaluate the performance of CluFlow, three benchmark approaches are implemented to calculate the communication flow among clusters.",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "56eb40179ca60a1e1aee3170fb3821c6d8cafb6cbeb526cd4522934bc8a350b6"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "d4703b6f0913c244fcf25a7d731820e17cd40acf91fedbdadf51b8438d136885"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.1379578585459272,
+        "y0": 0.111538042082073,
+        "x1": 0.42323092171888593,
+        "y1": 0.21266977124429373
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.07997870004893316,
+        "y0": 0.23100491745843232,
+        "x1": 0.49007477631406793,
+        "y1": 0.2616176365795725
+      },
+      "text": "Fig. 5. The network nodes are partitioned into cluster c 1 , c 2 and c 3 . (a) The nodes { v 2 , v 3 , v 4 , v 5 } are the border nodes of cluster c 1 after Step II of Section III-B3b. (b) Node v 1 replaces v 2 and v 3 as the border node.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.08811599506320905,
+        "y0": 0.27846790665083143,
+        "x1": 0.40895897745576426,
+        "y1": 0.2895000513064134
+      },
+      "text": "Algorithm 2: Reduce Redundant Border Nodes",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08242011762819107,
+        "y0": 0.29599415368171017,
+        "x1": 0.2465473848712542,
+        "y1": 0.30750949513064124
+      },
+      "text": "1 for Each cluster c i do",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08242011762819107,
+        "y0": 0.30919999406175774,
+        "x1": 0.35327405206449003,
+        "y1": 0.3291590878859858
+      },
+      "text": "2 Set cluster weight as 1 / ( | b i ∪ β i | ) .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08242011762819107,
+        "y0": 0.328400050831354,
+        "x1": 0.37418571412666257,
+        "y1": 0.3392366308788599
+      },
+      "text": "3 Calculate MVC on cluster-level topology.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08242011762819107,
+        "y0": 0.3420084054631829,
+        "x1": 0.35620207757737943,
+        "y1": 0.35304055011876484
+      },
+      "text": "4 if Border node in non-VC cluster then",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08242011762819107,
+        "y0": 0.35600931448931117,
+        "x1": 0.44966058024537126,
+        "y1": 0.3668458945368171
+      },
+      "text": "5 Change to the cluster-ID of neighbor VC cluster.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08242011762819107,
+        "y0": 0.37362172802850363,
+        "x1": 0.32971163546171256,
+        "y1": 0.39358082185273163
+      },
+      "text": "6 Calculate MVC on b i m ∪ δ i m as λ i .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08242028563330668,
+        "y0": 0.38742695368171015,
+        "x1": 0.42977397028163417,
+        "y1": 0.4073860475059382
+      },
+      "text": "7 Select Min {| b i m | , | λ i |} as the border nodes of c i m .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07997928897406544,
+        "y0": 0.4331325356294537,
+        "x1": 0.4900705230965604,
+        "y1": 0.5552027321140143
+      },
+      "text": "c 2 are { v 3 , v 5 , v 8 , v 9 } , and the cluster border nodes between c 1 and c 3 are { v 2 , v 3 , v 4 , v 6 , v 7 } . Secondly, the intersection area between c 2 1 and c 3 1 becomes cluster c 1 with border nodes { v 2 , v 3 , v 4 , v 5 } . Although we select the minimum number of border nodes for c 2 1 and c 3 1 , v 1 can replace v 2 and v 3 as the border node of c 1 as shown in Fig. 5(b) to further decrease the total number of border nodes. We formalize the approach to reduce redundant border nodes as follows. The main operation flow is shown in Alg. 2.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07997963351895661,
+        "y0": 0.5581419531353919,
+        "x1": 0.49008372571136954,
+        "y1": 0.8606271662945367
+      },
+      "text": "(i) We reset the cluster-ID of all the border nodes selected in Section III-B3b to a minimum number of clusters. We convert it to the Minimum Vertex Cover (MVC) problem [12] as follows. In the first place, we abstract the clusters into a cluster-level topology as shown in Fig. 6, where each clusterlevel node represents a cluster. If there exists edges between two clusters as in Fig. 6.(a), we connect the two cluster-level nodes. Next, we set the weight of each node in the cluster-level topology. The border nodes in cluster c i are b i after Alg. 1, and we call all the other border nodes that have edge connections with cluster c i as β i . The nodes set b i ∪ β i represents the maximum set of border nodes in c i if re-categorizing the cluster-ID of β i . To concentrate more border nodes in fewer clusters using MVC, we set weight value to each cluster. If the number of all the possible border nodes | b i ∪ β i | is high, we set a low weight value to the cluster c i . In the implementation, we set the weight of cluster c i to 1 / ( | b i ∪ β i | ) . After that, we run the MVC algorithm on the cluster-level topology. If a border node belongs to a non-VC cluster, it changes its cluster-ID to the neighbor VC cluster. To differentiate with the notations before this step, c i changes to c i m after re-categorizing the border nodes, and b i changes to b i m .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.09625407755106294,
+        "y0": 0.8610193527315915,
+        "x1": 0.4900642780104024,
+        "y1": 0.8809784465558195
+      },
+      "text": "(ii) Name δ i m as the subset of c i m -b i m , in which each node",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.5801797851618177,
+        "y0": 0.1066779003007395,
+        "x1": 0.8456857529118904,
+        "y1": 0.21300979578013657
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.5095963995322436,
+        "y0": 0.2314098533254157,
+        "x1": 0.9196872683108155,
+        "y1": 0.26078610985748213
+      },
+      "text": "Fig. 6. (a) The network nodes are partitioned into clusters with different colors. (b) The clusters are abstracted into a cluster-level topology. The nodes in solid blue are vertex cover clusters.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5095971332441845,
+        "y0": 0.28942941448931114,
+        "x1": 0.9196935337255919,
+        "y1": 0.4522206451306414
+      },
+      "text": "has at least a neighbor in b i m . To simplify the analysis, we suppose there are not sink nodes at b i m or δ i m . The nodes in b i m and δ i m are not in cluster-contained-subnets. Name Φ i = b i m ∪ δ i m . Fig. 5(a) illustrates the example Φ 1 of c 1 . Then we calculate MVC on Φ i as λ i . We use λ i as alternative border nodes to b i m . Because each edge in Φ i has at least one endpoint in the MVC nodes λ i , so monitoring λ i can capture all the flows passing over Φ i . The number of λ i is not necessarily smaller than b i m . Therefore, we select Min {| b i m | , | λ i |} as the new border nodes of c i m . If λ i are selected as the border nodes of cluster c i m , the non-VC nodes in b i m do not need to monitor the flow, and their cluster-ID are set to the neighbor cluster.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5095971332441845,
+        "y0": 0.47527426128266037,
+        "x1": 0.7743964581287525,
+        "y1": 0.4853840074151856
+      },
+      "text": "C. Protocol for Cluster based SD-WSN",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5095971332441845,
+        "y0": 0.4970762639429929,
+        "x1": 0.9197008565981666,
+        "y1": 0.563133387030879
+      },
+      "text": "CluFlow makes the SDN controller estimate flow among clusters by monitoring the flow at border nodes. The SDN controller controls traffic flow by injecting cluster-level routing rules to the border nodes. The management procedure of the SDN controller and nodes in WSN is shown in Alg. 3.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5095971332441845,
+        "y0": 0.5674933274109265,
+        "x1": 0.9197008565981668,
+        "y1": 0.7163789642992877
+      },
+      "text": "There are at least two benefits of utilizing SDN control in cluster-level routing. Firstly, compared with SDN management for every node in WSN, CluFlow trades granularity of SDN control for less communication load. Only cluster border nodes communicate with the SDN controller. The number of nodes that communicate with the SDN controller decreases. Secondly, cluster-level routing and local routing are decoupled. The nodes inside the clusters use only distributed local routing and do not need to request flow table entries from the SDN controller. The communication delay caused by requesting flow table entries therefore decreases.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5693462237829124,
+        "y0": 0.7389356162707841,
+        "x1": 0.8599447132046855,
+        "y1": 0.7497721963182901
+      },
+      "text": "IV. EXPERIMENTAL SETUP AND RESULTS",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5095971488350592,
+        "y0": 0.7647059890736343,
+        "x1": 0.9196845988775314,
+        "y1": 0.7893482800712589
+      },
+      "text": "In this section, we test and evaluate CluFlow in simulation and a real deployed WSN.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5095971488350592,
+        "y0": 0.8124007458432304,
+        "x1": 0.6880665561610828,
+        "y1": 0.8225104919757555
+      },
+      "text": "A. Benchmark Approaches",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5095971488350592,
+        "y0": 0.8342038988836105,
+        "x1": 0.9196845988775317,
+        "y1": 0.8726507504513065
+      },
+      "text": "To evaluate the performance of CluFlow, three benchmark approaches are implemented to calculate the communication flow among clusters.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.1379578585459272,
+        "y0": 0.111538042082073,
+        "x1": 0.42323092171888593,
+        "y1": 0.21266977124429373
+      },
+      "source_id": "#/pictures/0",
+      "file": null,
+      "sha256": null
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.5801797851618177,
+        "y0": 0.1066779003007395,
+        "x1": 0.8456857529118904,
+        "y1": 0.21300979578013657
+      },
+      "source_id": "#/pictures/1",
+      "file": null,
+      "sha256": null
+    }
+  ],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      595.219970703125,
+      842.0
+    ]
+  ],
+  "seconds": 3.5369027000000415,
+  "model_load_seconds": null,
+  "peak_rss_mb": 167.52734375,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "01460d3dc3eca92c0d1a17eff846fa682f3d_page_6_pg1",
+      "pdf_sha256": "d3f6de592e646fcea197abd36fcc2f2b0563ded2a2f97b9e738198733f405b8c",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

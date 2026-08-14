@@ -1,0 +1,374 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_default",
+  "engine_family": "opendataloader",
+  "profile": "default",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.09398_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "# Precoder Learning by Leveraging Unitary Equivariance Property\n\nYilun Ge, Shuyao Liao, Shengqian Han, Chenyang Yang\n\nSchool of Electronics and Information Engineering, Beihang University, Beijing 100191, China Email: {yilunge, shuyaoliao, sqhan, cyyang}@buaa.edu.cn\n\n## arXiv:2503.09398v1 [eess.SP] 12 Mar 2025\n\nAbstract—Incorporating mathematical properties of a wireless policy to be learned into the design of deep neural networks (DNNs) is effective for enhancing learning efficiency. Multi-user precoding policy in multi-antenna system, which is the mapping from channel matrix to precoding matrix, possesses a permutation equivariance property, which has been harnessed to design the parameter sharing structure of the weight matrix of DNNs. In this paper, we study a stronger property than permutation equivariance, namely unitary equivariance, for precoder learning. We first show that a DNN with unitary equivariance designed by further introducing parameter sharing into a permutation equivariant DNN is unable to learn the optimal precoder. We proceed to develop a novel non-linear weighting process satisfying unitary equivariance and then construct a joint unitary and permutation equivariant DNN. Simulation results demonstrate that the proposed DNN not only outperforms existing learning methods in learning performance and generalizability but also reduces training complexity.\n\nIndex Terms—Precoding, deep learning, unitary equivariant, permutation equivariant\n\nI. INTRODUCTION\n\nThe optimization of multi-user multi-input multi-output (MU-MIMO) precoder is a challenging problem. Various numerical algorithms have been developed, e.g., the weighted minimum mean square error (WMMSE) algorithm [1], which, however, are with high computational complexity.\n\nDeep learning offers a promising solution for optimization due to its low inference complexity. In [2], a fully-connected deep neural network (DNN) was trained to approximate the performance of WMMSE with significantly reduced inference complexity. However, such DNNs often involve a large number of learnable parameters, requiring extensive training time and massive training samples. Incorporating inductive biases into DNNs architecture with mathematical properties of the policies being learned is crucial for enhancing learning efficiency [3,4]. A well-known example is convolutional neural network (CNN), which leverages the property of translational invariance and has significantly promoted the field of image recognition [5].\n\nRecent studies have demonstrated the importance of integrating permutation equivariance properties to enhance learning efficiency for wireless communications [6–12]. In [8], the mismatch between the inductive bias of CNNs and the permutation equivariance property of the precoding policy was identified, and an edge-updated graph neural network (GNN) was proposed to leverage the permutation equivariance\n\nproperty. In [9], the attention mechanism was introduced into GNN and a graph attention network (GAT) was used to learn the energy efficient precoder. In [10], a GNN was designed by introduce Taylor’s expansion of matrix pseudo-inverse into the model, which improves learning efficiency. In [11], a multidimensional GNN was developed for hybrid precoder learning, which is able to exploit complicated permutation equivariance properties.\n\nIn this paper, we study the learning of MU-MIMO precoder by investigating a stronger property than permutation equivariance, known as unitary equivariance. This property means that if the channel matrix is multiplied by a unitary matrix, then the optimal precoder will be multiplied by the same unitary matrix. The only instance of a unitary equivariant DNN design was introduced in [13]. However, it lacked a systematic analysis of how the unitary equivariance property impacts DNN design, and its performance in precoder learning is unsatisfactory, as to be demonstrated later. In this paper, we first show that a DNN with a parameter sharing structure derived from the unitary and permutation equivariance property is unable to learn the optimal precoder. To solve the problem, we then develop a non-linear weighting process that satisfies the unitary equivariance, and finally construct a joint unitary and permutation equivariant neural network (UPNN) for precoder learning. Simulation results demonstrate the advantages of the proposed UPNN in performance improvement and training complexity reduction.\n\nII. EQUIVARIANCE PROPERTY OF A PRECODING POLICY\n\nConsider a downlink MU-MIMO system where a base station (BS) equipped with N antennas serves K single-antenna users. The channel matrix is denoted as H = [h1,...,hK] ∈ CN×K, where hk ∈ CN×1 is the channel vector of user k. The precoding matrix is denoted as V = [v1,...,vK] ∈ CN×K, where vk ∈ CN×1 is the precoding vector of user k. The precoder optimization problem that maximizes the sum rate subject to the total power constraint is\n\nK k=1\n\nRk (1a) s.t. Tr VHV ≤ Pmax, (1b)\n\nmax\n\nV\n\nwhere Rk = log2 1 + |hHkvk|2\n\nis the data rate of user k, δk2 is the noise power, and Pmax is the maximal transmit\n\nm̸=k |hHkvm|2+δk2\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "f5029ed8c3d13439b96d35f3752129888bd3ee41a7d4e225fce88f94f8597302"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "244ccbc0f7584c4195237274f1b2d6dfabfd54a8dc948d39f410714ef3249b04"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "8e4b112730fdcc5afe44b5ace0752e4c632dbeedb5629fc90a67cce4db84ba7a"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.1653153594771242,
+        "y0": 0.06204419191919197,
+        "x1": 0.8346862745098039,
+        "y1": 0.13364393939393937
+      },
+      "text": "Precoder Learning by Leveraging Unitary Equivariance Property",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.29034967320261434,
+        "y0": 0.15200000000000002,
+        "x1": 0.7096535947712418,
+        "y1": 0.1686729797979799
+      },
+      "text": "Yilun Ge, Shuyao Liao, Shengqian Han, Chenyang Yang",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1805065359477124,
+        "y0": 0.16891540404040395,
+        "x1": 0.8194967320261438,
+        "y1": 0.2081805555555556
+      },
+      "text": "School of Electronics and Information Engineering, Beihang University, Beijing 100191, China Email: {yilunge, shuyaoliao, sqhan, cyyang}@buaa.edu.cn",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.022941176470588232,
+        "y0": 0.2609848484848486,
+        "x1": 0.05941176470588235,
+        "y1": 0.7196969696969697
+      },
+      "text": "arXiv:2503.09398v1 [eess.SP] 12 Mar 2025",
+      "html": null,
+      "level": 2,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.2446060606060605,
+        "x1": 0.490233660130719,
+        "y1": 0.4732260101010102
+      },
+      "text": "Abstract—Incorporating mathematical properties of a wireless policy to be learned into the design of deep neural networks (DNNs) is effective for enhancing learning efficiency. Multi-user precoding policy in multi-antenna system, which is the mapping from channel matrix to precoding matrix, possesses a permutation equivariance property, which has been harnessed to design the parameter sharing structure of the weight matrix of DNNs. In this paper, we study a stronger property than permutation equivariance, namely unitary equivariance, for precoder learning. We first show that a DNN with unitary equivariance designed by further introducing parameter sharing into a permutation equivariant DNN is unable to learn the optimal precoder. We proceed to develop a novel non-linear weighting process satisfying unitary equivariance and then construct a joint unitary and permutation equivariant DNN. Simulation results demonstrate that the proposed DNN not only outperforms existing learning methods in learning performance and generalizability but also reduces training complexity.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.471125,
+        "x1": 0.4902287581699346,
+        "y1": 0.498479797979798
+      },
+      "text": "Index Terms—Precoding, deep learning, unitary equivariant, permutation equivariant",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2216013071895425,
+        "y0": 0.510885101010101,
+        "x1": 0.3486470588235294,
+        "y1": 0.5260416666666667
+      },
+      "text": "I. INTRODUCTION",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.5305113636363636,
+        "x1": 0.49023202614379086,
+        "y1": 0.6060479797979799
+      },
+      "text": "The optimization of multi-user multi-input multi-output (MU-MIMO) precoder is a challenging problem. Various numerical algorithms have been developed, e.g., the weighted minimum mean square error (WMMSE) algorithm [1], which, however, are with high computational complexity.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.6060808080808081,
+        "x1": 0.49023202614379086,
+        "y1": 0.8023762626262626
+      },
+      "text": "Deep learning offers a promising solution for optimization due to its low inference complexity. In [2], a fully-connected deep neural network (DNN) was trained to approximate the performance of WMMSE with significantly reduced inference complexity. However, such DNNs often involve a large number of learnable parameters, requiring extensive training time and massive training samples. Incorporating inductive biases into DNNs architecture with mathematical properties of the policies being learned is crucial for enhancing learning efficiency [3,4]. A well-known example is convolutional neural network (CNN), which leverages the property of translational invariance and has significantly promoted the field of image recognition [5].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.8024103535353535,
+        "x1": 0.49023202614379086,
+        "y1": 0.9081363636363636
+      },
+      "text": "Recent studies have demonstrated the importance of integrating permutation equivariance properties to enhance learning efficiency for wireless communications [6–12]. In [8], the mismatch between the inductive bias of CNNs and the permutation equivariance property of the precoding policy was identified, and an edge-updated graph neural network (GNN) was proposed to leverage the permutation equivariance",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.24389898989898995,
+        "x1": 0.9199934640522875,
+        "y1": 0.36471969696969697
+      },
+      "text": "property. In [9], the attention mechanism was introduced into GNN and a graph attention network (GAT) was used to learn the energy efficient precoder. In [10], a GNN was designed by introduce Taylor’s expansion of matrix pseudo-inverse into the model, which improves learning efficiency. In [11], a multidimensional GNN was developed for hybrid precoder learning, which is able to exploit complicated permutation equivariance properties.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.3648535353535354,
+        "x1": 0.9199934640522875,
+        "y1": 0.6517184343434343
+      },
+      "text": "In this paper, we study the learning of MU-MIMO precoder by investigating a stronger property than permutation equivariance, known as unitary equivariance. This property means that if the channel matrix is multiplied by a unitary matrix, then the optimal precoder will be multiplied by the same unitary matrix. The only instance of a unitary equivariant DNN design was introduced in [13]. However, it lacked a systematic analysis of how the unitary equivariance property impacts DNN design, and its performance in precoder learning is unsatisfactory, as to be demonstrated later. In this paper, we first show that a DNN with a parameter sharing structure derived from the unitary and permutation equivariance property is unable to learn the optimal precoder. To solve the problem, we then develop a non-linear weighting process that satisfies the unitary equivariance, and finally construct a joint unitary and permutation equivariant neural network (UPNN) for precoder learning. Simulation results demonstrate the advantages of the proposed UPNN in performance improvement and training complexity reduction.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5186911764705883,
+        "y0": 0.6618156565656566,
+        "x1": 0.9110800653594772,
+        "y1": 0.6769722222222223
+      },
+      "text": "II. EQUIVARIANCE PROPERTY OF A PRECODING POLICY",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.6820492424242424,
+        "x1": 0.9199950980392158,
+        "y1": 0.8028699494949495
+      },
+      "text": "Consider a downlink MU-MIMO system where a base station (BS) equipped with N antennas serves K single-antenna users. The channel matrix is denoted as H = [h1,...,hK] ∈ CN×K, where hk ∈ CN×1 is the channel vector of user k. The precoding matrix is denoted as V = [v1,...,vK] ∈ CN×K, where vk ∈ CN×1 is the precoding vector of user k. The precoder optimization problem that maximizes the sum rate subject to the total power constraint is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6990081699346405,
+        "y0": 0.810834595959596,
+        "x1": 0.7226862745098039,
+        "y1": 0.8372853535353535
+      },
+      "text": "K k=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6347058823529411,
+        "y0": 0.8159141414141414,
+        "x1": 0.9199950980392158,
+        "y1": 0.8639936868686868
+      },
+      "text": "Rk (1a) s.t. Tr VHV ≤ Pmax, (1b)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6262058823529412,
+        "y0": 0.8181022727272728,
+        "x1": 0.6565016339869281,
+        "y1": 0.8306818181818182
+      },
+      "text": "max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6357385620915033,
+        "y0": 0.8290631313131314,
+        "x1": 0.6467679738562091,
+        "y1": 0.8378762626262626
+      },
+      "text": "V",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.865145202020202,
+        "x1": 0.7488823529411764,
+        "y1": 0.8885063131313131
+      },
+      "text": "where Rk = log2 1 + |hHkvk|2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.509766339869281,
+        "y0": 0.8716073232323233,
+        "x1": 0.9199983660130718,
+        "y1": 0.910364898989899
+      },
+      "text": "is the data rate of user k, δk2 is the noise power, and Pmax is the maximal transmit",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6820522875816993,
+        "y0": 0.880175505050505,
+        "x1": 0.7827990196078431,
+        "y1": 0.9032929292929293
+      },
+      "text": "m̸=k |hHkvm|2+δk2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 1.125425999998697,
+  "model_load_seconds": null,
+  "peak_rss_mb": 150.3984375,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "parser": "java",
+    "table_method": "cluster",
+    "reading_order": "xycut",
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "java-cpu-only",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "publication_cache": {
+      "doc_id": "2503.09398_pg1",
+      "pdf_sha256": "12dd9658f967286df4e43f199fdfc27a9a7eb608d734cb2c9336c3743d4e057d",
+      "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

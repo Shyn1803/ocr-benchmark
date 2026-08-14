@@ -1,0 +1,836 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_default",
+  "engine_family": "opendataloader",
+  "profile": "default",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.09483_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "# Learning Spatially Adaptive ℓ1-Norms Weights for Convolutional Synthesis Regularization\n\n## arXiv:2503.09483v1 [cs.LG] 12 Mar 2025\n\nAndreas Kofler\n\nPhysikalisch-Technische Bundesanstalt (PTB)\n\nBraunschweig and Berlin, Germany andreas.kofler@ptb.de\n\nChristoph Kolbitsch\n\nPhysikalisch-Technische Bundesanstalt (PTB)\n\nBraunschweig and Berlin, Germany christoph.kolbitsch@ptb.de\n\nLuca Calatroni\n\nMaLGa Center, DIBRIS, Universit`a di Genova, MMS, Istituto Italiano di Tecnologia, Genoa, Italy luca.calatroni@unige.it\n\nKostas Papafitsoros\n\nSchool of Mathematical Sciences Queen Mary University of London London, UK k.papafitsoros@qmul.ac.uk\n\nAbstract—We propose an unrolled algorithm approach for learning spatially adaptive parameter maps in the framework of convolutional synthesis-based ℓ1 regularization. More precisely, we consider a family of pre-trained convolutional filters and estimate deeply parametrized spatially varying parameters applied to the sparse feature maps by means of unrolling a FISTA algorithm to solve the underlying sparse estimation problem. The proposed approach is evaluated for image reconstruction of lowfield MRI and compared to spatially adaptive and non-adaptive analysis-type procedures relying on Total Variation regularization and to a well-established model-based deep learning approach. We show that the proposed approach produces visually and quantitatively comparable results with the latter approaches and at the same time remains highly interpretable. In particular, the inferred parameter maps quantify the local contribution of each filter in the reconstruction, which provides valuable insight into the algorithm mechanism and could potentially be used to discard unsuited filters.\n\nIndex Terms—Neural Networks, Convolutional Dictionary Learning, Sparsity, Adaptive Regularization, Low-Field MRI\n\nI. INTRODUCTION\n\nConvolutional Sparse Coding (CSC) and Convolutional Dictionary Learning (CDL) approaches [1] rely on the assumption that the signal/image of interest x ∈ RN (or CN) is wellapproximated by a linear combination of convolutions of normalized filters dk ∈ Rk\n\nf×kf with sparse feature maps sk ∈ RN (or CN) for k = 1,...,K, that is\n\nK\n\ndk ∗ sk, where ∀k sk is sparse. (1)\n\nx ≈\n\nk=1\n\nThe project (22HLT02 A4IM) has received funding from the European Partnership on Metrology, co-financed from the European Union’s Horizon Europe Research and Innovation Programme and by the Participating States. LC acknowledges the financial support of the European Research Council (grant MALIN, 101117133).\n\nBy enforcing sparsity by means of ℓ1-regularization, given a set of signals {xl}Ll=1 and some λ > 0, the CDL problem can be thus typically formulated as:\n\nL\n\nK\n\nL\n\nK\n\n- 1\n\n- 2\n\n\ndk ∗ sk,l∥22 + λ\n\n∥sk,l∥1 such that ∥dk∥2 = 1, ∀k = 1,...,K.\n\n∥xl −\n\nmin\n\n(2)\n\n{dk},{sk}\n\nl=1\n\nk=1\n\nl=1\n\nk=1\n\nIn the context of image reconstruction, given possibly incomplete observed data y ∈ V modeled as the noisy output of a linear forward operator A : V → W, CDL and CSC are employed as variational regularization methods, see e.g. [2]:\n\n- 1\n\n- 2∥Ax − y∥22+\n\n\nmin\n\nx,{dk},{sk}\n\nK\n\nK\n\n(3)\n\nα 2\n\n∥x − dk ∗ sk∥22 + λ\n\n∥sk∥1 such that ∥dk∥2 = 1, ∀k = 1,...,K,\n\nk=1\n\nk=1\n\nwhere α > 0 enforces the synthesis constraint. Note that in (3) it is implicitly assumed that the underlying sparsifying model is unknown so that the elements x,{dk},{sk}, k = 1...,K are reconstructed jointly, typically by alternating the minimization between solving (2) and computing the current update of desired image depending on the estimated dictionary. These methods are thus often referred to as blind Compressed Sensing approaches, see, e.g. [3] for MRI applications.\n\nProblem (3) is a non-convex optimization problem whose solution is, typically, computationally demanding, and further requires careful tuning of the regularization parameters λ, α, initializations x0,{d0k},{s0k} and, depending on the algorithms considered, possibly also of other parameters coupling the image update and the CSC and CDL, see, e.g. [4] for ADMM schemes. Furthermore, the regularization parameter λ dictates the strength of the imposed regularization in terms of the sparsity of the feature maps only globally and independently\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "bcf9d8d88a37c424ae3e24133e80aadb88717111f399e5dec0644bc4746192e7"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "b5c485b65c72b9762d31bf2918751135ec97268cbc2ab699b378d916ecc2841d"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "c23798d862c0e304feab146036801eba044ee9fdd40492d71b74052b8147385c"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.09382026143790849,
+        "y0": 0.06318813131313128,
+        "x1": 0.9061813725490195,
+        "y1": 0.13478914141414144
+      },
+      "text": "Learning Spatially Adaptive ℓ1-Norms Weights for Convolutional Synthesis Regularization",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.022941176470588232,
+        "y0": 0.26381313131313133,
+        "x1": 0.05941176470588235,
+        "y1": 0.7070707070707071
+      },
+      "text": "arXiv:2503.09483v1 [cs.LG] 12 Mar 2025",
+      "html": null,
+      "level": 2,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2724052287581699,
+        "y0": 0.15314393939393933,
+        "x1": 0.3834624183006536,
+        "y1": 0.1698169191919192
+      },
+      "text": "Andreas Kofler",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1765735294117647,
+        "y0": 0.17006060606060602,
+        "x1": 0.4787238562091503,
+        "y1": 0.1850795454545454
+      },
+      "text": "Physikalisch-Technische Bundesanstalt (PTB)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2025375816993464,
+        "y0": 0.18562752525252535,
+        "x1": 0.4413627450980392,
+        "y1": 0.21634974747474756
+      },
+      "text": "Braunschweig and Berlin, Germany andreas.kofler@ptb.de",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2646160130718954,
+        "y0": 0.2597449494949494,
+        "x1": 0.4105375816993464,
+        "y1": 0.2764179292929293
+      },
+      "text": "Christoph Kolbitsch",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1862156862745098,
+        "y0": 0.2766616161616161,
+        "x1": 0.4883660130718954,
+        "y1": 0.2916805555555555
+      },
+      "text": "Physikalisch-Technische Bundesanstalt (PTB)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21217973856209152,
+        "y0": 0.29222853535353543,
+        "x1": 0.4510049019607843,
+        "y1": 0.32295075757575764
+      },
+      "text": "Braunschweig and Berlin, Germany christoph.kolbitsch@ptb.de",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6452875816993464,
+        "y0": 0.15314393939393933,
+        "x1": 0.7539983660130719,
+        "y1": 0.1698169191919192
+      },
+      "text": "Luca Calatroni",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5695915032679738,
+        "y0": 0.17006060606060602,
+        "x1": 0.8177287581699346,
+        "y1": 0.24748358585858576
+      },
+      "text": "MaLGa Center, DIBRIS, Universit`a di Genova, MMS, Istituto Italiano di Tecnologia, Genoa, Italy luca.calatroni@unige.it",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.636483660130719,
+        "y0": 0.2597449494949494,
+        "x1": 0.7781437908496732,
+        "y1": 0.2764179292929293
+      },
+      "text": "Kostas Papafitsoros",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5888774509803921,
+        "y0": 0.2766616161616161,
+        "x1": 0.8194820261437908,
+        "y1": 0.33851767676767675
+      },
+      "text": "School of Mathematical Sciences Queen Mary University of London London, UK k.papafitsoros@qmul.ac.uk",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.36536616161616164,
+        "x1": 0.49023692810457514,
+        "y1": 0.5939861111111111
+      },
+      "text": "Abstract—We propose an unrolled algorithm approach for learning spatially adaptive parameter maps in the framework of convolutional synthesis-based ℓ1 regularization. More precisely, we consider a family of pre-trained convolutional filters and estimate deeply parametrized spatially varying parameters applied to the sparse feature maps by means of unrolling a FISTA algorithm to solve the underlying sparse estimation problem. The proposed approach is evaluated for image reconstruction of lowfield MRI and compared to spatially adaptive and non-adaptive analysis-type procedures relying on Total Variation regularization and to a well-established model-based deep learning approach. We show that the proposed approach produces visually and quantitatively comparable results with the latter approaches and at the same time remains highly interpretable. In particular, the inferred parameter maps quantify the local contribution of each filter in the reconstruction, which provides valuable insight into the algorithm mechanism and could potentially be used to discard unsuited filters.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.5937904040404041,
+        "x1": 0.4902385620915033,
+        "y1": 0.621145202020202
+      },
+      "text": "Index Terms—Neural Networks, Convolutional Dictionary Learning, Sparsity, Adaptive Regularization, Low-Field MRI",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.22159967320261437,
+        "y0": 0.6497537878787879,
+        "x1": 0.3486470588235294,
+        "y1": 0.6649103535353535
+      },
+      "text": "I. INTRODUCTION",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.6808194444444444,
+        "x1": 0.490233660130719,
+        "y1": 0.7648964646464647
+      },
+      "text": "Convolutional Sparse Coding (CSC) and Convolutional Dictionary Learning (CDL) approaches [1] rely on the assumption that the signal/image of interest x ∈ RN (or CN) is wellapproximated by a linear combination of convolutions of normalized filters dk ∈ Rk",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.7411982323232323,
+        "x1": 0.49023692810457514,
+        "y1": 0.7799924242424242
+      },
+      "text": "f×kf with sparse feature maps sk ∈ RN (or CN) for k = 1,...,K, that is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1646470588235294,
+        "y0": 0.7884191919191919,
+        "x1": 0.17558496732026144,
+        "y1": 0.7972234848484848
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1850686274509804,
+        "y0": 0.7991237373737374,
+        "x1": 0.49023202614379086,
+        "y1": 0.8228219696969697
+      },
+      "text": "dk ∗ sk, where ∀k sk is sparse. (1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12709150326797386,
+        "y0": 0.8009974747474747,
+        "x1": 0.15415522875816995,
+        "y1": 0.8228219696969697
+      },
+      "text": "x ≈",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15867647058823528,
+        "y0": 0.8192727272727273,
+        "x1": 0.1823562091503268,
+        "y1": 0.8280770202020202
+      },
+      "text": "k=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08000653594771241,
+        "y0": 0.8500189393939395,
+        "x1": 0.49023202614379086,
+        "y1": 0.9074305555555555
+      },
+      "text": "The project (22HLT02 A4IM) has received funding from the European Partnership on Metrology, co-financed from the European Union’s Horizon Europe Research and Innovation Programme and by the Participating States. LC acknowledges the financial support of the European Research Council (grant MALIN, 101117133).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.36465782828282833,
+        "x1": 0.9199934640522875,
+        "y1": 0.4100037878787879
+      },
+      "text": "By enforcing sparsity by means of ℓ1-regularization, given a set of signals {xl}Ll=1 and some λ > 0, the CDL problem can be thus typically formulated as:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6047222222222222,
+        "y0": 0.4197045454545455,
+        "x1": 0.6136519607843137,
+        "y1": 0.42850883838383835
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6725408496732027,
+        "y0": 0.4197045454545455,
+        "x1": 0.6834787581699346,
+        "y1": 0.42850883838383835
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8003856209150327,
+        "y0": 0.4197045454545455,
+        "x1": 0.8093153594771242,
+        "y1": 0.42850883838383835
+      },
+      "text": "L",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8252924836601307,
+        "y0": 0.4197045454545455,
+        "x1": 0.8362303921568628,
+        "y1": 0.42850883838383835
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.584624183006536,
+        "y0": 0.4240883838383839,
+        "x1": 0.5927630718954249,
+        "y1": 0.4366679292929293
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.584624183006536,
+        "y0": 0.44122601010101015,
+        "x1": 0.5927630718954249,
+        "y1": 0.4538055555555556
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6929607843137254,
+        "y0": 0.4302348484848485,
+        "x1": 0.7930931372549019,
+        "y1": 0.4541073232323233
+      },
+      "text": "dk ∗ sk,l∥22 + λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5826699346405229,
+        "y0": 0.43228282828282827,
+        "x1": 0.8892107843137255,
+        "y1": 0.48483585858585865
+      },
+      "text": "∥sk,l∥1 such that ∥dk∥2 = 1, ∀k = 1,...,K.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.623656862745098,
+        "y0": 0.43228282828282827,
+        "x1": 0.6629526143790849,
+        "y1": 0.4541073232323233
+      },
+      "text": "∥xl −",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5358872549019609,
+        "y0": 0.4325972222222223,
+        "x1": 0.5630196078431372,
+        "y1": 0.4451767676767676
+      },
+      "text": "min",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9010130718954248,
+        "y0": 0.43968308080808083,
+        "x1": 0.9199934640522875,
+        "y1": 0.4548396464646465
+      },
+      "text": "(2)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5207565359477124,
+        "y0": 0.4438459595959596,
+        "x1": 0.5781486928104576,
+        "y1": 0.45910606060606063
+      },
+      "text": "{dk},{sk}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5988545751633987,
+        "y0": 0.4505580808080808,
+        "x1": 0.6195212418300653,
+        "y1": 0.45936237373737376
+      },
+      "text": "l=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6665702614379084,
+        "y0": 0.4505580808080808,
+        "x1": 0.6902483660130719,
+        "y1": 0.45936237373737376
+      },
+      "text": "k=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.7945179738562091,
+        "y0": 0.4505580808080808,
+        "x1": 0.8151846405228758,
+        "y1": 0.45936237373737376
+      },
+      "text": "l=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8193218954248366,
+        "y0": 0.4505580808080808,
+        "x1": 0.8430000000000001,
+        "y1": 0.45936237373737376
+      },
+      "text": "k=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.48408459595959596,
+        "x1": 0.9199967320261438,
+        "y1": 0.5445265151515151
+      },
+      "text": "In the context of image reconstruction, given possibly incomplete observed data y ∈ V modeled as the noisy output of a linear forward operator A : V → W, CDL and CSC are employed as variational regularization methods, see e.g. [2]:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.6442075163398693,
+        "y0": 0.5522272727272727,
+        "x1": 0.6523464052287582,
+        "y1": 0.5648068181818182
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.6442075163398693,
+        "y0": 0.5583750000000001,
+        "x1": 0.7446143790849673,
+        "y1": 0.5822474747474747
+      },
+      "text": "2∥Ax − y∥22+",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5896470588235294,
+        "y0": 0.5607373737373738,
+        "x1": 0.6167794117647059,
+        "y1": 0.5733169191919192
+      },
+      "text": "min",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5686944444444444,
+        "y0": 0.5719861111111111,
+        "x1": 0.6377320261437908,
+        "y1": 0.5872462121212121
+      },
+      "text": "x,{dk},{sk}",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.650937908496732,
+        "y0": 0.5867765151515152,
+        "x1": 0.661875816993464,
+        "y1": 0.595580808080808
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8100424836601307,
+        "y0": 0.5867765151515152,
+        "x1": 0.8209803921568627,
+        "y1": 0.595580808080808
+      },
+      "text": "K",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.9010130718954248,
+        "y0": 0.5904810606060606,
+        "x1": 0.9199934640522875,
+        "y1": 0.6056376262626263
+      },
+      "text": "(3)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.629826797385621,
+        "y0": 0.5911603535353536,
+        "x1": 0.6402401960784314,
+        "y1": 0.6208775252525253
+      },
+      "text": "α 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6713578431372549,
+        "y0": 0.5973068181818182,
+        "x1": 0.8013578431372549,
+        "y1": 0.6211805555555556
+      },
+      "text": "∥x − dk ∗ sk∥22 + λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5603235294117647,
+        "y0": 0.5993560606060606,
+        "x1": 0.8686258169934641,
+        "y1": 0.6519078282828283
+      },
+      "text": "∥sk∥1 such that ∥dk∥2 = 1, ∀k = 1,...,K,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.644967320261438,
+        "y0": 0.6176300505050505,
+        "x1": 0.6686454248366013,
+        "y1": 0.6264343434343435
+      },
+      "text": "k=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8040718954248366,
+        "y0": 0.6176300505050505,
+        "x1": 0.8277516339869281,
+        "y1": 0.6264343434343435
+      },
+      "text": "k=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.6511578282828283,
+        "x1": 0.9199999999999999,
+        "y1": 0.7719785353535353
+      },
+      "text": "where α > 0 enforces the synthesis constraint. Note that in (3) it is implicitly assumed that the underlying sparsifying model is unknown so that the elements x,{dk},{sk}, k = 1...,K are reconstructed jointly, typically by alternating the minimization between solving (2) and computing the current update of desired image depending on the estimated dictionary. These methods are thus often referred to as blind Compressed Sensing approaches, see, e.g. [3] for MRI applications.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5097679738562092,
+        "y0": 0.772219696969697,
+        "x1": 0.9199950980392158,
+        "y1": 0.9081363636363636
+      },
+      "text": "Problem (3) is a non-convex optimization problem whose solution is, typically, computationally demanding, and further requires careful tuning of the regularization parameters λ, α, initializations x0,{d0k},{s0k} and, depending on the algorithms considered, possibly also of other parameters coupling the image update and the CSC and CDL, see, e.g. [4] for ADMM schemes. Furthermore, the regularization parameter λ dictates the strength of the imposed regularization in terms of the sparsity of the feature maps only globally and independently",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 1.1627489000020432,
+  "model_load_seconds": null,
+  "peak_rss_mb": 147.34765625,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "parser": "java",
+    "table_method": "cluster",
+    "reading_order": "xycut",
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "java-cpu-only",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "publication_cache": {
+      "doc_id": "2503.09483_pg1",
+      "pdf_sha256": "2f119efd8a99784b9f3db1c6d72a81b1fec8874d6e3068395f896f1627645fa6",
+      "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

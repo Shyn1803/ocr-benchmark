@@ -1,0 +1,20 @@
+![](<521ba5c50a6e6c843fbe265be5955dc55777e01a_page_1_images/imageFile1.png>)
+
+## International Journal for Multidisciplinary Research (IJFMR)
+
+E-ISSN: 2582-2160 ● Website: www.ijfmr.com ● Email: editor@ijfmr.com
+
+# A Study on Impact of Artificial Intelligence on Employment in the Next Decade
+
+## Ms. Vyshnavi A1, Mr. Sunil R. Hegde2, Priyamvada Choudhry3, Tanushka Agarwal4, Aishani G V5, Daksh M6, Ronak Kothari7
+
+1,2Assistant Professor, Bachelor of Business Administration, Centre for Management Studies, Jain (Deemed-to-be University), Bengaluru. 3,4,5,6,7Student, Bachelor of Business Administration, Centre for Management Studies, Jain (Deemed-tobe University), Bengaluru.
+
+ABSTRACT This paper investigates the impact of Artificial Intelligence (AI) on the job market. It discusses how AI can both create new job opportunities and potentially displace traditional roles across various industries Furthermore, the paper addresses the evolving skill requirements in the workforce due to AI integration, emphasizing the importance of ongoing education and training. The paper concludes with practical recommendations for businesses and individuals to navigate these transformations effectively, ensuring equitable outcomes in the AI-driven economy. It will also talk about the ethics of using AI to replace jobs. Overall, this research hopes to help make sure AI helps the economy grow and doesn’t leave people behind. It’s important to understand these things to make fair policies and practices for the future.
+
+KEYWORDS: Artificial intelligence (AI), Employment, labour, Jobs, Respondents.
+
+INTRODUCTION Artificial Intelligence (AI) is reshaping the labour market, raising concerns about its impact on employment. This research paper aims to analyse the effects of AI adoption on job creation and destruction, mechanisms driving employment changes, implications for income inequality and skills, and strategies for policymakers and businesses to respond. Additionally, we will investigate the role of education and training in preparing the workforce for the AI-driven future, the potential for AI to create new types of jobs, and the ethical considerations surrounding AI-driven automation. By addressing these questions, this research aims to provide insights into navigating the challenges and opportunities presented by AI in the workforce, fostering sustainable economic growth while mitigating adverse effects on employment and society. Understanding these dynamics will be essential for shaping policies and practices that ensure a prosperous and equitable future for everyone. Furthermore, the paper in creating new types of employment opportunities and examines the ethical concerns associated with AI-driven automation. By conducting this analysis, the study aims to offer valuable insights to address obstacles and capitalize on prospects arising from AI integration in the labour market. Its goal is to foster sustainable economic development while promoting fairness and inclusivity for everyone.
+
+IJFMR240216283 Volume 6, Issue 2, March-April 2024 1
+

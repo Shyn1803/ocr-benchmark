@@ -1,0 +1,71 @@
+M. Saeidpour, L. Wadsö / Cement and Concrete Research 69 (2015) 88–95 89
+
+Few studies of sorption isotherms of cement based materials with SCMs have been published and there is still a need for systematic studies in this ﬁeld. Baroghel-Bouny et al. [13] investigated sorption isotherms and hysteretic behavior of high performance (HP) cement pastes and concretes made with OPC and 10% silica fume. They performed several scanning curves from different RHs and analyzed pore size distributions with the Barrett,Joyner, Halenda (BJH) model [20]. Their resultsshowed that HP materials had lower moisture contents at high RHs compared to normal materials, and large RH changes at high RHs induced only slight changes in moisture content [13]. De Belie et al. [21] studied the microstructure and surface area change of cement pastes in which OPC had been replaced by SCMs in different mass fractions (10% silica fume, 50% ﬂy ash, and 50 and 85% slag). They did static and dynamic (sorption balance) water vapor and nitrogen sorption isotherms on samples with water/binder ratios (w/b) 0.35–0.5 without any speciﬁc control on carbonation. They conclude that the result of the sorption isotherm measurement is dependent on the method used. Their results showed hysteresis over the whole range of RHs for all binders.
+
+The evaluation of moisture properties of cement based materials require at least the main absorption and desorption curves of the sorption isotherm [22]. These can be measured with different techniques. The most common method is the desiccator method (see for example references [5,10,21]). In this method relatively large samples are equilibrated for several weeks at different vapor pressures above saturated salt solutions, and are weighed on a balance until they have reached equilibrium. This method is time consuming and needs many parallel specimens that are exposed to different RHs. In addition, the structure of the material may change during the long measurement time due to hydration and carbonation. In the present study we used the sorption balance method, in which small samples (10–100 mg) are continuously weighed on an analytical balance while exposed to an RH program. The main advantages with this technique are that the whole isotherm can be measured on a single sample in a CO2-free environment. A measurement is comparatively quick as the external mass transfer resistance is low as the sample is exposed in a gas stream. However, each of our measurements still takes about three weeks.
+
+In this study, the inﬂuence of w/b-ratio (0.4, 0.5 and 0.6) and the presence of two SCMs (70% slag and 10% silica fume) on the microstructure and water vapor isotherms of paste and mortar samples were studied in a systematic way. Care was taken so that the samples were exposed to the same treatment before the measurements, and the sorption balance method was used to avoid carbonation.
+
+2. Materials
+
+Nine pastes and six mortars with different binders have been used in this study. The binders were ordinary Portland cement OPC (CEM I), OPC with 10% silica fume, and OPC with 70% slag (CEM III). The chemical compositions of the cements and the silica fume are given in Table 1. The CEM III was premixed and the silica fume was added to the OPC as slurry. Three water/binder-ratios (w/b), 0.4, 0.5 and 0.6, for paste samples and two w/b ratios, 0.4 and 0.5, for mortar samples were used.
+
+The mortar materials were mixed with water according to EN 196-1 and cast in a 40 × 10 × 10 cm3 steel mold. The mold was placed in a 20 °C climate room and cooled with fans during the ﬁrst 24 h of hydration to limit the temperature increase. Temperature was measured with thermocouples on the surface of the steel mold and in the center of the samples during 24 h of hydration. The maximum temperature measured in the center was 24 °C (for samples with 10% silica fume). The samples were seal cured for 90 days at 20 °C and then crushed to pieces of approx. 5 mm. The crushed pieces were kept in sealed containers to avoid carbonation and in contact with wet cloth to become capillary saturated.
+
+The preparation of the pastematerials followedEN196-1.The pastes were cast in cylindrical plastic bottles with 70 mm diameter and 200 mm height. After mixing, the bottles were rotated for 12 h to
+
+Table 1 Chemical composition of the used materials.
+
+Chemical analysis XRF (%)
+
+CEM I 32.5R CEM III/B 42.5 N Silica fume
+
+SiO2 20.3 29.2 98.7 Al2O3 5.6 8.9 0.31 Fe2O3 2.4 1.2 0.02
+
+<table>
+  <tr>
+    <th>CaO</th>
+    <th>63.4 48</th>
+    <th>0.15</th>
+  </tr>
+  <tr>
+    <td>MgO</td>
+    <td>1.6 4.8</td>
+    <td>0.04</td>
+  </tr>
+  <tr>
+    <td>SO3</td>
+    <td>2.9 2.6</td>
+    <td>–</td>
+  </tr>
+  <tr>
+    <td>LOI</td>
+    <td>2.1 1.4</td>
+    <td>0.47</td>
+  </tr>
+  <tr>
+    <td>Slag content</td>
+    <td>– 69.9</td>
+    <td>–</td>
+  </tr>
+</table>
+
+
+avoid segregation. All materials were then stored in the bottles at 20 °C. After 3–6 months of curing, the cylindrical samples were crushed to pieces of about 100 g, and these pieces were vacuum saturated. Saturated materials were stored in 100% RH in exsiccators until the measurements started.
+
+Both mortar and paste samples were crushed to 1–2 mm pieces before being placed in a sorption balance. The measurements were done more than one year after casting. As the mortar samples were so small (20 mg), their paste content was not the same as that of the large sample from which they were taken. To be able to compare sorption isotherm measurements on pastes and mortars, the cement content of the latter were calculated from the calcium contents of the small samples as measured by inductivity coupled plasma mass spectroscopy (ICP-MS) after the sorption measurements.
+
+The samples for pressure plate testing were small slab shaped cement paste samples of approx. 20 × 15 × 3 mm3 that were cut from the paste cylinders. All pressure plate samples were vacuum saturated before the tests.
+
+3. Experimental techniques
+
+3.1. Water vapor sorption balance
+
+For the sorption balance measurements approx. 20 mg of water saturated samples were placed in a DVS Advantage (Surface Measurement Systems, UK) sorption balance. In these instruments the mass of the small sample is continuously measured with an analytical balance while exposed to an RH-program. The desired RH is reached by mixing different proportions of dry and water vapor saturated nitrogen gas streams. The relative humidity of the sorption balance was validated by measurements on saturated salt solutions and found to be within 1.5% of the set values. Most measurements were made with an RHprogram consisting of desorption (95–90–80–…–40–30), absorption (30–40–…–80–90–95), and desorption (95–90–80–70–…50–40–30– 25–20–15–10–5–0). One measurement was made with one more absorption–desorption cycle. An example of a typical RH-program and the corresponding mass change is shown in Fig. 1. Each RH step was ended when the mass change rate was lower than 0.0001% of the initial mass per minute, or if a maximum time of 2000 min had been exceeded; except for ﬁnal drying that was continued for up to 6000 min. A complete measurement for one sample – including one desorption curve, one absorption curve, and one ﬁnal desorption curve to 0% RH – took approx. 20 days.
+
+The moisture content of the sample at equilibrium at each relative humidity was expressed as mass of water per mass of dry material. The mass for each step was curve ﬁtted using an exponential function (Eq. (1)) and then extrapolated to inﬁnite time to evaluate the ﬁnal (equilibrium) mass mf [23].
+
+mðtÞ ¼ m0 þ ðmf−m0Þexpð−kðt−t0ÞÞ: ð1Þ
+
+Here, m(t) is mass of the sample (g), t is time (s), and m0, mf, k and t0 are ﬁtting parameters. Fig. 2A shows an example of measured data and
+

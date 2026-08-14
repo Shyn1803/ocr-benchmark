@@ -1,0 +1,38 @@
+Sukabdi, Z. A. – Assessing People’s Willingness…
+
+Table 1.3. CoRS’ Norm Categories of Counterradicalism Readiness Range of scores
+
+Zero 20 – 35 Low 36 – 50
+
+Medium 51 – 65 High 66 – 80
+
+Table 1.4. CoRS’ Reliability Scale Reliability Statistics
+
+Cronbach's α McDonald's ω
+
+Counterradicalism readiness Scale (CoRS)
+
+0.92 0.93
+
+The findings show that the statistical investigation of CoRS’ reliability (N=227) is α= 0.92 and ω=0.93 (Table 1.4). CoRS’ content-related validity is proved in the process of expert judgements (Step 2 and Step 4). Interrater judgement for behaviour indicators of counterradicalism readiness reaches ≥80% agreement. Furthermore, the items’ readability test was performed to ensure the qualitative efficacy of each item. This study involved 39 security practitioners and a psychometrician for expert judgement and 227 respondents in pilot study.
+
+The results have found satisfactory 20 items of CoRS with loading factors similar or higher than 0.50. In terms of psychometry properties, CoRS’ reliability (N=227) is α= 0.92 and ω=0.93. CoRS shows satisfactory content-related validity with ≥80% agreement amongst raters in expert judgement. The study may assist practitioners in evaluating people’s willingness and readiness in contributing to terrorism prevention.
+
+# CONCLUSION
+
+Before involving community in counternarrative or Counter Violent Extremism (CVE) programmes, it is necessary to assess people’s readiness to participate in counterradicalism. This study aimed to develop the Counterradicalism Readiness Scale (CoRS). Using quantitative study design, this work was arranged into six steps: 1) defining counterradicalism readiness and its aspects, 2) identifying behaviour indicators of counterradicalism readiness, 3) making items for scale, 4) performing items’ readability test, 5) conducting pilot study, and 6) holding statistical analysis. The counterradicalism readiness is assessed in three psychological domains: cognition, affection, and psychomotor.
+
+REFERENCES Achmad, Jainuri. (2016). Radikalisme dan Terorisme Akar Ideologi dan Tuntutan Aksi (1st ed.). Intrans
+
+Publishing. Google Scholar Galib, S. A., Islam, U., & Alauddin, N. (2021). Jurnal Studi Islam Legitimasi Kekerasan : Titik Temu
+
+Radikalisme Dan Terorisme. 1–16. https://doi.org/10.37252/an-nur.v13i1.100 Heriansyah, A. (2020). Dakwah Deradikalisasi (1st ed.). Pustaka Harakatuna. Google Scholar Isnanto, S. H. (2018). Berbagai Masalah dan Tantangan Radikalisasi dan Deradikalisasi Terorisme di
+
+Indonesia. Jurnal Pertahanan & Bela Negara, 5(2), 225-244. http://dx.doi.org/10.33172/jpbh.v5i2.366
+
+Jajang, J. (2016). Memahami Terorisme Sejarah, Konsep dan Model (M. Jamhari (ed.); 1st ed.). PPIM UIN Syarif Hidayatullah dan Prenadamedia dan Kencana Prenadamedia. Google Scholar Johnson, M.P. (2008). Intimate Terrorism. Violent Resistance, and Situational Couple Violence. Google Scholar
+
+Lauran, Powell (2016). Counter-Productive Counter-Terrorism. How is the dysfunctional discourse of Prevent failing to restrain radicalisation? Journal for Deradicalization, Fall(8), 46–99. Google
+
+Bulletin of Counseling and Psychotherapy / Vol 4, No 1 (2022) / 143
+

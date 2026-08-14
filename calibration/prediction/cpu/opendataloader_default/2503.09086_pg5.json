@@ -1,0 +1,967 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_default",
+  "engine_family": "opendataloader",
+  "profile": "default",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.09086_pg5",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "A PREPRINT\n\n![](<2503.09086_pg5_images/imageFile1.png>)\n\nis employed to construct the following practical loss function to train the neural network solution U(x;θ), JR,M(θ) :=\n\n- 1\n\n![](<2503.09086_pg5_images/imageFile2.png>)\n\n- 2\n\n\nwB |X(∂Ω)|\n\nwI |X(Ω)|\n\n(U(x;θ) − g(x))2. (2.7)\n\n|∇U(x;θ)|2 − f(x)U(x;θ) +\n\n![](<2503.09086_pg5_images/imageFile3.png>)\n\n![](<2503.09086_pg5_images/imageFile4.png>)\n\nx∈X(Ω)\n\nx∈X(∂Ω)\n\nHere, again, the boundary condition is enforced with the L2-integral of the error, U(x;θ) − g(x), and the integrals of the energy term and the boundary condition term are approximated by the Monte–Carlo method; the weight factors wI and wB are analogous to those in the PINN loss.\n\nThe integral form of the deep Ritz loss function, before approximation via numerical integration, reads JR(θ) := wI\n\n- 1\n\n![](<2503.09086_pg5_images/imageFile5.png>)\n\n- 2\n\n\n|∇U(x;θ)|2 − f(x)U(x;θ) dx + wB\n\n(U(x;θ) − g(x))2 ds(x). (2.8) The subscript R indicates that the loss is formed by the deep Ritz formulation. In addition, the subscript M in the loss JR,M(θ) in Eq. (2.7) means that the integral in the deep Ritz loss JR(θ) in Eq. (2.8) is approximated by the Monte–Carlo method.\n\n∂Ω\n\nΩ\n\nWhen the boundary condition is implemented as hard constraints using ansatz functions, that is, using the neural network function U(x;θ) in Eq. (2.6), we obtain the integral loss function\n\n- 1\n\n![](<2503.09086_pg5_images/imageFile6.png>)\n\n- 2\n\n\n|∇ U(x;θ)|2 − f(x) U(x;θ) dx and train the neural network U(x;θ) for the loss JR\n\n(θ) :=\n\nJR\n\nI\n\nΩ\n\nI,M(θ) by approximating the integral in JR\n\nusing the Monte– Carlo method.\n\nI\n\nIt has been numerically studied that for the Poisson model problem, the trained solution U(x;θP) with the PINN loss JP,M(θ) gives better training results than the trained solution U(x;θR) with the deep Ritz loss JR,M(θ); see [40]. In our work, we will reinvestigate the performance of the two approaches for various hyper parameter settings and report some of our new ﬁndings.\n\nAs an enhancement to soft enforcement of boundary conditions, an augmented Lagrangian term can be included to the loss function [42] to obtain,\n\n1 X(∂Ω)\n\n(U(x;θ) − g(x))λ(x)\n\nLP,M(θ,λ) := JP,M(θ) +\n\n![](<2503.09086_pg5_images/imageFile7.png>)\n\nx∈X(∂Ω)\n\nand\n\n1 X(∂Ω)\n\nLR,M(θ,λ) := JR,M(θ) +\n\n(U(x;θ) − g(x))λ(x),\n\n![](<2503.09086_pg5_images/imageFile8.png>)\n\nx∈X(∂Ω)\n\nfor the PINN and deep Ritz loss functions, respectively. Here, the boundary condition is enforced as constraints on the neural network solution U(x;θ) by introducing Lagrange multipliers λ(x) for each collocation point x in the training sampling set X(∂Ω). Hence, λ(x) are additional parameters that have to be trained, in addition to θ. The use of such an augmented Lagrangian term can improve slow training progress for the boundary loss term and can provide a more accurate trained neural network solution, U(x;θ). In the augmented Lagrangian approach, the parameters θ and λ are then optimized for the PINN and deep Ritz loss functions in the following sense:\n\n(θP,λP) := arg max\n\nmin\n\nLP,M(θ,λ) resp. (θR,λR) := arg max\n\nmin\n\nLR,M(θ,λ) .\n\nλ\n\nθ\n\nλ\n\nθ\n\nWe note that the above optimization problems for θ are non-linear and non-convex while those for λ are linear. We thus use the Adam optimization method [20] in the gradient update for θ with a small learning rate ǫ and a simple gradient update for λ with a learning rate α, i.e.,\n\nλ = λ + α∇λLP,M or λ = λ + α∇λLR,M. The learning rate α is often set to a larger value than the learning rate ǫ, as proposed in two-scale update schemes for min-max optimization problems; see [14, 25, 7]. In our numerical experiments, we set ǫ = 0.001 for the Adam optimizer and α = 1 for the gradient ascent update.\n\nWe note that the augmented Lagrangian method can be considered as a loss balancing scheme, and in our numerical experiments, we will also conduct comparisons on various loss balancing schemes as listed in Table 1.\n\n5\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "bd78a21776645a77d7e3b8c04668afdd21db9252e6c52c42ccb6b280401f85dd"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "62dde02c963321a4b069b7f42beeb5d655162099b11d13e0bf943e6d44010f23"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "875c7ba879b2e410a9be70306b3b28b76ee654cdb01c270748ad460f9f244c25"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8049019607843138,
+        "y0": 0.04675631313131312,
+        "x1": 0.8826503267973856,
+        "y1": 0.05701388888888881
+      },
+      "text": "A PREPRINT",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.11762745098039215,
+        "y0": 0.06001515151515158,
+        "x1": 0.8823333333333334,
+        "y1": 0.060621212121212076
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.09662626262626262,
+        "x1": 0.8077941176470589,
+        "y1": 0.13497853535353543
+      },
+      "text": "is employed to construct the following practical loss function to train the neural network solution U(x;θ), JR,M(θ) :=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.35117647058823526,
+        "y0": 0.11344444444444435,
+        "x1": 0.3593153594771242,
+        "y1": 0.12602272727272723
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.35117647058823526,
+        "y0": 0.13056565656565655,
+        "x1": 0.3593153594771242,
+        "y1": 0.14314520202020198
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5788235294117647,
+        "y0": 0.11344444444444435,
+        "x1": 0.6366650326797386,
+        "y1": 0.14314520202020198
+      },
+      "text": "wB |X(∂Ω)|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.23411764705882354,
+        "y0": 0.11344444444444435,
+        "x1": 0.2823529411764706,
+        "y1": 0.14314520202020198
+      },
+      "text": "wI |X(Ω)|",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6964705882352942,
+        "y0": 0.11960858585858591,
+        "x1": 0.883656862745098,
+        "y1": 0.13450757575757577
+      },
+      "text": "(U(x;θ) − g(x))2. (2.7)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36137254901960786,
+        "y0": 0.11960858585858591,
+        "x1": 0.5732369281045752,
+        "y1": 0.13450757575757577
+      },
+      "text": "|∇U(x;θ)|2 − f(x)U(x;θ) +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.23409803921568628,
+        "y0": 0.12789393939393945,
+        "x1": 0.2823333333333333,
+        "y1": 0.12850000000000006
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.5788039215686275,
+        "y0": 0.12789393939393945,
+        "x1": 0.6366470588235293,
+        "y1": 0.12850000000000006
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.28705882352941176,
+        "y0": 0.14036616161616156,
+        "x1": 0.3346895424836602,
+        "y1": 0.14917045454545463
+      },
+      "text": "x∈X(Ω)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6411764705882352,
+        "y0": 0.14036616161616156,
+        "x1": 0.6964542483660131,
+        "y1": 0.14917045454545463
+      },
+      "text": "x∈X(∂Ω)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.1535467171717172,
+        "x1": 0.8826062091503267,
+        "y1": 0.20422095959595965
+      },
+      "text": "Here, again, the boundary condition is enforced with the L2-integral of the error, U(x;θ) − g(x), and the integrals of the energy term and the boundary condition term are approximated by the Monte–Carlo method; the weight factors wI and wB are analogous to those in the PINN loss.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13725490196078433,
+        "y0": 0.20983080808080812,
+        "x1": 0.8059395424836602,
+        "y1": 0.2470997474747474
+      },
+      "text": "The integral form of the deep Ritz loss function, before approximation via numerical integration, reads JR(θ) := wI",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.3276470588235294,
+        "y0": 0.22556565656565664,
+        "x1": 0.3357859477124183,
+        "y1": 0.23814520202020206
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.3276470588235294,
+        "y0": 0.24268686868686862,
+        "x1": 0.3357859477124183,
+        "y1": 0.25526641414141416
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3376470588235294,
+        "y0": 0.23172979797979798,
+        "x1": 0.5982647058823529,
+        "y1": 0.2470997474747474
+      },
+      "text": "|∇U(x;θ)|2 − f(x)U(x;θ) dx + wB",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11705718954248365,
+        "y0": 0.23172979797979798,
+        "x1": 0.8836552287581699,
+        "y1": 0.30653030303030304
+      },
+      "text": "(U(x;θ) − g(x))2 ds(x). (2.8) The subscript R indicates that the loss is formed by the deep Ritz formulation. In addition, the subscript M in the loss JR,M(θ) in Eq. (2.7) means that the integral in the deep Ritz loss JR(θ) in Eq. (2.8) is approximated by the Monte–Carlo method.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6115686274509804,
+        "y0": 0.24824368686868692,
+        "x1": 0.6285032679738562,
+        "y1": 0.25704040404040407
+      },
+      "text": "∂Ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3007843137254902,
+        "y0": 0.24824368686868692,
+        "x1": 0.3100718954248366,
+        "y1": 0.25704040404040407
+      },
+      "text": "Ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.31301262626262616,
+        "x1": 0.8827630718954248,
+        "y1": 0.3428421717171717
+      },
+      "text": "When the boundary condition is implemented as hard constraints using ansatz functions, that is, using the neural network function U(x;θ) in Eq. (2.6), we obtain the integral loss function",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.43980392156862746,
+        "y0": 0.3470808080808081,
+        "x1": 0.4479428104575164,
+        "y1": 0.359659090909091
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.43980392156862746,
+        "y0": 0.3642020202020202,
+        "x1": 0.4479428104575164,
+        "y1": 0.3767815656565656
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.35324494949494945,
+        "x1": 0.6690800653594771,
+        "y1": 0.39694696969696974
+      },
+      "text": "|∇ U(x;θ)|2 − f(x) U(x;θ) dx and train the neural network U(x;θ) for the loss JR",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35705882352941176,
+        "y0": 0.35556565656565653,
+        "x1": 0.39950980392156865,
+        "y1": 0.36814520202020207
+      },
+      "text": "(θ) :=",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3307843137254902,
+        "y0": 0.35556565656565653,
+        "x1": 0.3496045751633987,
+        "y1": 0.36861489898989896
+      },
+      "text": "JR",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3496078431372549,
+        "y0": 0.36352651515151513,
+        "x1": 0.35470261437908496,
+        "y1": 0.36816919191919184
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.41294117647058826,
+        "y0": 0.36991161616161616,
+        "x1": 0.42222712418300656,
+        "y1": 0.37870707070707066
+      },
+      "text": "Ω",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4662745098039216,
+        "y0": 0.38389898989898985,
+        "x1": 0.7556830065359478,
+        "y1": 0.39694696969696974
+      },
+      "text": "I,M(θ) by approximating the integral in JR",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.3846792929292929,
+        "x1": 0.8850032679738561,
+        "y1": 0.41395454545454546
+      },
+      "text": "using the Monte– Carlo method.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.755686274509804,
+        "y0": 0.39185984848484845,
+        "x1": 0.7607826797385621,
+        "y1": 0.3965025252525253
+      },
+      "text": "I",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.4196565656565656,
+        "x1": 0.8852467320261437,
+        "y1": 0.4856212121212121
+      },
+      "text": "It has been numerically studied that for the Poisson model problem, the trained solution U(x;θP) with the PINN loss JP,M(θ) gives better training results than the trained solution U(x;θR) with the deep Ritz loss JR,M(θ); see [40]. In our work, we will reinvestigate the performance of the two approaches for various hyper parameter settings and report some of our new ﬁndings.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.49210353535353535,
+        "x1": 0.8822581699346406,
+        "y1": 0.5213787878787879
+      },
+      "text": "As an enhancement to soft enforcement of boundary conditions, an augmented Lagrangian term can be included to the loss function [42] to obtain,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46274509803921565,
+        "y0": 0.5232929292929293,
+        "x1": 0.511609477124183,
+        "y1": 0.5529936868686869
+      },
+      "text": "1 X(∂Ω)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5713725490196079,
+        "y0": 0.5317777777777778,
+        "x1": 0.717295751633987,
+        "y1": 0.5443560606060607
+      },
+      "text": "(U(x;θ) − g(x))λ(x)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2823529411764706,
+        "y0": 0.5317777777777778,
+        "x1": 0.457156862745098,
+        "y1": 0.5448270202020202
+      },
+      "text": "LP,M(θ,λ) := JP,M(θ) +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.4627254901960784,
+        "y0": 0.5377424242424242,
+        "x1": 0.5115490196078432,
+        "y1": 0.5383484848484849
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5160784313725489,
+        "y0": 0.550364898989899,
+        "x1": 0.5713562091503268,
+        "y1": 0.5591704545454546
+      },
+      "text": "x∈X(∂Ω)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.5642247474747475,
+        "x1": 0.14127614379084968,
+        "y1": 0.5756212121212121
+      },
+      "text": "and",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.46176470588235297,
+        "y0": 0.5728383838383838,
+        "x1": 0.5106290849673203,
+        "y1": 0.6025391414141414
+      },
+      "text": "1 X(∂Ω)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2788218954248366,
+        "y0": 0.5813232323232324,
+        "x1": 0.4561764705882353,
+        "y1": 0.5943724747474748
+      },
+      "text": "LR,M(θ,λ) := JR,M(θ) +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.570392156862745,
+        "y0": 0.5813232323232324,
+        "x1": 0.7205866013071895,
+        "y1": 0.5939027777777778
+      },
+      "text": "(U(x;θ) − g(x))λ(x),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.4617450980392157,
+        "y0": 0.5872878787878788,
+        "x1": 0.5105686274509804,
+        "y1": 0.5878939393939394
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5150980392156863,
+        "y0": 0.599760101010101,
+        "x1": 0.5703758169934641,
+        "y1": 0.6085643939393939
+      },
+      "text": "x∈X(∂Ω)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.6124065656565656,
+        "x1": 0.8826503267973856,
+        "y1": 0.7133484848484848
+      },
+      "text": "for the PINN and deep Ritz loss functions, respectively. Here, the boundary condition is enforced as constraints on the neural network solution U(x;θ) by introducing Lagrange multipliers λ(x) for each collocation point x in the training sampling set X(∂Ω). Hence, λ(x) are additional parameters that have to be trained, in addition to θ. The use of such an augmented Lagrangian term can improve slow training progress for the boundary loss term and can provide a more accurate trained neural network solution, U(x;θ). In the augmented Lagrangian approach, the parameters θ and λ are then optimized for the PINN and deep Ritz loss functions in the following sense:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.19215686274509802,
+        "y0": 0.7261717171717171,
+        "x1": 0.34269771241830066,
+        "y1": 0.7392209595959596
+      },
+      "text": "(θP,λP) := arg max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3452941176470588,
+        "y0": 0.7261717171717171,
+        "x1": 0.3723676470588235,
+        "y1": 0.7387512626262627
+      },
+      "text": "min",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.37529411764705883,
+        "y0": 0.7261717171717171,
+        "x1": 0.6793627450980392,
+        "y1": 0.7392209595959596
+      },
+      "text": "LP,M(θ,λ) resp. (θR,λR) := arg max",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6819607843137255,
+        "y0": 0.7261717171717171,
+        "x1": 0.7090343137254902,
+        "y1": 0.7387512626262627
+      },
+      "text": "min",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.711764705882353,
+        "y0": 0.7261717171717171,
+        "x1": 0.807843137254902,
+        "y1": 0.7392209595959596
+      },
+      "text": "LR,M(θ,λ) .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32372549019607844,
+        "y0": 0.7375012626262627,
+        "x1": 0.33143954248366014,
+        "y1": 0.7455845959595959
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.35568627450980395,
+        "y0": 0.7375012626262627,
+        "x1": 0.3618856209150327,
+        "y1": 0.7455845959595959
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6601960784313726,
+        "y0": 0.7375012626262627,
+        "x1": 0.6679101307189543,
+        "y1": 0.7455845959595959
+      },
+      "text": "λ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6923529411764706,
+        "y0": 0.7375012626262627,
+        "x1": 0.6985522875816994,
+        "y1": 0.7455845959595959
+      },
+      "text": "θ",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.7508686868686869,
+        "x1": 0.8825228758169935,
+        "y1": 0.7992058080808081
+      },
+      "text": "We note that the above optimization problems for θ are non-linear and non-convex while those for λ are linear. We thus use the Adam optimization method [20] in the gradient update for θ with a small learning rate ǫ and a simple gradient update for λ with a learning rate α, i.e.,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11705882352941177,
+        "y0": 0.8073838383838384,
+        "x1": 0.8826078431372548,
+        "y1": 0.8764785353535354
+      },
+      "text": "λ = λ + α∇λLP,M or λ = λ + α∇λLR,M. The learning rate α is often set to a larger value than the learning rate ǫ, as proposed in two-scale update schemes for min-max optimization problems; see [14, 25, 7]. In our numerical experiments, we set ǫ = 0.001 for the Adam optimizer and α = 1 for the gradient ascent update.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.8825580808080808,
+        "x1": 0.8827598039215687,
+        "y1": 0.9118333333333333
+      },
+      "text": "We note that the augmented Lagrangian method can be considered as a loss balancing scheme, and in our numerical experiments, we will also conduct comparisons on various loss balancing schemes as listed in Table 1.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4950980392156863,
+        "y0": 0.9364330808080809,
+        "x1": 0.5048643790849673,
+        "y1": 0.9501098484848485
+      },
+      "text": "5",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.11762745098039215,
+        "y0": 0.06001515151515158,
+        "x1": 0.8823333333333334,
+        "y1": 0.060621212121212076
+      },
+      "source_id": "2503.09086_pg5_images/imageFile1.png",
+      "file": "000.png",
+      "sha256": "5d3898460a646d16434a072bf9b86b6d776b8e484e1d6a265a23d09f79bdddb8"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.23409803921568628,
+        "y0": 0.12789393939393945,
+        "x1": 0.2823333333333333,
+        "y1": 0.12850000000000006
+      },
+      "source_id": "2503.09086_pg5_images/imageFile3.png",
+      "file": "001.png",
+      "sha256": "3284d346972155220f5e2e289b10b17f8fcf00de65b47419d04a1a42f3519645"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.5788039215686275,
+        "y0": 0.12789393939393945,
+        "x1": 0.6366470588235293,
+        "y1": 0.12850000000000006
+      },
+      "source_id": "2503.09086_pg5_images/imageFile4.png",
+      "file": "002.png",
+      "sha256": "bf42a85c668101b42f2c295c7805cd5552e182c21dc3e8d788a3defa83e9125d"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.4627254901960784,
+        "y0": 0.5377424242424242,
+        "x1": 0.5115490196078432,
+        "y1": 0.5383484848484849
+      },
+      "source_id": "2503.09086_pg5_images/imageFile7.png",
+      "file": "003.png",
+      "sha256": "86b08badca73ce4590a8b0a516fc01a77740eebcb59883859ae301f21634afc9"
+    },
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.4617450980392157,
+        "y0": 0.5872878787878788,
+        "x1": 0.5105686274509804,
+        "y1": 0.5878939393939394
+      },
+      "source_id": "2503.09086_pg5_images/imageFile8.png",
+      "file": "004.png",
+      "sha256": "deca80e4e1443fe00dc72d4dc30d4b69efa584f9ff6d16c2282d08edcbb45b5f"
+    }
+  ],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 1.4912641999981133,
+  "model_load_seconds": null,
+  "peak_rss_mb": 177.90234375,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "parser": "java",
+    "table_method": "cluster",
+    "reading_order": "xycut",
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "java-cpu-only",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "publication_cache": {
+      "doc_id": "2503.09086_pg5",
+      "pdf_sha256": "12c1444687c53a6143964638b18c0aefd0e13b562f71ef8e2d0db8d491c52df7",
+      "profile_config_sha256": "488785afaac72b77b4fa8f5b30e11c52eb6dcc72c19faaacd0625a8e57229e6d",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

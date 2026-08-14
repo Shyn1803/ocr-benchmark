@@ -1,0 +1,540 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_scan",
+  "engine_family": "opendataloader",
+  "profile": "scan",
+  "engine_version": "2.5.0",
+  "doc_id": "00f6c2eea6b51fb1bf637b5f8a850588d7e2_page_8_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "- 3)   Bimodal information-based video features: The deep extracted features from visual video frames and audio modalities using the above-mentioned unimodality-based feature extraction methods are mid-fused at a concatenate layer. This produces a feature vector representation for the whole video, which is based on bimodal information.\n- 4)   Temporal information extraction-based attention mechanism: Most deepfake videos are generated based on synthesizing faces frame-by-frame, cloning voices, and synchronizing lips. They suffer from flickering and discontinuity of the face frames and lack of normal emotions, breathing, pauses, and the pace at which the target subject speaks among audio segments. As a result, the GRU-based attention mechanism is applied to the three levels of the extracted features independently; visual video frames, audio, and the whole video. This aims to capture the instructive temporal information that helps to differentiate real videos from fake ones.\n\n\nThe GRU architecture is composed of two gates; update (   ) and reset (   ), that modulate the information flow from the previous time step to the current step. At each time step   , the update gate decides the amount of previous information that should be retained, and the reset gate determines the amount of information that needs to be forgotten [53]. The GRU hidden state   at the time   is defined by the following formulae [54]:\n\n$$\nupdt = (3)\n$$\n\n$$\nrest = S(WresXt + Uresht-1)\n$$\n\n$$\nht (5)\n$$\n\n$$\nht = (1 _ updt) ht + updt ht-1 (6)\n$$\n\nwhere   refers to the input, and   and   represent the weight matrices. The symbol ( ) represents the sigmoid function, ( ) represents the Hyperbolic Tangent,   denotes the Hadamard product, and     ́ denotes the candidate hidden state. As can be seen in Fig. 4, a single GRU is applied to the above-mentioned feature representations on the three levels. It produced a matrix of hidden state vectors at each time step   , which represents the learned temporal information per visual video, audio, or the whole video. The hidden state vector is defined as follows:\n\n$$\n[h1, h2, ht]\n$$\n\nThe attention mechanism uses the weights to concentrate on the important features from the input sequence   . It is defined by the following equations [17, 55]:\n\n$$\nUt tanh(Wht + b) ) (8)\n$$\n\n$$\nalphat = softmax(ut) (9)\n$$\n\n$$\nalphatht 10)\n$$\n\n$$\nV = 11)\n$$\n\nwhere ut is result of feeding hidden vector ht into single-layer Multi-Layer   Perceptron   (MLP) with the tanh activation function: W represents the   weight   matrix;   and b refers to the   bias term. The   symbol alphat represents the normalized attention weights that are produced by applying the softmax layer to Ut: v is video representation that is formed by summing hidden vectors ht weighted by attention weights alphat:\n\n# C.   Classification  \n\nAfter the instructive temporal features are produced from the GRU-based attention mechanism, a fully connected layer is used as an output layer with two classes. Softmax function is used to decide deepfake videos from real ones. The Softmax formula is defined as follows:\n\n$$\nSoftmax Zj e (12)\n$$\n\nwhere     denotes the values resulting from the output layer neurons.\n\n# D.   Dataset\n\nThe proposed method has been evaluated on the FakeAVCeleb multimodal videos dataset. This dataset consisted of 490 celebrity genuine videos that were selected from the VoxCeleb2 dataset based on various ethnic groups, gender, and age. Its genuine videos are face-centered and cropped. The fake videos of the FakeAVCeleb dataset were generated using DeepFaceLab, Faceswap, and FSGAN, while fake audios were generated using a real-time voice cloning tool (SV2TTS). Additionally, the Wav2Lip was applied to the deepfake videos to re-enact these videos based on the cloned audios. Thus, the FakeAVCeleb dataset had more realistic deepfakes. The FakeAVCeleb was divided into four groups; genuine visual videos with genuine audios, genuine visual videos with deepfake audios, deepfake visual videos with genuine audios, and deepfake visual videos with deepfake audios [4].\n\nTo evaluate the proposed method, 1215 genuine and deepfake videos of the FakeAVCeleb dataset are employed. These videos are divided into three subsets: training, validation, and testing.\n\n# IV.   E XPERIMENTAL R ESULTS AND A NALYSIS  \n\nThe proposed deepfake video detection method is evaluated by the FakeAVCeleb dataset. Its performance is assessed using the following evaluation metrics [56]:\n\n$$\nTrue_Positives precision True_Positives +False_Positives (13)\n$$\n\n$$\nTrue_Positives sensitivity = recall (14) True_Positives +False_Negatives\n$$\n\n$$\n2xprecisionxrecall F1 score = (15) precision+recall\n$$\n\nTrue_Positives+True_Negatives accuracy True_Positives+True_Negatives+False_Negatives+False_Positives (16)\n\n$$\nTrue_Negatives specificity True_Negatives+False_Positives (17)\n$$\n\n$$\nsensitivity((1 Specificity) -1 (x) )dx AUROC = Jo (18) = p(xz > X1)\n$$\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "d220587b05e170294ecd160b77c50102effb185e5921b98e4bbd7e195c168758"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "dd44b1fc6fb9948d803fc02ff1310e8ae2dc7ef532aa4f05a843492f08bf108d"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "ac31fbf5b27d60722805a1a53354c54e853839dbfe65a783b40f204a1a55a7c1"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.0727450980392157,
+        "y0": 0.07094065656565651,
+        "x1": 0.48419117647058824,
+        "y1": 0.1586414141414142
+      },
+      "text": "3)   Bimodal information-based video features: The deep extracted features from visual video frames and audio modalities using the above-mentioned unimodality-based feature extraction methods are mid-fused at a concatenate layer. This produces a feature vector representation for the whole video, which is based on bimodal information.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.0727450980392157,
+        "y0": 0.16184974747474745,
+        "x1": 0.48420098039215687,
+        "y1": 0.3404848484848485
+      },
+      "text": "4)   Temporal information extraction-based attention mechanism: Most deepfake videos are generated based on synthesizing faces frame-by-frame, cloning voices, and synchronizing lips. They suffer from flickering and discontinuity of the face frames and lack of normal emotions, breathing, pauses, and the pace at which the target subject speaks among audio segments. As a result, the GRU-based attention mechanism is applied to the three levels of the extracted features independently; visual video frames, audio, and the whole video. This aims to capture the instructive temporal information that helps to differentiate real videos from fake ones.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07026143790849673,
+        "y0": 0.3480643939393939,
+        "x1": 0.4880179738562091,
+        "y1": 0.46170075757575757
+      },
+      "text": "The GRU architecture is composed of two gates; update (   ) and reset (   ), that modulate the information flow from the previous time step to the current step. At each time step   , the update gate decides the amount of previous information that should be retained, and the reset gate determines the amount of information that needs to be forgotten [53]. The GRU hidden state   at the time   is defined by the following formulae [54]:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.2282140522875817,
+        "y0": 0.46927651515151514,
+        "x1": 0.48747222222222225,
+        "y1": 0.48526893939393945
+      },
+      "text": "updt = (3)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.22712418300653595,
+        "y0": 0.492844696969697,
+        "x1": 0.42429248366013067,
+        "y1": 0.5096805555555555
+      },
+      "text": "rest = S(WresXt + Uresht-1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.22875816993464052,
+        "y0": 0.5168345959595959,
+        "x1": 0.4858382352941177,
+        "y1": 0.5319861111111112
+      },
+      "text": "ht (5)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.2282140522875817,
+        "y0": 0.5391414141414141,
+        "x1": 0.48638398692810453,
+        "y1": 0.5568181818181819
+      },
+      "text": "ht = (1 _ updt) ht + updt ht-1 (6)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06917156862745098,
+        "y0": 0.5618686868686869,
+        "x1": 0.4880179738562091,
+        "y1": 0.702020202020202
+      },
+      "text": "where   refers to the input, and   and   represent the weight matrices. The symbol ( ) represents the sigmoid function, ( ) represents the Hyperbolic Tangent,   denotes the Hadamard product, and     ́ denotes the candidate hidden state. As can be seen in Fig. 4, a single GRU is applied to the above-mentioned feature representations on the three levels. It produced a matrix of hidden state vectors at each time step   , which represents the learned temporal information per visual video, audio, or the whole video. The hidden state vector is defined as follows:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.29901960784313725,
+        "y0": 0.7108585858585859,
+        "x1": 0.39705882352941174,
+        "y1": 0.7268522727272727
+      },
+      "text": "[h1, h2, ht]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07026143790849673,
+        "y0": 0.7327436868686868,
+        "x1": 0.48638398692810453,
+        "y1": 0.7769356060606061
+      },
+      "text": "The attention mechanism uses the weights to concentrate on the important features from the input sequence   . It is defined by the following equations [17, 55]:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.26688398692810456,
+        "y0": 0.7824078282828283,
+        "x1": 0.4852941176470588,
+        "y1": 0.7984002525252525
+      },
+      "text": "Ut tanh(Wht + b) ) (8)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.26633986928104575,
+        "y0": 0.8034507575757576,
+        "x1": 0.4842042483660131,
+        "y1": 0.8211275252525252
+      },
+      "text": "alphat = softmax(ut) (9)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.3055555555555556,
+        "y0": 0.827020202020202,
+        "x1": 0.48638398692810453,
+        "y1": 0.843854797979798
+      },
+      "text": "alphatht 10)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.276687908496732,
+        "y0": 0.8501679292929293,
+        "x1": 0.4858382352941177,
+        "y1": 0.8636363636363636
+      },
+      "text": "V = 11)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06971732026143791,
+        "y0": 0.8682664141414141,
+        "x1": 0.4858382352941177,
+        "y1": 0.9015151515151515
+      },
+      "text": "where ut is result of feeding hidden vector ht into single-layer Multi-Layer   Perceptron   (MLP) with the tanh activation function: W represents the   weight   matrix;   and b refers to the   bias term. The   symbol alphat represents the normalized attention weights that are produced by applying the softmax layer to Ut: v is video representation that is formed by summing hidden vectors ht weighted by attention weights alphat:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5152500000000001,
+        "y0": 0.16035353535353536,
+        "x1": 0.6334428104575163,
+        "y1": 0.1763472222222222
+      },
+      "text": "C.   Classification",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5125277777777777,
+        "y0": 0.1767676767676768,
+        "x1": 0.9308284313725491,
+        "y1": 0.24747474747474751
+      },
+      "text": "After the instructive temporal features are produced from the GRU-based attention mechanism, a fully connected layer is used as an output layer with two classes. Softmax function is used to decide deepfake videos from real ones. The Softmax formula is defined as follows:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.6633986928104575,
+        "y0": 0.26010101010101006,
+        "x1": 0.9308284313725491,
+        "y1": 0.28198611111111105
+      },
+      "text": "Softmax Zj e (12)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5141617647058823,
+        "y0": 0.28703661616161613,
+        "x1": 0.9319166666666666,
+        "y1": 0.31649873737373746
+      },
+      "text": "where     denotes the values resulting from the output layer neurons.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5152500000000001,
+        "y0": 0.3261780303030303,
+        "x1": 0.5925931372549019,
+        "y1": 0.33838383838383834
+      },
+      "text": "D.   Dataset",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5125277777777777,
+        "y0": 0.3434343434343434,
+        "x1": 0.9308284313725491,
+        "y1": 0.5660770202020202
+      },
+      "text": "The proposed method has been evaluated on the FakeAVCeleb multimodal videos dataset. This dataset consisted of 490 celebrity genuine videos that were selected from the VoxCeleb2 dataset based on various ethnic groups, gender, and age. Its genuine videos are face-centered and cropped. The fake videos of the FakeAVCeleb dataset were generated using DeepFaceLab, Faceswap, and FSGAN, while fake audios were generated using a real-time voice cloning tool (SV2TTS). Additionally, the Wav2Lip was applied to the deepfake videos to re-enact these videos based on the cloned audios. Thus, the FakeAVCeleb dataset had more realistic deepfakes. The FakeAVCeleb was divided into four groups; genuine visual videos with genuine audios, genuine visual videos with deepfake audios, deepfake visual videos with genuine audios, and deepfake visual videos with deepfake audios [4].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5141617647058823,
+        "y0": 0.5707070707070707,
+        "x1": 0.9313725490196079,
+        "y1": 0.630050505050505
+      },
+      "text": "To evaluate the proposed method, 1215 genuine and deepfake videos of the FakeAVCeleb dataset are employed. These videos are divided into three subsets: training, validation, and testing.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5697173202614378,
+        "y0": 0.6376262626262627,
+        "x1": 0.8785408496732027,
+        "y1": 0.6506729797979798
+      },
+      "text": "IV.   E XPERIMENTAL R ESULTS AND A NALYSIS",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5136160130718954,
+        "y0": 0.656145202020202,
+        "x1": 0.9297385620915033,
+        "y1": 0.6999154040404041
+      },
+      "text": "The proposed deepfake video detection method is evaluated by the FakeAVCeleb dataset. Its performance is assessed using the following evaluation metrics [56]:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.6323529411764706,
+        "y0": 0.7045454545454546,
+        "x1": 0.9308284313725491,
+        "y1": 0.7289558080808081
+      },
+      "text": "True_Positives precision True_Positives +False_Positives (13)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.557733660130719,
+        "y0": 0.7348484848484849,
+        "x1": 0.9308284313725491,
+        "y1": 0.7609431818181818
+      },
+      "text": "True_Positives sensitivity = recall (14) True_Positives +False_Negatives",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.6633986928104575,
+        "y0": 0.7668345959595959,
+        "x1": 0.9308284313725491,
+        "y1": 0.7920871212121212
+      },
+      "text": "2xprecisionxrecall F1 score = (15) precision+recall",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5163398692810458,
+        "y0": 0.7967171717171717,
+        "x1": 0.9297385620915033,
+        "y1": 0.8345959595959596
+      },
+      "text": "True_Positives+True_Negatives accuracy True_Positives+True_Negatives+False_Negatives+False_Positives (16)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.6252728758169934,
+        "y0": 0.8400669191919192,
+        "x1": 0.9313725490196079,
+        "y1": 0.8665820707070707
+      },
+      "text": "True_Negatives specificity True_Negatives+False_Positives (17)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.5413937908496732,
+        "y0": 0.8712121212121212,
+        "x1": 0.9313725490196079,
+        "y1": 0.9078282828282829
+      },
+      "text": "sensitivity((1 Specificity) -1 (x) )dx AUROC = Jo (18) = p(xz > X1)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 48.935816799999884,
+  "model_load_seconds": null,
+  "peak_rss_mb": 143.5390625,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "hybrid": "docling-fast",
+    "hybrid_mode": "full",
+    "hybrid_fallback": false,
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "owned-hybrid-launcher-manifest",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "hybrid_server": {
+      "host": "127.0.0.1",
+      "port": 5002,
+      "force_ocr": true,
+      "ocr_engine": "easyocr",
+      "ocr_languages": [
+        "vi",
+        "en"
+      ]
+    },
+    "cpu_enforcement": {
+      "CUDA_VISIBLE_DEVICES": ""
+    },
+    "cpu_enforcement_method": "CUDA_VISIBLE_DEVICES-empty-before-spawn",
+    "docling_version": "2.91.0",
+    "easyocr_version": "1.7.2",
+    "pypdf_version": "6.14.2",
+    "hybrid_dependency_versions": {
+      "docling": "2.91.0",
+      "easyocr": "1.7.2",
+      "fastapi": "0.141.1",
+      "opendataloader-pdf": "2.5.0",
+      "packaging": "26.3",
+      "pypdf": "6.14.2",
+      "psutil": "7.2.2",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_server_versions": {
+      "fastapi": "0.141.1",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_manifest_sha256": "3fbea152fed988d23a8c736afcf357a9b0a1216f9846cbd0f314897b8e34d768",
+    "hybrid_manifest_run_id": "c0322a023f1669cfdfe0b1eff1be416939a47ffc324939bfc66188aadceb01ac",
+    "hybrid_process_pid": 19556,
+    "hybrid_process_create_time": 1786689482.0530238,
+    "hybrid_listener_pids": [
+      18160
+    ],
+    "publication_cache": {
+      "doc_id": "00f6c2eea6b51fb1bf637b5f8a850588d7e2_page_8_pg1",
+      "pdf_sha256": "814142dc6492b5c8ff8e12cf9079c33098a51f920397dbba65144bf0800c0e50",
+      "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

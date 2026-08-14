@@ -1,0 +1,50 @@
+Clin J Am Soc Nephrol 5: 762–769, 2010 Serum Potassium in CKD 763
+
+of 834 patients enrolled in the study. Patients were followed by the study coordinators whenever they presented for routine clinical care to their nephrology clinics. The institutional review boards at all participating sites approved the study, and all patients provided written informed consent. Details of the study design have been published previously (10).
+
+# Study Variables
+
+At enrollment and follow-up visits, data on demographic, anthropometric, cause of CKD, comorbidities, laboratory variables, medications, and outcomes (ESRD, death, and cardiovascular events/procedures) were collected. Of 834 patients, 820 had SK values available at study entry and were included in the analyses. SK values that were obtained from baseline and subsequent clinic visits were classified into the following categories: 4.0, 4.0 to 5.5, and 5.5 mmol/L.
+
+# Statistical Analysis
+
+Linear regression models were used to assess predictors of SK at baseline, with the adjusted R2 used to compare models in an all-subsets regression analysis. The distributions of SK values was illustrated using box plots by eGFR, gender, angiotensin-converting enzyme inhibitor (ACEI) use and quartiles of serum carbon dioxide (CO2), using all available SK values during follow-up time. The SAS mixed procedure (SAS Institute, Cary, NC) was used to test for differences in SK values between groups. To predict SK during follow-up time, we used mixed linear regression models with a spatial anisotropic exponential covariance structure (to account for correlation between follow-up visits of differing intervals). Separate Cox models evaluated the associations between SK (as a continuous or as a categorical covariate) and time to death, time to ESRD, the composite outcome of death or ESRD, the composite of death or any cardiovascular event (defined as prespecified coronary disease–, cerebrovascular disease–, or peripheral vascular
+
+Table 1. Patient demographics, comorbidities, medication use, and laboratory variables by serum potassium categories at enrollment
+
+Variable Overall (n 820)
+
+Hypokalemia (n 122)
+
+Eukalemia (n 633)
+
+Hyperkalemia (n 65) P
+
+Demographics
+
+age (years; mean SD) 60.5 15.4 60.6 16.1 60.7 15.4 58.4 14.0 0.499 male (n % ) 448 (55) 52 (43) 346 (55) 50 (77) 0.0001 black (n % ) 167 (20) 37 (30) 117 (19) 13 (20) 0.012
+
+Vital signs (mean SD)
+
+BMI (kg/m2) 29.4 6.9 29.8 6.9 29.3 6.9 29.4 7.7 0.847 SBP (mmHg) 139.7 21.7 142.8 23.9 139.4 21.6 137.8 18.8 0.211 eGFR (ml/min per 1.73 m2) 25.4 10.6 27.0 13.7 25.3 9.9 23.2 10.1 0.059
+
+Cause of CKD (n % )
+
+diabetes 265 (32) 39 (32) 199 (32) 27 (42) 0.262 hypertension 402 (49) 60 (49) 310 (49) 32 (49) 0.99
+
+Medication use (yes/no; n % )
+
+ACEIs 332 (41) 34 (28) 260 (41) 43 (66) 0.0001 ARBs 144 (17) 35 (29) 144 (23) 7 (11) 0.021 aspirin 304 (37) 41 (34) 236 (37) 27 (42) 0.549
+
+blockers 392 (47) 62 (51) 295 (47) 35 (54) 0.414 calcium channel blocker 353 (43) 64 (52) 294 (46) 23 (35) 0.083 diuretics 409 (50) 75 (61) 317 (50) 34 (52) 0.069 erythropoietin 199 (24) 30 (25) 150 (24) 19 (29) 0.609 statins 352 (42) 39 (32) 278 (44) 34 (52) 0.014
+
+Laboratory (mean SD)
+
+serum albumin (g/dl) 3.8 0.5 3.7 0.5 3.8 0.5 3.7 0.5 0.098 serum CO2 (mEq/L) 24.2 3.9 26.2 3.7 24.1 3.8 21.2 3.5 0.0001 serum potassium (mmol/L) 4.6 0.9 3.7 0.3 4.7 0.4 5.8 0.3 0.0001 serum phosphorus (mg/dl) 4.2 1.1 4.3 1.5 4.1 1.0 4.5 1.1 0.031
+
+Patient outcomes (n % )
+
+death 86 (10) 16 (13) 64 (10) 6 (9) 0.576 ESRD 303 (36) 57 (36) 213 (35) 33 (48) 0.145 coronary artery disease 70 11 (9) 50 (8) 9 (14) 0.258 cardiovascular disease 50 8 (7) 38 (6) 4 (6) 0.977 peripheral arterial disease 70 8 (7) 55 (8) 7 (11) 0.581 any cardiovascular event 190 32 (27) 139 (22) 19 (29) 0.249
+
+Hypokalemia: SK 4.0 mmol/L; eukalemia: SK 4.0 and 5.5 mmol/L; hyperkalemia: SK 5.5 mmol/L. ARB, angiotensin II receptor blocker; BMI, body mass index; SBP, systolic BP.
+

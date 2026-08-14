@@ -1,0 +1,16 @@
+2.9.3. c B He BO BpeMI MX Ha c 9 KpoMe npue3Ha 3aKOHHBIX (poxuTeJeă OIICKYHOB) B
+
+2.9.5. B pacnpocrpaHeHHI B cy6seKTOM (3a B YCJIYT B
+
+3a BceX
+
+pabora IIO M npoBegeHHIO IIO IpOTHBOKJICIICBBIX
+
+Ha npỵ B a TaKxe B
+
+B 0 K rpynne JJIS
+
+29 3aKOHa OT 30.03.1999 Ng 52-03 CI. 3607)
+
+10 7 Ilopauka OcMOTpa CIOpTOM KOMIIeKCa FTO, B ocMoTpa IIOITOTOBKY, CIOpTOM B HOpMaTHBBI
+

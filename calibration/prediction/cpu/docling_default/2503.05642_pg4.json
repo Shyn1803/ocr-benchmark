@@ -1,0 +1,366 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "2503.05642_pg4",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "For graph G , denote l u as the label of node u , e u,v as the shortest path from u to v (which may not be unique), and d u,v as the shortest distance from node u to v (which is unique). Borgwardt and Kriegel (2005) define an SP kernel between graphs G 1 = ( V 1 , E 1 ) and G 2 = ( V 2 , E 2 ) as:\n\n<!-- formula-not-decoded -->\n\nk ( · , · ) compares the labels and lengths of two shortest paths:\n\n<!-- formula-not-decoded -->\n\nwhere k v is a kernel comparing node labels, k e is a kernel comparing path lengths. Both k v and k e are usually chosen as Dirac kernels, giving the explicit representation of the SP kernel as:\n\n<!-- formula-not-decoded -->\n\nwhere 1 n 2 1 n 2 2 is introduced as a normalizing coefficient with n 1 , n 2 as the number of nodes in graph G 1 , G 2 , respectively.\n\nNote that each node may have more problem-specific features beyond a single label. From here on, we use X = ( G,F ) to denote an attributed graph with G as the underlying labeled graph and F as node features. Intuitively, we can compare the features of two nodes instead of labels in k v . However, this could unnecessarily reduce the number of matching paths between two graphs, as requiring identical node features is restrictive and may introduce additional subgraph information into path comparison. Another option is to use a more complicated kernel k v that measures similarity between features of two nodes, which may significantly increase the computational cost of optimization (similarity is computed for all node pairings). Therefore, we borrow from Cui and Yang (2018) the idea to separate the implicit and explicit information of graphs, i.e., the kernel value between two attributed graphs X 1 , X 2 becomes:\n\n<!-- formula-not-decoded -->\n\nwhere k G is any graph kernel, k F is any kernel over features, and α, β are trainable parameters controlling the trade-off between graph similarity and feature similarity. Appendix A.4 describes an example of k F .\n\nSince node label is usually included as a node feature and considered in k F term, and comparing labels in Eq. (SP) increases the complexity of our optimization formulations, we propose a simplified shortest-path (SSP) kernel corresponding to an unlabeled SP kernel:\n\n<!-- formula-not-decoded -->\n\nwhere D s ( G ) := |{ ( u, v ) | u, v ∈ V, d u,v = s }| is the number of shortest paths with length s in graph G = ( V, E ) . Lemma 3.1. SP and SSP kernels are positive definite (PD).\n\nProof. Borgwardt and Kriegel (2005) prove the SP kernel is PD. The SSP kernel is a special case of the SP kernel where all nodes have the same label, hence is also PD.\n\nObserve that both the SP and SSP kernels are linear kernels if we pre-process all shortest paths in each graph and count the number of each length of shortest path. Such linearity simplifies the optimization step (which still requires the non-trivial representation of shortest paths), but reduces the representation ability of the graph kernels and limits the maximal rank of the covariance matrix. Motivated by the practically strong performance of exponential kernels such as RBF kernel, Matérn kernel, graph diffusion kernel (Oh et al., 2019), etc., we propose the following two nonlinear graph kernels based on SP and SSP kernels:\n\n<!-- formula-not-decoded -->\n\n<!-- formula-not-decoded -->\n\nwhere variance σ 2 k is added to control the magnitude of kernel value. Note that we could also add variance to SP and SSP kernels, but it would be absorbed by α, β .\n\nLemma 3.2. ESP and ESSP kernels are PD.\n\nProof. SP and SSP kernels can be rewritten into linear forms, so ESP and ESSP are exponential kernels, which are known to be PD (Fukumizu, 2010).\n\nThe nonlinear kernels introduce additional difficulties for optimization as discussed in Section 3.4, but demonstrate better empirical performance compared to their linear counterparts, owing to increased representation ability.",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "b710da3bee69310500ef4549a79e717152c2d718b4aef81fa5d823d49550a070"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "d1d8bdc7f23f8faf601ba705db8b2b9674eda5eedb0d4d99ac69334cf4e7b470"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.09489715176767669,
+        "x1": 0.8823504079166676,
+        "y1": 0.13364548687762579
+      },
+      "text": "For graph G , denote l u as the label of node u , e u,v as the shortest path from u to v (which may not be unique), and d u,v as the shortest distance from node u to v (which is unique). Borgwardt and Kriegel (2005) define an SP kernel between graphs G 1 = ( V 1 , E 1 ) and G 2 = ( V 2 , E 2 ) as:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.33229411764705885,
+        "y0": 0.1406647676767676,
+        "x1": 0.6677049920588236,
+        "y1": 0.17115514856053327
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.17824311136363613,
+        "x1": 0.5103370781045748,
+        "y1": 0.18944346667560544
+      },
+      "text": "k ( · , · ) compares the labels and lengths of two shortest paths:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.29166176470588234,
+        "y0": 0.19609790934343407,
+        "x1": 0.7083373450000002,
+        "y1": 0.20903014856053306
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.21473174772727263,
+        "x1": 0.882349967052941,
+        "y1": 0.23970735556449457
+      },
+      "text": "where k v is a kernel comparing node labels, k e is a kernel comparing path lengths. Both k v and k e are usually chosen as Dirac kernels, giving the explicit representation of the SP kernel as:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.20985620915032682,
+        "y0": 0.24506508106060598,
+        "x1": 0.8834436320261437,
+        "y1": 0.2802031283585129
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.2861084527777778,
+        "x1": 0.8852011334117645,
+        "y1": 0.3056980778534627
+      },
+      "text": "where 1 n 2 1 n 2 2 is introduced as a normalizing coefficient with n 1 , n 2 as the number of nodes in graph G 1 , G 2 , respectively.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.3135221517676768,
+        "x1": 0.884257279640523,
+        "y1": 0.42114169899883797
+      },
+      "text": "Note that each node may have more problem-specific features beyond a single label. From here on, we use X = ( G,F ) to denote an attributed graph with G as the underlying labeled graph and F as node features. Intuitively, we can compare the features of two nodes instead of labels in k v . However, this could unnecessarily reduce the number of matching paths between two graphs, as requiring identical node features is restrictive and may introduce additional subgraph information into path comparison. Another option is to use a more complicated kernel k v that measures similarity between features of two nodes, which may significantly increase the computational cost of optimization (similarity is computed for all node pairings). Therefore, we borrow from Cui and Yang (2018) the idea to separate the implicit and explicit information of graphs, i.e., the kernel value between two attributed graphs X 1 , X 2 becomes:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.3412728758169936,
+        "y0": 0.42579279621212124,
+        "x1": 0.8834434503267977,
+        "y1": 0.4405687793780747
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.44642998005050505,
+        "x1": 0.882341746581699,
+        "y1": 0.4723642339235293
+      },
+      "text": "where k G is any graph kernel, k F is any kernel over features, and α, β are trainable parameters controlling the trade-off between graph similarity and feature similarity. Appendix A.4 describes an example of k F .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.4808971517676767,
+        "x1": 0.8850602113555552,
+        "y1": 0.5196454868776258
+      },
+      "text": "Since node label is usually included as a node feature and considered in k F term, and comparing labels in Eq. (SP) increases the complexity of our optimization formulations, we propose a simplified shortest-path (SSP) kernel corresponding to an unlabeled SP kernel:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.1412745098039216,
+        "y0": 0.5250032123737373,
+        "x1": 0.8834439679738559,
+        "y1": 0.5601766132069979
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633999,
+        "y0": 0.5677544749999999,
+        "x1": 0.8691448529411765,
+        "y1": 0.5960469487373737
+      },
+      "text": "where D s ( G ) := |{ ( u, v ) | u, v ∈ V, d u,v = s }| is the number of shortest paths with length s in graph G = ( V, E ) . Lemma 3.1. SP and SSP kernels are positive definite (PD).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.6140669452020202,
+        "x1": 0.8823507790196059,
+        "y1": 0.6388651838473228
+      },
+      "text": "Proof. Borgwardt and Kriegel (2005) prove the SP kernel is PD. The SSP kernel is a special case of the SP kernel where all nodes have the same label, hence is also PD.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.6571317517676769,
+        "x1": 0.8823555445218949,
+        "y1": 0.7367995272816662
+      },
+      "text": "Observe that both the SP and SSP kernels are linear kernels if we pre-process all shortest paths in each graph and count the number of each length of shortest path. Such linearity simplifies the optimization step (which still requires the non-trivial representation of shortest paths), but reduces the representation ability of the graph kernels and limits the maximal rank of the covariance matrix. Motivated by the practically strong performance of exponential kernels such as RBF kernel, Matérn kernel, graph diffusion kernel (Oh et al., 2019), etc., we propose the following two nonlinear graph kernels based on SP and SSP kernels:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.3660392156862745,
+        "y0": 0.7412271396464646,
+        "x1": 0.883443874836601,
+        "y1": 0.7572266076609029
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.35849673202614396,
+        "y0": 0.7612599679292928,
+        "x1": 0.8834442107843138,
+        "y1": 0.7772581733174686
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11706045751633988,
+        "y0": 0.7819885032828283,
+        "x1": 0.8823601720496741,
+        "y1": 0.8089510424331813
+      },
+      "text": "where variance σ 2 k is added to control the magnitude of kernel value. Note that we could also add variance to SP and SSP kernels, but it would be absorbed by α, β .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.8147346035353535,
+        "x1": 0.4103060990196079,
+        "y1": 0.8260431608585859
+      },
+      "text": "Lemma 3.2. ESP and ESSP kernels are PD.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.8440631573232323,
+        "x1": 0.8823507790196063,
+        "y1": 0.868861395968535
+      },
+      "text": "Proof. SP and SSP kernels can be rewritten into linear forms, so ESP and ESSP are exponential kernels, which are known to be PD (Fukumizu, 2010).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11714215686274511,
+        "y0": 0.8871279638888889,
+        "x1": 0.8823528585294101,
+        "y1": 0.9116997798069187
+      },
+      "text": "The nonlinear kernels introduce additional difficulties for optimization as discussed in Section 3.4, but demonstrate better empirical performance compared to their linear counterparts, owing to increased representation ability.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 5.102604799999426,
+  "model_load_seconds": null,
+  "peak_rss_mb": 156.375,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "2503.05642_pg4",
+      "pdf_sha256": "2614bb5741297e63fd105ba3acf95cf1aca41321caf52d92b90943354ac73178",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

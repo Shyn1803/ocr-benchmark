@@ -1,0 +1,352 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "2503.06070_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "∗∗\n\n## Natural Gradient Descent for Control\n\n∗ ∗∗\n\nRamin Esmzad Farnaz Adib Yaghmaie Hamidreza Modares ∗\n\n∗ Department of Mechanical Engineering, Michigan State University, East Lansing, MI 48824, USA (e-mails: { esmzadra,\n\nmodaresh } @msu.edu).\n\nDepartment of Electrical Engineering, Link¨ oping University, 58183 Link¨ oping, Sweden (e-mail: farnaz.adib.yaghmaie@liu.se)\n\nAbstract: This paper bridges optimization and control, and presents a novel closed-loop control framework based on natural gradient descent, offering a trajectory-oriented alternative to traditional cost-function tuning. By leveraging the Fisher Information Matrix, we formulate a preconditioned gradient descent update that explicitly shapes system trajectories. We show that, in sharp contrast to traditional controllers, our approach provides flexibility to shape the system's low-level behavior. To this end, the proposed method parameterizes closedloop dynamics in terms of stationary covariance and an unknown cost function, providing a geometric interpretation of control adjustments. We establish theoretical stability conditions. The simulation results on a rotary inverted pendulum benchmark highlight the advantages of natural gradient descent in trajectory shaping.\n\nKeywords: Natural Gradient Descent, Trajectory Optimization, Stationary Covariance, Fisher Information Matrix (FIM).\n\n## 1. INTRODUCTION\n\nOptimization techniques, particularly gradient descent (GD) and its numerous variants (Ruder, 2017; Laborde and Oberman, 2020; Rattray et al., 1998; Martens, 2020), have become fundamental in modern control and machine learning. These methods are broadly classified into two categories when applied to control systems: GDbased control , where gradient methods optimize controller parameters, and controlled GD , where control-theoretic tools improve the convergence properties of a gradientbased optimizer (Lessard et al., 2016; Padmanabhan and Seiler, 2024; Nayyer et al., 2022). GD-based methods have demonstrated significant success in learning controllers for uncertain environments (Narendra and Parthasarathy, 1990; Sutton, 2018; Kiumarsi et al., 2018; Luo et al., 2017), as well as in system identification (Ljung, 1998; Hardt et al., 2018) and adaptive control (Gaudio et al., 2019; Ioannou and Sun, 2012; Cheng et al., 2024; Landau et al., 2011).\n\nDespite their effectiveness, a key challenge persists: the closed-loop trajectory behavior -how system states evolve over time-is typically an indirect outcome of weight tuning or cost-function optimization. Traditional methods rely on defining an objective function, applying an optimization algorithm, and then observing the resulting state trajectories (Cothren et al., 2021). If these trajectories do not meet performance expectations, the objective function often requires manual adjustments, leading to a cumbersome iterative tuning process. Furthermore, this process is susceptible to 'reward hacking,' where the optimized policy achieves a low-cost function value but deviates from the designer's intended behavior (Skalse et al., 2022).\n\n⋆ This work is supported in part by the National Science Foundation under award ECCS-2227311.\n\nFarnaz Adib Yaghmaie is supported by the Excellence Center at Link¨ oping-Lund in Information Technology (ELLIIT), ZENITH, and partially by Sensor informatics and Decision-making for the Digital Transformation (SEDDIT). This work was partly performed within the Competence Center SEDDIT-Sensor Informatics and Decision making for the Digital Transformation, supported by Sweden's Innovation Agency within the research and innovation program Advanced digitalization.\n\nIn our previous work (Esmzad and Modares, 2024), we proposed a fundamentally different perspective by directly shaping system trajectories through a gradient-descentlike closed-loop approach. We introduced a novel parameterization of the stable closed-loop dynamics\n\n<!-- formula-not-decoded -->\n\nwhere A, B are the system matrices, K is a feedback gain, and Γ , P ≻ 0 represent a GD step and a quadratic Lyapunov cost matrix, respectively. This formulation ensures that the closed-loop system behaves analogously to a GD update applied to the Lyapunov function V ( x k ) = x ⊤ k Px k , leading to the explicit trajectory update dynamic\n\n<!-- formula-not-decoded -->\n\nRather than iteratively adjusting an unknown cost function to produce desired state trajectories, we directly impose a controlled gradient flow on the system states.\n\nThis trajectory-oriented perspective offers several advantages. Firstly, it provides explicit trajectory control. The gradient formulation provides direct control over the trajectory shape, eliminating the need for trial-and-error cost function tuning. Secondly, it quantifies robustness by the step size. For a small step size, closed-loop eigenvalues have small variations. Lastly, it unifies with a Linear Quadratic",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "586c4b0a4c349edb4db20e21f1d223f1f5260a2e47875d295d9d1eb3affbf2a4"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "0e4caee60247ef70c0b59b364c7671bb16903f54162f9862a499ee26b6238256"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2483201065682135,
+        "y0": 0.23493317554383117,
+        "x1": 0.2620339641176654,
+        "y1": 0.24205425061597524
+      },
+      "text": "∗∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.2744827604874889,
+        "y0": 0.1243256304016247,
+        "x1": 0.7239685561873809,
+        "y1": 0.13928313460359423
+      },
+      "text": "Natural Gradient Descent for Control",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4552308501525992,
+        "y0": 0.15564728446710444,
+        "x1": 0.6776932542521288,
+        "y1": 0.1627683595392485
+      },
+      "text": "∗ ∗∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32527936567633225,
+        "y0": 0.15748215811226227,
+        "x1": 0.661184756137173,
+        "y1": 0.18088641304201875
+      },
+      "text": "Ramin Esmzad Farnaz Adib Yaghmaie Hamidreza Modares ∗",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2505543642870164,
+        "y0": 0.19588175620406284,
+        "x1": 0.7532557109045195,
+        "y1": 0.22111096091393945
+      },
+      "text": "∗ Department of Mechanical Engineering, Michigan State University, East Lansing, MI 48824, USA (e-mails: { esmzadra,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42006564953026765,
+        "y0": 0.22378641024585005,
+        "x1": 0.5800597627882451,
+        "y1": 0.23412810069386222
+      },
+      "text": "modaresh } @msu.edu).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26566164223077154,
+        "y0": 0.23680355002577283,
+        "x1": 0.7554905347136727,
+        "y1": 0.2601623802537078
+      },
+      "text": "Department of Electrical Engineering, Link¨ oping University, 58183 Link¨ oping, Sweden (e-mail: farnaz.adib.yaghmaie@liu.se)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15523723423823763,
+        "y0": 0.28273486115570445,
+        "x1": 0.8485754560763631,
+        "y1": 0.4102663104598056
+      },
+      "text": "Abstract: This paper bridges optimization and control, and presents a novel closed-loop control framework based on natural gradient descent, offering a trajectory-oriented alternative to traditional cost-function tuning. By leveraging the Fisher Information Matrix, we formulate a preconditioned gradient descent update that explicitly shapes system trajectories. We show that, in sharp contrast to traditional controllers, our approach provides flexibility to shape the system's low-level behavior. To this end, the proposed method parameterizes closedloop dynamics in terms of stationary covariance and an unknown cost function, providing a geometric interpretation of control adjustments. We establish theoretical stability conditions. The simulation results on a rotary inverted pendulum benchmark highlight the advantages of natural gradient descent in trajectory shaping.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15523723423823765,
+        "y0": 0.4293773983659286,
+        "x1": 0.8431666825751332,
+        "y1": 0.4527362285938636
+      },
+      "text": "Keywords: Natural Gradient Descent, Trajectory Optimization, Stationary Covariance, Fisher Information Matrix (FIM).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.20025332753956168,
+        "y0": 0.4728462593373732,
+        "x1": 0.3583124241025768,
+        "y1": 0.4831879497853854
+      },
+      "text": "1. INTRODUCTION",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155325098875,
+        "y0": 0.4988615340394327,
+        "x1": 0.4900034643786764,
+        "y1": 0.7304934129425216
+      },
+      "text": "Optimization techniques, particularly gradient descent (GD) and its numerous variants (Ruder, 2017; Laborde and Oberman, 2020; Rattray et al., 1998; Martens, 2020), have become fundamental in modern control and machine learning. These methods are broadly classified into two categories when applied to control systems: GDbased control , where gradient methods optimize controller parameters, and controlled GD , where control-theoretic tools improve the convergence properties of a gradientbased optimizer (Lessard et al., 2016; Padmanabhan and Seiler, 2024; Nayyer et al., 2022). GD-based methods have demonstrated significant success in learning controllers for uncertain environments (Narendra and Parthasarathy, 1990; Sutton, 2018; Kiumarsi et al., 2018; Luo et al., 2017), as well as in system identification (Ljung, 1998; Hardt et al., 2018) and adaptive control (Gaudio et al., 2019; Ioannou and Sun, 2012; Cheng et al., 2024; Landau et al., 2011).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155325098875,
+        "y0": 0.7402695522647944,
+        "x1": 0.49000669041163764,
+        "y1": 0.7896614742489636
+      },
+      "text": "Despite their effectiveness, a key challenge persists: the closed-loop trajectory behavior -how system states evolve over time-is typically an indirect outcome of weight tuning or cost-function optimization. Traditional methods rely on defining an objective function, applying an optimization algorithm, and then observing the resulting state trajectories (Cothren et al., 2021). If these trajectories do not meet performance expectations, the objective function often requires manual adjustments, leading to a cumbersome iterative tuning process. Furthermore, this process is susceptible to 'reward hacking,' where the optimized policy achieves a low-cost function value but deviates from the designer's intended behavior (Skalse et al., 2022).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "footnote",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155325098878,
+        "y0": 0.7953395456051484,
+        "x1": 0.4899979872386697,
+        "y1": 0.8186695173056877
+      },
+      "text": "⋆ This work is supported in part by the National Science Foundation under award ECCS-2227311.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "footnote",
+      "box": {
+        "page": 0,
+        "x0": 0.06857155325098878,
+        "y0": 0.8221114512078203,
+        "x1": 0.48999971460546815,
+        "y1": 0.9123919734782429
+      },
+      "text": "Farnaz Adib Yaghmaie is supported by the Excellence Center at Link¨ oping-Lund in Information Technology (ELLIIT), ZENITH, and partially by Sensor informatics and Decision-making for the Digital Transformation (SEDDIT). This work was partly performed within the Competence Center SEDDIT-Sensor Informatics and Decision making for the Digital Transformation, supported by Sweden's Innovation Agency within the research and innovation program Advanced digitalization.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087198177546,
+        "y0": 0.5972318657443209,
+        "x1": 0.9352433214621058,
+        "y1": 0.6596409275084127
+      },
+      "text": "In our previous work (Esmzad and Modares, 2024), we proposed a fundamentally different perspective by directly shaping system trajectories through a gradient-descentlike closed-loop approach. We introduced a novel parameterization of the stable closed-loop dynamics",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.6504831361666901,
+        "y0": 0.6652656932080167,
+        "x1": 0.9352371158364903,
+        "y1": 0.6756073836560287
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087198177547,
+        "y0": 0.6812309615520209,
+        "x1": 0.9352377877936991,
+        "y1": 0.7566583508996473
+      },
+      "text": "where A, B are the system matrices, K is a feedback gain, and Γ , P ≻ 0 represent a GD step and a quadratic Lyapunov cost matrix, respectively. This formulation ensures that the closed-loop system behaves analogously to a GD update applied to the Lyapunov function V ( x k ) = x ⊤ k Px k , leading to the explicit trajectory update dynamic",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.6323167730304992,
+        "y0": 0.7622831165992511,
+        "x1": 0.9352371158364908,
+        "y1": 0.7745252274237714
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087198177552,
+        "y0": 0.7782483849432552,
+        "x1": 0.9352371625375167,
+        "y1": 0.8146243549511131
+      },
+      "text": "Rather than iteratively adjusting an unknown cost function to produce desired state trajectories, we directly impose a controlled gradient flow on the system states.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5138087198177552,
+        "y0": 0.8244004942733859,
+        "x1": 0.9352421833681815,
+        "y1": 0.9128438355973236
+      },
+      "text": "This trajectory-oriented perspective offers several advantages. Firstly, it provides explicit trajectory control. The gradient formulation provides direct control over the trajectory shape, eliminating the need for trial-and-error cost function tuning. Secondly, it quantifies robustness by the step size. For a small step size, closed-loop eigenvalues have small variations. Lastly, it unifies with a Linear Quadratic",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      595.2760009765625,
+      841.8900146484375
+    ]
+  ],
+  "seconds": 5.037403799999993,
+  "model_load_seconds": null,
+  "peak_rss_mb": 154.65234375,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "2503.06070_pg1",
+      "pdf_sha256": "c28f2b5dceaae8a755cde4b6356252c394f4b153d054c7d900bf7204d116a524",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

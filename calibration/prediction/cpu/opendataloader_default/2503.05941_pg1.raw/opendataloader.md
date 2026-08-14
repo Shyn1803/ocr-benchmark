@@ -1,0 +1,44 @@
+Choosing Augmentation Parameters in OSQPA New Approach based on Conjugate Directions
+
+Avinash Kumar (Email: avishimpu@gmail.com)
+
+arXiv:2503.05941v1 [math.OC] 7 Mar 2025
+
+Abstract— This work proposes a new method to select the augmentation parameters in the operator splitting quadratic program (OSQP) algorithm so as to reduce the computation time of overall algorithm. The selection is based upon the information of conjugate directions of the coefﬁcient matrix of a linear system of equations present in the algorithm. This selection makes it possible to cache these conjugate directions, instead of computing them at each iteration, resulting in faster computation of the solution of the linear system thus reducing the overall computation time. This reduction is demonstrated by a numerical example.
+
+Notation:Throughout this manuscript, scalars and scalarvalued functions are denoted by small ordinary alphabets, vectors are denoted by bold ordinary alphabets, and matrices are denoted by capital alphabets. X ≻ 0 means that the matrix X is symmetric positive deﬁnite. diag(•) represents a diagonal matrix. A ‘T’ in the superscript represents the transpose. ‘k’ in the superscript of a quantity denotes the value of the quantity at the kth iteration.
+
+I. INTRODUCTION
+
+The analysis of convex optimization problems is of great importance in applied mathematics. Convex optimization problems arise in numerous ﬁelds including - machine learning, control engineering (model predictive control), Lasso and Hubber ﬁtting and so on [1]. With the advent of big data and consequently higher dimensional data availability, the size of the convex optimization problems that are required to be solved continues to grow in size. Therefore, to handle real-time optimization-based tasks, it becomes necessary to develop algorithms that can work efﬁciently and effectively with the high-dimensional data. Furthermore, study of the solution algorithms for convex optimization problems turns out fruitful for the analysis of non-convex problems.
+
+In this work, we consider the convex optimization problem, called quadratic program, of the form as stated below.
+
+- 1
+
+![](<2503.05941_pg1_images/imageFile1.png>)
+
+- 2
+
+
+xTPx + qTx subject to l ≤ Ax ≤ u
+
+minimize
+
+(1)
+
+where x ∈ Rn is the decision variable, P ∈ Rn×n is a positive semi-deﬁnite matrix, q ∈ Rn, A ∈ Rm×n, and l ∈ Rm and u ∈ Rm deﬁne the lower and upper limits on the variable Ax. This formulation allows handling equality constraints by setting li = ui. There exist a plethora of algorithms to solve the optimization problem 1 and can
+
+Acknowledgement: The author is thankful to Prof. Hoai Nam Nguyen (Te´le´com SudParis) for the fruitful discussions while working at Te´le´com SudParis, Institut Polytechnique de Paris.
+
+be broadly classiﬁed into three categories: (1) active-set methods [2], [3], (2) interior-point methods [4], and (3) ﬁrstorder methods [5]. The major drawback of active set methods is that their worst-case complexity grows exponentially with the number of constraints [6] while the interior point methods are not scalable for very large scale problems because each iteration requires heavy computational tasks to be performed
+
+- [7]. In recent years, the alternating direction method of multi-
+
+pliers (ADMM), which is an operator splitting based ﬁrstorder method, has received a lot of attention by the researchers. This is because this method seems to be very well suited for the large scale problems because of the decomposability (inherited from the dual ascent algorithm) and superior convergence properties (inherited from the method of multipliers) [8]. Moreover, the steps involved in the ADMM algorithm are computationally cheap and simple to implement [1]. However, the optimal selection of the parameters, inherited from the augmented Lagrangian, involved in the ADMM algorithm is still an open problem
+
+- [8]. Operator Splitting Quadratic Program (OSQP), proposed in [1], is one of the most popular general-purpose solvers for the convex quadratic programs. The algorithm is based on a novel splitting technique and subsequent usage of the auxiliary variables leading to a quasi-deﬁnite linear system which is always solvable. One of the most computationally expensive step in the OSQP algorithm involves the solution of a linear system-a common trait of the algorithms derived from ADMM. It is this linear system which we propose to solve in a more efﬁcient manner. To do so we use the information about the conjugate directions of the coefﬁcient matrix. The information about the conjugate directions is of grave importance in the study of convex optimization. To the best of author’s knowledge, this line of research, where the information of the conjugate directions is exploited to improve the characteristics of the algorithm, remains unexplored in the literature and the author believes that it holds promise. The information about the conjugate directions allows us to compute ofﬂine a set of parameters and cache them thus avoiding their computation at each iteration of the algorithm leading to reduction in the computation time of the overall algorithm which is demonstrated by a numerical example.
+
+
+The rest of the paper is organised as follows. Section II presents a review of the OSQP solver as reported in [1] followed by the background of conjugate direction and conjugate gradient methods. In Section III, we present the method to choose augmentation parameters by utilising the information of the conjugate directions of a speciﬁc coef-
+

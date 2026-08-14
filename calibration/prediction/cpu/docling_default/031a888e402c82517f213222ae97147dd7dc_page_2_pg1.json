@@ -1,0 +1,449 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "031a888e402c82517f213222ae97147dd7dc_page_2_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "(100 ms) along the whole speech signal. This process results in a graph of distances with respect to time. The graph is smoothed by a low-pass filtering operation, and then all the significant local maxima are searched because they represent potential speaker change points. A local maximum is regarded as significant when the differences between its value and those of the minima surrounding it are above a certain threshold, and when there is no higher local maximum in its vicinity. Thus, the local maximum has to fulfill the following condition to be significant:\n\n<!-- formula-not-decoded -->\n\nwhere α is a real number, σ is the standard deviation of the distances along the plot, and min l and min r are the left and the right minima, respectively, around the peak max .\n\n## 2.2. Second step: BIC refinement\n\nA ∆ BIC value is computed for each potential speaker change point detected in the first step to validate or discard this point. The ∆ BIC value is given by [3]\n\n<!-- formula-not-decoded -->\n\nwhere\n\n<!-- formula-not-decoded -->\n\nλ is a penalty factor which has to be experimentally tuned in order to reduce the number of false alarms without increasing the number of missed detections,\n\n<!-- formula-not-decoded -->\n\nN 1 and Σ 1 are the number and the covariance matrix of the feature vectors in the window W 1 , respectively, N 2 and Σ 2 are the number and the covariance matrix of the feature vectors in the window W 2 , respectively, N = N 1 + N 2 , Σ is the covariance matrix of the feature vectors of both windows together, and d is the dimension of the feature vectors.\n\nA potential speaker change point is regarded as a true speaker change if the ∆ BIC value for this point is negative.\n\n## 3. Modified DISTBIC algorithm\n\nThe DISTBIC algorithm allows to obtain good speaker change detection results, nonetheless it has some weak points. We have focused on these points and suggest some improvements of the algorithm in order to obtain even better results. The improvements are specified in next subsections.\n\n## 3.1. Silence and breathing elimination\n\nSilence and breathing may cause a lot of false alarms in speaker change detection tasks. Therefore we used a simple but efficient silence detector before the speaker change detection process. The speech signal was divided into segments the length of which was 10 ms. Short-time energy and the number of zero crossings [4] were computed for each segment. If both the short-time energy and the number of zero crossings were lower than experimentally derived thresholds, the segment was regarded as containing silence and was temporarily eliminated from the utterance.\n\nFigure 1: True speaker change points causing troubles (marked with a circle) in the condition (2).\n\n<!-- image -->\n\nSometimes short sections with a high energy can occur in silent parts of the utterance. Such sections can be caused for example by the speaker breathing. The high energy impels the silence detector to regard these sections as speech. In order to overcome this problem, we implemented a clustering algorithm: if a part of a speech signal shorter than 645 ms was surrounded by silent segments, this part was also regarded as silence. On the contrary, if there was a silent segment shorter than 250 ms between two segments containing speech, this segment was regarded as containing speech.\n\n## 3.2. Speaker change candidate detection\n\nEqually as in Section 2.1, the potential speaker change points were detected on the smoothed graph of the symmetric Kullback-Leibler distance. However, the condition (2) necessary to detect the potential speaker change points was changed. The reason for the change was the fact, that the condition (2) did not allow to detect some local maxima of the graph as the potential speaker change points. The problems were caused mainly by the maxima that were rather near each other, so that the minimumbetween them was too high to satisfy the condition (2). An example of such a kind of peaks is shown in Figure 1. For that reason the conjunction in (2) was substituted with the disjunction, i.e. a local maximum was regarded as a potential speaker change point if it satisfied the condition\n\n<!-- formula-not-decoded -->\n\nwhere α , σ , min l , min r, and max have the same meaning as before.\n\nIn order to avoid the situation that two different maxima belonging in fact to one true speaker change would be detected as two potential speaker change points, we required a minimal distance between two maxima: if two maxima were closer than 0.5 s, the lowest one was discarded. This condition protects the algorithm against false alarms.\n\n## 3.3. Speaker change position location\n\nHaving detected the potential speaker change points, we used the ∆ BIC value (3) to discard or validate the points similarly",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "c66ed2c02f985949570c76db0bb9ef9dc1f8e7fccfe5ca0fc85e2e0d5e367b34"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "f1dcab50898e8fa240f4f0bf1cc8d155487063da3e52ad201fb5699b21e5b5c8"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09411764705882353,
+        "y0": 0.09851244949494957,
+        "x1": 0.4646577941176474,
+        "y1": 0.2266876790969724
+      },
+      "text": "(100 ms) along the whole speech signal. This process results in a graph of distances with respect to time. The graph is smoothed by a low-pass filtering operation, and then all the significant local maxima are searched because they represent potential speaker change points. A local maximum is regarded as significant when the differences between its value and those of the minima surrounding it are above a certain threshold, and when there is no higher local maximum in its vicinity. Thus, the local maximum has to fulfill the following condition to be significant:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.217140522875817,
+        "y0": 0.2299665277777774,
+        "x1": 0.4646569444444446,
+        "y1": 0.26684060761346967
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09411764705882365,
+        "y0": 0.2746887499999996,
+        "x1": 0.4646631372549022,
+        "y1": 0.311094244753538
+      },
+      "text": "where α is a real number, σ is the standard deviation of the distances along the plot, and min l and min r are the left and the right minima, respectively, around the peak max .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.09411764705882371,
+        "y0": 0.32758368686868644,
+        "x1": 0.30495661764705895,
+        "y1": 0.33767239976633046
+      },
+      "text": "2.2. Second step: BIC refinement",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09411764705882371,
+        "y0": 0.34746652777777737,
+        "x1": 0.46465779411764724,
+        "y1": 0.3838720225313157
+      },
+      "text": "A ∆ BIC value is computed for each potential speaker change point detected in the first step to validate or discard this point. The ∆ BIC value is given by [3]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.21856209150326814,
+        "y0": 0.39829986111111076,
+        "x1": 0.4646569444444446,
+        "y1": 0.40841747707677023
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09411764705882365,
+        "y0": 0.4230957828282825,
+        "x1": 0.12990970588235307,
+        "y1": 0.43297555788485104
+      },
+      "text": "where",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.1380228758169936,
+        "y0": 0.4434261237373733,
+        "x1": 0.4646569444444445,
+        "y1": 0.46832398724274443
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09411764705882357,
+        "y0": 0.47895642676767675,
+        "x1": 0.46466663398692826,
+        "y1": 0.5153619215212151
+      },
+      "text": "λ is a penalty factor which has to be experimentally tuned in order to reduce the number of false alarms without increasing the number of missed detections,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.17928104575163403,
+        "y0": 0.5272389646464647,
+        "x1": 0.4646569444444445,
+        "y1": 0.5535007549195121
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09411764705882357,
+        "y0": 0.5670751136363638,
+        "x1": 0.4646617483660131,
+        "y1": 0.6429250528343466
+      },
+      "text": "N 1 and Σ 1 are the number and the covariance matrix of the feature vectors in the window W 1 , respectively, N 2 and Σ 2 are the number and the covariance matrix of the feature vectors in the window W 2 , respectively, N = N 1 + N 2 , Σ is the covariance matrix of the feature vectors of both windows together, and d is the dimension of the feature vectors.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09411764705882361,
+        "y0": 0.6464291161616165,
+        "x1": 0.4646658823529414,
+        "y1": 0.6694528306121245
+      },
+      "text": "A potential speaker change point is regarded as a true speaker change if the ∆ BIC value for this point is negative.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.142467320261438,
+        "y0": 0.6869760606060608,
+        "x1": 0.41631614379084986,
+        "y1": 0.7004276778029197
+      },
+      "text": "3. Modified DISTBIC algorithm",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09411764705882361,
+        "y0": 0.7096488131313134,
+        "x1": 0.4646577941176475,
+        "y1": 0.7721043457636395
+      },
+      "text": "The DISTBIC algorithm allows to obtain good speaker change detection results, nonetheless it has some weak points. We have focused on these points and suggest some improvements of the algorithm in order to obtain even better results. The improvements are specified in next subsections.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.09411764705882361,
+        "y0": 0.7885937878787882,
+        "x1": 0.3350471568627454,
+        "y1": 0.7986825007764322
+      },
+      "text": "3.1. Silence and breathing elimination",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09411764705882361,
+        "y0": 0.8087144696969699,
+        "x1": 0.4646577941176474,
+        "y1": 0.936889699298993
+      },
+      "text": "Silence and breathing may cause a lot of false alarms in speaker change detection tasks. Therefore we used a simple but efficient silence detector before the speaker change detection process. The speech signal was divided into segments the length of which was 10 ms. Short-time energy and the number of zero crossings [4] were computed for each segment. If both the short-time energy and the number of zero crossings were lower than experimentally derived thresholds, the segment was regarded as containing silence and was temporarily eliminated from the utterance.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.5106976079005822,
+        "y0": 0.09288856236621587,
+        "x1": 0.8523285311031965,
+        "y1": 0.3086943578238439
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568628,
+        "y0": 0.32621446969696966,
+        "x1": 0.8815238398692815,
+        "y1": 0.3492057987821109
+      },
+      "text": "Figure 1: True speaker change points causing troubles (marked with a circle) in the condition (2).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568628,
+        "y0": 0.3842952777777778,
+        "x1": 0.8815286274509808,
+        "y1": 0.5124831336424274
+      },
+      "text": "Sometimes short sections with a high energy can occur in silent parts of the utterance. Such sections can be caused for example by the speaker breathing. The high energy impels the silence detector to regard these sections as speech. In order to overcome this problem, we implemented a clustering algorithm: if a part of a speech signal shorter than 645 ms was surrounded by silent segments, this part was also regarded as silence. On the contrary, if there was a silent segment shorter than 250 ms between two segments containing speech, this segment was regarded as containing speech.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568628,
+        "y0": 0.528732676767677,
+        "x1": 0.7658339215686282,
+        "y1": 0.5388213896653211
+      },
+      "text": "3.2. Speaker change candidate detection",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568628,
+        "y0": 0.5486134595959599,
+        "x1": 0.8815205392156873,
+        "y1": 0.7162331336424277
+      },
+      "text": "Equally as in Section 2.1, the potential speaker change points were detected on the smoothed graph of the symmetric Kullback-Leibler distance. However, the condition (2) necessary to detect the potential speaker change points was changed. The reason for the change was the fact, that the condition (2) did not allow to detect some local maxima of the graph as the potential speaker change points. The problems were caused mainly by the maxima that were rather near each other, so that the minimumbetween them was too high to satisfy the condition (2). An example of such a kind of peaks is shown in Figure 1. For that reason the conjunction in (2) was substituted with the disjunction, i.e. a local maximum was regarded as a potential speaker change point if it satisfied the condition",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "formula",
+      "box": {
+        "page": 0,
+        "x0": 0.6340032679738563,
+        "y0": 0.7277064267676773,
+        "x1": 0.8815196895424842,
+        "y1": 0.7645805066033694
+      },
+      "text": "",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568631,
+        "y0": 0.7756104671717177,
+        "x1": 0.8815275163398698,
+        "y1": 0.7988720225313165
+      },
+      "text": "where α , σ , min l , min r, and max have the same meaning as before.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568632,
+        "y0": 0.8021361868686874,
+        "x1": 0.8815286274509807,
+        "y1": 0.8777356588949529
+      },
+      "text": "In order to avoid the situation that two different maxima belonging in fact to one true speaker change would be detected as two potential speaker change points, we required a minimal distance between two maxima: if two maxima were closer than 0.5 s, the lowest one was discarded. This condition protects the algorithm against false alarms.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568632,
+        "y0": 0.8939978282828287,
+        "x1": 0.7471317647058834,
+        "y1": 0.9040865411804728
+      },
+      "text": "3.3. Speaker change position location",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5109803921568632,
+        "y0": 0.9138659848484852,
+        "x1": 0.8815205392156873,
+        "y1": 0.9368896992989934
+      },
+      "text": "Having detected the potential speaker change points, we used the ∆ BIC value (3) to discard or validate the points similarly",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.5106976079005822,
+        "y0": 0.09288856236621587,
+        "x1": 0.8523285311031965,
+        "y1": 0.3086943578238439
+      },
+      "source_id": "#/pictures/0",
+      "file": null,
+      "sha256": null
+    }
+  ],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 2.9383930999999848,
+  "model_load_seconds": null,
+  "peak_rss_mb": 258.31640625,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "031a888e402c82517f213222ae97147dd7dc_page_2_pg1",
+      "pdf_sha256": "bd7f7f432a10e8e6b9652742e82296e839a42973b2a1ff77dd5577ea2e988e5f",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}

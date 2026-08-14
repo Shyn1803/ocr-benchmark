@@ -1,0 +1,237 @@
+{
+  "schema_version": 4,
+  "engine": "docling_default",
+  "engine_family": "docling",
+  "profile": "default",
+  "engine_version": "2.91.0",
+  "doc_id": "8bc04603d7f0a1baf27d1d6acf58c61916c9_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "## A. Filter Intensities and their Respective Parameters\n\nIn Section 4.1 we introduce abstract levels of intensities for each filter we apply to an image. We now map each intensity to actual parameters passed to editing libraries to achieve the given filter intensity.\n\nTable 3. Actual parameters and implementation specifics for each distortion and intensity level. Technical parameters are passed to imagenet-c [12] and style parameters to darktable [37] while compositional distortions are implemented by us.\n\n|             | Distortion                                                                                    | Intensity                                                                                                                                                                                                                        | Actual Parameters                                                                                                                                                                                                                                                                                                                                                                                                                                                        |\n|-------------|-----------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|\n| Technical   | JPEG compression Defocus blur Motion blur Pixelate Gaussian noise Impulse noise               | [0, . . . +4, +5] [0, . . . +4, +5] [0, . . . +4, +5] [0, . . . +4, +5] [0, . . . +4, +5] [0, . . . +4, +5]                                                                                                                      | The editing library accepts the technical intensities as is.                                                                                                                                                                                                                                                                                                                                                                                                             |\n| Style       | Brightness Contrast Saturation Exposure Shadows Highlights Temperature Tint Vibrance Rotation | [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +2, +3] [-3, -2, . . . , +4, +5] [-4, -3, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-2, -1, . . . , +3, +4] | [ - 1 . 0 , - 0 . 8 , . . . , 0 . 8 , 1 . 0 ] [ - 1 . 0 , - 0 . 8 , . . . , 0 . 8 , 1 . 0 ] [ - 1 . 0 , - 0 . 8 , . . . , 0 . 8 , 1 . 0 ] [ - 3 . 0 , - 2 . 4 , . . . , 2 . 4 , 3 . 0 ] [ - 100 , - 60 , - 20 , 20 , 40 , 50 , 60 , 80 , 100 ] [ - 100 , - 80 , - 60 , - 50 , - 40 , - 20 , 20 , 60 , 100 ] [ 2000 , 3000 , 5000 , 6000 , 6500 , 7000 , 8000 , 10 000 , 14 000 , 18 000 ] [ 0 . 75 , 0 . 8 , . . . , 1 . 2 , 1 . 25 ] 0 , 20 , 25 , 40 , 60 , 80 , 100 ] |\n| Composition | Rotation Horizontal crop Vertical crop Left Diagonal crop Right Diagonal crop                 | [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5]                                                                            | [10 ◦ ⟲ , 8 ◦ ⟲ , . . . , 8 ◦ ⟳ , 10 ◦ ⟳ ] We resize the image to 336px and then crop patches of size 224px from the resulting image. Intensity 0 is a centercrop, while a &#124; intensity &#124; == 5 results in a crop from the images' border.                                                                                                                                                                                                                       |\n\n## B. Dataset Content Analysis\n\nTo show that the images of our dataset (Section 4.2) contain a large variety of contents, we apply a pretrained DenseNet121 [16] for image classification and RetinaNet [25] for object detection on our newly introduced dataset. We find that the images of our dataset spread across many different classes and contain a wide variety of objects and subjects.\n\nTable 4. Most commonly detected classes and objects in the images of our dataset.\n\n| most common classes   | most common classes   | most common objects   | most common objects   |\n|-----------------------|-----------------------|-----------------------|-----------------------|\n| class                 | count                 | object                | count                 |\n| seashore              | 3554                  | person                | 44301                 |\n| alp                   | 2568                  | car                   | 3186                  |\n| lakeside              | 2446                  | cup                   | 2880                  |\n| fountain              | 2265                  | bird                  | 2788                  |\n| valley                | 2011                  | cell phone            | 1749                  |\n| miniskirt             | 1455                  | boat                  | 1618                  |\n| gown                  | 1430                  | dog                   | 1581                  |\n| bikini                | 1176                  | potted plant          | 1580                  |\n| . . .                 | . . .                 | . . .                 | . . .                 |\n| sloth bear            | 2                     | refrigerator          | 31                    |\n| affenpinscher         | 2                     | snowboard             | 25                    |\n| patas                 | 1                     | skis                  | 23                    |\n| Sealyham terrier      | 1                     | hair dryer            | 7                     |\n| Japanese spaniel      | 1                     | toaster               | 7                     |\n\nFull list:\n\n[https://github.com/janpf/self-supervised-multi-task-aesthetic-pretraining](https://github.com/janpf/self-supervised-multi-task-aesthetic-pretraining)",
+  "raw_artifacts": [
+    {
+      "name": "docling.json",
+      "media_type": "application/json",
+      "file": "docling.json",
+      "sha256": "f74cd345764110e8166515daf60d90dd2fb3bf0420b7c2b4e553fe51ca2a0130"
+    },
+    {
+      "name": "docling-map.json",
+      "media_type": "application/json",
+      "file": "docling-map.json",
+      "sha256": "64fbaa1d3deb8880f90f6af31ae73be0e09482a3fad56d4f5f8cc6a5b96b1e67"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.08188235294117648,
+        "y0": 0.09307312121212113,
+        "x1": 0.5191066771241832,
+        "y1": 0.10664348080808074
+      },
+      "text": "A. Filter Intensities and their Respective Parameters",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08188235294117648,
+        "y0": 0.11919993358585854,
+        "x1": 0.8907085352941171,
+        "y1": 0.14509245657459552
+      },
+      "text": "In Section 4.1 we introduce abstract levels of intensities for each filter we apply to an image. We now map each intensity to actual parameters passed to editing libraries to achieve the given filter intensity.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "table",
+      "box": {
+        "page": 0,
+        "x0": 0.08983361487295113,
+        "y0": 0.15604343799629597,
+        "x1": 0.8809040543300654,
+        "y1": 0.48702278522529985
+      },
+      "text": null,
+      "html": "<table><caption><div class=\"caption\">Table 3. Actual parameters and implementation specifics for each distortion and intensity level. Technical parameters are passed to imagenet-c [12] and style parameters to darktable [37] while compositional distortions are implemented by us.</div></caption><tbody><tr><th></th><th>Distortion</th><th>Intensity</th><th>Actual Parameters</th></tr><tr><td>Technical</td><td>JPEG compression Defocus blur Motion blur Pixelate Gaussian noise Impulse noise</td><td>[0, . . . +4, +5] [0, . . . +4, +5] [0, . . . +4, +5] [0, . . . +4, +5] [0, . . . +4, +5] [0, . . . +4, +5]</td><td>The editing library accepts the technical intensities as is.</td></tr><tr><td>Style</td><td>Brightness Contrast Saturation Exposure Shadows Highlights Temperature Tint Vibrance Rotation</td><td>[-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +2, +3] [-3, -2, . . . , +4, +5] [-4, -3, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-2, -1, . . . , +3, +4]</td><td>[ - 1 . 0 , - 0 . 8 , . . . , 0 . 8 , 1 . 0 ] [ - 1 . 0 , - 0 . 8 , . . . , 0 . 8 , 1 . 0 ] [ - 1 . 0 , - 0 . 8 , . . . , 0 . 8 , 1 . 0 ] [ - 3 . 0 , - 2 . 4 , . . . , 2 . 4 , 3 . 0 ] [ - 100 , - 60 , - 20 , 20 , 40 , 50 , 60 , 80 , 100 ] [ - 100 , - 80 , - 60 , - 50 , - 40 , - 20 , 20 , 60 , 100 ] [ 2000 , 3000 , 5000 , 6000 , 6500 , 7000 , 8000 , 10 000 , 14 000 , 18 000 ] [ 0 . 75 , 0 . 8 , . . . , 1 . 2 , 1 . 25 ] 0 , 20 , 25 , 40 , 60 , 80 , 100 ]</td></tr><tr><td>Composition</td><td>Rotation Horizontal crop Vertical crop Left Diagonal crop Right Diagonal crop</td><td>[-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5]</td><td>[10 ◦ ⟲ , 8 ◦ ⟲ , . . . , 8 ◦ ⟳ , 10 ◦ ⟳ ] We resize the image to 336px and then crop patches of size 224px from the resulting image. Intensity 0 is a centercrop, while a | intensity | == 5 results in a crop from the images&#x27; border.</td></tr></tbody></table>",
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.08188235294117648,
+        "y0": 0.490660193939394,
+        "x1": 0.8907043764705881,
+        "y1": 0.5142141609725575
+      },
+      "text": "Table 3. Actual parameters and implementation specifics for each distortion and intensity level. Technical parameters are passed to imagenet-c [12] and style parameters to darktable [37] while compositional distortions are implemented by us.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.08188235294117648,
+        "y0": 0.541840797979798,
+        "x1": 0.3152040993464052,
+        "y1": 0.5554111575757575
+      },
+      "text": "B. Dataset Content Analysis",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08188235294117648,
+        "y0": 0.5679676103535354,
+        "x1": 0.8907087313725481,
+        "y1": 0.6089560929382318
+      },
+      "text": "To show that the images of our dataset (Section 4.2) contain a large variety of contents, we apply a pretrained DenseNet121 [16] for image classification and RetinaNet [25] for object detection on our newly introduced dataset. We find that the images of our dataset spread across many different classes and contain a wide variety of objects and subjects.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "table",
+      "box": {
+        "page": 0,
+        "x0": 0.3246925453734554,
+        "y0": 0.6210699755736072,
+        "x1": 0.648291843389374,
+        "y1": 0.862466523141572
+      },
+      "text": null,
+      "html": "<table><caption><div class=\"caption\">Table 4. Most commonly detected classes and objects in the images of our dataset.</div></caption><tbody><tr><th colspan=\"2\">most common classes</th><th colspan=\"2\">most common objects</th></tr><tr><th>class</th><th>count</th><th>object</th><th>count</th></tr><tr><th>seashore</th><td>3554</td><td>person</td><td>44301</td></tr><tr><th>alp</th><td>2568</td><td>car</td><td>3186</td></tr><tr><th>lakeside</th><td>2446</td><td>cup</td><td>2880</td></tr><tr><th>fountain</th><td>2265</td><td>bird</td><td>2788</td></tr><tr><th>valley</th><td>2011</td><td>cell phone</td><td>1749</td></tr><tr><th>miniskirt</th><td>1455</td><td>boat</td><td>1618</td></tr><tr><th>gown</th><td>1430</td><td>dog</td><td>1581</td></tr><tr><th>bikini</th><td>1176</td><td>potted plant</td><td>1580</td></tr><tr><th>. . .</th><td>. . .</td><td>. . .</td><td>. . .</td></tr><tr><th>sloth bear</th><td>2</td><td>refrigerator</td><td>31</td></tr><tr><th>affenpinscher</th><td>2</td><td>snowboard</td><td>25</td></tr><tr><th>patas</th><td>1</td><td>skis</td><td>23</td></tr><tr><th>Sealyham terrier</th><td>1</td><td>hair dryer</td><td>7</td></tr><tr><th>Japanese spaniel</th><td>1</td><td>toaster</td><td>7</td></tr></tbody></table>",
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "caption",
+      "box": {
+        "page": 0,
+        "x0": 0.08188235294117648,
+        "y0": 0.8646816585858585,
+        "x1": 0.5645296000000002,
+        "y1": 0.8743997670331635
+      },
+      "text": "Table 4. Most commonly detected classes and objects in the images of our dataset.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08188235294117648,
+        "y0": 0.8785187797979799,
+        "x1": 0.13115360000000004,
+        "y1": 0.8882368882452847
+      },
+      "text": "Full list:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13569444444444445,
+        "y0": 0.8795829737373737,
+        "x1": 0.7814803581699347,
+        "y1": 0.8873720401325252
+      },
+      "text": "https://github.com/janpf/self-supervised-multi-task-aesthetic-pretraining",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [
+    {
+      "html": "<table><caption><div class=\"caption\">Table 3. Actual parameters and implementation specifics for each distortion and intensity level. Technical parameters are passed to imagenet-c [12] and style parameters to darktable [37] while compositional distortions are implemented by us.</div></caption><tbody><tr><th></th><th>Distortion</th><th>Intensity</th><th>Actual Parameters</th></tr><tr><td>Technical</td><td>JPEG compression Defocus blur Motion blur Pixelate Gaussian noise Impulse noise</td><td>[0, . . . +4, +5] [0, . . . +4, +5] [0, . . . +4, +5] [0, . . . +4, +5] [0, . . . +4, +5] [0, . . . +4, +5]</td><td>The editing library accepts the technical intensities as is.</td></tr><tr><td>Style</td><td>Brightness Contrast Saturation Exposure Shadows Highlights Temperature Tint Vibrance Rotation</td><td>[-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +2, +3] [-3, -2, . . . , +4, +5] [-4, -3, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-2, -1, . . . , +3, +4]</td><td>[ - 1 . 0 , - 0 . 8 , . . . , 0 . 8 , 1 . 0 ] [ - 1 . 0 , - 0 . 8 , . . . , 0 . 8 , 1 . 0 ] [ - 1 . 0 , - 0 . 8 , . . . , 0 . 8 , 1 . 0 ] [ - 3 . 0 , - 2 . 4 , . . . , 2 . 4 , 3 . 0 ] [ - 100 , - 60 , - 20 , 20 , 40 , 50 , 60 , 80 , 100 ] [ - 100 , - 80 , - 60 , - 50 , - 40 , - 20 , 20 , 60 , 100 ] [ 2000 , 3000 , 5000 , 6000 , 6500 , 7000 , 8000 , 10 000 , 14 000 , 18 000 ] [ 0 . 75 , 0 . 8 , . . . , 1 . 2 , 1 . 25 ] 0 , 20 , 25 , 40 , 60 , 80 , 100 ]</td></tr><tr><td>Composition</td><td>Rotation Horizontal crop Vertical crop Left Diagonal crop Right Diagonal crop</td><td>[-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5] [-5, -4, . . . , +4, +5]</td><td>[10 ◦ ⟲ , 8 ◦ ⟲ , . . . , 8 ◦ ⟳ , 10 ◦ ⟳ ] We resize the image to 336px and then crop patches of size 224px from the resulting image. Intensity 0 is a centercrop, while a | intensity | == 5 results in a crop from the images&#x27; border.</td></tr></tbody></table>",
+      "box": {
+        "page": 0,
+        "x0": 0.08983361487295113,
+        "y0": 0.15604343799629597,
+        "x1": 0.8809040543300654,
+        "y1": 0.48702278522529985
+      },
+      "n_rows": 4,
+      "n_cols": 4
+    },
+    {
+      "html": "<table><caption><div class=\"caption\">Table 4. Most commonly detected classes and objects in the images of our dataset.</div></caption><tbody><tr><th colspan=\"2\">most common classes</th><th colspan=\"2\">most common objects</th></tr><tr><th>class</th><th>count</th><th>object</th><th>count</th></tr><tr><th>seashore</th><td>3554</td><td>person</td><td>44301</td></tr><tr><th>alp</th><td>2568</td><td>car</td><td>3186</td></tr><tr><th>lakeside</th><td>2446</td><td>cup</td><td>2880</td></tr><tr><th>fountain</th><td>2265</td><td>bird</td><td>2788</td></tr><tr><th>valley</th><td>2011</td><td>cell phone</td><td>1749</td></tr><tr><th>miniskirt</th><td>1455</td><td>boat</td><td>1618</td></tr><tr><th>gown</th><td>1430</td><td>dog</td><td>1581</td></tr><tr><th>bikini</th><td>1176</td><td>potted plant</td><td>1580</td></tr><tr><th>. . .</th><td>. . .</td><td>. . .</td><td>. . .</td></tr><tr><th>sloth bear</th><td>2</td><td>refrigerator</td><td>31</td></tr><tr><th>affenpinscher</th><td>2</td><td>snowboard</td><td>25</td></tr><tr><th>patas</th><td>1</td><td>skis</td><td>23</td></tr><tr><th>Sealyham terrier</th><td>1</td><td>hair dryer</td><td>7</td></tr><tr><th>Japanese spaniel</th><td>1</td><td>toaster</td><td>7</td></tr></tbody></table>",
+      "box": {
+        "page": 0,
+        "x0": 0.3246925453734554,
+        "y0": 0.6210699755736072,
+        "x1": 0.648291843389374,
+        "y1": 0.862466523141572
+      },
+      "n_rows": 16,
+      "n_cols": 4
+    }
+  ],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 9.723502599999847,
+  "model_load_seconds": null,
+  "peak_rss_mb": 137.2109375,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "do_ocr": true,
+    "ocr_engine": "easyocr",
+    "force_full_page_ocr": false,
+    "table_mode": "default",
+    "cell_matching": false,
+    "docling_version": "2.91.0",
+    "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "docling_accelerator_device": "cpu",
+    "enable_remote_services": false,
+    "allow_external_plugins": false,
+    "publication_cache": {
+      "doc_id": "8bc04603d7f0a1baf27d1d6acf58c61916c9_pg1",
+      "pdf_sha256": "64034512631ef02ec95ba55b3353c9f458bba82719806910597a17d5a8ecfe75",
+      "profile_config_sha256": "8246dc902fb9042d53fa74b31346bc91890f6b408b6e6b6e3252f6cd487c4732",
+      "engine_version": "2.91.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,table_html,text_md"
+    }
+  }
+}
