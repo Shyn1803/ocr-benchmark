@@ -1,0 +1,343 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_scan",
+  "engine_family": "opendataloader",
+  "profile": "scan",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.04690_pg4",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "# Methods\n\n# 2.1 Video Pre-processing\n\nAn unprocessed video of a plume that is recorded with ideal background conditions. 1 All frames are converted to gray scale, that is n × d arrays taking on values between 0 and 1 (or 0 to 255). Two main steps are used in pre-processing prior to applying our model: background subtraction and Gaussian blurring.\n\nBackground subtraction. A fixed background subtraction method is applied to isolate the plume, where the first k fixed subtraction frames of video (where no plumes are have formed) are used to create an average background image. The average image is subtracted against the remaining frames to create the isolated plume frames. Once the plume dynamics have been isolated from background across selected frames, Gaussian blurring is applied.\n\nGaussian Blurring. Two separately tuned Gaussian filters are applied—a temporal and spatial filter, respecitvely. First, a Gaussian filter is applied across the time series of frames to add a time blur, reducing the high resolution of the plume dynamics. Second, a Gaussian filter is applied to each frame independently to coarse grain the image, adding spatial blur.\n\n# 2.2 Coarse-graining for Centerline and Edge modeling\n\nWe denote the output of data pre-processing as Z = [ z ( t 0 ) ,..., z ( t K )], where background subtraction and Gaussian filters have been applied. We extract a time series of second-order polynomial coefficients that model the center path of the plume for each frame. Additionally, we learn the parameters of a growing sinusoidal function that best characterizes the spread, or edge-model, of the plume. We theorize there exists a connection between the Kevin Helmholtz shear velocity and the sinusoidal frequency.\n\nEach frame z ( t i ) is converted to a reduced order model describing the center and edge paths in a three step procedure: (i) contour detection, (ii) a concentric circle search, and (iii) regression. For each array, z ( t i ), image recognition techniques are used to identify the plume contour and subsequently search along concentric circles, centered at the leak source, to identify the path of highest density, where we denote raw pixel value as a proxy for plume density, and the edge paths, as seen in Fig. 2.\n\n![](<2503.04690_pg4_images/imageFile1.png>)\n\n# Data reduction process for plume film\n\n(d)\n\nFigure 2: The plume point reduction step converts a frame of video into a scatter of edge and center points: (a) the raw frame image, (b) background subtraction, (c) contour selection, and finally (d) Along various ranges from origin, identify the max intensity (center) and intersection (edge) points with contours. (e) displays the final points on the original frame.\n\nContour Detection. We apply a binary threshold to identify the contours outlining the plume for each array z ( t i ). Hyperpameter selection for the thresholding is done by using opencv ’s Otsu’s binarization. Optimal global threshold selection is performed by inspecting the image histogram for each array z ( t i ). The n largest contours, by area, are then selected for remainder of the pipeline. We denote the identified plume at time t k as ψ k .\n\n(ii) Concentric Circle Search. A search is performed along a set of ℓ concentric circles, centered at the plume leak source, with incrementally growing radii of r i = r · i for i = 1 ,...,ℓ where r is some fixed\n\n1 A solid black background is used when filming plume dynamics.\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "fba305a6b6a69a3644524b2bbcb5e83758580ce57d631c14d5a895e59306de59"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "ebc05b236c0b0fcf39f30fcab3faab82046bd8f94ab06eeafa2155a4a4cc9443"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "3b4c44c7961fe333a4da6e9508da264e597e3b046edf55cde0f7b9bcca3e0f7c"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.15522875816993464,
+        "y0": 0.08796338383838387,
+        "x1": 0.2608937908496732,
+        "y1": 0.10648106060606055
+      },
+      "text": "Methods",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.11655718954248366,
+        "y0": 0.12163257575757569,
+        "x1": 0.3741830065359477,
+        "y1": 0.13930934343434342
+      },
+      "text": "2.1 Video Pre-processing",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11601307189542484,
+        "y0": 0.14520202020202022,
+        "x1": 0.885076797385621,
+        "y1": 0.19276136363636365
+      },
+      "text": "An unprocessed video of a plume that is recorded with ideal background conditions. 1 All frames are converted to gray scale, that is n × d arrays taking on values between 0 and 1 (or 0 to 255). Two main steps are used in pre-processing prior to applying our model: background subtraction and Gaussian blurring.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11492320261437908,
+        "y0": 0.2053876262626263,
+        "x1": 0.8839869281045751,
+        "y1": 0.2836704545454546
+      },
+      "text": "Background subtraction. A fixed background subtraction method is applied to isolate the plume, where the first k fixed subtraction frames of video (where no plumes are have formed) are used to create an average background image. The average image is subtracted against the remaining frames to create the isolated plume frames. Once the plume dynamics have been isolated from background across selected frames, Gaussian blurring is applied.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11492320261437908,
+        "y0": 0.29503409090909094,
+        "x1": 0.8856209150326797,
+        "y1": 0.3594280303030303
+      },
+      "text": "Gaussian Blurring. Two separately tuned Gaussian filters are applied—a temporal and spatial filter, respecitvely. First, a Gaussian filter is applied across the time series of frames to add a time blur, reducing the high resolution of the plume dynamics. Second, a Gaussian filter is applied to each frame independently to coarse grain the image, adding spatial blur.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.11655718954248366,
+        "y0": 0.3724747474747475,
+        "x1": 0.6552287581699346,
+        "y1": 0.3952020202020202
+      },
+      "text": "2.2 Coarse-graining for Centerline and Edge modeling",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11492320261437908,
+        "y0": 0.4002525252525253,
+        "x1": 0.885076797385621,
+        "y1": 0.4776931818181819
+      },
+      "text": "We denote the output of data pre-processing as Z = [ z ( t 0 ) ,..., z ( t K )], where background subtraction and Gaussian filters have been applied. We extract a time series of second-order polynomial coefficients that model the center path of the plume for each frame. Additionally, we learn the parameters of a growing sinusoidal function that best characterizes the spread, or edge-model, of the plume. We theorize there exists a connection between the Kevin Helmholtz shear velocity and the sinusoidal frequency.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11492320261437908,
+        "y0": 0.48905681818181823,
+        "x1": 0.8867107843137255,
+        "y1": 0.5677613636363636
+      },
+      "text": "Each frame z ( t i ) is converted to a reduced order model describing the center and edge paths in a three step procedure: (i) contour detection, (ii) a concentric circle search, and (iii) regression. For each array, z ( t i ), image recognition techniques are used to identify the plume contour and subsequently search along concentric circles, centered at the leak source, to identify the path of highest density, where we denote raw pixel value as a proxy for plume density, and the edge paths, as seen in Fig. 2.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.5795075757575758,
+        "x1": 0.8823415032679739,
+        "y1": 0.6736717171717173
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.3632892156862745,
+        "y0": 0.5829128787878788,
+        "x1": 0.6225490196078431,
+        "y1": 0.5989053030303031
+      },
+      "text": "Data reduction process for plume film",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6470588235294118,
+        "y0": 0.6582487373737373,
+        "x1": 0.6644885620915032,
+        "y1": 0.6683497474747475
+      },
+      "text": "(d)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11492320261437908,
+        "y0": 0.684763888888889,
+        "x1": 0.884531045751634,
+        "y1": 0.7483169191919192
+      },
+      "text": "Figure 2: The plume point reduction step converts a frame of video into a scatter of edge and center points: (a) the raw frame image, (b) background subtraction, (c) contour selection, and finally (d) Along various ranges from origin, identify the max intensity (center) and intersection (edge) points with contours. (e) displays the final points on the original frame.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15413888888888888,
+        "y0": 0.773989898989899,
+        "x1": 0.885076797385621,
+        "y1": 0.8514305555555556
+      },
+      "text": "Contour Detection. We apply a binary threshold to identify the contours outlining the plume for each array z ( t i ). Hyperpameter selection for the thresholding is done by using opencv ’s Otsu’s binarization. Optimal global threshold selection is performed by inspecting the image histogram for each array z ( t i ). The n largest contours, by area, are then selected for remainder of the pipeline. We denote the identified plume at time t k as ψ k .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12472712418300654,
+        "y0": 0.8598484848484849,
+        "x1": 0.885076797385621,
+        "y1": 0.8926767676767677
+      },
+      "text": "(ii) Concentric Circle Search. A search is performed along a set of ℓ concentric circles, centered at the plume leak source, with incrementally growing radii of r i = r · i for i = 1 ,...,ℓ where r is some fixed",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.134531045751634,
+        "y0": 0.8981477272727273,
+        "x1": 0.5288676470588235,
+        "y1": 0.9141414141414141
+      },
+      "text": "1 A solid black background is used when filming plume dynamics.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.11764705882352941,
+        "y0": 0.5795075757575758,
+        "x1": 0.8823415032679739,
+        "y1": 0.6736717171717173
+      },
+      "source_id": "2503.04690_pg4_images/imageFile1.png",
+      "file": "000.png",
+      "sha256": "b934a81746a49a50ab19d4bc266710260f420b3ee58224437205dd48b84b1628"
+    }
+  ],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 20.83674979999887,
+  "model_load_seconds": null,
+  "peak_rss_mb": 152.71875,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "hybrid": "docling-fast",
+    "hybrid_mode": "full",
+    "hybrid_fallback": false,
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "owned-hybrid-launcher-manifest",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "hybrid_server": {
+      "host": "127.0.0.1",
+      "port": 5002,
+      "force_ocr": true,
+      "ocr_engine": "easyocr",
+      "ocr_languages": [
+        "vi",
+        "en"
+      ]
+    },
+    "cpu_enforcement": {
+      "CUDA_VISIBLE_DEVICES": ""
+    },
+    "cpu_enforcement_method": "CUDA_VISIBLE_DEVICES-empty-before-spawn",
+    "docling_version": "2.91.0",
+    "easyocr_version": "1.7.2",
+    "pypdf_version": "6.14.2",
+    "hybrid_dependency_versions": {
+      "docling": "2.91.0",
+      "easyocr": "1.7.2",
+      "fastapi": "0.141.1",
+      "opendataloader-pdf": "2.5.0",
+      "packaging": "26.3",
+      "pypdf": "6.14.2",
+      "psutil": "7.2.2",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_server_versions": {
+      "fastapi": "0.141.1",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_manifest_sha256": "a78ad752ae46c9312b1482bfa91c4f260a35abe2fe932a2d720e33b5bf6e265f",
+    "hybrid_manifest_run_id": "804e00da172436934d5923ac7ff91f09f5bbf4601eb9e975c1334a03246a1a91",
+    "hybrid_process_pid": 6092,
+    "hybrid_process_create_time": 1786929613.779883,
+    "hybrid_listener_pids": [
+      8132
+    ],
+    "publication_cache": {
+      "doc_id": "2503.04690_pg4",
+      "pdf_sha256": "e2c172d18c314a9ffe28bb515153893d2ac99304411515deab8763ae3535a9df",
+      "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

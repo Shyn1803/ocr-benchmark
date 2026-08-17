@@ -1,0 +1,302 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_scan",
+  "engine_family": "opendataloader",
+  "profile": "scan",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.04040_pg2",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "proach cannot be directly applied to this joint optimization problem. To address this challenge, the authors of [ 25 ] studied a secure rate maximization problem with joint beamforming, FA position control, and artificial noise optimization problem. Then, they proposed the minimum mean square error (MMSE) method to decouple the optimization variables, demonstrating that the joint optimization significantly improves performance. The FAS was further extended to multiuser systems by [ 12 ], where the authors considered the transmit power minimization problem in an FA-assisted multiuser system with joint beamforming and FA position optimization. They decoupled the variables using zero-forcing (ZF) and MMSE methods. Then, they optimized FA positions via a multi-directional descent (MDD) framework. It was demonstrated that FAS can effectively cancel MUI, thereby significantly reducing transmit power while ensuring the data rate. More recently, [ 26 ] evaluated the system capacity gain of the FAS by solving the weighted sum rate (WSR) maximization problem in an FAassisted downlink MU-multiple-input single-output (MISO) system. The authors first applied the weighted minimum mean square error (WMMSE) algorithm to decouple beamforming vectors and FA positions. Then, they leveraged the majorization maximization (MM) framework to solve the resulting nonconcave FA position optimization problem. Simulation results demonstrated that FAS enhances overall system capacity in MU-MISO networks.\n\nHowever, the MM framework in [ 26 ] has unaffordable complexity when the number of FAs at the BS is large. Specifically, the MM framework optimizes one FA position at a time while keeping the others fixed in each iteration, leading to the increased computational time as the number of FAs grows.\n\n# B. Contributions\n\nIn this paper, we propose a novel block coordinate ascent (BCA)-based algorithm for joint beamforming and FA position optimization in the FA-assisted downlink MU-MIMO system, as well as provide a decentralized implementation of the proposed algorithm. Our contributions are summarized as follows.\n\n- • Different from [ 26 ] that focuses on MU-MISO networks, we consider the more general FA-assisted MU-MIMO networks. We formulate the joint beamforming and antenna position optimization as a WSR maximization problem, where the objective function is non-concave and the optimization variables are highly coupled. To decouple the beamforming matrices and FA positions, we utilize two matrix fractional programming (FP) techniques, i.e., the quadratic transform and the Lagrangian dual transform [ 27 ], [ 28 ]. These FP techniques enable us to solve the decoupled subproblems by a BCA-based algorithm. Unlike existing FA position optimization algorithms that\n- • sequentially update FA positions, we propose a novel optimization algorithm based on the MM framework that optimizes all FA positions simultaneously. The proposed algorithm reduces computational time by exploiting parallelism and can be easily extended to a decentralized implementation. Additionally, we introduce a box-constrained movement mode to simplify both the formulated problem and the engineering implementation of FAS. This movement mode provides closed-form so-\n\n\nlutions to reduce complexity and enables decentralized implementation by allowing the independent movement of each FA.\n\nnection costs, we propose a decentralized implementation of our algorithm by utilizing the decentralized baseband processing (DBP) architecture [ 29 ], which partitions the transmit FA array into several clusters. The DBP architecture can decompose the optimization problem into smaller subproblems, and enable decentralized units (DUs) to solve them in parallel. To enable the decentralized implementation of the proposed BCA-based algorithm, we employ the non-homogeneous transform and Nesterov’s extrapolation [ 30 ], [ 31 ] to avoid the matrix inversion in the optimization of beamforming matrices. The decentralized implementation can significantly alleviate computational, storage, and interconnection costs with negligible performance loss. We conduct various numerical experiments to verify the\n\nperformance of our proposed algorithm. It is shown that the proposed algorithm can improve the WSR of FAassisted MU-MIMO networks by 47% compared with conventional MIMO networks using FPAs. Moreover, the decentralized implementation reduces computation time by approximately 70% and has similar performance compared with the centralized implementation.\n\nThe remainder of this paper is organized as follows. Section II presents the channel model of the FA-assisted MUMIMO system and formulates the WSR problem. Section III reformulates the problem using FP techniques and solves it using BCA and MM. The decentralized implementation of the proposed algorithm is introduced in Section IV . Simulation results are provided in Section V , and conclusions are drawn in Section VI .\n\nNotation: Italic letters, boldface lowercase letters, and boldface uppercase letters denote scalars, vectors, and matrices, respectively. The imaginary unit is denoted by ȷ . For a complex number a , its amplitude and phase are given by | a | and ∠ a , respectively. The ℓ 2 norm of a vector a is ∥ a ∥ 2 . [ A ] m , [ A ] mn , A T , A H , det( A ) , tr ( A ) , vec( A ) , ∥ A ∥ ∞ , and ∥ A ∥ F denote the m -th row, the ( m,n ) -th element, transpose, conjugate transpose, determinant, trace, vectorization, the infinity norm, and the Frobenius norm of matrix A , respectively. A ⪰ 0 and A ≻ 0 indicate that A is positive semi-definite and positive definite, respectively. C M × N , R M × N , and R M × N + denote the sets of M × N complex, real, and non-negative real matrices, respectively. The circularly symmetric complex Gaussian (CSCG) distribution with zero mean and covariance σ 2 I is represented as CN ( 0 ,σ 2 I ) , and the uniform distribution over [ a,b ] is denoted by U [ a,b ] . Operator ∂ ( · ) denotes the partial differential. ∇ x f ( x ) and ∇ 2 x f ( x ) denote the gradient vector and Hessian matrix of f ( x ) with respect to (w.r.t.) x respectively.\n\n# II. S YSTEM M ODEL AND P ROBLEM F ORMULATION\n\nAs shown in Fig. 1 , we consider a downlink MU-MIMO system where a BS with M FAs serves K users, each equipped with N FAs. A three-dimensional (3D) Cartesian coordinate system is established to describe the positions of the transmit FAs at the BS and receive FAs at the users.\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "88496c253f5fcc0e15a30a7b2bf80da2a54f4060a0ce1c817fc701c2ee329198"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "38862958b64586b40051a7c176608479b537b873b636079802184c30ae4810d6"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "92949f3778c1204606c244708fcea30abee32b20a8d02f68796cac447baed4f8"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06495642357494676,
+        "y0": 0.06532919977669294,
+        "x1": 0.49388854917718844,
+        "y1": 0.4165235363289741
+      },
+      "text": "proach cannot be directly applied to this joint optimization problem. To address this challenge, the authors of [ 25 ] studied a secure rate maximization problem with joint beamforming, FA position control, and artificial noise optimization problem. Then, they proposed the minimum mean square error (MMSE) method to decouple the optimization variables, demonstrating that the joint optimization significantly improves performance. The FAS was further extended to multiuser systems by [ 12 ], where the authors considered the transmit power minimization problem in an FA-assisted multiuser system with joint beamforming and FA position optimization. They decoupled the variables using zero-forcing (ZF) and MMSE methods. Then, they optimized FA positions via a multi-directional descent (MDD) framework. It was demonstrated that FAS can effectively cancel MUI, thereby significantly reducing transmit power while ensuring the data rate. More recently, [ 26 ] evaluated the system capacity gain of the FAS by solving the weighted sum rate (WSR) maximization problem in an FAassisted downlink MU-multiple-input single-output (MISO) system. The authors first applied the weighted minimum mean square error (WMMSE) algorithm to decouple beamforming vectors and FA positions. Then, they leveraged the majorization maximization (MM) framework to solve the resulting nonconcave FA position optimization problem. Simulation results demonstrated that FAS enhances overall system capacity in MU-MISO networks.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06383593492766382,
+        "y0": 0.4169190749385312,
+        "x1": 0.4933291448000591,
+        "y1": 0.4992730641770302
+      },
+      "text": "However, the MM framework in [ 26 ] has unaffordable complexity when the number of FAs at the BS is large. Specifically, the MM framework optimizes one FA position at a time while keeping the others fixed in each iteration, leading to the increased computational time as the number of FAs grows.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.06719572097648822,
+        "y0": 0.5067966123840406,
+        "x1": 0.18590872133262556,
+        "y1": 0.5186746487070757
+      },
+      "text": "B. Contributions",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06439533930479308,
+        "y0": 0.5238214018458469,
+        "x1": 0.4927680605299055,
+        "y1": 0.6026119801874354
+      },
+      "text": "In this paper, we propose a novel block coordinate ascent (BCA)-based algorithm for joint beamforming and FA position optimization in the FA-assisted downlink MU-MIMO system, as well as provide a decentralized implementation of the proposed algorithm. Our contributions are summarized as follows.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08645401460834974,
+        "y0": 0.6052227725712385,
+        "x1": 0.48995591960703944,
+        "y1": 0.7678746629607194
+      },
+      "text": "• Different from [ 26 ] that focuses on MU-MISO networks, we consider the more general FA-assisted MU-MIMO networks. We formulate the joint beamforming and antenna position optimization as a WSR maximization problem, where the objective function is non-concave and the optimization variables are highly coupled. To decouple the beamforming matrices and FA positions, we utilize two matrix fractional programming (FP) techniques, i.e., the quadratic transform and the Lagrangian dual transform [ 27 ], [ 28 ]. These FP techniques enable us to solve the decoupled subproblems by a BCA-based algorithm. Unlike existing FA position optimization algorithms that",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "list",
+      "box": {
+        "page": 0,
+        "x0": 0.08645401460834974,
+        "y0": 0.7580717195833184,
+        "x1": 0.48995591960703944,
+        "y1": 0.8892871990402547
+      },
+      "text": "• sequentially update FA positions, we propose a novel optimization algorithm based on the MM framework that optimizes all FA positions simultaneously. The proposed algorithm reduces computational time by exploiting parallelism and can be easily extended to a decentralized implementation. Additionally, we introduce a box-constrained movement mode to simplify both the formulated problem and the engineering implementation of FAS. This movement mode provides closed-form so-",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5403661494836008,
+        "y0": 0.06612146479943937,
+        "x1": 0.9345799259503155,
+        "y1": 0.10611006188456917
+      },
+      "text": "lutions to reduce complexity and enables decentralized implementation by allowing the independent movement of each FA.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5403661494836008,
+        "y0": 0.12076043188540075,
+        "x1": 0.9357004145975985,
+        "y1": 0.3100167480312155
+      },
+      "text": "nection costs, we propose a decentralized implementation of our algorithm by utilizing the decentralized baseband processing (DBP) architecture [ 29 ], which partitions the transmit FA array into several clusters. The DBP architecture can decompose the optimization problem into smaller subproblems, and enable decentralized units (DUs) to solve them in parallel. To enable the decentralized implementation of the proposed BCA-based algorithm, we employ the non-homogeneous transform and Nesterov’s extrapolation [ 30 ], [ 31 ] to avoid the matrix inversion in the optimization of beamforming matrices. The decentralized implementation can significantly alleviate computational, storage, and interconnection costs with negligible performance loss. We conduct various numerical experiments to verify the",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5403661494836008,
+        "y0": 0.30843340578935496,
+        "x1": 0.9357004145975985,
+        "y1": 0.41929468220313815
+      },
+      "text": "performance of our proposed algorithm. It is shown that the proposed algorithm can improve the WSR of FAassisted MU-MIMO networks by 47% compared with conventional MIMO networks using FPAs. Moreover, the decentralized implementation reduces computation time by approximately 70% and has similar performance compared with the centralized implementation.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5067682889953568,
+        "y0": 0.4185024171803917,
+        "x1": 0.9345799259503155,
+        "y1": 0.5265925477200109
+      },
+      "text": "The remainder of this paper is organized as follows. Section II presents the channel model of the FA-assisted MUMIMO system and formulates the WSR problem. Section III reformulates the problem using FP techniques and solves it using BCA and MM. The decentralized implementation of the proposed algorithm is introduced in Section IV . Simulation results are provided in Section V , and conclusions are drawn in Section VI .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5062072047252032,
+        "y0": 0.5277803513523144,
+        "x1": 0.9362598189747278,
+        "y1": 0.7851382009526185
+      },
+      "text": "Notation: Italic letters, boldface lowercase letters, and boldface uppercase letters denote scalars, vectors, and matrices, respectively. The imaginary unit is denoted by ȷ . For a complex number a , its amplitude and phase are given by | a | and ∠ a , respectively. The ℓ 2 norm of a vector a is ∥ a ∥ 2 . [ A ] m , [ A ] mn , A T , A H , det( A ) , tr ( A ) , vec( A ) , ∥ A ∥ ∞ , and ∥ A ∥ F denote the m -th row, the ( m,n ) -th element, transpose, conjugate transpose, determinant, trace, vectorization, the infinity norm, and the Frobenius norm of matrix A , respectively. A ⪰ 0 and A ≻ 0 indicate that A is positive semi-definite and positive definite, respectively. C M × N , R M × N , and R M × N + denote the sets of M × N complex, real, and non-negative real matrices, respectively. The circularly symmetric complex Gaussian (CSCG) distribution with zero mean and covariance σ 2 I is represented as CN ( 0 ,σ 2 I ) , and the uniform distribution over [ a,b ] is denoted by U [ a,b ] . Operator ∂ ( · ) denotes the partial differential. ∇ x f ( x ) and ∇ 2 x f ( x ) denote the gradient vector and Hessian matrix of f ( x ) with respect to (w.r.t.) x respectively.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5364452791646229,
+        "y0": 0.8045385976790317,
+        "x1": 0.9049029357810496,
+        "y1": 0.8164166340020668
+      },
+      "text": "II. S YSTEM M ODEL AND P ROBLEM F ORMULATION",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5067682889953568,
+        "y0": 0.8223556521635843,
+        "x1": 0.9357004145975985,
+        "y1": 0.8884771169630237
+      },
+      "text": "As shown in Fig. 1 , we consider a downlink MU-MIMO system where a BS with M FAs serves K users, each equipped with N FAs. A three-dimensional (3D) Cartesian coordinate system is established to describe the positions of the transmit FAs at the BS and receive FAs at the users.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      595.276,
+      841.89
+    ]
+  ],
+  "seconds": 28.622406700000283,
+  "model_load_seconds": null,
+  "peak_rss_mb": 152.671875,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "hybrid": "docling-fast",
+    "hybrid_mode": "full",
+    "hybrid_fallback": false,
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "owned-hybrid-launcher-manifest",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "hybrid_server": {
+      "host": "127.0.0.1",
+      "port": 5002,
+      "force_ocr": true,
+      "ocr_engine": "easyocr",
+      "ocr_languages": [
+        "vi",
+        "en"
+      ]
+    },
+    "cpu_enforcement": {
+      "CUDA_VISIBLE_DEVICES": ""
+    },
+    "cpu_enforcement_method": "CUDA_VISIBLE_DEVICES-empty-before-spawn",
+    "docling_version": "2.91.0",
+    "easyocr_version": "1.7.2",
+    "pypdf_version": "6.14.2",
+    "hybrid_dependency_versions": {
+      "docling": "2.91.0",
+      "easyocr": "1.7.2",
+      "fastapi": "0.141.1",
+      "opendataloader-pdf": "2.5.0",
+      "packaging": "26.3",
+      "pypdf": "6.14.2",
+      "psutil": "7.2.2",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_server_versions": {
+      "fastapi": "0.141.1",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_manifest_sha256": "a78ad752ae46c9312b1482bfa91c4f260a35abe2fe932a2d720e33b5bf6e265f",
+    "hybrid_manifest_run_id": "804e00da172436934d5923ac7ff91f09f5bbf4601eb9e975c1334a03246a1a91",
+    "hybrid_process_pid": 6092,
+    "hybrid_process_create_time": 1786929613.779883,
+    "hybrid_listener_pids": [
+      8132
+    ],
+    "publication_cache": {
+      "doc_id": "2503.04040_pg2",
+      "pdf_sha256": "3c873ca4631909e2dfec454d59205d16bf821820c19aab2bdf30be39c6b928ba",
+      "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

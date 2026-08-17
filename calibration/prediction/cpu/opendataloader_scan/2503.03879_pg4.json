@@ -1,0 +1,693 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_scan",
+  "engine_family": "opendataloader",
+  "profile": "scan",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.03879_pg4",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "![](<2503.03879_pg4_images/imageFile1.png>)\n\nt\n\nti+2\n\nti-2\n\nti+1\n\nti\n\nMove Finite Element\n\nFig. 2. Location of switch point at the end of finite element\n\nThe proposed step-equilibration approach is based on the principle that only the finite element(s) with the switch point(s) have non-uniform discretization [ t l − 1 ,t l ]. The approach uses an indicator variable ( η ) for the switch point(s), which is determined by calculating and multiplying the sum of the complementarity variables in two consecutive finite elements.\n\nThe auxiliary variables for the sum of the complementarity variables at each finite element are defined as:\n\n$$\nK K Vl,k (10a) k=l k=l\n$$\n\nThen, the Hadamard product of the forward and backward sum of the complementarity variables determine if they have switched from positive to zero (or vice-versa).\n\n$$\nT = (10b)\n$$\n\n− − (Here, ⊙ represents pointwise or elementwise product of vectors.) λ ν\n\nSince at least one of the vectors π l or π l is zero at each element, and they are exactly equal to zero at the element corresponding to the switching point, the sum of the two vectors is a good candidate for the indicator function\n\n$$\nnf (1Oc) j=1\n$$\n\nSince the indicator variable η l is non-negative and only zero at the switching element, the relation between step size and indicator variable can be represented by the following complementarity constraints.\n\n$$\nFor 1, (10d)\n$$\n\nwhere h l − 1 − h l = ∆ h + l − ∆ h − l , ∆ h + l , ∆ h − l ≥ 0, The finite element with switch detection (FESD) algorithm was implemented as a package NOSNOC in [19].\n\nAs mentioned in (10), the Nurkanovic formulation augments an additional [2 N { ˆ λ, ˆ ν } +(2 N − 2) { π λ ,π ν } +( N − 1) { τ } + ( N − 1) { η } ] variables and [2 N { (10a) } + (2 N − 2) { (10b) } +2( N − 1) { (10c) } +( N − 1) { (10d) } ] constraints for each complementarity constraint. This effectively decreases the degrees of freedom by N − 1 to that of the original problem and avoids non-unique solutions for the step size variables h i .\n\n# 2.4 Proposed Formulation\n\nAlthough the Nurkanovic formulation makes the problem consistent with respect to the degrees of freedom and ensures uniform grid discretization away from the switch point(s), the formulation may be numerically unstable (i.e. the derivatives have large condition number) and increases the size of the problem, making it difficult to implement on larger optimal control problems.\n\nInspired by the Nurkanovic [21] formulation, we propose a modification of the approach in [1], in order to keep the degrees of the problem consistent. In our proposed approach, we first apply the formulation in [1] with cross complementarities (9f). This locates the switching point(s) ( t s ) at the end of the finite element(s).\n\nWe define the set of finite elements which have the switching point at the end (i.e. right) as:\n\n$$\nXs = 0 (Ila) Or\n$$\n\n− − } In the next step, we add additional constraints to the formulation which forces the finite elements to be equally spaced away from the switching points.\n\n$$\nVI € {1, N _ 1} Xs (11b)\n$$\n\nl − l +1 ∀ ∈ { − } \\ s Also, we add constraints to force the switching to happen at the boundary of finite elements found in the first step.\n\n$$\nVl € Xs (Ilc)\n$$\n\n∀ ∈ This formulation adds the necessary N − 1 linear constraints without any additional variables making the formulation much more adaptable and applicable for large optimal control problems.\n\nThe main assumption in our approach is that the location of the switching points in the optimal solution is independent of the step-size variables and the formulations. Thus, the switching points in the Baumrucker formulation would be the same as in the Nurkanovic formulation. The only difference between their solutions is in the value of the step size variables away from the switching elements. Therefore, we implement uniform discretization between the switch points, start time and the final time using (11) instead.\n\n# 3. SOLUTION METHODS FOR MPCCS\n\nTo develop the solution strategy for the MPCC derived in the previous section, we discretize and rewrite (7) in the more general form:\n\n$$\nmin 4(x) (12a)\n$$\n\n$$\nS.t. (12b)\n$$\n\n$$\n0 < (12c) 2 0\n$$\n\n≤ ⊥ ≥ Here the complementarity constraints (12d) represent the cross-complementarity constraints (9f) and step equilibration constraints (10e). The NLP equivalent formulation of the complementarity constraints is\n\n$$\nG(s) 2 0, Vi = 1 nc\n$$\n\n# 3.1 MPCC Basics and Stationary Points\n\nThe following index sets are defined at every feasible point ¯ x of the MPCC (12):\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "a770aaf2daa03a381d3abc530e8b5a7998f7b7fd5466b1037aaa8d9df7a92b56"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "5ba1ac6d14e17021ef97e8a8ff45728b37e1466e9317f56b1e0c4b9c125e4d6d"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "36ff9b3bca7deb48ed681849374319677cb71d96f849ad26c8ec5643ebb73046"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.11071334977388642,
+        "y0": 0.08566796137262578,
+        "x1": 0.447851080843172,
+        "y1": 0.2498164843388091
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.42613342382357094,
+        "y0": 0.1880685125135112,
+        "x1": 0.4373315907243028,
+        "y1": 0.19836320659468576
+      },
+      "text": "t",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.36339277914782386,
+        "y0": 0.2043568637232892,
+        "x1": 0.39759876091090524,
+        "y1": 0.2220646402736699
+      },
+      "text": "ti+2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13047225152702277,
+        "y0": 0.2046977633657603,
+        "x1": 0.1691097910885035,
+        "y1": 0.2209314756084524
+      },
+      "text": "ti-2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3074204234674336,
+        "y0": 0.20549002838850683,
+        "x1": 0.34437807000450216,
+        "y1": 0.2205359369988954
+      },
+      "text": "ti+1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.2598240144067626,
+        "y0": 0.20588556699806382,
+        "x1": 0.27550245600360174,
+        "y1": 0.21855586834384544
+      },
+      "text": "ti",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26206331180830406,
+        "y0": 0.23201724690874104,
+        "x1": 0.3751755488210511,
+        "y1": 0.24151967596716906
+      },
+      "text": "Move Finite Element",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06663631659935897,
+        "y0": 0.2621090641295182,
+        "x1": 0.49164925177564694,
+        "y1": 0.27755051134946374
+      },
+      "text": "Fig. 2. Location of switch point at the end of finite element",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06439533930479308,
+        "y0": 0.29219969354666286,
+        "x1": 0.4933291448000591,
+        "y1": 0.38524391547589354
+      },
+      "text": "The proposed step-equilibration approach is based on the principle that only the finite element(s) with the switch point(s) have non-uniform discretization [ t l − 1 ,t l ]. The approach uses an indicator variable ( η ) for the switch point(s), which is determined by calculating and multiplying the sum of the complementarity variables in two consecutive finite elements.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06719572097648822,
+        "y0": 0.38999513000510755,
+        "x1": 0.4922086561527762,
+        "y1": 0.4173146135480882
+      },
+      "text": "The auxiliary variables for the sum of the complementarity variables at each finite element are defined as:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.21446690274763305,
+        "y0": 0.42246255449049164,
+        "x1": 0.4922086561527762,
+        "y1": 0.4600755443110145
+      },
+      "text": "K K Vl,k (10a) k=l k=l",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06551582795207601,
+        "y0": 0.4640356816211144,
+        "x1": 0.4922086561527762,
+        "y1": 0.5067966123840406
+      },
+      "text": "Then, the Hadamard product of the forward and backward sum of the complementarity variables determine if they have switched from positive to zero (or vice-versa).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.15958983731915952,
+        "y0": 0.5119433655228118,
+        "x1": 0.4922086561527762,
+        "y1": 0.5277803513523144
+      },
+      "text": "T = (10b)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06719572097648822,
+        "y0": 0.5301559586169214,
+        "x1": 0.4933291448000591,
+        "y1": 0.5574754421599021
+      },
+      "text": "− − (Here, ⊙ represents pointwise or elementwise product of vectors.) λ ν",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06607523232920527,
+        "y0": 0.5578721685730914,
+        "x1": 0.4922086561527762,
+        "y1": 0.6129066742686099
+      },
+      "text": "Since at least one of the vectors π l or π l is zero at each element, and they are exactly equal to zero at the element corresponding to the switching point, the sum of the two vectors is a good candidate for the indicator function",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.32365994933442643,
+        "y0": 0.618053427407381,
+        "x1": 0.4927680605299055,
+        "y1": 0.6548753400087897
+      },
+      "text": "nf (1Oc) j=1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06495642357494676,
+        "y0": 0.6600232809511931,
+        "x1": 0.4933291448000591,
+        "y1": 0.7146622480371545
+      },
+      "text": "Since the indicator variable η l is non-negative and only zero at the switching element, the relation between step size and indicator variable can be represented by the following complementarity constraints.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.06719572097648822,
+        "y0": 0.720601266198672,
+        "x1": 0.4922086561527762,
+        "y1": 0.7534630414899809
+      },
+      "text": "For 1, (10d)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06495642357494676,
+        "y0": 0.7597987860646878,
+        "x1": 0.4927680605299055,
+        "y1": 0.8017674518048676
+      },
+      "text": "where h l − 1 − h l = ∆ h + l − ∆ h − l , ∆ h + l , ∆ h − l ≥ 0, The finite element with switch detection (FESD) algorithm was implemented as a package NOSNOC in [19].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06439533930479308,
+        "y0": 0.8100820772309922,
+        "x1": 0.4933291448000591,
+        "y1": 0.9154010618964473
+      },
+      "text": "As mentioned in (10), the Nurkanovic formulation augments an additional [2 N { ˆ λ, ˆ ν } +(2 N − 2) { π λ ,π ν } +( N − 1) { τ } + ( N − 1) { η } ] variables and [2 N { (10a) } + (2 N − 2) { (10b) } +2( N − 1) { (10c) } +( N − 1) { (10d) } ] constraints for each complementarity constraint. This effectively decreases the degrees of freedom by N − 1 to that of the original problem and avoids non-unique solutions for the step size variables h i .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5140472654701349,
+        "y0": 0.08472959650310607,
+        "x1": 0.7077943676546679,
+        "y1": 0.09739989784888758
+      },
+      "text": "2.4 Proposed Formulation",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5101280750441812,
+        "y0": 0.10967347278147976,
+        "x1": 0.93793971199914,
+        "y1": 0.2046977633657603
+      },
+      "text": "Although the Nurkanovic formulation makes the problem consistent with respect to the degrees of freedom and ensures uniform grid discretization away from the switch point(s), the formulation may be numerically unstable (i.e. the derivatives have large condition number) and increases the size of the problem, making it difficult to implement on larger optimal control problems.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5106874794213105,
+        "y0": 0.20865790067586032,
+        "x1": 0.9373803076220107,
+        "y1": 0.2886362826497524
+      },
+      "text": "Inspired by the Nurkanovic [21] formulation, we propose a modification of the approach in [1], in order to keep the degrees of the problem consistent. In our proposed approach, we first apply the formulation in [1] with cross complementarities (9f). This locates the switching point(s) ( t s ) at the end of the finite element(s).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5124530469899677,
+        "y0": 0.2929919585694093,
+        "x1": 0.93793971199914,
+        "y1": 0.32263834942807257
+      },
+      "text": "We define the set of finite elements which have the switching point at the end (i.e. right) as:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.6249202050813405,
+        "y0": 0.3246659302284146,
+        "x1": 0.93793971199914,
+        "y1": 0.35040207152953473
+      },
+      "text": "Xs = 0 (Ila) Or",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5106874794213105,
+        "y0": 0.35519485918587934,
+        "x1": 0.93793971199914,
+        "y1": 0.3836605732340329
+      },
+      "text": "− − } In the next step, we add additional constraints to the formulation which forces the finite elements to be equally spaced away from the switching points.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.6725166141420116,
+        "y0": 0.39791421682167505,
+        "x1": 0.9368209032448815,
+        "y1": 0.4129601254320635
+      },
+      "text": "VI € {1, N _ 1} Xs (11b)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5118079680685934,
+        "y0": 0.4129601254320635,
+        "x1": 0.9373803076220107,
+        "y1": 0.4422584898264619
+      },
+      "text": "l − l +1 ∀ ∈ { − } \\ s Also, we add constraints to force the switching to happen at the boundary of finite elements found in the first step.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.7598710514114462,
+        "y0": 0.44384301987195474,
+        "x1": 0.93793971199914,
+        "y1": 0.45888774067871096
+      },
+      "text": "Vl € Xs (Ilc)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5101280750441812,
+        "y0": 0.4596800057014574,
+        "x1": 0.9368209032448815,
+        "y1": 0.5151112378101652
+      },
+      "text": "∀ ∈ This formulation adds the necessary N − 1 linear constraints without any additional variables making the formulation much more adaptable and applicable for large optimal control problems.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5112468837984399,
+        "y0": 0.5190701873166328,
+        "x1": 0.9390602006464229,
+        "y1": 0.6493330482604616
+      },
+      "text": "The main assumption in our approach is that the location of the switching points in the optimal solution is independent of the step-size variables and the formulations. Thus, the switching points in the Baumrucker formulation would be the same as in the Nurkanovic formulation. The only difference between their solutions is in the value of the step size variables away from the switching elements. Therefore, we implement uniform discretization between the switch points, start time and the final time using (11) instead.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5689243308986084,
+        "y0": 0.6627944268253572,
+        "x1": 0.8813844334392787,
+        "y1": 0.6754647281711388
+      },
+      "text": "3. SOLUTION METHODS FOR MPCCS",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5112468837984399,
+        "y0": 0.6885305681264773,
+        "x1": 0.93793971199914,
+        "y1": 0.7301036952571001
+      },
+      "text": "To develop the solution strategy for the MPCC derived in the previous section, we discretize and rewrite (7) in the more general form:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.6254796094584698,
+        "y0": 0.7320825761085177,
+        "x1": 0.9368209032448815,
+        "y1": 0.7471284847189064
+      },
+      "text": "min 4(x) (12a)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.6305192885317064,
+        "y0": 0.7463362196961598,
+        "x1": 0.9368209032448815,
+        "y1": 0.7621743933292948
+      },
+      "text": "S.t. (12b)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.6613184472412796,
+        "y0": 0.7629654705484089,
+        "x1": 0.9368209032448815,
+        "y1": 0.777219114136051
+      },
+      "text": "0 < (12c) 2 0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5112468837984399,
+        "y0": 0.7788036441815439,
+        "x1": 0.9390602006464229,
+        "y1": 0.8322548076352018
+      },
+      "text": "≤ ⊥ ≥ Here the complementarity constraints (12d) represent the cross-complementarity constraints (9f) and step equilibration constraints (10e). The NLP equivalent formulation of the complementarity constraints is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.5302867913371276,
+        "y0": 0.8346304148998087,
+        "x1": 0.9183420799763472,
+        "y1": 0.849279597097008
+      },
+      "text": "G(s) 2 0, Vi = 1 nc",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5140472654701349,
+        "y0": 0.8599698297877395,
+        "x1": 0.819228391536027,
+        "y1": 0.8754112770076851
+      },
+      "text": "3.1 MPCC Basics and Stationary Points",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5134878610930056,
+        "y0": 0.8864970483079737,
+        "x1": 0.9385007962692937,
+        "y1": 0.9027307605506658
+      },
+      "text": "The following index sets are defined at every feasible point ¯ x of the MPCC (12):",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.11071334977388642,
+        "y0": 0.08566796137262578,
+        "x1": 0.447851080843172,
+        "y1": 0.2498164843388091
+      },
+      "source_id": "2503.03879_pg4_images/imageFile1.png",
+      "file": "000.png",
+      "sha256": "2e85fcacc20cfb9b11730e2c1c7afb073aa82b9a28706174378176ecfe8d3ac6"
+    }
+  ],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      595.276,
+      841.89
+    ]
+  ],
+  "seconds": 24.749656899999536,
+  "model_load_seconds": null,
+  "peak_rss_mb": 151.1640625,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "hybrid": "docling-fast",
+    "hybrid_mode": "full",
+    "hybrid_fallback": false,
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "owned-hybrid-launcher-manifest",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "hybrid_server": {
+      "host": "127.0.0.1",
+      "port": 5002,
+      "force_ocr": true,
+      "ocr_engine": "easyocr",
+      "ocr_languages": [
+        "vi",
+        "en"
+      ]
+    },
+    "cpu_enforcement": {
+      "CUDA_VISIBLE_DEVICES": ""
+    },
+    "cpu_enforcement_method": "CUDA_VISIBLE_DEVICES-empty-before-spawn",
+    "docling_version": "2.91.0",
+    "easyocr_version": "1.7.2",
+    "pypdf_version": "6.14.2",
+    "hybrid_dependency_versions": {
+      "docling": "2.91.0",
+      "easyocr": "1.7.2",
+      "fastapi": "0.141.1",
+      "opendataloader-pdf": "2.5.0",
+      "packaging": "26.3",
+      "pypdf": "6.14.2",
+      "psutil": "7.2.2",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_server_versions": {
+      "fastapi": "0.141.1",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_manifest_sha256": "a78ad752ae46c9312b1482bfa91c4f260a35abe2fe932a2d720e33b5bf6e265f",
+    "hybrid_manifest_run_id": "804e00da172436934d5923ac7ff91f09f5bbf4601eb9e975c1334a03246a1a91",
+    "hybrid_process_pid": 6092,
+    "hybrid_process_create_time": 1786929613.779883,
+    "hybrid_listener_pids": [
+      8132
+    ],
+    "publication_cache": {
+      "doc_id": "2503.03879_pg4",
+      "pdf_sha256": "228f5d95c53726dca4548cca9c31799cf15583bf79da5af2b19158fa15182e7c",
+      "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

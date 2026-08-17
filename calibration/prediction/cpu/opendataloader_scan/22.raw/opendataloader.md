@@ -1,0 +1,12 @@
+![](<22_images/imageFile1.png>)
+
+WESTERN UNION
+
+Form 1804
+
+TELEERAM
+
+THEO. N. VAIL PRESIDENT
+
+RECEIVED AT
+

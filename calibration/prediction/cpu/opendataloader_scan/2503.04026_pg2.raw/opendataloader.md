@@ -1,0 +1,14 @@
+Euclidean and non-Euclidean 3-dimensional spaces is a fundamental area of research in geometry and physics. Over time, researchers have developed various results, theorems, and insights concerning these surfaces. In [8], the authors investigated the Bertrand oﬀset for ruled surfaces and showed that, similarly to planar curves, a ruled surface can have an inﬁnite number of Bertrand oﬀsets. The relationship between the Bertrand oﬀsets of trajectory ruled surfaces and their projections on spherical areas has been explored in [9, 10], along with their corresponding invariants. The Bertrand oﬀsets of ruled surfaces in Minkowski 3-space were considered in [11, 12]. Additionally, the study of Mannheim oﬀsets for timelike ruled and developable surfaces, particularly their invariants, was addressed in [13, 14]. In [15], Senturk and Yuce analyzed involute-evolute oﬀsets of ruled surfaces and developed associated invariants using the geodesic Frenet frame. More recently, research on evolute oﬀsets of ruled surfaces, especially those with constant Gaussian and mean curvatures, in both Euclidean and Minkowski 3-spaces has been presented in [16, 17].
+
+The characteristics of ruled surfaces and their oﬀset surfaces have been extensively studied in both Euclidean and non-Euclidean spaces (see [15-21]). However, existing literature lacks a detailed approach to constructing evolute oﬀsets of slant TL -ruled surfaces in terms of the striction curve. In this study, we explore the geometric properties of slant TL -ruled surfaces and their evolute oﬀsets within three-dimensional Minkowski space E 3 1 . By establishing a bijective correspondence through their rulings, we derive conditions under which an evolute oﬀset M ∗ maintains a coaxial relationship with the central normal of M . Furthermore, we formulate expressions governing curvature behavior and classify M and M ∗ based on speciﬁc functional parameters. Special cases, including TL -developable, TL -binormal, and TL -cone surfaces, are also examined, with graphical visualizations provided to support the analysis. This paper investigates slant timelike ( TL ) ruled surfaces and their evolute
+
+oﬀsets in Minkowski 3-space E 3 1 . We present a parametric formulation of skew TL -ruled surfaces and establish conditions ensuring the coaxial alignment of the central normal with the ruling direction of the corresponding oﬀset surface. The study explores the geometric properties using the Blaschke and Darboux frames, deriving curvature characteristics and fundamental invariants. Special cases, including TL -developable and TL -binormal surfaces, are analyzed with illustrative examples. The ﬁndings provide a deeper understanding of the differential geometry of TL -ruled surfaces and their evolute oﬀsets in Lorentzian space.
+
+# 2 Basic concepts
+
+For vectors (e1,e2,e3) and V = (v1,v2,V3_ in E{, the inner product is defined as:
+
+$$
+e303 .
+$$
+

@@ -1,0 +1,22 @@
+$$
+A1s U1 U2 f2 8 A51 U5 A25 A22 As2
+$$
+
+Here u is the solution and f is the body load on the interior of Ω, split into the two subdomains and shared boundary. Because an elliptic PDO is a local operator there is no interaction through A on f 1 by u 2 or f 2 by u 1 , so A = 0 in those submatrices. However, both u 1 and u 2 , are local to the shared boundary where u 5 lies, so they both interact with the body load there, f 5 , through A . To interpret the first two block rows, note that
+
+$$
+=f1 U1 ~Al + 9 A1s U5
+$$
+
+This is similar to our solution operator formulation shown in (4), with the part of the subdomain boundary on ∂ Ω now folded into u 1 . Next, let u˜ 1 = A − 1 11 f 1 and u˜ 2 = A − 1 22 f 2 . If we supply these vectors in place of u 1 , u 2 in (8) and set u 5 = 0 , then the equation still holds with the same body loads f 1 and f 2 . Thus u˜ 1 and u˜ 2 are the particular solutions to our PDE on the interiors of Ω (1) , and Ω (2) with u 5 = 0 . Now consider an upper triangular matrix U that satisfies
+
+$$
+U1 [ U2 U2 (10) U5 U5 A25 A22
+$$
+
+This linear system can be confirmed with (9). U decouples our solutions u 1 , u 2 into the particular solutions u˜ 1 , u˜ 2 which are derived from our global Dirichlet BC without the subdomain-only (shared face) Dirichlet BC, and u 5 which is that subdomain-only boundary condition. Thus U − 1 collects both components of our solutions in effect it represents the end of solving the merged system, where we use u 3 and u 5 to get u 1 , and u 4 and u 5 to get u 2 . Next, let L be a lower triangular matrix defined such that
+
+$$
+fi f2 =1 f2 (11) I
+$$
+
