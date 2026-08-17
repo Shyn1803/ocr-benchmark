@@ -31,10 +31,13 @@ from ocr_bench.types import Capability, MetricResult, NAReason, OcrResult
 GOC = Path(__file__).resolve().parents[1]
 
 # Ba dạng ô hợp lệ, không có dạng thứ tư:
-#   0.812 (fail 10%)          — đo được
+#   0.812 (n=205, fail 10%)   — đo được; `n` là cỡ mẫu của **chính ô này**, khác
+#                               dòng `**n (tài liệu)**` (độ phủ của engine)
 #   N/A                       — thiếu năng lực, không đo
 #   — (10 hỏng, 0 chấm được)  — có mẫu số nhưng không chấm được cái nào
-O_HOP_LE = re.compile(r"^(\d\.\d{3} \(fail \d+%\)|N/A|— \(\d+ hỏng, 0 chấm được\))$")
+O_HOP_LE = re.compile(
+    r"^(\d\.\d{3} \(n=\d+, fail \d+%\)|N/A|— \(\d+ hỏng, 0 chấm được\))$"
+)
 
 
 def _kq(engine: str, doc: str, *, ver: str = "1.0") -> OcrResult:

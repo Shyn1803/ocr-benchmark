@@ -136,7 +136,8 @@ class Aggregate:
     """Trung bình **chỉ trên tài liệu chấm được**. Đây là con số dễ nhìn và dễ gây
     hiểu nhầm — không bao giờ in một mình, luôn kèm `fail_rate`."""
     penalized_mean: float | None
-    """Trung bình có phạt: tài liệu engine làm hỏng tính 0 điểm."""
+    """Trung bình có phạt: tài liệu engine làm hỏng tính 0 điểm. In ra thì luôn kèm
+    `fail_rate` **và** cỡ mẫu ``n_scored + n_failed`` — xem `cell()`."""
     fail_rate: float
     applicable: bool
     """False = engine này không có năng lực để metric chạm tới. Ô trong bảng phải in
@@ -166,7 +167,17 @@ class Aggregate:
             # hiểu nhầm nặng nhất. Tiêu chí `n_scored == 0` giống hệt `_doc_cham_duoc`
             # của `do_phan_tan()` và `kiem_sabotage()` trong `discrimination.py`.
             return f"— ({self.n_failed} hỏng, 0 chấm được)"
-        return f"{self.penalized_mean:.3f} (fail {self.fail_rate:.0%})"
+        # `n` = mẫu số của **chính hai con số vừa in** (`n_scored + n_failed`), không
+        # phải độ phủ của engine. Bảng xếp hạng có sẵn một dòng `**n (tài liệu)**`,
+        # nhưng dòng đó đếm tài liệu engine chạy qua — với `cell_f1` của docling nó
+        # ghi 1606 trong khi metric chỉ chấm được 13. Ô không mang cỡ mẫu riêng thì
+        # người đọc lấy nhầm con số ở dòng dưới, và trung bình trên 13 tài liệu đọc
+        # y hệt trung bình trên 1606.
+        #
+        # In không điều kiện, không đặt ngưỡng "mẫu nhỏ mới in": ngưỡng ẩn khiến
+        # người đọc không phân biệt được "mẫu lớn" với "luật chưa kích hoạt".
+        n = self.n_scored + self.n_failed
+        return f"{self.penalized_mean:.3f} (n={n}, fail {self.fail_rate:.0%})"
 
 
 def aggregate(

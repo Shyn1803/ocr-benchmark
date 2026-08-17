@@ -162,7 +162,7 @@ def test_toan_bo_na_thi_applicable_false():
 
 def test_o_bang_luon_kem_ti_le_hong():
     """Không thể in trung bình mà quên FailRate — chúng nằm trong cùng một ô."""
-    assert aggregate(_rows([1.0, 1.0], failed=2)).cell() == "0.500 (fail 50%)"
+    assert aggregate(_rows([1.0, 1.0], failed=2)).cell() == "0.500 (n=4, fail 50%)"
 
 
 def test_hong_het_thi_o_khong_in_0_000():
@@ -221,7 +221,31 @@ def test_diem_thap_that_van_in_binh_thuong():
     nuốt luôn engine thật sự tệ."""
     agg = aggregate(_rows([0.0, 0.0], failed=2))
     assert agg.n_scored == 2
-    assert agg.cell() == "0.000 (fail 50%)"
+    assert agg.cell() == "0.000 (n=4, fail 50%)"
+
+
+def test_o_bang_mang_theo_co_mau_cua_chinh_no():
+    """Dòng `**n (tài liệu)**` trong bảng xếp hạng là **độ phủ của engine** — số tài
+    liệu engine chạy qua — chứ không phải số tài liệu *metric này* chấm được. Hai con
+    số đó lệch nhau rất xa: `cell_f1` của docling chấm được 2 tài liệu trong khi dòng
+    `n` ghi 1606.
+
+    Nếu ô chỉ in `0.000 (fail 0%)`, trung bình trên 13 tài liệu đọc y hệt trung bình
+    trên 1606 — người đọc lấy `n` ở dòng dưới ra hiểu, và hiểu sai gấp trăm lần. Ô
+    phải mang theo cỡ mẫu của **chính nó**.
+
+    In `n` **không điều kiện**, không đặt ngưỡng "mẫu nhỏ thì mới in": ngưỡng ẩn thì
+    người đọc không phân biệt được "mẫu lớn" với "luật không kích hoạt".
+    """
+    hep = aggregate(_rows([0.0, 0.0]))
+    rong = aggregate(_rows([0.0] * 1606))
+
+    # Giống nhau ở mọi thứ ô từng in ra — điểm và tỉ lệ hỏng.
+    assert hep.penalized_mean == rong.penalized_mean == 0.0
+    assert hep.fail_rate == rong.fail_rate == 0.0
+
+    assert hep.cell() == "0.000 (n=2, fail 0%)"
+    assert rong.cell() == "0.000 (n=1606, fail 0%)"
 
 
 def test_aggregate_rong():

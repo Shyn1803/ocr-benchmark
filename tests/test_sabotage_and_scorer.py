@@ -475,7 +475,7 @@ def test_engine_hong_van_vao_mau_so_phat():
     assert o.mean == 1.0, "trung bình trên tài liệu chấm được"
     assert o.penalized_mean == 0.5, "có phạt: tài liệu hỏng tính 0"
     assert o.fail_rate == 0.5
-    assert o.cell() == "0.500 (fail 50%)"
+    assert o.cell() == "0.500 (n=2, fail 50%)"
 
 
 def test_bang_markdown_in_ca_o_NA():
@@ -484,7 +484,7 @@ def test_bang_markdown_in_ca_o_NA():
     )
     md = bang.to_markdown()
     assert "| metric | noop | tot |" in md
-    assert "0.000 (fail 0%)" in md and "1.000 (fail 0%)" in md
+    assert "0.000 (n=1, fail 0%)" in md and "1.000 (n=1, fail 0%)" in md
     assert bang.engines() == ["noop", "tot"]
     assert bang.metrics() == ["giong_gt"]
     assert bang.docs() == ["mau"]
