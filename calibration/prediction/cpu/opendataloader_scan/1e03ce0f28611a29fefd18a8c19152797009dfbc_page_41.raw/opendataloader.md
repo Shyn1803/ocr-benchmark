@@ -1,0 +1,49 @@
+![](<1e03ce0f28611a29fefd18a8c19152797009dfbc_page_41_images/imageFile1.png>)
+
+<table>
+  <tr>
+    <th>Etapes du processus</th>
+    <th>Risques</th>
+    <th>Points de contrôle</th>
+    <th>Bonnes pratiques RH</th>
+  </tr>
+  <tr>
+    <td rowspan="6">Fixer la rémunération (niveau individuel)</td>
+    <td>Politique de rémunération non lisible par les collaborateurs Evaluation)</td>
+    <td>Le lien entre Vévolution de la rémunération et la performance individuelle (évolution du salaire, octroi de stocks options, prime annuelle; etc:) est-il apprécié sur la base de critères objectifs ?</td>
+    <td>Diffuser des kits de communication sur Yentretien individuel à destination des collaborateurs et de leur supérieur hiérarchique Insister sur Yobjectivité requise et la nécessité dévaluer les performances sur des critères et mesurables Effectuer un entretien annuel dévaluation de la performance Formaliser un formulaire de compte rendu type afin dêtre le plus objectif possible S'appuyer sur un Comité des rémunérations pour les dirigeants et mandataires sociaux; et des Comités RH avec les métiers et fonctions précis</td>
+  </tr>
+  <tr>
+    <td>Rémunération non attractive</td>
+    <td>La DRH réalise-t-elle régulièrement des études, des comparaisons sur les pratiques du marché</td>
+    <td>Définir des éléments de fidélisation</td>
+  </tr>
+  <tr>
+    <td>Rémunération non motivante</td>
+    <td>La rémunération intègre-t-elle une part variable ? La part variable est-elle plafonnée ?</td>
+    <td>Réexaminer au minimum annuellement la rémunération de chacun, à lissue de Yentretien annuel dévaluation Mettre en place des opérations dintéressement ponctuelles (par exemple, des challenges pour les commerciaux) ou étalées dans Yannée</td>
+  </tr>
+  <tr>
+    <td>Clientélisme favoritisme</td>
+    <td>Le processus de fixation de la rémunération assure-t-il son objectivité</td>
+    <td>Faire valider par le supérieur hiérarchique N+2 la variation de rémunération proposée par le supérieur hiérarchique N+l</td>
+  </tr>
+  <tr>
+    <td>Non-conformité aux instructions internes en matière de rémunération</td>
+    <td>La DRH communique-t-elle au manager les fourchettes applicables selon les catégories demploi et les métiers</td>
+    <td>Faire communiquer par la DRH des grilles, règles et modalités à respecter</td>
+  </tr>
+  <tr>
+    <td>Incohérence entre le niveau de rémunération et la situation du collaborateur</td>
+    <td>Les rémunérations sont elles conformes aux termes du contrat de travail Les situations particulières (retour dexpatriation; ancienneté, intégration des salariés dune nouvelle acquisition, etc.) sont-elles identifiées et gérées ?</td>
+    <td>Mettre en place des Comités RH avec un reporting vers la direction générale</td>
+  </tr>
+  <tr>
+    <td>Assurer la sécurité des données</td>
+    <td>Fuite dinformations Accès frauduleux aux SIRH Modifications frauduleuses des données de la paie</td>
+    <td>Des contrôles préventifs et détectifs permettant dassurer la confidentialité des informations relatives à la rémunération sont-ils mis en place ?</td>
+    <td>Faire signer un engagement de confidentialité pour acteurs concernés (managers, RH, Informaticiens, etc:) Elaborer un Code de déontologie compris un code spécifique à la fonction RH le cas échéant) Définir des daccès aux SIRH Mettre à jour ces daccès (la DRH signale à la DSI les entrants et les sortants) Contrôler annuellement les habilitations pour s' assurer quelles sont justifiées par des besoins métiers Faire réaliser une revue indépendante des journaux des accès et des transactions dans les SI RH sensibles les profils profils</td>
+  </tr>
+</table>
+
+

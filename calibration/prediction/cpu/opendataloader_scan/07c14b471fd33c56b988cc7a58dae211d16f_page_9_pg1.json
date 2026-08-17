@@ -1,0 +1,554 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_scan",
+  "engine_family": "opendataloader",
+  "profile": "scan",
+  "engine_version": "2.5.0",
+  "doc_id": "07c14b471fd33c56b988cc7a58dae211d16f_page_9_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "# METHOD AND APPARATUS FOR PROVIDING FINER MARKING GRANULARITY FOR FIELDS WITHIN OBJECTS\n\n# Related Application\n\nThis application is related to the Subject matter in a pending U.S. patent application, entitled “Supporting Space Time Dimensional Program Execution by Selectively Ver Sioning Memory Updates,” by inventors Shailender Chaudhry and Marc Tremblay, having Ser. No. 09/313,229 and a filing date of May 17, 1999.\n\nThe Subject matter of this application is also related to the Subject matter in a co-pending non-provisional application by the same inventor(s) as the instant application and filed on the same day as the instant application entitled, “Using Time Stamps to Improve Efficiency in Marking Fields Within Objects,” having Ser. No. 09/327,399, and filing date Jun. 7, 1999.\n\n15\n\n20\n\n# BACKGROUND\n\n1. Field of the Invention\n\nThe present invention relates to performance enhance ments in object-oriented programming Systems. More Specifically, the present invention relates to a method and an apparatus that Supports finer marking granularity for fields within objects defined within an object-oriented program ming System.\n\n25\n\n30\n\n2. Related Art\n\nAS increasing Semiconductor integration densities allow more transistors to be integrated onto a microprocessor chip, computer designers are investigating different methods of using these transistors to increase computer System perfor mance Some recent computer architectures exploit “instruc tion level parallelism,” in which a single central processing unit (CPU) issues multiple instructions in a single cycle. Given proper compiler Support, instruction level parallelism has proven effective at increasing computational perfor mance acroSS a wide range of computational taskS. However, inter-instruction dependencies generally limit the perfor mance gains realized from using instruction level parallel ism to a factor of two or three.\n\nAnother method for increasing computational Speed is “speculative eXecution' in which a processor executes mul tiple branch paths simultaneously, or predicts a branch, So that the processor can continue executing without waiting for the result of the branch operation. By reducing depen dencies on branch conditions, Speculative execution can increase the total number of instructions issued.\n\n50\n\nUnfortunately, conventional Speculative execution typi cally provides a limited performance improvement because only a Small number of instructions can be speculatively executed. One reason for this limitation is that conventional Speculative eXecution is typically performed at the basic block level, and basic blocks tend to include only a small number of instructions. Another reason is that conventional hardware structures used to perform Speculative eXecution can only accommodate a Small number of Speculative instructions.\n\n55\n\n60\n\nWhat is needed is a method and apparatus that facilitates Speculative execution of program instructions at a higher level of granularity So that many more instructions can be Speculatively executed.\n\nOne challenge in designing a system that supports specu lative execution is to detect a rollback condition. A rollback condition can occur in a number of situations. For example_ rollback condition occurs when a speculative thread that is executing program instructions in advance of a head thread reads from memory element before the head thread performs write to the memory element. In this case, the speculative thread must \"rollback so that it can read the value stored by the head thread. A rollback condition can be detected by \"marking memory elements as are read by the speculative  thread so that the head thread can subse 10   quently determine if the memory elements have been read by the speculative thread. Unfortunately; separate marking indicator for each memory element can consume large amount of memory; which can reduce cache hit rates arid thereby degrade system performance . they using What is needed is a method and an apparatus for marking memory elements that does   require amount of memory for large storing\n\n# SUMMARY\n\nOne embodiment of the present invention provides a System that facilitates marking of objects defined within an object-oriented programming System to keep track of accesses to fields within the objects. The System operates by receiving a reference to a field within an object, and iden tifying a marking bit within the object that is associated with the field. Note that each marking bit within the object is associated with a different Subset of fields within the object. Next, the System sets the marking bit to indicate that at least one field within the associated Subset of fields has been referenced. Finally, the System performs the reference to the field.\n\nIn one embodiment of the present invention, the object includes N marking bits numbered 0,1,2,...,N-1 and M fields numbered 0,1,2,..., M-1. In this embodiment, the system identifies the marking bit associated with the field by Starting with a field number for the field, and applying a modulo N operation to the field number to produce a number for the associated marking bit. In a variation on this embodiment, N is a power of two.\n\n35\n\n40\n\nIn one embodiment of the present invention, the System Supports Space and time dimensional execution. To this end, the System Supports a head thread that executeS program instructions and a Speculative thread that executeS program instructions in advance of the head thread. The head thread accesses a primary version of the object and the Speculative thread accesses a Space-time dimensioned version of the object. In this embodiment, the Steps of identifying the marking bit and Setting the marking bit take place for a read operation by the Speculative thread.\n\n45\n\nIn a variation on this embodiment, there exists a separate Set of marking bits for write operations. In this variation, if the reference is a write operation by the Speculative thread, the Steps of identifying the marking bit and Setting the marking bit involve the Separate Set of marking bits. Upon a Subsequent write operation to the field by the head thread, the head thread writes to both the primary version and the Space-time dimensioned version if the marking bit is unset, and otherwise writes to the primary version.\n\nIn one embodiment of the present invention, during a Subsequent write, operation to the field by the head thread, the System determines if the marking bit associated with the field has been Set by executing a special bit extract instruc tion to examine the marking bit.\n\nIn one embodiment of the present invention, if the object is an array object with N marking bits numbered 0,1,2,..., N-1 and M array elements numbered 0, 1, 2, . . . , M-1,\n\n65\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "093eb506820482486429a2e477adf82183167c35b41ebb22d6b2c8870473c575"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "1438a185731975e43c44e78010cff3491ec0bcc9d1012912c7b6bb084f0a4043"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "937fad1b82e08c20864e280ee0bae58ac669142dc97238e01ca80abb951f68a4"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.1532561063218391,
+        "y0": 0.10269953051643188,
+        "x1": 0.44899425287356326,
+        "y1": 0.15119693857589978
+      },
+      "text": "METHOD AND APPARATUS FOR PROVIDING FINER MARKING GRANULARITY FOR FIELDS WITHIN OBJECTS",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.23407507183908047,
+        "y0": 0.15934687989045382,
+        "x1": 0.36937320402298857,
+        "y1": 0.176056338028169
+      },
+      "text": "Related Application",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10356860632183909,
+        "y0": 0.1780944346635367,
+        "x1": 0.49688757183908044,
+        "y1": 0.2566925860719874
+      },
+      "text": "This application is related to the Subject matter in a pending U.S. patent application, entitled “Supporting Space Time Dimensional Program Execution by Selectively Ver Sioning Memory Updates,” by inventors Shailender Chaudhry and Marc Tremblay, having Ser. No. 09/313,229 and a filing date of May 17, 1999.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10476472701149425,
+        "y0": 0.25552621283255084,
+        "x1": 0.4986835488505747,
+        "y1": 0.34070202464788724
+      },
+      "text": "The Subject matter of this application is also related to the Subject matter in a co-pending non-provisional application by the same inventor(s) as the instant application and filed on the same day as the instant application entitled, “Using Time Stamps to Improve Efficiency in Marking Fields Within Objects,” having Ser. No. 09/327,399, and filing date Jun. 7, 1999.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5016756465517243,
+        "y0": 0.2738654147104852,
+        "x1": 0.5184392959770114,
+        "y1": 0.2836463223787168
+      },
+      "text": "15",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5016756465517243,
+        "y0": 0.33499608763693267,
+        "x1": 0.5184392959770114,
+        "y1": 0.34477699530516437
+      },
+      "text": "20",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.24185883620689658,
+        "y0": 0.3504829323161188,
+        "x1": 0.3603933189655173,
+        "y1": 0.36270906690140836
+      },
+      "text": "BACKGROUND",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.12332435344827587,
+        "y0": 0.36841378129890456,
+        "x1": 0.2861584051724138,
+        "y1": 0.380639915884194
+      },
+      "text": "1. Field of the Invention",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10416666666666667,
+        "y0": 0.3810482687793427,
+        "x1": 0.4986835488505747,
+        "y1": 0.4580093407668231
+      },
+      "text": "The present invention relates to performance enhance ments in object-oriented programming Systems. More Specifically, the present invention relates to a method and an apparatus that Supports finer marking granularity for fields within objects defined within an object-oriented program ming System.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5016756465517243,
+        "y0": 0.39612676056338025,
+        "x1": 0.5184392959770114,
+        "y1": 0.40590766823161184
+      },
+      "text": "25",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5034716235632185,
+        "y0": 0.457664563771518,
+        "x1": 0.5178394396551725,
+        "y1": 0.4658157276995305
+      },
+      "text": "30",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1221264367816092,
+        "y0": 0.4588871772300469,
+        "x1": 0.2179112787356322,
+        "y1": 0.4694835680751174
+      },
+      "text": "2. Related Art",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10416666666666667,
+        "y0": 0.4698906983568075,
+        "x1": 0.49748563218390807,
+        "y1": 0.6300530614241002
+      },
+      "text": "AS increasing Semiconductor integration densities allow more transistors to be integrated onto a microprocessor chip, computer designers are investigating different methods of using these transistors to increase computer System perfor mance Some recent computer architectures exploit “instruc tion level parallelism,” in which a single central processing unit (CPU) issues multiple instructions in a single cycle. Given proper compiler Support, instruction level parallelism has proven effective at increasing computational perfor mance acroSS a wide range of computational taskS. However, inter-instruction dependencies generally limit the perfor mance gains realized from using instruction level parallel ism to a factor of two or three.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10476472701149425,
+        "y0": 0.6304614143192488,
+        "x1": 0.49808369252873574,
+        "y1": 0.7172669698748044
+      },
+      "text": "Another method for increasing computational Speed is “speculative eXecution' in which a processor executes mul tiple branch paths simultaneously, or predicts a branch, So that the processor can continue executing without waiting for the result of the branch operation. By reducing depen dencies on branch conditions, Speculative execution can increase the total number of instructions issued.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5016756465517243,
+        "y0": 0.7009646420187794,
+        "x1": 0.5184392959770114,
+        "y1": 0.710745549687011
+      },
+      "text": "50",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10416666666666667,
+        "y0": 0.7193038438967136,
+        "x1": 0.49808369252873574,
+        "y1": 0.8411580594679187
+      },
+      "text": "Unfortunately, conventional Speculative execution typi cally provides a limited performance improvement because only a Small number of instructions can be speculatively executed. One reason for this limitation is that conventional Speculative eXecution is typically performed at the basic block level, and basic blocks tend to include only a small number of instructions. Another reason is that conventional hardware structures used to perform Speculative eXecution can only accommodate a Small number of Speculative instructions.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5016756465517243,
+        "y0": 0.7612810543818467,
+        "x1": 0.5184392959770114,
+        "y1": 0.7718762226134586
+      },
+      "text": "55",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5034716235632185,
+        "y0": 0.8236343407668232,
+        "x1": 0.5178394396551725,
+        "y1": 0.8317842820813772
+      },
+      "text": "60",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10476472701149425,
+        "y0": 0.8444187695618153,
+        "x1": 0.49808369252873574,
+        "y1": 0.8933233079029734
+      },
+      "text": "What is needed is a method and apparatus that facilitates Speculative execution of program instructions at a higher level of granularity So that many more instructions can be Speculatively executed.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.10536458333333334,
+        "y0": 0.8925078247261345,
+        "x1": 0.49688757183908044,
+        "y1": 0.9189981905320814
+      },
+      "text": "One challenge in designing a system that supports specu lative execution is to detect a rollback condition. A rollback condition can occur in a number of situations. For example_ rollback condition occurs when a speculative thread that is executing program instructions in advance of a head thread reads from memory element before the head thread performs write to the memory element. In this case, the speculative thread must \"rollback so that it can read the value stored by the head thread. A rollback condition can be detected by \"marking memory elements as are read by the speculative  thread so that the head thread can subse 10   quently determine if the memory elements have been read by the speculative thread. Unfortunately; separate marking indicator for each memory element can consume large amount of memory; which can reduce cache hit rates arid thereby degrade system performance . they using What is needed is a method and an apparatus for marking memory elements that does   require amount of memory for large storing",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.6764852729885058,
+        "y0": 0.3195092429577464,
+        "x1": 0.7638882902298851,
+        "y1": 0.33173537754303595
+      },
+      "text": "SUMMARY",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5226293103448276,
+        "y0": 0.3362187010954617,
+        "x1": 0.9165463362068966,
+        "y1": 0.483339446400626
+      },
+      "text": "One embodiment of the present invention provides a System that facilitates marking of objects defined within an object-oriented programming System to keep track of accesses to fields within the objects. The System operates by receiving a reference to a field within an object, and iden tifying a marking bit within the object that is associated with the field. Note that each marking bit within the object is associated with a different Subset of fields within the object. Next, the System sets the marking bit to indicate that at least one field within the associated Subset of fields has been referenced. Finally, the System performs the reference to the field.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5226293103448276,
+        "y0": 0.48497041275430364,
+        "x1": 0.9165463362068966,
+        "y1": 0.5835937499999999
+      },
+      "text": "In one embodiment of the present invention, the object includes N marking bits numbered 0,1,2,...,N-1 and M fields numbered 0,1,2,..., M-1. In this embodiment, the system identifies the marking bit associated with the field by Starting with a field number for the field, and applying a modulo N operation to the field number to produce a number for the associated marking bit. In a variation on this embodiment, N is a power of two.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5028735632183908,
+        "y0": 0.5175726232394366,
+        "x1": 0.5184392959770114,
+        "y1": 0.5273535309076682
+      },
+      "text": "35",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5028735632183908,
+        "y0": 0.5787032961658842,
+        "x1": 0.5184392959770114,
+        "y1": 0.5884842038341158
+      },
+      "text": "40",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5232273706896553,
+        "y0": 0.5844092331768388,
+        "x1": 0.9165463362068966,
+        "y1": 0.708300322769953
+      },
+      "text": "In one embodiment of the present invention, the System Supports Space and time dimensional execution. To this end, the System Supports a head thread that executeS program instructions and a Speculative thread that executeS program instructions in advance of the head thread. The head thread accesses a primary version of the object and the Speculative thread accesses a Space-time dimensioned version of the object. In this embodiment, the Steps of identifying the marking bit and Setting the marking bit take place for a read operation by the Speculative thread.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5028735632183908,
+        "y0": 0.6398339690923318,
+        "x1": 0.5184392959770114,
+        "y1": 0.6496148767605634
+      },
+      "text": "45",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5232273706896553,
+        "y0": 0.7074860622065728,
+        "x1": 0.9177442528735633,
+        "y1": 0.8203736306729265
+      },
+      "text": "In a variation on this embodiment, there exists a separate Set of marking bits for write operations. In this variation, if the reference is a write operation by the Speculative thread, the Steps of identifying the marking bit and Setting the marking bit involve the Separate Set of marking bits. Upon a Subsequent write operation to the field by the head thread, the head thread writes to both the primary version and the Space-time dimensioned version if the marking bit is unset, and otherwise writes to the primary version.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5232273706896553,
+        "y0": 0.8179883118153364,
+        "x1": 0.9165463362068966,
+        "y1": 0.8823197867762128
+      },
+      "text": "In one embodiment of the present invention, during a Subsequent write, operation to the field by the head thread, the System determines if the marking bit associated with the field has been Set by executing a special bit extract instruc tion to examine the marking bit.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5244252873563219,
+        "y0": 0.881504303599374,
+        "x1": 0.9177442528735633,
+        "y1": 0.9194053208137715
+      },
+      "text": "In one embodiment of the present invention, if the object is an array object with N marking bits numbered 0,1,2,..., N-1 and M array elements numbered 0, 1, 2, . . . , M-1,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5028735632183908,
+        "y0": 0.8835424002347417,
+        "x1": 0.5184392959770114,
+        "y1": 0.8933233079029734
+      },
+      "text": "65",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      556.8,
+      817.92
+    ]
+  ],
+  "seconds": 26.18255790000012,
+  "model_load_seconds": null,
+  "peak_rss_mb": 125.20703125,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "hybrid": "docling-fast",
+    "hybrid_mode": "full",
+    "hybrid_fallback": false,
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "owned-hybrid-launcher-manifest",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "hybrid_server": {
+      "host": "127.0.0.1",
+      "port": 5002,
+      "force_ocr": true,
+      "ocr_engine": "easyocr",
+      "ocr_languages": [
+        "vi",
+        "en"
+      ]
+    },
+    "cpu_enforcement": {
+      "CUDA_VISIBLE_DEVICES": ""
+    },
+    "cpu_enforcement_method": "CUDA_VISIBLE_DEVICES-empty-before-spawn",
+    "docling_version": "2.91.0",
+    "easyocr_version": "1.7.2",
+    "pypdf_version": "6.14.2",
+    "hybrid_dependency_versions": {
+      "docling": "2.91.0",
+      "easyocr": "1.7.2",
+      "fastapi": "0.141.1",
+      "opendataloader-pdf": "2.5.0",
+      "packaging": "26.3",
+      "pypdf": "6.14.2",
+      "psutil": "7.2.2",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_server_versions": {
+      "fastapi": "0.141.1",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_manifest_sha256": "a78ad752ae46c9312b1482bfa91c4f260a35abe2fe932a2d720e33b5bf6e265f",
+    "hybrid_manifest_run_id": "804e00da172436934d5923ac7ff91f09f5bbf4601eb9e975c1334a03246a1a91",
+    "hybrid_process_pid": 6092,
+    "hybrid_process_create_time": 1786929613.779883,
+    "hybrid_listener_pids": [
+      8132
+    ],
+    "publication_cache": {
+      "doc_id": "07c14b471fd33c56b988cc7a58dae211d16f_page_9_pg1",
+      "pdf_sha256": "387e9efdef8828762e581c510f7932f31cb449904f7cc14bb87d42339d17843e",
+      "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}
