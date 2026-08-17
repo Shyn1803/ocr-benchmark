@@ -342,3 +342,46 @@ def test_manifest_dem_tai_lieu_theo_nhom():
 def test_common_set_bo_qua_nhom_thieu_engine(bang_nho):
     md = report.bao_cao_common_set(bang_nho, {"a": {"d1"}}, nhom_engine=[("a", "vang_mat")])
     assert "Bỏ qua" in md and "`vang_mat`" in md
+
+
+def test_common_set_bo_qua_het_thi_noi_to_chu_khong_im(bang_nho):
+    """Ca đã xảy ra 2026-08-17: `NHOM_ENGINE` còn tên engine của lần chạy cũ, nên
+    **mọi** nhóm đều rơi vào nhánh "Bỏ qua" và `common-set.md` không so gì hết.
+
+    File vẫn có tiêu đề, vẫn có câu "đây là bảng duy nhất so chéo hợp lệ", và
+    `overall.md` vẫn trỏ người đọc sang đây — chỉ là bên trong không có bảng nào.
+    Một nhóm bị bỏ qua là chuyện thường; bỏ qua **hết** thì file này vô dụng và
+    phải tự nói ra điều đó.
+    """
+    md = report.bao_cao_common_set(bang_nho, {"a": {"d1"}}, nhom_engine=[("x", "y")])
+    assert "KHÔNG so chéo được gì" in md
+
+
+def test_common_set_con_it_nhat_mot_bang_thi_khong_bao_dong(bang_nho):
+    """Ca đối chứng: cảnh báo trên chỉ được nổ khi *không* nhóm nào in được bảng."""
+    docs = {f"d{i}" for i in range(report.TOI_THIEU_TAP_CHUNG + 2)}
+    cov = {"x": set(docs), "y": set(docs)}
+    bang = ScoreTable(tuple(_diem("cer", e, d, 0.5) for e in cov for d in docs))
+    md = report.bao_cao_common_set(bang, cov, nhom_engine=[("x", "y"), ("x", "vang_mat")])
+    assert "Bỏ qua" in md
+    assert "KHÔNG so chéo được gì" not in md
+
+
+def test_nhom_engine_mac_dinh_chi_gom_ten_profile_co_that():
+    """Chặn đúng kiểu mục ruỗng đã xảy ra: `NHOM_ENGINE` giữ tên engine trần
+    (`opendataloader`, `marker`, …) trong khi `configs/profiles.json` đã chuyển sang
+    `<họ>_<profile>` (`opendataloader_default`, …). Không gì ném lỗi — mọi nhóm
+    lặng lẽ "Bỏ qua", và báo cáo mất bảng so chéo duy nhất của nó.
+
+    `noop`/`sabotage` là engine hiệu chuẩn, không có trong catalog profile nên
+    được miễn ở đây.
+    """
+    import json
+
+    hop_le = {
+        p["name"] for p in json.loads(
+            (report.ROOT / "configs" / "profiles.json").read_text(encoding="utf-8")
+        )["profiles"]
+    } | {"noop", "sabotage"}
+    la = {e for nhom in report.NHOM_ENGINE for e in nhom} - hop_le
+    assert not la, f"NHOM_ENGINE nhắc tới engine không có trong catalog: {sorted(la)}"

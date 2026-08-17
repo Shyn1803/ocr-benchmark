@@ -28,6 +28,11 @@ Repo này **không có `Capability.TABLE_BBOX`**. Nên với `table_recall`:
 Chấm 0 cho vế sau là phạt engine vì một năng lực nó chưa từng khai; gộp hai vế
 làm một là xoá mất phân biệt "chưa có nhãn" với "engine không làm được".
 
+`cell_f1` có một nhánh thiếu nhãn riêng: nhãn **có bảng nhưng không ô nào** →
+`NO_GROUND_TRUTH`. DocLayNet đúng ca đó — nó gán khung bảng chứ không gán nội
+dung ô. Chấm tiếp sẽ ra 0.0 bằng định nghĩa (`TP = 0`, `FP` = mọi ô engine đoán),
+và 0.0 ở cột này đọc như "engine đọc sai bảng" chứ không như "chưa có đáp án".
+
 Vì sao có file này khi đã có `teds.py`: TEDS trả lời "cây bảng có giống nhau
 không". Nó không nói **ô nào** lệch — điểm 0.72 không chỉ ra chỗ sai. File này
 dùng `html.parser` của stdlib, không cần `apted`.
@@ -188,6 +193,19 @@ class CellF1Metric(_BangBase):
             # rơi xuống `_compute()` và ăn 0.0.
             return NAReason.NO_GROUND_TRUTH, {
                 "ly_do": "nhãn không có bảng và engine cũng không trả bảng nào"
+            }
+        if gt.tables and not any(dung_luoi(b.html or "") for b in gt.tables):
+            # Nhãn có bảng nhưng không ô nào — DocLayNet đúng ca này: nó gán khung
+            # bảng, không gán nội dung. Chấm tiếp thì `TP = 0` và `FP = |ô đoán|`
+            # **bằng định nghĩa**, ra 0.0 bất kể engine đọc đúng hay sai; con số đó
+            # đọc như "engine hỏng" trong khi thứ thiếu là đáp án.
+            #
+            # Đối xứng với `table_recall` (thiếu **khung** nhãn → NO_GROUND_TRUTH)
+            # và với `teds._nhan_dung_duoc` (loại bảng nhãn không có nút). Ba metric
+            # bảng nay cùng một luật: thiếu nhãn thì nói thiếu nhãn, không chấm 0.
+            return NAReason.NO_GROUND_TRUTH, {
+                "ly_do": "nhãn có bảng nhưng không bảng nào có nội dung ô",
+                "n_bang_nhan": len(gt.tables),
             }
         return None
 

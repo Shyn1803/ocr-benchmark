@@ -152,6 +152,30 @@ def test_nhan_khong_co_bang_ma_engine_co_thi_phat_0() -> None:
     assert ket.value == 0.0
 
 
+def test_nhan_co_bang_nhung_khong_co_o_thi_na_chu_khong_phai_0() -> None:
+    """Trạng thái thật của DocLayNet: có **khung** bảng, không có HTML ô.
+
+    Đây là ca đã cho `cell_f1 = 0.000` trên cả bốn engine ở lần chấm 2026-08-17.
+    Số 0 đó không do engine: nhãn rỗng ⇒ `TP = 0`, `FP = |ô engine đoán|` ⇒ f1 = 0
+    **bằng định nghĩa**, engine có đọc đúng bảng hay không cũng vậy. `teds` đã lọc
+    ca này từ đầu (`_nhan_dung_duoc`), `table_recall` cũng có nhánh riêng — chỉ
+    `cell_f1` là không, nên nó là metric duy nhất in ra một con số cho một ô không
+    có đáp án.
+    """
+    ket = CellF1Metric().score(
+        _gt(OcrTable(html="", box=_b(0.1, 0.1, 0.9, 0.9))),
+        _kq(OcrTable(html=_BANG_2x2)),
+    )
+    assert ket.value is None
+    assert ket.na_reason is NAReason.NO_GROUND_TRUTH
+
+
+def test_nhan_co_o_that_thi_van_cham_binh_thuong() -> None:
+    """Nhánh N/A mới không được nuốt bảng nhãn có nội dung thật."""
+    ket = CellF1Metric().score(_gt(OcrTable(html=_BANG_2x2)), _kq(OcrTable(html=_BANG_2x2)))
+    assert ket.value == 1.0
+
+
 def test_thieu_nang_luc_table_html_thi_na() -> None:
     doan = OcrResult(
         engine="giả",

@@ -142,12 +142,20 @@ def main() -> None:
     ra.mkdir(exist_ok=True)
 
     cong = {m: D.kiem_sabotage(bang, m, nguon=NGUON_MANH) for m in ten}
-    (ra / "c2_discrimination.md").write_text(_md(bang, ten, cong), encoding="utf-8")
+    # `newline="\n"`: mặc định của `write_text` trên Windows là dịch `\n` → `\r\n`,
+    # nên mỗi lần chạy lại script trên máy Windows là toàn bộ 288 dòng hiện ra như
+    # đã đổi, che mất mấy dòng thật sự đổi. Hai file này không nằm trong `.gitattributes`
+    # (`-text` chỉ áp cho `prediction/**`), nên Git không tự chuẩn hoá hộ.
+    (ra / "c2_discrimination.md").write_text(
+        _md(bang, ten, cong), encoding="utf-8", newline="\n"
+    )
     nhom = D.phan_nhom_metric(
         [D.do_phan_tan(bang, m) for m in ten], moi_metric=ten, cong=cong
     )
     (ra / "c2_metric_status.json").write_text(
-        json.dumps(nhom, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        json.dumps(nhom, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
     )
     print(
         f"→ results/c2_discrimination.md · results/c2_metric_status.json "

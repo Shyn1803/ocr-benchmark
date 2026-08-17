@@ -47,6 +47,7 @@ from .types import (
     Box,
     MathPresence,
     OcrBlock,
+    OcrTable,
     ReadingOrder,
     TableRelation,
     TextAbsence,
@@ -135,6 +136,13 @@ def load_doclaynet(root: Path | None = None) -> dict[str, AnnotationGT]:
     """`ground-truth/doclaynet/` → `{hash: AnnotationGT}`.
 
     Mỗi PDF của DocLayNet là **một trang**, nên mọi `Box` đều `page=0`.
+
+    Ô `Table` vào `tables` với `html=""`: DocLayNet gán **khung** bảng chứ không gán
+    nội dung ô. Rỗng là câu trả lời đúng — `teds` và `cell_f1` lọc bảng không có ô
+    rồi trả `NO_GROUND_TRUTH`, còn `table_recall` chỉ cần khung nên chấm được. Bỏ
+    trống cả trường này (như trước 2026-08-17) thì `table_recall` chết lặng ở
+    `NO_GROUND_TRUTH` toàn bộ mẫu, và `cell_f1` tệ hơn: nhãn rỗng lọt xuống
+    `_compute()` và trả `0.000` cho mọi engine — một con số, không phải một N/A.
     """
     gt_dir = (root or ROOT) / "ground-truth" / "doclaynet"
     coco_path = gt_dir / "layout_coco.json"
@@ -157,6 +165,7 @@ def load_doclaynet(root: Path | None = None) -> dict[str, AnnotationGT]:
 
         blocks: list[OcrBlock] = []
         images: list[Box] = []
+        tables: list[OcrTable] = []
         for a in sorted(theo_anh.get(im["id"], ()), key=lambda a: a["id"]):
             x, y, w, h = a["bbox"]
             box = Box.from_absolute(
@@ -173,11 +182,15 @@ def load_doclaynet(root: Path | None = None) -> dict[str, AnnotationGT]:
             blocks.append(OcrBlock(block_type=loai, box=box))
             if loai is BlockType.PICTURE:
                 images.append(box)
+            elif loai is BlockType.TABLE:
+                tables.append(OcrTable(html="", box=box))
 
         for loai, box in fixes.pop(doc_id, ()):
             blocks.append(OcrBlock(block_type=loai, box=box))
             if loai is BlockType.PICTURE:
                 images.append(box)
+            elif loai is BlockType.TABLE:
+                tables.append(OcrTable(html="", box=box))
 
         # Kích thước trang thật (điểm PDF) nằm ở metadata của file cell, không ở COCO.
         # Box đã chuẩn hoá nên đây chỉ là thông tin, nhưng thiếu nó thì không ai suy
@@ -194,6 +207,7 @@ def load_doclaynet(root: Path | None = None) -> dict[str, AnnotationGT]:
             text=None,  # xem docstring module
             blocks=tuple(blocks),
             images=tuple(images),
+            tables=tuple(tables),
             page_sizes=(kich_thuoc,),
         )
 

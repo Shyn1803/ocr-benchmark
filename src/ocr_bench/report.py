@@ -71,14 +71,24 @@ THU_VIEN_CHAM_DIEM = ("jiwer", "rapidfuzz", "apted", "Pillow", "psutil", "pypdf"
 lại thì lần sau không ai truy được vì sao bảng khác đi."""
 
 NHOM_ENGINE: tuple[tuple[str, ...], ...] = (
-    ("opendataloader", "pdf_inspector", "sovereign_light"),
-    ("opendataloader", "pdf_inspector", "sovereign_light", "marker"),
+    ("docling_default", "opendataloader_default"),
+    ("docling_scan", "opendataloader_scan"),
+    ("docling_default", "docling_scan"),
+    ("opendataloader_default", "opendataloader_scan"),
+    ("docling_default", "docling_scan", "opendataloader_default", "opendataloader_scan"),
     ("noop", "sabotage"),
 )
 """Các nhóm engine đáng so chéo, định trước chứ không sinh tự động.
 
 Sinh tự động mọi tổ hợp thì bảng nào cũng có, và người đọc sẽ chọn cái đẹp nhất.
-Nhóm ở đây được chọn vì tập chung của chúng đủ lớn để nói được điều gì đó."""
+Nhóm ở đây được chọn vì tập chung của chúng đủ lớn để nói được điều gì đó.
+
+Tên phải là **tên profile** trong `configs/profiles.json` (`<họ>_<profile>`), không
+phải tên engine trần. Tới 2026-08-17 danh sách này vẫn giữ tên của lần chạy cũ
+(`opendataloader`, `pdf_inspector`, `sovereign_light`, `marker`) trong khi catalog
+đã đổi sang dạng có profile — không gì ném lỗi, mọi nhóm rơi vào nhánh "Bỏ qua", và
+`common-set.md` ra lò rỗng ruột suốt. `test_nhom_engine_mac_dinh_chi_gom_ten_profile_co_that`
+chặn lần sau; `noop`/`sabotage` là engine hiệu chuẩn nên không nằm trong catalog."""
 
 
 class BaoCaoError(RuntimeError):
@@ -389,6 +399,7 @@ def bao_cao_common_set(
         "",
     ]
 
+    da_in_bang = 0
     for nhom in nhom_engine:
         ten = " × ".join(f"`{e}`" for e in nhom)
         thieu = [e for e in nhom if e not in dem]
@@ -420,6 +431,21 @@ def bao_cao_common_set(
             f"Tập chung: **{len(chung)}** tài liệu.",
             "",
             bang_markdown(con, engines=list(nhom)),
+            "",
+        ]
+        da_in_bang += 1
+
+    if not da_in_bang:
+        # Không nhóm nào in được bảng ⇒ file này không so chéo gì, trong khi
+        # `overall.md` vẫn trỏ người đọc sang đây như "bảng duy nhất hợp lệ".
+        # Chèn cảnh báo lên đầu, không phụ lục ở cuối: người đọc dừng ở bảng đầu
+        # tiên họ thấy, và ở đây không có bảng nào để dừng.
+        d[5:5] = [
+            f"> ⚠️ **Báo cáo này KHÔNG so chéo được gì.** Cả {len(nhom_engine)} nhóm "
+            "đều bị bỏ qua — xem lý do từng nhóm bên dưới. Thường là `NHOM_ENGINE` "
+            "trong `report.py` còn tên của lần chạy trước, hoặc lần chạy này thiếu "
+            "engine. Đừng trích số từ `overall.md` để thay: các engine ở đó không "
+            "chạy trên cùng tập tài liệu.",
             "",
         ]
     return "\n".join(d)

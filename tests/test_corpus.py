@@ -36,6 +36,7 @@ def _dung_doclaynet(root, *, cells=True):
             {"id": 1, "name": "Text"},
             {"id": 2, "name": "Picture"},
             {"id": 3, "name": "Section-header"},
+            {"id": 4, "name": "Table"},
         ],
         "images": [
             {"id": 7, "width": 1025, "height": 1025, "file_name": "abc.png",
@@ -46,6 +47,7 @@ def _dung_doclaynet(root, *, cells=True):
             {"id": 1, "image_id": 7, "category_id": 1, "bbox": [0, 0, 1025, 512.5]},
             {"id": 2, "image_id": 7, "category_id": 2, "bbox": [205, 205, 410, 410]},
             {"id": 3, "image_id": 7, "category_id": 3, "bbox": [0, 0, 100, 50]},
+            {"id": 4, "image_id": 7, "category_id": 4, "bbox": [100, 600, 800, 300]},
         ],
     }
     (gt / "layout_coco.json").write_text(json.dumps(coco), encoding="utf-8")
@@ -100,9 +102,37 @@ def test_doclaynet_y_huong_xuong(tmp_path):
 
 def test_doclaynet_picture_vao_ca_blocks_lan_images(tmp_path):
     gt = load_doclaynet(_dung_doclaynet(tmp_path))["abc"]
-    assert len(gt.blocks) == 3
+    assert len(gt.blocks) == 4
     assert len(gt.images) == 1
     assert gt.images[0] == next(b.box for b in gt.blocks if b.block_type is BlockType.PICTURE)
+
+
+def test_doclaynet_table_vao_ca_blocks_lan_tables(tmp_path):
+    """Đối xứng với `Picture` ở trên — và đây là chỗ đã hỏng suốt.
+
+    Loader đổ `Picture` vào cả `blocks` lẫn `images`, nhưng `Table` thì chỉ vào
+    `blocks`. Hậu quả không phải một lỗi ném ra mà là hai con số sai lặng lẽ:
+    `table_recall` trả `NO_GROUND_TRUTH` cho **toàn bộ** bộ mẫu (metric chết mà
+    bảng vẫn đầy chữ "N/A" trông như engine không hỗ trợ), còn `cell_f1` rơi
+    xuống `_compute()` với nhãn rỗng và trả đúng `0.000` cho mọi engine — một số
+    đọc y hệt "engine nào cũng đọc sai bảng".
+    """
+    gt = load_doclaynet(_dung_doclaynet(tmp_path))["abc"]
+    assert len(gt.tables) == 1
+    assert gt.tables[0].box == next(
+        b.box for b in gt.blocks if b.block_type is BlockType.TABLE
+    )
+
+
+def test_doclaynet_table_khong_bia_noi_dung_o(tmp_path):
+    """DocLayNet chỉ có **khung** bảng, không có HTML ô.
+
+    Điền `html` bằng bất cứ thứ gì khác `""` là bịa nhãn: `cell_f1`/`teds` sẽ chấm
+    engine theo một bảng không ai gán. Rỗng ⇒ hai metric đó trả `NO_GROUND_TRUTH`,
+    còn `table_recall` — vốn chỉ cần khung — chấm được.
+    """
+    gt = load_doclaynet(_dung_doclaynet(tmp_path))["abc"]
+    assert gt.tables[0].html == ""
 
 
 def test_doclaynet_page_sizes_lay_kich_thuoc_trang_that(tmp_path):
@@ -115,7 +145,7 @@ def test_doclaynet_page_sizes_lay_kich_thuoc_trang_that(tmp_path):
 def test_doclaynet_thieu_file_cells_van_nap_duoc(tmp_path):
     gt = load_doclaynet(_dung_doclaynet(tmp_path, cells=False))["abc"]
     assert gt.page_sizes == ((1025.0, 1025.0),)
-    assert len(gt.blocks) == 3
+    assert len(gt.blocks) == 4
 
 
 def test_doclaynet_text_de_None(tmp_path):
@@ -258,7 +288,7 @@ def _muc_hop_le(**thay):
 def test_fixes_thieu_file_thi_khong_doi_gi(tmp_path):
     """Không có `fixes.json` là trạng thái bình thường của mọi bộ nhãn chưa sửa tay."""
     ra = load_doclaynet(_dung_doclaynet(tmp_path))
-    assert len(ra["abc"].blocks) == 3
+    assert len(ra["abc"].blocks) == 4
     assert len(ra["abc"].images) == 1
 
 
@@ -268,7 +298,7 @@ def test_fixes_them_nhan_anh_vao_ca_blocks_lan_images(tmp_path):
     _dung_doclaynet(tmp_path)
     _ghi_fixes(tmp_path, [_muc_hop_le()])
     g = load_doclaynet(tmp_path)["abc"]
-    assert len(g.blocks) == 4
+    assert len(g.blocks) == 5
     assert len(g.images) == 2
     them = g.images[-1]
     # y_axis="up": y0=396 (nửa dưới theo PDF) → y1=0.5 theo hệ top-down của Box.
@@ -280,7 +310,7 @@ def test_fixes_lop_khong_phai_anh_thi_khong_chui_vao_images(tmp_path):
     _dung_doclaynet(tmp_path)
     _ghi_fixes(tmp_path, [_muc_hop_le(lop="Text")])
     g = load_doclaynet(tmp_path)["abc"]
-    assert len(g.blocks) == 4 and len(g.images) == 1
+    assert len(g.blocks) == 5 and len(g.images) == 1
 
 
 @pytest.mark.parametrize(
