@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "2503.04667_pg3",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "head pϕt(zt|z), and the corresponding prediction variable ˆYt\nis non-parametric mapping of Zt. Then, define information\nflow (Shwartz-Ziv and Tishby 2017; Goldfeld et al. 2019) in\nneural networks as a Markov chain shared by all tasks, i.e.,\nYt →X →Z →Zt →ˆYt for task t.\nMethodology\nTo ensure sufficiency for target tasks and mitigate the nega-\ntive effects of redundant features, we propose a principled\nmulti-task representation learning framework (InfoMTL)\nthat extracts noise-invariant sufficient representations for all\ntasks. It contains two learning principles: shared information\nmaximization (SIMax) and task-specific information mini-\nmization (TIMin), which constrain the amount of shared and\ntask-specific information in the multi-task learning process.\nShared Information Maximization Principle\nIn the MTL paradigm, the mutual information between the\ninput X and the shared representations Z is typically re-\nduced implicitly (Figure 1(a)) or explicitly (Figure 1(b)) un-\nder the information bottleneck (IB) theory (Shwartz-Ziv and\nTishby 2017; Kawaguchi et al. 2023). However, directly re-\nducing redundancy for one task is prone to losing necessary\ninformation for others. As a result, the learned shared repre-\nsentations Z usually suffer from task-specific insufficiency.\nTo alleviate the insufficiency issue, a shared information\nmaximization (SIMax) principle is proposed to learn more\nsufficient shared representations for all target tasks. The\nSIMax principle simultaneously maximizes the mutual in-\nformation between the input X and the shared representa-\ntions Z for all tasks, as well as the mutual information be-\ntween the shared representations Z and the target task Yt for\neach task t. It can be formulated as the maximization of the\nfollowing Lagrangian,\nmax\n|T |\nX\nt=1\n[I(Yt; Z)] + αI(X; Z),\n(1)\nsubject to the Markov constraint, i.e., Yt →X →Z →\nZt →ˆYt. α is a parameter that balances the trade-off be-\ntween the informativeness of Z for X and Yt.\nIn Equation (1), the second term promotes the task-\nagnostic shared representations Z preserves as much infor-\nmation as possible about the input X. It ensures the suffi-\nciency of the shared representations Z for all potential tar-\ngets Y . The first term encourages the shared representations\nZ to capture the necessary information relevant to the tar-\nget Yt for each task t. As shown in Figure 1(b) and (c),\nunlike IB-based MTL methods (Qian, Chen, and Gechter\n2020; de Freitas et al. 2022) that explicitly minimize input-\nrepresentation information, our InfoMTL with SIMax han-\ndles the information in an opposite manner to avoid the in-\nsufficiency issue arising from representation compression in\nthe multi-task paradigm.\nImplementation of SIMax\nThe implementation of SIMax\ncontains two terms, i.e., maximizing P|T |\nt=1[I(Yt; Z)] and\nI(X; Z). Firstly, we maximize the lower bound of I(Yt; Z)\nby estimating the conditional entropy of the target Yt given\nthe shared representations Z. Following Kolchinsky, Tracey,\nand Wolpert (2019) and Hu et al. (2024a), we use cross-\nentropy (CE) as the estimator for each classification task t.\nSecondly, to maximize I(X; Z), we use the InfoNCE esti-\nmator (Gutmann and Hyv¨arinen 2010; van den Oord, Li, and\nVinyals 2018) to optimize the lower bound of I(X; Z) dur-\ning the multi-task encoding process. According to the infor-\nmation flow of Z ←X →Z′, the Markov chain rule states\nthat I(X; Z) ≥I(Z; Z′). For the InfoNCE estimation of\nmaximizing I(Z; Z′), the selection of positive and negative\nsamples as well as the implementation of noise-contrastive\nloss are consistent with Hu et al. (2024b). The optimization\nobjective of SIMax for MTL can be:\nLSIMax = Ez∼pθ(z|x){Et∼T [−log qϕt(yt|z)]\n−α log\nexp(sim(z, z+)/τ)\nP\nz′∈B+ exp(sim(z, z′)/τ)},\n(2)\nwhere pθ(z|x) is a shared encoder with parameters θ.\nqϕt(yt|z) is a task-specific decoder with parameters ϕt for\ntask t, and its output distribution is adapted for task predic-\ntion by a non-parametric function (e.g., Softmax operation\nfor classification). z+ refers to the positive key of z, gener-\nated by dropout in pθ(z|x). B+ represents the set of positive\nkeys in the current batch B. sim(·) is a pairwise similarity\nfunction, i.e., cosine similarity. τ > 0 is a scalar tempera-\nture parameter that controls the sharpness of the probability\ndistribution, which is applied during the Softmax operation.\nTask-specific Information Minimization Principle\nIn multi-task scenarios, redundant information often differs\nacross tasks, such that information beneficial for one task\nmay become redundant for another. Directly applying the IB\nprinciple (Tishby, Pereira, and Bialek 1999; Tishby and Za-\nslavsky 2015) to compress the task-specific redundancy for\none task can result in the loss of necessary information for\nother tasks. Consequently, both the shared representations\nZ and the task-specific output representations Zt for a given\ntask t often contain redundant features that are irrelevant to\nthe specific task.\nTo better alleviate the redundancy issue, a task-specific\ninformation minimization (TIMin) principle is designed to\nmitigate the negative effect of potential redundant features in\nthe inputs for the target task. It can compress task-irrelevant\nredundant information and preserve necessary information\nrelevant to the target for multi-task prediction. The TIMin\nprinciple minimizes the mutual information between the in-\nput X and the task-specific output representations Zt, while\nmaximizing the mutual information between the output rep-\nresentations Zt and the corresponding target task Yt for each\ntask t. The principle can be formulated as the maximization\nof the following Lagrangian,\nmax\n|T |\nX\nt=1\n[I(Yt; Zt) −βI(X; Zt)],\n(3)\nsubject to Yt →X →Z →Zt →ˆYt for each task t. β is a\ntrade-off parameter of the compression of Zt from the input\nX and the informativeness of Zt for Yt.",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.01661190000049828,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 250
+  }
+}

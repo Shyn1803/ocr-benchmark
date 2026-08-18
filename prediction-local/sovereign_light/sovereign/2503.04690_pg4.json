@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "2503.04690_pg4",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "2\nMethods\n2.1\nVideo Pre-processing\nAn unprocessed video of a plume that is recorded with ideal background conditions.1 All frames are con-\nverted to gray scale, that is n × d arrays taking on values between 0 and 1 (or 0 to 255). Two main steps\nare used in pre-processing prior to applying our model: background subtraction and Gaussian blurring.\nBackground subtraction. A fixed background subtraction method is applied to isolate the plume, where\nthe first kfixed subtraction frames of video (where no plumes are have formed) are used to create an average\nbackground image. The average image is subtracted against the remaining frames to create the isolated\nplume frames. Once the plume dynamics have been isolated from background across selected frames, Gaus-\nsian blurring is applied.\nGaussian Blurring.\nTwo separately tuned Gaussian filters are applied—a temporal and spatial filter,\nrespecitvely. First, a Gaussian filter is applied across the time series of frames to add a time blur, reducing\nthe high resolution of the plume dynamics. Second, a Gaussian filter is applied to each frame independently\nto coarse grain the image, adding spatial blur.\n2.2\nCoarse-graining for Centerline and Edge modeling\nWe denote the output of data pre-processing as Z = [z(t0), . . . , z(tK)], where background subtraction and\nGaussian filters have been applied. We extract a time series of second-order polynomial coefficients that\nmodel the center path of the plume for each frame. Additionally, we learn the parameters of a growing\nsinusoidal function that best characterizes the spread, or edge-model, of the plume. We theorize there exists\na connection between the Kevin Helmholtz shear velocity and the sinusoidal frequency.\nEach frame z(ti) is converted to a reduced order model describing the center and edge paths in a three\nstep procedure: (i) contour detection, (ii) a concentric circle search, and (iii) regression. For each array,\nz(ti), image recognition techniques are used to identify the plume contour and subsequently search along\nconcentric circles, centered at the leak source, to identify the path of highest density, where we denote raw\npixel value as a proxy for plume density, and the edge paths, as seen in Fig. 2.\nFigure 2: The plume point reduction step converts a frame of video into a scatter of edge and center points:\n(a) the raw frame image, (b) background subtraction, (c) contour selection, and finally (d) Along various\nranges from origin, identify the max intensity (center) and intersection (edge) points with contours. (e)\ndisplays the final points on the original frame.\n(i) Contour Detection.\nWe apply a binary threshold to identify the contours outlining the plume\nfor each array z(ti). Hyperpameter selection for the thresholding is done by using opencv’s Otsu’s\nbinarization. Optimal global threshold selection is performed by inspecting the image histogram for\neach array z(ti). The n largest contours, by area, are then selected for remainder of the pipeline. We\ndenote the identified plume at time tk as ψk.\n(ii) Concentric Circle Search. A search is performed along a set of ℓconcentric circles, centered at the\nplume leak source, with incrementally growing radii of ri = r · i for i = 1, . . . , ℓwhere r is some fixed\n1A solid black background is used when filming plume dynamics.\n4",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.010813199998665368,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 250
+  }
+}

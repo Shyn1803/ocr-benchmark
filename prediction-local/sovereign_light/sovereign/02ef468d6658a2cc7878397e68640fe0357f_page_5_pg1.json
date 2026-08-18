@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "02ef468d6658a2cc7878397e68640fe0357f_page_5_pg1",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "Fig. 4.\nReputation checking during the publication process\nB. Other Services\nWhen a peer is connected to the network, services (publi-\ncation of contents, search, data download...) are achieved by\nsending requests to the other peers. In Kademlia [13] this\nis done in two phases. Firstly, Kademlia REQ are sent to\nﬁnd nodes which are potentially able to deliver the service\n(according to their place in the DHT). This phase is general\nand only concerns the iteration mechanism used to ﬁnd several\npeers in a part of the P2P network. In the second step, when the\nnodes are found, a speciﬁc request is sent to ask for a particular\nservice. The reputation checking must be done before the\nspeciﬁc request for three reasons. Firstly, a peer can be a bridge\nand search contacts for other uncontrolled peers. Secondly, the\nreal services are provided by the speciﬁc requests. Controlling\nthe reputation at this point allows to revoke independently\nthe different services. Finally, checking the reputation for\nKademlia REQ would increase the overhead for no advantage.\nThe ﬁgure 4 presents the running of a publication request and\nincludes the reputation checking. The other requests (search,\ndata download) follow the same scheme.\nHowever, inserting the revocation mechanism into the\nsearch function is not relevant for several reasons. Firstly,\nit is not a service through which a peer can damage the\nnetwork. Then, searching is useless when the other services\nare inactive behind. Finally, it would also introduce overhead\nto the network and unnecessary delay for all users.\nC. Implementation\nWe have implemented the revocation mechanism in KAD.\nTo do that, we have introduced different modiﬁcations in the\nKAD client:\n• our modiﬁed client can manage a new kind of information\ncalled ”Account”;\n• the associated requests search/store Account were written,\nwhich partially behave like existing requests on key-\nwords, ﬁles or notes;\n• new functions were added in the UDPListener, where all\nnetwork’s requests are processed. In fact, these functions\ndo the service-oriented revocation, searching for the rep-\nutation and checking it.\nFig. 5.\nPublication of accounts between modiﬁed KAD clients inside a\ntolerance zone\n• KadID and userID allocation were cheated to control the\nplace of the peers in the DHT.\nWe have tested that the reputation storage and retrieval\nand the revocation of services work ﬁne on the modiﬁed\npeers. However, as our implementation deﬁnes new data types\nand messages to manage the accounts, we can just test our\nrevocation mechanism on a few peers. Presently, as we test the\nmechanism with few resources, we have deﬁned the KadID\nand UserID of modiﬁed peers to place them in the same\ntolerance zone. In this way, we are sure that the accounts\ncan be stored (ﬁgure 5) when using the KAD publication\nmechanism. That is enough to verify the mechanism, but\nwithout the real number of replicated peers, performance\nmeasures would be wrong. That is why we are going to scale\nup our testbed on EmanicsLab to measure performances and\ncompare the results with the evaluation presented in section\nV.\nV. ANALYSIS AND DISCUSSIONS\nA. Performances Evaluation\nThe thesis [2] has led a performance evaluation of the KAD\nnetwork which allows us to discuss some a priori performance\nresults. The average delay needed to store information in the\nnetwork is about 200 seconds. This time is needed to ﬁnd ten\npeers (for the replication) with a KadID close to the hash of\nthe information to store. This delay will occur the ﬁrst time\nthat a peer connects itself to the network and periodically\nlater to maintain the account in the network despite the\nchurn. The delay to retrieve the information ﬂuctuates and\ndepends on the replication. The more replication there is, the\nmore robust the stored information is and the quicker it is\nretrieved. The information is retrieved linearly, so the more\na peer waits, the more results are returned. A 100 seconds\ndelay seems to be sufﬁcient to retrieve enough information\nto guess the real reputation of a peer. This delay could seem\nhuge because it appears prior to each service of the network,\nexcept the search as explained. But in fact, 100 seconds to\nbootstrap are not penalising, the publication process is entirely\ntransparent for the user and 100 seconds preceding a download",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.007616799999595969,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1500
+  }
+}

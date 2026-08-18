@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "0853d8a05fd1e839887d4bc3004a6770cb7b_page_2_pg1",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "4\nS. Petrovi´c\nand discussed. Section V concludes the paper.\nII. THE ANALYZED GENERATOR\nWe analyze the LCT attack on a noised pseudorandom\nsequence generator involving a primitive known as The Binary\nRate Multiplier (BRM). BRM consists of 2 linear feedback\nshift registers (LFSRs). One of them, the clocking LFSR\n(LFSRs), determines the clocking sequence for the clocked\nLFSR (LFSRu), see Fig. 1.\nk positions\nLFSR\nLFSR\nclk.\ninteger seq.\ns\nu\nFig. 1.\nThe BRM primitive\nThe BRM operates as follows (Fig. 2): Without clocking by\nLFSRs, the register LFSRu produces the binary sequence un.\nAt the clock pulse i of LFSRs, the bits from k positions of\nLFSRs determine the integer si that represents the number of\nbits from the sequence un that are going to be discarded. The\nintegers si, i = 1, 2, . . . make the sequence sn. The process of\ndiscarding bits in this way is called non-uniform decimation\nof the sequence un. The maximum value of the integer si\ndetermines the maximum number of bits from the sequence\nun that can be discarded at a time. The binary sequence zn is\nthe output sequence of the whole BRM.\nNon-uniform\ndecimation\nun\nsn\nzn\n{\nk positions\nLFSRu\nLFSRs\nFig. 2.\nOperation of the BRM\nThe BRM primitive has become popular in the design of\nstream ciphers since it can be shown [2] that the produced\nsequence zn has extremely long period and high linear com-\nplexity preserving at the same time good statistical properties\nof a single LFSR.\nIII. THE NEW LCT ATTACK\nIn this section, we give details of the new LCT-based attack\nagainst a noised BRM. The general description and remarks\nabout LCT have been exposed in the Introduction. To design\nan LCT attack against BRM, we have to determine which\npart of the BRM key (which consists of the initial states of\nLFSRs and LFSRu, as usual) is to be guessed. It is shown in\n[5] that assigning a linear system to a BRM when the initial\nstate of LFSRs is guessed is easy. Then the unknowns in the\nsystem are the bits of the output sequence of LFSRu without\ndecimation together with the bits of the initial state of the same\nLFSR and the right-hand side of any equation in the system is\nthe corresponding bit of the intercepted sequence. In our new\nLCT attack on a noised BRM, we use the same approach. We\nguess the initial state of LFSRs and make a system of linear\nequations in the unknowns of the initial state of LFSRu and\nthe unknown bits of the output sequence of LFSRu without\ndecimation. The main point of our attack is the algorithm that\neliminates the inﬂuence of the bits of the intercepted sequence\ncomplemented by noise.\nExample 1\nSuppose the BRM from Fig. 1 uses 4-bit LFSRs and the\nprimitive feedback polynomials of LFSRs and LFSRu are\nfs(x) = 1 + x + x4 and fu(x) = 1 + x3 + x4, respectively.\nLet the number of output taps of LFSRs be k = 2 and the\ntap positions are the ﬁrst and the second (from the left).\nLet the initial states of LFSRs and LFSRu be 1010 and\n0110, respectively. Then the clocking sequence for LFSRu (i.e.\nthe integer sequence sn) is 31021002333 . . . and the output\nsequence of the BRM is 11010110111 . . .\nLet the cryptanalyst’s guess of the initial state of LFSRs\nbe right, i.e. 1010. In the LCT attack against the generator\nwithout noise, the so-called decimation sequence is gen-\nerated, containing the symbol ’2’ in the positions of the\nunknown bits. Each symbol ’2’ will correspond to a new\nvariable in the system of equations assigned to the gener-\nator. In this case, the decimation sequence will be 2222 |\n22212102212011220222122212221 . . .. The symbol | delimits\nthe variables of the initial state of the clocked register LFSRu\nfrom the rest of the variables. The variables to the left from\nthe symbol | are given in the order x4, x3, x2, x1, whereas\nthe variables to the right from the symbol | are given in the\nincreased order of indexing, i.e. x5, x6, etc. Then the system\nof linear equations assigned to the given BRM is:\nx3 + x4 + x5\n=\n0\nx2 + x3 + x6\n=\n0\nx1 + x2 + x7\n=\n0\nx1 + x5\n=\n1\nx5 + x6 + x8\n=\n0\n...\n2\nThe new ciphertext-only attack against a BRM is described\nbelow:\n1. Guess the initial state of the LFSRs.\n2. Set up a system of equations assigned to such a BRM\nwithout involving the intercepted bits. Such a system is\nhomogeneous and always consistent.\n3. Set up a system of equations involving only the equa-\ntions containing the intercepted bits.\n4. Join the obtained systems and check the consistency of\nthe joint system. The following cases are possible:\n4.1 There is no noise and the right initial state of LFSRs\nwas guessed - the joint system will be consistent and",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.011771499999667867,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1500
+  }
+}

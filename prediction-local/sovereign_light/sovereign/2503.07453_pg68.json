@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "2503.07453_pg68",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "J\nGuarantee for UncertainStateAction\nIn this section, we present the main guarantee of UncertainStateAction (Algorithm 6) as a standalone\nalgorithm; see Lemma J.1. Then, in Lemma J.2, we provide its guarantee when used as a subroutine within\nMTSS (Algorithm 4). For a discussion of the motivation for these results, we refer back to Section I.1.3.\nLemma J.1. Consider a call to UncertainStateActionh(C0:h−1, bπ1:h, Σh; a, N, N) (Algorithm 6) for some\ngiven h, C0:h−1, bπ1:h, Σh, a ∈A, N, and N such that σmin(Σh) ≥λ, for some λ ∈(0, 1). Then, for any\nδ′ ∈(0, 1) and ζ ∈(0, 1/2), with probability at least 1 −δ′, the output (ˆxh, ˆah) of UncertainStateAction\nsatisfies:\n• For all ℓ∈[0 .. h −1] and (xℓ, aℓ) ∈Cℓ,\nPbπℓ+1:h\nh\n∥φh(xh, ah)∥2\nΣ−1\nh\n> 2\n\u0010\nζ ∨∥φh(ˆxh, ˆah)∥2\nΣ−1\nh\n\u0011\n| xℓ= xℓ, aℓ= aℓ\ni\n≤max\nh∈[H]\n4 log\n\u0010\n16H|Ch|\nλδ′ζ\n\u0011\nN\n,\n(90)\nwhere φh(·, ·) := ϕh(·, ·) −ϕh(·, a).\n• Furthermore, there exists Xh,span ⊆X such that for all ℓ∈[0 .. h −1] and (xℓ, aℓ) ∈Cℓ, Pbπℓ+1:h−1[xh ∈\nXh,span | xℓ= xℓ, aℓ= aℓ] ≥1 −maxh∈[H]\n4\nN log 32HN|Ch|\nλδ′ζ\nand\n∀xh ∈Xh,span,\nPa∼πh,ref(·|xh)\nh\n∥φh(xh, a)∥2\nΣ−1\nh\n> 2\n\u0010\nζ ∨∥φh(ˆxh, ˆah)∥2\nΣ−1\nh\n\u0011i\n≤max\nh∈[H]\n4 log\n\u0010\n16H|Ch|\nλδ′ζ\n\u0011\nN\n. (91)\nProof of Lemma J.1.\nFix δ′ ∈(0, 1) and ζ ∈(0, 1/2), and let Γ := {ζ, 2ζ, . . . , ⌈4\nζλ⌉ζ}. Further, for\nℓ∈[0 .. h −1] and (xℓ, aℓ) ∈Cℓ, let Dℓ(xℓ, aℓ) be the dataset in Algorithm 6 when the algorithm returns.\nNote that Dℓ(xℓ, aℓ) consists of N i.i.d. pairs sampled from Pbπℓ+1:h[(xh, ah) = · | xℓ= xℓ, aℓ= aℓ]. Thus, by\nFreedman’s inequality (Lemma C.2) and the union bound over ℓ∈[0 .. h −1], (xℓ, aℓ) ∈Cℓ, and γ ∈Γ, there\nis an event E of probability at least 1 −δ′/2 under which,\n∀ℓ∈[0 .. h −1], ∀(xℓ, aℓ) ∈Cℓ, ∀γ ∈Γ,\nPbπℓ+1:h\nh\n∥φh(xh, ah)∥2\nΣ−1\nh\n≥γ | xℓ= xℓ, aℓ= aℓ\ni\n≤2\nN\nX\n(x,a)∈Dℓ(xℓ,aℓ)\nI\nn\n∥φh(x, a)∥2\nΣ−1\nh\n> γ\no\n+ 4 log(2H|Cℓ||Γ|/δ′)\nN\n,\n≤2\nN\nX\n(x,a)∈Dℓ(xℓ,aℓ)\nI\nn\n∥φh(x, a)∥2\nΣ−1\nh\n> γ\no\n+\n4 log\n\u0010\n16H|Cℓ|\nλδ′ζ\n\u0011\nN\n, (92)\nwhere the last step follows by the facts that |Γ| ≤⌈4\nζλ⌉, λ ∈(0, 1), and ζ ∈(0, 1/2). Now, since σmin(Σh) ≥λ\nand sup(x,a)∈X×A ∥ϕh(·, ·)∥≤1 (Assumption H.1), we have that sup(x,a)∈X×A ∥φh(x, a)∥2\nΣ−1\nh\n≤4\nλ. Therefore,\nby the definition of Γ, we have that for all ℓ∈[0 .. h−1] and (xℓ, aℓ) ∈Cℓ, there exists γℓ(xℓ, aℓ) ∈Γ such that\nmax\n(x,a)∈Dℓ(xℓ,aℓ) ∥φh(x, a)∥2\nΣ−1\nh\n≤γℓ(xℓ, aℓ),\n≤\nmax\n(x,a)∈Dℓ(xℓ,aℓ) ∥φh(x, a)∥2\nΣ−1\nh + ζ,\n≤2\n\u0012\nζ ∨\nmax\n(x,a)∈Dℓ(xℓ,aℓ) ∥φh(x, a)∥2\nΣ−1\nh\n\u0013\n,\n≤2\n\u0010\nζ ∨∥φh(ˆxh, ˆah)∥2\nΣ−1\nh\n\u0011\n,\n(93)\nwhere the last inequality follows by the fact that\nmax\nℓ∈[0..h−1]\nmax\n(x,a)∈Dℓ(xℓ,aℓ) ∥φh(x, a)∥2\nΣ−1\nh\n≤∥φh(ˆxh, ˆah)∥2\nΣ−1\nh\n68",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.018469300001015654,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1500
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "031a888e402c82517f213222ae97147dd7dc_page_2_pg1",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "(100 ms) along the whole speech signal. This process results\nin a graph of distances with respect to time.\nThe graph is\nsmoothed by a low-pass ﬁltering operation, and then all the sig-\nniﬁcant local maxima are searched because they represent po-\ntential speaker change points. A local maximum is regarded\nas signiﬁcant when the differences between its value and those\nof the minima surrounding it are above a certain threshold, and\nwhen there is no higher local maximum in its vicinity. Thus,\nthe local maximum has to fulﬁll the following condition to be\nsigniﬁcant:\n|max −minl| > ασ\nand\n|max −minr| > ασ,\n(2)\nwhere α is a real number, σ is the standard deviation of the\ndistances along the plot, and minl and minr are the left and the\nright minima, respectively, around the peak max.\n2.2. Second step: BIC reﬁnement\nA ∆BIC value is computed for each potential speaker change\npoint detected in the ﬁrst step to validate or discard this point.\nThe ∆BIC value is given by [3]\n∆BIC = −R + λP,\n(3)\nwhere\nR = N\n2 log |Σ| −N1\n2 log |Σ1| −N2\n2 log |Σ2| ,\n(4)\nλ is a penalty factor which has to be experimentally tuned in\norder to reduce the number of false alarms without increasing\nthe number of missed detections,\nP = 1\n2\n\u0012\nd + 1\n2d(d + 1)\n\u0013\nlog N,\n(5)\nN1 and Σ1 are the number and the covariance matrix of the fea-\nture vectors in the window W1, respectively, N2 and Σ2 are the\nnumber and the covariance matrix of the feature vectors in the\nwindow W2, respectively, N = N1 + N2, Σ is the covariance\nmatrix of the feature vectors of both windows together, and d is\nthe dimension of the feature vectors.\nA potential speaker change point is regarded as a true\nspeaker change if the ∆BIC value for this point is negative.\n3. Modiﬁed DISTBIC algorithm\nThe DISTBIC algorithm allows to obtain good speaker change\ndetection results, nonetheless it has some weak points. We have\nfocused on these points and suggest some improvements of the\nalgorithm in order to obtain even better results. The improve-\nments are speciﬁed in next subsections.\n3.1. Silence and breathing elimination\nSilence and breathing may cause a lot of false alarms in speaker\nchange detection tasks. Therefore we used a simple but efﬁ-\ncient silence detector before the speaker change detection pro-\ncess. The speech signal was divided into segments the length\nof which was 10 ms. Short-time energy and the number of\nzero crossings [4] were computed for each segment. If both\nthe short-time energy and the number of zero crossings were\nlower than experimentally derived thresholds, the segment was\nregarded as containing silence and was temporarily eliminated\nfrom the utterance.\nFigure 1: True speaker change points causing troubles (marked\nwith a circle) in the condition (2).\nSometimes short sections with a high energy can occur in\nsilent parts of the utterance. Such sections can be caused for\nexample by the speaker breathing. The high energy impels the\nsilence detector to regard these sections as speech. In order to\novercome this problem, we implemented a clustering algorithm:\nif a part of a speech signal shorter than 645 ms was surrounded\nby silent segments, this part was also regarded as silence. On\nthe contrary, if there was a silent segment shorter than 250 ms\nbetween two segments containing speech, this segment was re-\ngarded as containing speech.\n3.2. Speaker change candidate detection\nEqually as in Section 2.1, the potential speaker change points\nwere detected on the smoothed graph of the symmetric\nKullback-Leibler distance. However, the condition (2) neces-\nsary to detect the potential speaker change points was changed.\nThe reason for the change was the fact, that the condition (2) did\nnot allow to detect some local maxima of the graph as the poten-\ntial speaker change points. The problems were caused mainly\nby the maxima that were rather near each other, so that the mini-\nmum between them was too high to satisfy the condition (2). An\nexample of such a kind of peaks is shown in Figure 1. For that\nreason the conjunction in (2) was substituted with the disjunc-\ntion, i.e. a local maximum was regarded as a potential speaker\nchange point if it satisﬁed the condition\n|max −minl| > ασ\nor\n|max −minr| > ασ,\n(6)\nwhere α, σ, minl, minr, and max have the same meaning as\nbefore.\nIn order to avoid the situation that two different maxima\nbelonging in fact to one true speaker change would be detected\nas two potential speaker change points, we required a minimal\ndistance between two maxima: if two maxima were closer than\n0.5 s, the lowest one was discarded. This condition protects the\nalgorithm against false alarms.\n3.3. Speaker change position location\nHaving detected the potential speaker change points, we used\nthe ∆BIC value (3) to discard or validate the points similarly",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.009047300000020186,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1500
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "2503.08509_pg7",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "Here, p (d|m) is the likelihood and p (m) is the prior distribution of the model. In the\nEnKF, Bayes’ theorem is used recursively to update the model at each observation\npoint by using the last posterior model as the current prior p (mi) = p (mi−1|di−1).\nIn the following, we will omit the time index, i, and only focus on updates at a single\nmeasurement point.\nAssuming that all variables have Gaussian distributions and that there is a lin-\near relationship between the earth model and the EM-response, one can derive an\nanalytical solution for the mean and covariance of the conditional distribution [21].\nApproximating all instances of covariance and mean by Monte-Carlo estimates results\nin the ensemble update equation, see, e.g. [14]\nM a = M p + CM,g(M)\n\u0000Cg(M) + Cd\n\u0001−1 (D −g(M p) + E).\n(2)\nHere, M denotes the ensemble matrix where each column is a realization of the earth\nmodel: M p is the prior ensemble for a given step; M a is the ensemble ”analysis”\nmatrix, conditioned to the new measurements. The shorthand g(M) denotes that the\nmap from the model to synthetic EM-log has been applied to all columns (ensemble\nmembers) of M, D is an ensemble matrix where each column is a copy of the current\nobservation, and E is an ensemble matrix of measurement perturbations where each\ncolumn (ϵj) is a realization of the Gaussian measurement error ϵj ∝N(0, Cd). Cd\ndenotes the covariance matrix for the current measurements, CM,g(M) denotes the\nMonte-Carlo estimate of the cross-covariance between the model and the predicted\ndata, and Cg(M) denotes the Monte-Carlo estimate of the auto-covariance matrix for\nthe predicted data.\nThe updated ”analysis” ensemble of models, M a, from the EnKF is the input to\nthe optimization.\n2.3 Optimization with approximate dynamic programming for\ndecisions\nThe DISTINGUISH workflow incorporates an optimization step using ’naive-\noptimistic’ ADP to optimize the remaining drilling trajectory based on updated\nGAN-geomodels. This method effectively navigates the high-dimensional space of pos-\nsible trajectories, identifying the path that maximizes the operational objective by\nbalancing geological target zones and operational constraints.\nFor each realization of GAN-geomodel in the ”analysis” ensemble, our ADP method\nconstructs a reward matrix R that quantifies the geological and operational desirability\nof drilling various segments. Each entry Ri,j(m) in this matrix represents the potential\nreward of steering the drill bit from point i to point j, given a realization of GAN-\ngeomodel m. The goal is to find a sequential path π∗\nk(m) among the potential paths\nπk (starting from point k) that maximizes the cumulative reward:\nπ∗\nk(m) = arg max\nπk\nX\n(i,j)∈πk\nRi,j(m).\n(3)\n7",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.007968500000060885,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1500
+  }
+}

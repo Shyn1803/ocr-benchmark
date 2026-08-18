@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "2503.09123_pg4",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "matrix, referred to later as the input regularization) or to penal-\nize the rate of change of the control (with\nR tf\nt0 ˙u⊤(t)R ˙u(t) dt,\nreferred to later as the input rate regularization). For DOPs\nwith a large number of input variables and complex structures,\nmanaging the regularization to limit its impact on solution\noptimality can be quite difﬁcult.\nOn the other hand, the integrated residual approach, as a\ngeneralization of the collocation method, offers greater ﬂexi-\nbility in balancing solution accuracy and optimality on a given\ndiscretization mesh [4]. It is also more reliable when handling\nchallenging problems where DC encounters difﬁculties [3].\nHowever, this ﬂexibility can be a double-edged sword. While\nit allows for more accurate solutions of the DOP on coarser\nmeshes, potentially saving computation time, it also requires\nadditional expertise and care. For instance, the scaling of\nthe variables and dynamic constraints, as well as the choice\nof trade-offs in different aspects of the numerical optimal\nsolution (e.g. optimality vs. accuracy), can signiﬁcantly affect\nthe solution process. Moreover, efﬁcient and reliable imple-\nmentations of QPM require specialized DDOP solver designs,\nand both QPM and DAIR necessitate additional conﬁguration\nparameters in comparison to DC.\nIII. INTEGRATED RESIDUAL REGULARIZED DIRECT\nCOLLOCATION\nThe development of IRR-DC aims to bring the beneﬁt\nof integrated residual approaches in handling challenging\nproblems to the DC framework, while maintaining DC’s ease\nof implementation and computational efﬁciency as much as\npossible.\nThe DDOP formulation arising from IRR-DC is as follows:\nmin\nχ,υ,p,t0,tf Jh (χ, υ, t0, tf, p) + 1\n2ρR (χ, υ, t0, tf, p)\n(12a)\nsubject to, for all k ∈IK and i ∈IN (k),\nf\n\u0010\n˙˜x(k)(d(k)\ni\n), ˜x(k)(d(k)\ni\n), ˜u(k)(d(k)\ni\n), d(k)\ni\n, p\n\u0011\n= 0,\n(12b)\nγ(k) \u0010\nχ(k), υ(k), t0, tf, p\n\u0011\n≤0,\n(12c)\nand for some ki ∈IK and kj ∈IK,\nφE\n\u0010\nχ(ki)\n1\n, χ(kj)\nN (K), υ(ki)\n1\n, υ(ki)\nN (K), t0, tf, p\n\u0011\n= 0,\n(12d)\nφI\n\u0010\nχ(ki)\n1\n, χ(kj)\nN (K), υ(ki)\n1\n, υ(ki)\nN (K), t0, tf, p\n\u0011\n≤0.\n(12e)\nFor DOPs with consistent overdetermined constraints [4],\n[5], (12b) may make the DDOP infeasible leading to con-\nvergence challenges. Under the IRR-DC framework with the\nintegrated residuals directly penalized in the objective, it is\nalso possible to relax (12b) to\n−ǫ ≤f\n\u0010\n˙˜x(k)(d(k)\ni\n), ˜x(k)(d(k)\ni\n), ˜u(k)(d(k)\ni\n), d(k)\ni\n, p\n\u0011\n≤ǫ,\n(12f)\ninstead, with ǫ a vector of suitably chosen small constants.\nThe choice of ρ in IRR-DC can be seen as a mechanism\nfor balancing solution accuracy and optimality for a given\ndiscretization mesh design. A large value of ρ drives the\nsolution of (12) towards the DC solution, prioritizing the\nreduction of the original objective. However, as later shown\nin Figure 2 with the example problem, a low objective value\nreported by the DDOP solver may be misleading. As ρ\ndecreases, the method can automatically converge to a more\naccurate solution when multiple solutions exist with minimal\nor negligible differences in nominal cost. Further reduction\nof ρ leads to a solution that is heavily biased towards higher\naccuracy, albeit at the cost of a higher objective value.\nThe practical advantage of IRR-DC is that, with (12b)\nor (12f), the need for carefully selecting conﬁguration param-\neters (e.g. for ρ) and scaling parameters (e.g. for dynamic\nconstraints) is signiﬁcantly reduced compared to QPM. This\nallows the problem to be directly solved using most off-\nthe-shelf DDOP solvers, in contrast to QPM, which prefers\na tailored DDOP solver. Additionally, compared to the al-\nternating iterative process of DAIR, IRR-DC is easier to\nimplement, demands less prior knowledge and requires fewer\nconﬁguration parameters.\nIV. EXAMPLE PROBLEMS\nHere, we present two example problems to demonstrate\nthe main advantages of the IRR-DC. Both DOPs are tran-\nscribed using the optimal control software ICLOCS2 [9], and\nnumerically solved to a tolerance of 10−9 with NLP solver\nIPOPT [10] (version 3.12.9).\nA. Singular Control Example: Goddard Rocket\nThe Goddard rocket problem [11] is a frequently used\nexample for the analysis of optimal control problems with\nsingular arcs. The problem aims to maximize the highest alti-\ntude reachable by a rocket using a ﬁxed amount of propellant.\nDepending on the ﬁdelity of the modeling of the atmospheric\ndrag, different solution structures have been identiﬁed for the\noptimal control input. When neglecting or considering linear\ndrag only, the solution is shown to be bang-bang, i.e. to\nexhaust all propellant with maximum thrust at launch and\ninitial ascent, and then coasting to the highest point. With a\nquadratic drag model commonly used in subsonic ﬂights [12],\nthe optimal solution structure changes to bang-singular-bang\nwith an intermediate low thrust proﬁle.\n1) Suppression of singular arc ﬂuctuations: In this exam-\nple, we implement the Goddard rocket problem as described\nin [2, Ex. 4.9]. Using DC, it is known for the solution to be\noscillatory on the singular arc if no special treatment is imple-\nmented. To remove the singular arc oscillations, a multiphase\nformulation is typically used with additional constraints known\nas singular arc conditions imposed speciﬁcally for the second\nphase, which corresponds to the one with singular control.\nIn [4], the ability of the integrated residual method of\nDAIR to alleviate the oscillations on the singular arc has been\ndemonstrated on a ﬁxed equidistant discretization mesh. The\nIRR-DC method yields similar improvements to the results:\nthe large ﬂuctuations on the singular arc have been suppressed\n(Figure 1), obtaining solutions of much higher accuracy in all\nmeasures (Table I).",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.01450490000024729,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1500
+  }
+}

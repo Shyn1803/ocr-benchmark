@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "2503.08451_pg2",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "10x slower to train [10]. Therefore, subsequent works focused\non convolutional neural network based blocks, which are faster\nto train. However, recently there is renewed interest in efficient\nRNNs and state space models both of which aim to address the\ninefficiencies of traditional RNNs. These newer developments\naim to combine the sequential processing capabilities of RNNs\nwith improved computational and memory efficiency, mak-\ning them viable for longer sequences and higher throughput\nrequirements. Key advancements include: 1.) State Space\nModels (SSMs): Recent models like S4 (Structured State\nSpace for Sequence Modeling) [16] and its variants propose\nreplacing traditional recurrent operations with structured linear\nsystems that can process sequences in parallel while retaining\nthe ability to model long-range dependencies. By leveraging\nthe mathematical properties of state space representations,\nthese models reduce the need for sequential backpropagation,\noffering significant speed and memory improvements. These\nefforts culminated in the recently introduced S6 model [17],\nwhich uses a specific Mamba block around the SSM core,\ngaining considerable attention due to its strong performance on\nsequential tasks. 2.) Work on parallelization of RNNs: where\n[18] linearized and diagonalized the recurrence; whereas [19]\nbuilt on improving the LSTM model; and [20] introduced a\nnew minimal version of GRUs and LSTMs, called minLSTM\nand minGRU.\nIn this work, we analyze the minGRU model for its use\nin the Turbo autoencoder structure. For that we combine it\nwith the Mamba block for SSMs and integrate it into the\nparallel Turbo structure of the encoder. We will show that it\nmatches and at times outperforms the convolutional network\nperformance, while being as fast to train as the convolutional\nnetworks for smaller sequence length, and having significant\nadvantages at long block lengths.\na) Notation: In this work, we distinguish between ran-\ndom vectors in the communication model and deterministic\nvectors in the neural network: an n-dimensional random vector\nis denoted by an uppercase letter with a superscript, e.g. Xn,\nwhose components are X1, X2, . . . , and whose realized value\nis xn. In contrast, neural-network vectors are written in bold\nlowercase with a time subscript, e.g. xt, to represent the input\nat time t in a recurrent model. For example, Xn corresponds\nto a random codeword of length n transmitted over the channel\n(Section III), whereas xt is the deterministic input signal at\ntime t in the MinGRU-based block (Section II).\nII. MINGRU-BASED BLOCK\nA. Introduction to Recurrent Neural Networks and Gated\nRecurrent Units\nRecurrent Neural Networks (RNNs) are a class of neural\nnetworks designed to process sequential data by maintaining\na hidden state that captures information about previous inputs.\nUnlike feedforward neural networks, RNNs share parameters\nacross time steps, enabling them to model temporal dependen-\ncies effectively. Formally, given an input sequence {xt}T\nt=1,\nthe hidden state ht at time t is computed as:\nht = f(ht−1, xt; θ),\n(1)\nwhere f is a non-linear function (e.g., a combination of matrix\nmultiplications and activation functions), ht−1 is the hidden\nstate from the previous time step, xt is the input at time t,\nand θ are the network parameters.\nOne of the key challenges in training RNNs is the vanish-\ning/exploding gradient problem, which limits their ability to\ncapture long-term dependencies. Gated architectures like the\nGated Recurrent Unit (GRU) were introduced to address this\nlimitation.\nB. Gated Recurrent Unit (GRU)\nThe GRU is a simplified yet effective variant of the Long\nShort-Term Memory (LSTM) network. It uses gating mecha-\nnisms to control the flow of information, which helps in pre-\nserving long-term dependencies and mitigating the vanishing\ngradient issue. The GRU maintains a single hidden state ht,\nupdated as follows:\n1) Update Gate: The update gate zt determines how much\nof the past hidden state ht−1 should be retained:\nzt = σ(Wzxt + Uzht−1 + bz),\nwhere\nσ\nis\nthe\nsigmoid\nactivation\nfunction,\nand\nWz, Uz, bz are learnable parameters.\n2) Reset Gate: The reset gate rt controls how much\nof the past hidden state should influence the current\ncomputation:\nrt = σ(Wrxt + Urht−1 + br).\n3) Candidate Hidden State: A candidate hidden state ˜ht\nis computed using the reset gate:\n˜ht = tanh(Whxt + Uh(rt ⊙ht−1) + bh),\nwhere ⊙denotes the element-wise product.\n4) Final Hidden State: The final hidden state ht is a\nconvex combination of the previous hidden state and\nthe candidate hidden state, weighted by the update gate:\nht = (1 −zt) ⊙ht−1 + zt ⊙˜ht.\nNeglecting the bias terms, and streamlining the matrices as\nlinear operations Lineardh with a certain matching hidden\ndimension dh, a GRU cell has the following simplified form:\nzt = σ(Lineardh([xt, ht−1]))\nrt = σ(Lineardh([xt, ht−1]))\n˜ht = tanh(Lineardh([xt, rt ⊙ht−1]))\nht = (1 −zt) ⊙ht−1 + zt ⊙˜ht.",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.012137100000472856,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1500
+  }
+}

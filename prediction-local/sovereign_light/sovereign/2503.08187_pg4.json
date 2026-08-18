@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "2503.08187_pg4",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "Optimal Space-Variant Anisotropic Tikhonov Regularization\nGholami and Gazzola A PREPRINT\nwhere α > 0. The FWI problem in equation 7 ensures that the estimated model, while satisfying the data (and the\nwave equation), is smooth along the direction θ.\nFigure 1, top row, shows the anisotropic regularization balls for only one term of the regularizer equation 4 and for\ndifferent values of [σ]i = σ and [θ]i = θ. We observe that for σ = 0.5, the anisotropic regularization becomes\nequivalent to the standard isotropic regularization. When the value of σ increases, reaching the maximum considered\nvalue of 0.9, the degree of regularization applied in the direction θ and its normal is maximally different, resulting in\na needle-shaped ellipse. This shape favors models with elongated features aligned with θ, while allowing variations in\nthe normal direction to it, as illustrated in the bottom row.\n3\nAlgorithm\nThe augmented Lagrangian function of equation 7 is\nL(θ, σ, us, m, λ, ν) = 1\n2\nns\nX\ns=1\n∥Pus −ds∥2\n2 + αR(m, θ, σ)\n+ µ\n2\nns\nX\ns=1\n∥A(m)us −bs∥2\n2 −λT\ns (A(m)us −bs)\n+ τ\n2 ∥θ −z∥2\n2 −νT (θ −z),\nwhere z(θ) = min(max(θ, −π\n2 ), π\n2 ), λs and ν are Lagrange multipliers associated to the constraints, and µ > 0 and\nτ > 0 are the penalty parameters. The regularization parameter α > 0 is given, being typically determined by the\ndiscrepancy principle.\nThis problem can be efﬁciently solved using the alternating direction method of multipliers (ADMM, [15]), resulting in\nthe following iterative procedure starting from initial guess m (typically encoding some prior information), (spatially\ninvariant) σ = 0.5 and initial multipliers λs = ν = 0:\nθ+ = arg min\nθ\nL(θ, σ, us, m, λ, ν)\n(8a)\nσ+ = arg min\nσ\nL(θ+, σ, us, m, λ, ν)\n(8b)\nu+\ns = arg min\nu\nL(θ+, σ+, u, m, λ, ν)\n(8c)\nm+ = arg min\nm\nL(θ+, σ+, u+\ns , m, λ, ν)\n(8d)\nλ+\ns = λs −µ(A(m+)u+\ns −bs)\n(8e)\nν+ = ν −τ(θ+ −z+).\n(8f)\nHere, the updated variables at each iteration are denoted by a superscript “+”. Each step of the algorithm addresses a\nspeciﬁc subproblem, as described more in details below.\nSubproblem equation 8a involves minimizing the regularization function R, as deﬁned in equation 4, with respect to θ,\ngiven the current values of m and σ. This can can be efﬁciently achieved using a single iteration of the Gauss-Newton\nmethod. To ensure the stability of the θ update, it is essential to incorporate a smoothing term, as suggested by [11].\nSubproblem equation 8b involves minimizing R with respect to σ, resulting in:\n[σ]i =\n[gz′]2\ni\n[gx′]2\ni + [gz′]2\ni\n,\n(9)\nwhere ([gx′]i, [gz′]i)T = R([θ]i)[∇m]i represent the rotated gradient of the current model at the ith pixel. This expres-\nsion for equation 9 is justiﬁed by considering that, when [θ]i corresponds to the correct orientation angle, we typically\nexpect |[gx′]i| ≪|[gz′]i|. In this case, directly minimizing [gx′]2\ni + [gz′]2\ni would heavily penalize [gz′]i, which is\nundesirable because we aim to apply more smoothing along the direction deﬁned by [θ]i. The weights [σ]i in equation\n9 balance the contributions of gradient components in the weighted sum [σ]2\ni [gx′]2\ni + (1 −[σ]i)2[gz′]2\ni , ensuring that\nthe magnitudes of both terms are approximately equal before penalization. This adaptive weighting mechanism effec-\ntively enhances smoothing along the structural direction [θ]i while allowing variations across it, eventually enabling\nthe recovery of dominating structures and details in the model m. To maintain stability during the σ update, the com-\nputed weights are smoothed using a convolution with a 5 × 5 averaging ﬁlter; alternatively, one could incorporate a\nsmoothing term.\nA comprehensive analysis of the methods for solving subproblems equation 8c and equation 8d can be found in [14].\n4",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.010291700000379933,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1500
+  }
+}

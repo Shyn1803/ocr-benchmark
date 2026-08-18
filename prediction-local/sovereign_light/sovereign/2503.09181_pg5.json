@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "2503.09181_pg5",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "DFS from Variable Feature Sets Using Features of Features\n5\nx(n)\ns\n= {xλ : λ ∈s(n)} ⊂x(n) be the subset of features, which represents the\nselected and revealed features. Our task is to select features s(n) and make a\nfinal prediction about y(n) while s(n) is different for each instance.\nOur purpose is to find two functions, implemented as neural networks; the\npolicy to select features and the predictor to make predictions. The policy takes\nthe revealed features x(n)\ns\nand the whole features of features z(n) as input. Then,\nit returns one index and the corresponding feature will be selected and revealed.\nWe denote the policy as π(x(n)\ns , z(n)) ∈Λ(n). The predictor also takes x(n)\ns\nand\nz(n) as input and it returns the prediction about y(n). We denote the prediction\nand the predictor as ˆy(n) = f(x(n)\ns , z(n))\nWe innovate a way to select features one by one with the policy until the\npredetermined number of features is selected. Firstly, we determine the budget\nk, which is the number of selected features in the end. In the initial state, we\nsuppose s(n) = ϕ and x(n)\ns\n= ϕ, that is, any features has not revealed. Note\nthat, we assume that features of features z are fully revealed in the initial state\nand they are given as prior information. This assumption is natural because we\nconsider features of features as the description or the property of each feature on\nthe natural language or numerical expression and they are usually given before\nthe feature values are revealed. Then, we select a feature with the policy π(xs, z)\nand reveal the selected feature. (In other words, s ←s ∪π(xs, z) and the size\nof xs increases by one.) We repeat this process for k times and make the final\nprediction with the predictor f(xs, z) from |xs| = k features. This procedure is\nshown in Fig. 1b and 1c.\nOur ultimate goal is to minimize the loss of the prediction made by the\npredictor after selecting features by the policy. Given the loss function l(ˆy, y),\nthe objective function of our problem is\nmin\nθ,ϕ Ey,xl(fθ(xs, z), y),\n(1)\nwhere θ and ϕ are parameters for parameterized predictor and policy respec-\ntively. In addition, s (|s| = k) is constructed by the iterative selection of the\npolicy πϕ(xs, z).\n4\nGreedy Dynamic Feature Selection\nThis section explains the existing DFS method based on conditional mutual\ninformation (CMI) [3]. Note that this method handles the special case of our\nproblem definition that the feature set is fixed. Namely, Λ = [d] and Λ(n) = Λ\nfor all n = 1, ..., N. Therefore, in this section, we note x = {x1, ..., xd} and\nxs = {xi : i ∈s ⊂[d]}. Also, the policy π(xs) and the predictor f(xs) take only\nrevealed features xs as input.\n4.1\nGreedy Dynamic Feature Selection\nThis method aims to find a greedy policy based on CMI and the predictor based\non the naive Bayesian, implemented as neural networks such as MLP. Concretely,",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.01060210000105144,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1500
+  }
+}

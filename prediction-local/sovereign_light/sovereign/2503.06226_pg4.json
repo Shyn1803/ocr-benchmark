@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "2503.06226_pg4",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "Diﬀerent from the state reconstruction given in (8) which is\nspeciﬁc to the discrete-time systems, an alternative way to ob-\ntain the state information is to use a state observer to estimate\nthe real state. Concretely, the state of system (1) can be esti-\nmated by using the following Luenberger observer:\nˆx(k + 1) = (A −LC)ˆx(k) + Bu(k) + Ly(k).\n(10)\nIt is known that the Luenberger observer (10) has the property\nthat limk→∞ˆx(k) = x(k) when all the eigenvalues of (A−LC) are\nset within the unit circle under the observability condition. As\ngiven in Rizvi & Lin (2019), by setting ˆx(k) = 0, the estimated\nstate ˆx(k) can be parametrized by\nˆx(k) = Wyω(k) + Wuσ(k) =\nh\nWy, Wu\ni \"ω(k)\nσ(k)\n#\n:= ¯W̟\n(k) (11)\nwhere the parameterization matrices Wy ∈Rn×np and Wu ∈\nRn×nm are determined by the coeﬃcients of the numerators in\nthe transfer function matrix of the Luenberger observer system\n(10) with y(k) and u(k) being the inputs to the observer system,\nand the dynamics of ω(k) and σ(k) are given as\nω(k + 1) = ¯\nAyω(k) + ¯Byy(k), ω(0) = 0\nσ(k + 1) = ¯\nAuσ(k) + ¯Buu(k), σ(0) = 0\nwhere ¯\nAy ∈Rnp×np and ¯\nAu ∈Rnm×nm are user-deﬁned matrices\ndetermined by the eigenvalues of (A −LC), and ¯By ∈Rnp×p\nand ¯Bu ∈Rnm×m are also user-deﬁned matrices which can make\n( ¯\nAy,\n¯By) and ( ¯Au,\n¯Bu) controllable. It is easy to see that the\ndata of ω(k) and σ(k) are available since their system matrices\n( ¯\nAy, ¯By) and ( ¯\nAu, ¯Bu) are user-deﬁned.\nUsing the state parameterization in (11), the LQR problem\ncan be solved by\nu(k) = −K∗¯W̟\n(k) := −K ¯W̟\n(k)\n(12)\nwhen the state of the observer system convergesto the real state.\nIt is worth mentioning that, if all the eigenvalues of (A−LC) are\nchosen as 0, the observer state ˆx(k) converges to the real state\nx(k) when k ≥n.\nThus, by using the state reconstruction in (8) or the state pa-\nrameterization in (11), the LQR problem can be solved by the\noutput feedback controller (9) or (12) when the accurate knowl-\nedge of system matrices are known.\n2.3. Problem Formulation\nIn this paper, we aim to solve the LQR problem of linear\ndiscrete-time systems with completely unknown system matri-\nces and unmeasurable state, which can be formulated as fol-\nlows:\nProblem 1. For system (1) where the system matrices A, B, and\nC are unknown, and the state x is unmeasurable, ﬁnd an optimal\ncontrol policy sequence u(k) to satisfy\nV(x(0)) =\n∞\nX\nk=0\ny\nT(k)Qyy(k) + u\nT(k)Ru(k) = x\nT(0)P∗x(0)\nwhere P∗is the solution to ARE (6).\nThe challenges of Problem 1 arise from the solution of ARE\n(6) and the design of the parameterization matrix\n¯M or ¯W,\nwhich becomes diﬃcult in the absence of knowledge of the sys-\ntem matrices A, B, and C.\nBy combining the ADP method with a series of historical\ndata of input and output, some ADP-based output feedback\nlearning approaches focused on estimating the optimal con-\ntrol gain K ¯M and K ¯W directly, for instance, Chen et al. (2023);\nGao et al. (2016); Lewis & Vamvoudakis (2011); Rizvi & Lin\n(2019, 2020, 2023). Particularly, it is proven in Rizvi & Lin\n(2023) that the requirement on the full row rank of ¯W is nec-\nessary to guarantee the convergence performance of the afore-\nmentioned ADP-based output feedback learning approaches, so\nis the same requirement on ¯M along the similar proof. However,\nas we can see from (8), under Assumption 1, the parameteriza-\ntion matrix ¯M may not be of full row rank when the system\nmatrix A has the eigenvalue 0. It follows from Rizvi & Lin\n(2023, Theorem 4) that the parameterization matrix ¯W may not\nbe of full row rank when the matrices (A−LC) and A have com-\nmon eigenvalues. On the other hand, as stated in Postoyan et al.\n(2016), the stability of the closed-loop system under the learn-\ning control approach proposed in Lewis & Vamvoudakis (2011)\ncannot be guaranteed. Although this issue was eliminated in\nChen et al. (2023); Rizvi & Lin (2019, 2023), the requirement\nof the convergence of state observer is needed to ensure the\nequivalence of the dynamic output feedback controller with the\nstate feedback controller. This implies that the observer error\nwill inﬂuence the convergence and optimality performance of\nthe ADP-based output feedback learning control approaches in\nChen et al. (2023); Rizvi & Lin (2019, 2023).\nTo deal with the above issues, the objective of this paper is to\nprovide a generalized learning based output feedback solution\nto Problem 1 and a detailed analysis of convergence, stability,\nand optimality for the proposed output feedback learning con-\ntrol approach.\n3. Main Results\nIn this section, we propose a novel output feedback learn-\ning control approach to solve the LQR problem. In particular,\na new dynamic output feedback controller is designed that is\nequal to a static state feedback controller. Then, a data-driven\nlearning algorithm is established to estimate the optimal control\ngain without prior knowledge of system matrices. Finally, the\nconvergence, stability, and optimality analyses of the proposed\nlearning control approach are given.\n3.1. Dynamic Output Feedback Controller Design\nNow we present a generalized dynamic output feedback con-\ntroller design method, where the internal model is established\nwithout using any prior knowledge of the system dynamics.\nMoreover, the equivalence relationship between the proposed\noutput feedback controller and the state feedback controller al-\nways holds even in the presence of observer error.\n4",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.012026500000501983,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 250
+  }
+}

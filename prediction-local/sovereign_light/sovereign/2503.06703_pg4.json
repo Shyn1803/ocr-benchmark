@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "2503.06703_pg4",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "4\nbeing inspected at the same time. We then denote by Sm ⊂S\nthe subset of sensing regions inspected by transmit AP m,\nwith S the complete set of all clusters such that |S| = S. On\nthe contrary, receive APs are responsible for only detecting a\nsingle target within their sensing region.\nDuring the tracking phase, the goal is to confirm the pres-\nence of already detected targets and update their parameters. In\nthis case, transmit AP m tracks the detected targets within the\nsubset Lm, and the receive AP focuses on one or more targets.\nObviously, the network has no control over the position of the\ndetected targets, and it can happen that close targets are to\nbe tracked: mutual interference effects are thus to be properly\ntaken into account. This is discussed further in Section IV.\nIII. SYSTEM MODEL\nWe now describe the proposed scalable ISAC-enabled CF-\nmMIMO system model, focusing mainly on the sensing tasks:\ndetection at positions pi, with i ∈S, and tracking at positions\npl, with l ∈{1, . . . , L}. Assuming block fading channel and\nOFDM modulation, each coherence block consists of τc time-\nfrequency samples during which channels and reflections are\nconstant and flat. This way, t ∈{1, . . . , τc} will denote the\nindex for the symbols transmitted within a single coherence\nblock to sense the positions pi (detection) or pl (tracking).\nIn that sense, hk,m (hH\nk,m) denotes the N-dimensional UL\n(DL)1 channel from UE k to AP m; Gm,m′ is the (N × N)-\ndimensional matrix representing the channel from AP m′ ∈\nMtx to AP m ∈Mrx; and Hp,m,m′ refers to the (N × N)-\ndimensional matrix for the composite channel linking transmit\nAP m′ to receive AP m through the reflection from the target\nlocated in position p (either pi or pl).\nA. Propagation Channels\nUnder the above assumptions, the N-dimensional UL chan-\nnel from UE k to AP m is [23]\nhk,m ∼CN(0, Ck,m),\n(1)\nwhere Ck,m ∈CN×N refers to the spatial correlation matrix\nof the Rayleigh-distributed non-line-of-sight (NLoS) compo-\nnents. The corresponding large-scale fading coefficient (LSF),\nwhich includes path loss, is tr(Ck,m)/N.\nFor the AP-AP link, we adopt a Rician modeling:\nGm,m′ =\ns\nbm,m′\n1 + cm,m′\n\u0000 ¯Gm,m′ + √cm,m′ejψm,m′Vm,m′\u0001\n,\n(2)\nwhere bm,m′ is the LSF coefficient, cm,m′ is the Rician factor,\n¯Gm,m′\n∈CN×N contains the correlated2 NLoS compo-\nnents such that ¯gm,m′ = vec( ¯Gm,m′) ∼CN(0N2, Qm,m′),\nψm,m′ ∼U[0, 2π] is the phase offset, and Vm,m′ ∈CN×N is\nthe equivalent array response at the LoS direction:\nVm,m′ = am (φm,m′, θm,m′) aH\nm′ (φm′,m, θm′,m) ,\n(3)\n1We assume that system operations happen within one channel coherence\ninterval, and that time-division-duplex (TDD) protocol is used, to ensure\nequivalence (reciprocity) of UL and DL channels.\n2In line with [11], a popular choice for the channel covariance matrix\nQm,m′ is the well-known Kronecker model. However, we leave this un-\nspecified until the simulations section to keep our analysis general.\nwith am(φm,m′, θm,m′) the response of the array (or steering\nvector) for the azimuth φm,m′ (φm′,m) and elevation θm,m′\n(θm′,m) angles of arrival (departure) from AP m to AP m′.\nAccording to [24], the Rician factors can be defined as\ncm,m′ =\npLoS (dm,m′)\n1 −pLoS (dm,m′),\n(4)\nwhere pLoS(dm,m′) is the LoS probability that depends on the\ndistance dm,m′ between AP m and m′ [25, Table B.1.2.1-2].\nFinally, assuming LoS propagation between the targets and\nthe involved APs, a convenient expression for Hp,m,m′ is\nHp,m,m′ = ˜αp,m,m′ am (φm,p, θm,p) aH\nm′ (φm′,p, θm′,p)\n|\n{z\n}\nAp,m,m′\n,\n(5)\nwhere ˜αp,m,m′ = αp,m,m′p\nβp,m,m′ is a complex scalar\ncoefficient, with αp,m,m′ the target reflectivity, or radar cross-\nsection (RCS), and βp,m,m′ the product of the path loss from\ntransmit AP m′ to the target at position p and that from the\ntarget to receive AP m. As previously mentioned, we follow\nthe Swerling-I model for the RCS, in which αp,m,m′ is kept\nconstant over consecutive symbols within the coherence block\n[11]. Moreover, φm,p, θm,p are the azimuth and elevation\nangle of the position p with respect to (w.r.t.) the antenna\narray of AP m. A similar meaning have the quantities φm′,p\nand θm′,p w.r.t. AP m′.\nB. Uplink Channel Estimation\nAssuming perfect CSI can be overly optimistic in many\napplications. In practice, obtaining such channel knowledge\nlocally at the APs via UL orthogonal pilots is more realistic.\nThis approach enables the characterization of the sufficient\nstatistics of the channels [26].\nA feasible option could be the minimum mean-square error\n(MMSE) estimation [27, Subsection V-B]:\nˆhk,m =\n1\npτp¯ηk\nΛk,mφk,m,\n(6)\nwhere Λk,m = τp¯ηkCk,mΓ−1\nk,m is the MMSE matrix, τp is the\nnumber of pilots, ¯ηk is the UL training power, and\nΓk,m =\nXK\nj=1 τp¯ηjCj,m\n\f\fπH\nj πk\n\f\f2 + σ2\nmIL,\n(7)\ndenotes the covariance matrix of the least-squares observations\nφk,m ∈CN providing sufficient statistics, i.e.,\nφk,m =\nXK\nj=1\npτp¯ηjhj,mπH\nj πk + ωk,m,\n(8)\nwith πk ∈Cτp the sequence of pilots sent by UE k to estimate\nthe channel, and ωk,m ∈CN the equalized ambient noise with\nvariance σ2\nω [23, Subsection II-B].\nC. Downlink Transmission\nAssuming to be in the DL transmission and sensing phase,\nAP m ∈Mtx sends data to the UEs in the set Km plus ad-\nditional beams to first, detect the presence of potential targets\nwithin the surveillance area and later, track their location.",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.016417599999840604,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 250
+  }
+}

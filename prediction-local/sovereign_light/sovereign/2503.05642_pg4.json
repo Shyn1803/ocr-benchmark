@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "2503.05642_pg4",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "BoGrape, Xie and Zhang, et al.\nFor graph G, denote lu as the label of node u, eu,v as the shortest path from u to v (which may not be unique), and du,v\nas the shortest distance from node u to v (which is unique). Borgwardt and Kriegel (2005) define an SP kernel between\ngraphs G1 = (V 1, E1) and G2 = (V 2, E2) as:\nkSP(G1, G2) =\nX\nu1,v1∈V 1,u2,v2∈V 2\nk(eu1,v1, eu2,v2)\nk(·, ·) compares the labels and lengths of two shortest paths:\nk(eu1,v1, eu2,v2) = kv(lu1, lu2) · ke(du1,v1, du2,v2) · kv(lv1, lv2)\nwhere kv is a kernel comparing node labels, ke is a kernel comparing path lengths. Both kv and ke are usually chosen\nas Dirac kernels, giving the explicit representation of the SP kernel as:\nkSP(G1, G2) =\n1\nn2\n1n2\n2\nX\nu1,v1∈V 1,u2,v2∈V 2\n1(lu1 = lu2) · 1(du1,v1 = du2,v2) · 1(lv1 = lv2)\n(SP)\nwhere\n1\nn2\n1n2\n2 is introduced as a normalizing coefficient with n1, n2 as the number of nodes in graph G1, G2, respectively.\nNote that each node may have more problem-specific features beyond a single label. From here on, we use X = (G, F)\nto denote an attributed graph with G as the underlying labeled graph and F as node features. Intuitively, we can compare\nthe features of two nodes instead of labels in kv. However, this could unnecessarily reduce the number of matching\npaths between two graphs, as requiring identical node features is restrictive and may introduce additional subgraph\ninformation into path comparison. Another option is to use a more complicated kernel kv that measures similarity\nbetween features of two nodes, which may significantly increase the computational cost of optimization (similarity is\ncomputed for all node pairings). Therefore, we borrow from Cui and Yang (2018) the idea to separate the implicit and\nexplicit information of graphs, i.e., the kernel value between two attributed graphs X1, X2 becomes:\nk(X1, X2) = α · kG(G1, G2) + β · kF (F 1, F 2)\n(3)\nwhere kG is any graph kernel, kF is any kernel over features, and α, β are trainable parameters controlling the trade-off\nbetween graph similarity and feature similarity. Appendix A.4 describes an example of kF .\nSince node label is usually included as a node feature and considered in kF term, and comparing labels in Eq. (SP)\nincreases the complexity of our optimization formulations, we propose a simplified shortest-path (SSP) kernel corre-\nsponding to an unlabeled SP kernel:\nkSSP(G1, G2) =\n1\nn2\n1n2\n2\nX\nu1,v1∈V 1,u2,v2∈V 2\n1(du1,v1 = du2,v2) =\n1\nn2\n1n2\n2\nX\n0≤s<min(n1,n2)\nDs(G1) · Ds(G2)\n(SSP)\nwhere Ds(G) := |{(u, v) | u, v ∈V, du,v = s}| is the number of shortest paths with length s in graph G = (V, E).\nLemma 3.1. SP and SSP kernels are positive definite (PD).\nProof. Borgwardt and Kriegel (2005) prove the SP kernel is PD. The SSP kernel is a special case of the SP kernel\nwhere all nodes have the same label, hence is also PD.\nObserve that both the SP and SSP kernels are linear kernels if we pre-process all shortest paths in each graph and count\nthe number of each length of shortest path. Such linearity simplifies the optimization step (which still requires the\nnon-trivial representation of shortest paths), but reduces the representation ability of the graph kernels and limits the\nmaximal rank of the covariance matrix. Motivated by the practically strong performance of exponential kernels such as\nRBF kernel, Matérn kernel, graph diffusion kernel (Oh et al., 2019), etc., we propose the following two nonlinear graph\nkernels based on SP and SSP kernels:\nkESP(G1, G2) = exp(kSP(G1, G2))/σ2\nk\n(ESP)\nkESSP(G1, G2) = exp(kSSP(G1, G2))/σ2\nk\n(ESSP)\nwhere variance σ2\nk is added to control the magnitude of kernel value. Note that we could also add variance to SP and\nSSP kernels, but it would be absorbed by α, β.\nLemma 3.2. ESP and ESSP kernels are PD.\nProof. SP and SSP kernels can be rewritten into linear forms, so ESP and ESSP are exponential kernels, which are\nknown to be PD (Fukumizu, 2010).\nThe nonlinear kernels introduce additional difficulties for optimization as discussed in Section 3.4, but demonstrate\nbetter empirical performance compared to their linear counterparts, owing to increased representation ability.\n4",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.011651500000880333,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 250
+  }
+}

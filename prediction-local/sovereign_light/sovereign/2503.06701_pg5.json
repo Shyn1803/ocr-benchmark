@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "2503.06701_pg5",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "1) Observations: The observations that were fed to the RL\nagent from the environment included current blood glucose\nlevels and their rate of change. It’s worth noting that these\nobservations undergo a normalization process. Normalization\nis employed to prevent the emergence of excessively large\nor excessively small parameters, thereby enhancing numerical\nstability within the system.\n2) The reward function: The reward function is designed\nbased on the error e(t) we carefully considered key criteria\nderived from the glucose levels of a type 1 diabetes patient.\nThe normal glucose range, defined as 80 to 100 mg/dL, serves\nas a crucial reference point. Within this range, the RL agent\nreceives a significantly higher reward to reinforce behaviors\nthat maintain glucose levels within the healthy boundaries.\nWe also designated an acceptable range, consisting of two\nsub-ranges (100 to 160 mg/dL and 70 to 80 mg/dL), where\nthe agent receives a moderate reward. This encourages the\nagent to navigate glucose levels within an acceptable but\nbroader spectrum. Additionally, we identified two distinct bad\nranges (160 or higher and 0 to 70 mg/dL) and assigned a\nnegative reward within these intervals.we also considered the\nderivative de(t) to guide the reinforcement learning agent\ntoward desired performance. Additionally, i(t) the integral of\nthe absolute value of the normalized error, aimed at mitigating\nlarge overshooting and oscillations. Furthermore, c(t) denotes\nthe integral of the control signal, serving to penalize the agent\nfor excessive insulin usage. The reward is given to the agent\nat each step. And the formulation is as follows:\n• If the error is less than 90 (the glucose is less than the\nreference), the reward will be given by the linear function:\n(1 −|e|)/20\n• If the error is greater than 90 (the glucose is greater than\nthe reference), the reward will be given by the linear\nfunction: (1 −|e|)/70\n• If the error is less than 10 (the glucose is close to our\nreference), the reward will be given by the function,\nwhich at e = 0 gives the value 20, and at e = 10 gives\n0: 1.262 · (|e|)\n1\n5 + 2\n• We then apply penalties to our agent as follows: −2 ×\n10−6 · i −10−6 · c, where the first term is introduced to\nmitigate oscillations in the blood glucose signal, ensuring\nstability, and the second term is designed to optimize\nthe injected insulin, discouraging excessive usage. These\npenalties contribute to fine-tuning the agent’s behavior for\nmore effective and stable blood glucose regulation.\n3) Stop\nof\nepisode:\nIn\nour\nspecific\nimplementation,\nepisodes conclude under three conditions: after reaching the\npredefined simulation time of 24 hours, or when the glucose\nlevel exceeds 300 (indicating hyperglycemia), or falls below\n50 (indicating hypoglycemia). These extreme glucose levels\nare considered hazardous situations for the patient, demanding\nimmediate intervention. In such instances, we assert that the\nagent has failed to maintain glucose within the desired range,\nprompting a termination of the episode. This safety-centric\napproach aligns with our commitment to avoiding potentially\nharmful glucose extremes and ensures that the reinforcement\nlearning agent operates within clinically acceptable bounds\nduring the artificial pancreas control simulations.\nIV. EXPERIMENTATION AND RESULTS\nWe present a thorough and comprehensive comparative\nanalysis of three distinct and well-defined methods for control-\nling blood glucose levels, specifically tailored to address the\nchallenges associated with Type 1 diabetes management. The\nmethods evaluated in this study include a direct reinforcement\nlearning agent, which autonomously learns optimal control\nstrategies; a non-adaptive fuzzy logic controller with finely\ntuned and optimized parameters; and an adaptive fuzzy logic\ncontroller, where the parameters are continuously and dynam-\nically adjusted by the RL agent at each simulation timestep.\nIt is important to explicitly highlight that all simulations, as\nwell as the tuning processes for each of the proposed methods,\nwere systematically carried out using MATLAB2022b and\nSimulink.\nA. Direct insulin control through Reinforcement Learning\nThe results of the Direct insulin control through Reinforcement\nLearning in the nominal case are presented below:\nFig. 1. Glucose level (mg/dL) response of the Direct insulin control through\nReinforcement Learning, along with corresponding meals intake (mg/dl) and\ninsulin injections in units in the nominal case.\nIn the Glucose-level subplot, the two black dotted lines clearly\nindicate the boundaries of the safe range for blood glucose\nlevels, spanning from 70 to 180 units, while the green dotted\nline represents our chosen reference value, set at 90 units.\nIt is important to emphasize that this visual representation,\nincluding both the safe range and the reference line, will\nconsistently appear in all the glucose-level subplots presented\nthroughout this article to maintain clarity and uniformity.\nIn order to thoroughly examine the robustness of the pro-\nposed approach, the Reinforcement Learning Controller was\nsubjected to a comprehensive series of tests conducted under\nvarious sets of randomly generated time spans and differing\nquantities of meal intakes, allowing us to assess its perfor-\nmance across a wide range of possible scenarios.",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.013623299999380833,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 250
+  }
+}

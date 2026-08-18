@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "2503.03879_pg4",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "Fig. 2. Location of switch point at the end of finite element\nThe proposed step-equilibration approach is based on the\nprinciple that only the finite element(s) with the switch\npoint(s) have non-uniform discretization [tl−1, tl]. The\napproach uses an indicator variable (η) for the switch\npoint(s), which is determined by calculating and multi-\nplying the sum of the complementarity variables in two\nconsecutive finite elements.\nThe auxiliary variables for the sum of the complementarity\nvariables at each finite element are defined as:\nˆλl =\nK\nX\nk=1\nλl,k,\nˆνl =\nK\nX\nk=1\nνl,k\n(10a)\nThen, the Hadamard product of the forward and backward\nsum of the complementarity variables determine if they\nhave switched from positive to zero (or vice-versa).\nπλ\nl = ˆλl−1 ⊙ˆλl,\nπν\nl = ˆνl−1 ⊙ˆνl\n(10b)\n(Here, ⊙represents pointwise or elementwise product of\nvectors.)\nSince at least one of the vectors πλ\nl or πν\nl is zero at each\nelement, and they are exactly equal to zero at the element\ncorresponding to the switching point, the sum of the two\nvectors is a good candidate for the indicator function\nτl = πλ\nl + πν\nl , ηl =\nnf\nY\nj=1\nτl,j\n(10c)\nSince the indicator variable ηl is non-negative and only\nzero at the switching element, the relation between step\nsize and indicator variable can be represented by the\nfollowing complementarity constraints.\nFor l = 1, . . . , N −1\n0 ≤(∆h+\nl + ∆h−\nl ) ⊥ηl ≥0\n(10d)\nwhere hl−1 −hl = ∆h+\nl −∆h−\nl , ∆h+\nl , ∆h−\nl\n≥0, The\nfinite element with switch detection (FESD) algorithm was\nimplemented as a package NOSNOC in [19].\nAs mentioned in (10), the Nurkanovic formulation aug-\nments an additional [2N{ˆλ, ˆν} + (2N −2){πλ, πν} + (N −\n1){τ} + (N −1){η}] variables and [2N{(10a)} + (2N −\n2){(10b)}+2(N −1){(10c)}+(N −1){(10d)}] constraints\nfor each complementarity constraint. This effectively de-\ncreases the degrees of freedom by N −1 to that of the\noriginal problem and avoids non-unique solutions for the\nstep size variables hi.\n2.4 Proposed Formulation\nAlthough the Nurkanovic formulation makes the problem\nconsistent with respect to the degrees of freedom and\nensures uniform grid discretization away from the switch\npoint(s), the formulation may be numerically unstable (i.e.\nthe derivatives have large condition number) and increases\nthe size of the problem, making it difficult to implement\non larger optimal control problems.\nInspired by the Nurkanovic [21] formulation, we propose\na modification of the approach in [1], in order to keep\nthe degrees of the problem consistent. In our proposed\napproach, we first apply the formulation in [1] with cross\ncomplementarities (9f). This locates the switching point(s)\n(ts) at the end of the finite element(s).\nWe define the set of finite elements which have the switch-\ning point at the end (i.e. right) as:\nχs = {l|[tl−1, tl], λl,K = νl,K = 0,\nλl−1,K + νl−1,K > 0 or λl+1,K + νl+1,K > 0}\n(11a)\nIn the next step, we add additional constraints to the\nformulation which forces the finite elements to be equally\nspaced away from the switching points.\nhl −hl+1 = 0\n∀l ∈{1, . . . , N −1} \\ χs\n(11b)\nAlso, we add constraints to force the switching to happen\nat the boundary of finite elements found in the first step.\nλl,K + νl,K = 0\n∀l ∈χs\n(11c)\nThis formulation adds the necessary N −1 linear con-\nstraints without any additional variables making the for-\nmulation much more adaptable and applicable for large\noptimal control problems.\nThe main assumption in our approach is that the location\nof the switching points in the optimal solution is inde-\npendent of the step-size variables and the formulations.\nThus, the switching points in the Baumrucker formulation\nwould be the same as in the Nurkanovic formulation. The\nonly difference between their solutions is in the value of\nthe step size variables away from the switching elements.\nTherefore, we implement uniform discretization between\nthe switch points, start time and the final time using (11)\ninstead.\n3. SOLUTION METHODS FOR MPCCS\nTo develop the solution strategy for the MPCC derived in\nthe previous section, we discretize and rewrite (7) in the\nmore general form:\nmin φ(x)\n(12a)\ns.t. gI(x) ≤0; gE(x) = 0,\n(12b)\n0 ≤G(x) ⊥H(x) ≥0\n(12c)\nHere the complementarity constraints (12d) represent the\ncross-complementarity constraints (9f) and step equilibra-\ntion constraints (10e). The NLP equivalent formulation of\nthe complementarity constraints is\nG(x) ≥0, H(x) ≥0, Gi(x)Hi(x) = 0,\n∀i = 1 . . . nc\n3.1 MPCC Basics and Stationary Points\nThe following index sets are defined at every feasible point\n¯x of the MPCC (12):",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.011549400000149035,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 250
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "engine": "sovereign",
+  "engine_version": "540c463",
+  "doc_id": "0005784d0d255f6652180433936fa2998188_page_4_pg1",
+  "capabilities": [
+    "text_md"
+  ],
+  "text_md": "information specified on the dialog act, but oper-\nates at the phrase level. In other words, the onset \ndemand is checked at the beginning of every \nphrase in the dialog act.  \nIn addition to reasoning about onset attention, \nthe proposed model also assesses if production de-\nmand is met at the end of phrases, i.e. if the accu-\nmulated attention throughout the phrase matched \nthe production demand specified for the dialog \nact. If this is not the case, a wait is triggered (to \nre-acquire onset attention), and then the phrase is \nrepeated. If the onset demand is met at any point \nduring the wait, the system immediately repeats \nthe phrase. The variability of the wait durations, \ncoupled with variability in the attention estimates \nand the times when the specified onset or produc-\ntion attentional demand is met, leads to a variety \nof production behaviors in the robot. \n4 \nDeployment and lessons learned \nWe implemented the model described above in \nthe Directions Robot system and deployed it on \nthree robots situated in front of the bank of eleva-\ntors on floors 2, 3, and 4 of a four-story building. \nAppendix A contains an annotated demonstrative \ntrace of the system’s behaviors. Additional videos \nand snippets of interactions are available at: \nhttp://1drv.ms/1GQ1ori. While a comprehensive \nevaluation of the model is pending further im-\nprovements, we discuss below several lessons \nlearned from observing natural interactions with \nthe robots running the current implementation. \nA first observation is that the usefulness and \nnaturalness of the behaviors triggered by the robot \nhinges critically on the accuracy of the inferences \nabout attention. When the model incorrectly con-\ncludes that the participants’ attention is not on the \nrobot (false-negative errors), the coordinative pol-\nicy triggers unnecessary pauses, interjections and \nphrase repeats that can be disruptive and unnatu-\nral. The attention inference challenge includes the \nneed to recognize both the participants’ visual fo-\ncus of attention (which in itself is a difficult task \nin the wild) and cognitive attention as being on \ntask. Cognitive attention does not overlap with \nvisual attention all the time. For example, at times \nparticipants would shift their visual attention \naway from the robot as they leaned in and cocked \ntheir ear to listen closely. Problems in inferring at-\ntention are compounded by lower-level vision and \ntracking problems.   \nSecond, we believe that there is a need for bet-\nter integration of the coordinative policy with cur-\nrent existing models for language generation, ges-\nture production, multiparty turn-taking and en-\ngagement. Beyond the number of words in a \nphrase, the current policy does not leverage infor-\nmation about the contents of phrases that are about \nto be generated. This sometimes leads to unnatu-\nral sequences, such as “Excuse me! By the way, \nwould you mind […]” Another important question \nis how to automatically coordinate the robot’s \nphysical pointing gestures when repeating phrases \nor when phrases are interrupted. With respect to \nturn taking, problems detected in early experi-\nmentation led to an adjustment of the coordinative \npolicy that we described earlier: the system does \nnot move from a wait to a verbal action if it detects \nthat the user is likely speaking. Beyond this sim-\nple rule, we believe that the floor dynamics in the \nturn-taking model need to take into account the \nsystem’s discontinuous production, e.g., take into \naccount the fact that the pauses injected within ut-\nterances might be perceived by the participants as \nfloor releases. Further tuning of the timings of the \npauses, contingent on the dialog state and expec-\ntations about when the attention might return, as \nwell as a tighter integration with the engagement \nmodel might be required. For instance, we ob-\nserved cases where the robot’s decision to pause \nto wait for a participant’s attention to return from \nthe direction that the robot was pointing (before \ncontinuing to the next phrase) was interpreted as \nthe end of the utterance and the participant walked \naway before session completion. \nThird, we find that the definition of attentional \ndemands (both onset and production) need to be \nfurther refined (in some cases on a per-dialog state \nbasis) and modeled at a finer level of granularity, \ndown to the phrase level. In an utterance like “By \nthe way, would you mind swiping your badge?”, \nthe “By the way” phrase is in fact an attention at-\ntractor, and itself does not require attentional de-\nmands and thus should be modeled separately.  \n5 \nConclusion \nWe presented a model for incrementally coordi-\nnating language production with listeners’ foci of \nattention in a multimodal dialog systems. An ini-\ntial implementation and in-the-wild deployment \nof the proposed model has highlighted a number \nof areas for improvement. While further investi-\ngation and refinements are needed, the interac-\ntions collected highlight the potential and promise \nof the proposed approach for creating more natu-\nral and more effective interactions in physically \nsituated settings.",
+  "blocks": [],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [],
+  "seconds": 0.013028299999859883,
+  "peak_rss_mb": null,
+  "failed": false,
+  "error": null,
+  "config_fingerprint": {
+    "ocr_use_local_first": false,
+    "ocr_use_vision_api": false,
+    "api_key_present": false,
+    "gdoc_parser_url": "",
+    "mode": "light",
+    "marker_available": false,
+    "env_forced": {
+      "OCR_USE_LOCAL_FIRST": "false",
+      "OCR_USE_VISION_API": "false",
+      "OPENROUTER_API_KEY": "",
+      "GROQ_API_KEY": "",
+      "GDOC_PARSER_URL": ""
+    },
+    "be_path": "D:\\vnpt-projects\\sovereign\\adminPortal\\back-end-admin-portal",
+    "python": "3.12.10",
+    "tran_giay_moi_tai_lieu": 300.0,
+    "tran_giay_tong": 7200.0,
+    "tran_so_tai_lieu": 1500
+  }
+}
