@@ -48,6 +48,28 @@ class Metric(abc.ABC):
 
     def score(self, gt: GroundTruth, result: OcrResult) -> MetricResult:
         """Chấm một tài liệu. **Không override.**"""
+        # Cổng loại nhãn đứng TRƯỚC cổng engine hỏng, và thứ tự đó có hậu quả đo
+        # được. Nó chỉ nhìn `gt`, nên nó trả lời "tài liệu này có nằm trong tầm với
+        # của metric không" — câu hỏi không dính gì tới engine. Đảo lại thì một tài
+        # liệu olmOCR (nhãn khẳng định) mà engine crash bị đếm là **`block_f1` hỏng**,
+        # trong khi `block_f1` không bao giờ chấm được tài liệu olmOCR dù engine chạy
+        # hoàn hảo. Tài liệu đó vào `denom` của trung bình có phạt với giá trị 0.
+        #
+        # Đo trên lượt chạy 1606 tài liệu (2026-08-18): 11 tài liệu olmOCR docling
+        # crash đã kéo `block_f1` của `docling_default` từ 0.790 (n=203, hỏng 0%)
+        # xuống 0.749 (n=214, hỏng 5%), và kéo y hệt 11 tài liệu đó vào `heading`,
+        # `img_f1`, `img_iou`, `table_recall`, `cell_f1`. Phạt engine vì nó hỏng ở
+        # một tài liệu mà metric này không có quyền chấm.
+        if not isinstance(gt, self.gt_kinds):
+            return self._na(
+                result,
+                NAReason.WRONG_GT_KIND,
+                {
+                    "got": type(gt).__name__,
+                    "wants": [k.__name__ for k in self.gt_kinds],
+                },
+            )
+
         if result.failed:
             return self._na(result, NAReason.ENGINE_FAILED, {"error": result.error})
 
@@ -57,16 +79,6 @@ class Metric(abc.ABC):
                 result,
                 NAReason.MISSING_CAPABILITY,
                 {"missing": sorted(c.value for c in missing)},
-            )
-
-        if not isinstance(gt, self.gt_kinds):
-            return self._na(
-                result,
-                NAReason.WRONG_GT_KIND,
-                {
-                    "got": type(gt).__name__,
-                    "wants": [k.__name__ for k in self.gt_kinds],
-                },
             )
 
         rieng = self._na_rieng(gt, result)

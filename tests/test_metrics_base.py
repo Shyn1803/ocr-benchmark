@@ -89,6 +89,26 @@ def test_sai_dang_ground_truth_ra_na():
     assert r.detail["wants"] == ["AnnotationGT"]
 
 
+def test_engine_hong_o_nua_corpus_khac_khong_tinh_la_hong():
+    """Sai loại nhãn thắng engine hỏng — nếu không, metric bị phạt oan.
+
+    Chết khi revert: bản trước kiểm `result.failed` trước `gt_kinds`, nên một tài
+    liệu olmOCR mà engine crash ra `ENGINE_FAILED` cho `block_f1`. `aggregate()` đưa
+    nó vào `denom` với giá trị 0 — phạt engine ở một tài liệu mà metric không có
+    quyền chấm dù engine chạy hoàn hảo. Trên lượt 1606 tài liệu, 11 ca như vậy kéo
+    `block_f1` của `docling_default` từ 0.790 (n=203) xuống 0.749 (n=214, hỏng 5%).
+    """
+    r = AlwaysOne().score(
+        AssertionGT(doc_id="d"),
+        _result(failed=True, error="boom", failure_kind=FailureKind.ENGINE_ERROR),
+    )
+    assert r.na_reason is NAReason.WRONG_GT_KIND
+
+    # Và hệ quả phải thấy được ở tầng gộp: ô không mang tài liệu đó trong mẫu số.
+    a = aggregate([r], metric="always_one", engine="e")
+    assert (a.n_failed, a.fail_rate, a.n_chua_nhan) == (0, 0.0, 1)
+
+
 def test_metric_tra_diem_ngoai_khoang_thi_no():
     with pytest.raises(ValueError, match=r"phải nằm trong \[0,1\]"):
         OutOfRange().score(GT, _result())
