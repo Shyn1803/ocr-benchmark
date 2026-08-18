@@ -40,6 +40,7 @@ from dataclasses import dataclass
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 
+from ocr_bench import glossary
 from ocr_bench.corpus import ROOT
 from ocr_bench.scorer import ScoreTable
 from ocr_bench.types import MetricResult, OcrResult
@@ -56,6 +57,9 @@ __all__ = [
     "dung_manifest",
     "loc_theo_tai_lieu",
     "bang_markdown",
+    "NGUOC_CHIEU",
+    "chu_thich_nguoc_chieu",
+    "NuaCorpus",
     "bao_cao_overall",
     "bao_cao_by_group",
     "bao_cao_common_set",
@@ -64,7 +68,7 @@ __all__ = [
 ]
 
 TOI_THIEU_TAP_CHUNG = 10
-"""Dưới ngưỡng này thì `common_set.md` in cảnh báo thay cho bảng."""
+"""Dưới ngưỡng này thì `common-set.md` in cảnh báo thay cho bảng."""
 
 THU_VIEN_CHAM_DIEM = ("jiwer", "rapidfuzz", "apted", "Pillow", "psutil", "pypdf")
 """Đổi bất kỳ gói nào ở đây là đổi con số **mà không đổi `prediction/`** — không ghi
@@ -75,6 +79,10 @@ NHOM_ENGINE: tuple[tuple[str, ...], ...] = (
     ("docling_scan", "opendataloader_scan"),
     ("docling_default", "docling_scan"),
     ("opendataloader_default", "opendataloader_scan"),
+    # Lượt chạy 2026-08: `docling_scan` chưa xong, ba engine kia đủ 1606/1606. Không
+    # có bộ này thì nhóm 4-engine rơi vào nhánh "Bỏ qua" và cả lượt chạy không so
+    # chéo được gì, dù ba phần tư dữ liệu đã có.
+    ("docling_default", "opendataloader_default", "opendataloader_scan"),
     ("docling_default", "docling_scan", "opendataloader_default", "opendataloader_scan"),
     ("noop", "sabotage"),
 )
@@ -89,6 +97,15 @@ phải tên engine trần. Tới 2026-08-17 danh sách này vẫn giữ tên c�
 đã đổi sang dạng có profile — không gì ném lỗi, mọi nhóm rơi vào nhánh "Bỏ qua", và
 `common-set.md` ra lò rỗng ruột suốt. `test_nhom_engine_mac_dinh_chi_gom_ten_profile_co_that`
 chặn lần sau; `noop`/`sabotage` là engine hiệu chuẩn nên không nằm trong catalog."""
+
+
+SINH_BOI_MAC_DINH = "scripts/build_research_report.py"
+"""Script ghi trong dòng xuất xứ của mỗi bảng.
+
+Là tham số chứ không phải hằng nhúng sẵn vì **hai** script sinh ra các bảng này
+(`build_research_report.py` cho bản công bố, `d1_report.py` cho ảnh chụp `history/`).
+Chốt cứng một tên thì bảng của script kia chỉ người ta tới lệnh không dựng lại được
+nó — đúng loại sai mà dòng xuất xứ sinh ra để chặn."""
 
 
 class BaoCaoError(RuntimeError):
@@ -278,7 +295,7 @@ def _canh_bao(cov: dict[str, set[str]]) -> list[str]:
     chung = set.intersection(*cov.values())
     ra.append(
         f"Giao của cả {len(cov)} engine là {len(chung)} tài liệu. Bảng gộp toàn bộ "
-        f"KHÔNG phải một phép so sánh — xem `common_set.md`."
+        f"KHÔNG phải một phép so sánh — xem `common-set.md`."
     )
     return ra
 
@@ -286,20 +303,115 @@ def _canh_bao(cov: dict[str, set[str]]) -> list[str]:
 # --------------------------------------------------------------------------- bảng
 
 
+NGUOC_CHIEU: dict[str, str] = {
+    "cell_f1": (
+        "`cell_f1` **không** đo chất lượng ô ở bộ mẫu này. Không nhãn nào có ô, nên "
+        "tài liệu duy nhất chấm được là tài liệu engine **tự sinh ra bảng** — theo "
+        "định nghĩa metric thì điểm luôn 0.000 và thông tin nằm ở `n`: `n` là số tài "
+        "liệu bị bảng ảo. **Thấp hơn là tốt hơn**, ngược chiều mọi metric còn lại, nên "
+        "nó bị loại khỏi mọi bảng xếp hạng theo điểm. Thêm engine thứ tư cũng không đổi "
+        "được điều này: thiếu ô trong nhãn là thiếu ở **bộ mẫu**, engine nào chạy vào "
+        "cũng rơi đúng nhánh đó. Muốn `cell_f1` có nghĩa thì phải gán nhãn ô, không "
+        "phải chạy thêm lượt."
+    ),
+}
+"""Metric mà con số in ra đọc ngược quy ước "cao hơn là tốt hơn".
+
+Không sửa `Metric` để đảo dấu: điểm 0.000 ở đây là **đúng** theo định nghĩa metric,
+cái sai nằm ở chỗ bộ mẫu không có nhãn ô nên phép đo mất nghĩa. Đảo dấu sẽ biến một
+metric vô nghĩa thành một metric trông có nghĩa — tệ hơn hẳn. Thay vào đó đánh dấu
+`†` ở tên hàng và in nguyên văn lý do dưới bảng, để người đọc không thể đọc con số
+mà không đọc lý do."""
+
+
+def _nhan_metric(m: str) -> str:
+    return f"{m} †" if m in NGUOC_CHIEU else m
+
+
+def chu_thich_nguoc_chieu(metrics: Iterable[str]) -> list[str]:
+    """Các dòng `†` cho những metric **thực sự có mặt** trong bảng vừa in.
+
+    In vô điều kiện thì file nào cũng mang chú thích cho một hàng không tồn tại, và
+    chú thích thừa dạy người đọc bỏ qua chú thích.
+    """
+    co = [m for m in dict.fromkeys(metrics) if m in NGUOC_CHIEU]
+    if not co:
+        return []
+    return ["> † " + NGUOC_CHIEU[m] for m in co] + [""]
+
+
+NGUONG_PHAN_BIET = 0.05
+"""Dưới mức này thì coi như các engine **không tách được nhau** ở metric đó.
+
+Cùng ngưỡng vật chất đã dùng khi lọc các phép so sánh có ý nghĩa thống kê: một chênh
+lệch nhỏ hơn 0.05 thì dù p có nhỏ tới đâu cũng không đổi được lựa chọn engine nào.
+Giữ một hằng số cho cả hai chỗ để không có hai định nghĩa "đáng kể" cùng tồn tại."""
+
+_TRAI_KHONG_TINH_DUOC = None
+"""Ký hiệu rõ ràng cho "chưa tới hai engine chấm được" — khác hẳn độ trải bằng 0."""
+
+
+def do_trai(bang: ScoreTable, metric: str) -> float | None:
+    """Độ trải điểm giữa các engine ở một metric: `max − min` của trung bình có phạt.
+
+    Trả `None` khi **chưa tới hai** engine chấm được metric đó — độ trải của một điểm
+    duy nhất là 0, và một số 0 ở đây đọc thành "các engine giống hệt nhau" trong khi
+    sự thật là không có gì để so.
+
+    Đây là tính chất **phụ thuộc lượt chạy**, nên nó nằm ở đây chứ không ở `ceiling.py`:
+    trần đo được là tính chất của bộ nhãn, còn "các engine có tách được nhau không" đổi
+    theo chính danh sách engine đem ra so.
+    """
+    diem = [
+        a.penalized_mean
+        for a in bang.ranking(metric)
+        if a.n_scored > 0 and a.penalized_mean is not None
+    ]
+    if len(diem) < 2:
+        return _TRAI_KHONG_TINH_DUOC
+    return max(diem) - min(diem)
+
+
+def khong_phan_biet(bang: ScoreTable, metric: str) -> bool:
+    """Metric chấm được ở ≥2 engine nhưng mọi engine chênh nhau dưới ngưỡng."""
+    trai = do_trai(bang, metric)
+    return trai is not None and trai < NGUONG_PHAN_BIET
+
+
+CHU_THICH_KHONG_PHAN_BIET = (
+    "> ‡ Metric **đo được nhưng không phân biệt**: mọi engine chênh nhau dưới "
+    f"{NGUONG_PHAN_BIET:.2f} điểm, nên con số đúng mà không dùng để chọn engine được. "
+    "Đây không phải `N/A` — phép đo chạy đủ trên cỡ mẫu thật; nó chỉ nói rằng ở khía "
+    "cạnh này các engine hành xử như nhau, và kết luận nào rút ra từ thứ tự của chúng "
+    "cũng là kết luận rút ra từ nhiễu."
+)
+"""Một dòng, đặt dưới bảng có ít nhất một hàng `‡`."""
+
+
 def bang_markdown(
     bang: ScoreTable,
     *,
     engines: Sequence[str] | None = None,
     cov: dict[str, set[str]] | None = None,
+    metrics: Sequence[str] | None = None,
 ) -> str:
     """Bảng metric × engine, **kèm dòng `n`** (cỡ mẫu từng engine).
 
     Mọi ô số đi qua `Aggregate.cell()`; không format số ở đây. Dòng `n` đứng ngay
     dưới tiêu đề để không ai đọc điểm mà bỏ qua cỡ mẫu.
+
+    `metrics` chọn **hàng nào và theo thứ tự nào**. Mặc định là mọi metric có trong
+    bảng, xếp theo `ScoreTable.metrics()`. Người gọi truyền vào để (a) không trộn
+    metric của hai nửa corpus rời nhau vào cùng một bảng, (b) xếp theo trần đo được
+    thay vì theo bảng chữ cái. Tên không có trong bảng bị bỏ qua — bảng con lọc theo
+    tài liệu có thể thiếu hẳn một metric.
     """
     es = list(engines) if engines is not None else bang.engines()
     if not es:
         return "_không có engine nào._"
+
+    co = set(bang.metrics())
+    ms = [m for m in metrics if m in co] if metrics is not None else bang.metrics()
 
     dem = cov if cov is not None else coverage(bang.rows)
     head = "| metric | " + " | ".join(es) + " |"
@@ -308,34 +420,86 @@ def bang_markdown(
         str(len(dem.get(e, ()))) for e in es
     ) + " |"
     body = [
-        "| " + " | ".join([m] + [bang.cell(m, e).cell() for e in es]) + " |"
-        for m in bang.metrics()
+        "| " + " | ".join([_nhan_metric(m)] + [bang.cell(m, e).cell() for e in es]) + " |"
+        for m in ms
     ]
     return "\n".join([head, sep, dong_n, *body])
 
 
-def bao_cao_overall(bang: ScoreTable, manifest: dict[str, object]) -> str:
+@dataclass(frozen=True, slots=True)
+class NuaCorpus:
+    """Một nửa bộ mẫu: tập tài liệu của nó, và các metric chấm được trên nó.
+
+    Bộ mẫu gồm hai nửa **rời nhau** — DocLayNet mang nhãn bbox, olmOCR mang nhãn
+    khẳng định, giao bằng 0. Một bảng trộn cả hai in `block_f1` (trần 203) ngay cạnh
+    `assert_math_presence` (trần 558) mà không gì trong bảng nói ra rằng hai con số
+    đến từ hai bộ tài liệu không giao nhau; người đọc mặc định chúng so được với nhau.
+    Tách ở đây để việc trộn trở thành không biểu diễn được, không phải một quy ước
+    phải nhớ.
+    """
+
+    ten: str
+    """Tiêu đề section, ví dụ `"DocLayNet — nhãn bố cục"`."""
+    docs: frozenset[str]
+    """`doc_id` thuộc nửa này. Bảng được lọc về đúng tập này trước khi in."""
+    metrics: tuple[str, ...]
+    """Metric của nửa này, **đã xếp thứ tự** (xem `ceiling.thu_tu_metric`)."""
+    ghi_chu: str = ""
+    """Câu đặt ngay dưới tiêu đề — chỗ nói trần đo được, hoặc vì sao nửa này ít metric."""
+    slug: str = ""
+    """Khoá ngắn, ổn định, dùng đặt tên file hình của nửa này (`doclaynet` / `olmocr`).
+
+    Không suy từ `ten`: tiêu đề là câu tiếng Việt có dấu, băm nó ra tên file cho chuỗi
+    như `doclaynet_nh_n_b_c_c_bbox`, và mỗi lần sửa chữ trong tiêu đề là một lần đổi
+    tên file mà không ai định đổi.
+    """
+
+
+def _cac_nua(bang: ScoreTable, nua: Sequence[NuaCorpus] | None) -> list[NuaCorpus]:
+    """Không truyền nửa nào ⇒ một nửa duy nhất phủ cả bảng (hành vi cũ)."""
+    if nua is not None:
+        return list(nua)
+    return [NuaCorpus(ten="", docs=frozenset(bang.docs()), metrics=tuple(bang.metrics()))]
+
+
+def bao_cao_overall(
+    bang: ScoreTable,
+    manifest: dict[str, object],
+    *,
+    nua: Sequence[NuaCorpus] | None = None,
+    sinh_boi: str = SINH_BOI_MAC_DINH,
+) -> str:
     """`overall.md` — số tổng quan, cảnh báo đặt **trước** bảng."""
     canh_bao = manifest.get("canh_bao") or []
     d = [
         "# Bảng tổng quan — mọi engine, mọi tài liệu",
         "",
-        "> Sinh bằng `py -3 scripts/d1_report.py`. **Không** sửa tay.",
+        f"> Sinh bằng `py -3 {sinh_boi}`. **Không** sửa tay.",
         "",
+        # Ba bảng kết quả nằm cùng thư mục `tables/` với chú giải, nên đường dẫn là
+        # tên file trần — người đọc mở file cạnh bên, không phải lần ngược thư mục.
+        *glossary.khoi_doc_bang("glossary.md"),
         "## Đọc bảng này thế nào",
         "",
         "Mỗi engine chạy trên một tập tài liệu **khác nhau** (xem dòng `n`). Đặt hai ô "
         "cạnh nhau rồi kết luận cái nào hơn là **sai** trừ khi hai engine có cùng `n` "
-        "trên cùng tập. Bảng so chéo hợp lệ nằm ở `common_set.md`.",
+        "trên cùng tập. Bảng so chéo hợp lệ nằm ở `common-set.md`.",
         "",
     ]
     if canh_bao:
         d += ["### Cảnh báo", ""] + [f"- {c}" for c in canh_bao] + [""]
+
+    da_in: list[str] = []
+    for n in _cac_nua(bang, nua):
+        con = loc_theo_tai_lieu(bang, n.docs) if nua is not None else bang
+        d += [f"## {n.ten or 'Bảng'}", ""]
+        if n.ghi_chu:
+            d += [n.ghi_chu, ""]
+        d += [bang_markdown(con, metrics=n.metrics), ""]
+        da_in += [m for m in n.metrics if m in set(con.metrics())]
+
+    d += chu_thich_nguoc_chieu(da_in)
     d += [
-        "## Bảng",
-        "",
-        bang_markdown(bang),
-        "",
         "Ô `N/A` = engine không có năng lực để metric chạm tới. Nó **không** phải 0 và "
         "dòng của nó **không** bị bỏ đi.",
         "",
@@ -343,8 +507,19 @@ def bao_cao_overall(bang: ScoreTable, manifest: dict[str, object]) -> str:
     return "\n".join(d)
 
 
-def bao_cao_by_group(bang: ScoreTable, root: Path | None = None) -> str:
-    """`by_group.md` — AC-02, một bảng cho mỗi nhóm tài liệu."""
+def bao_cao_by_group(
+    bang: ScoreTable,
+    root: Path | None = None,
+    *,
+    nua: Sequence[NuaCorpus] | None = None,
+    sinh_boi: str = SINH_BOI_MAC_DINH,
+) -> str:
+    """`by-group.md` — AC-02, một bảng cho mỗi nhóm tài liệu.
+
+    Mỗi nhóm nằm gọn trong **một** nửa corpus (`nhom_tai_lieu()` đã gắn tiền tố
+    `doclaynet/` hoặc `olmocr/`), nên `nua` ở đây chỉ dùng để chọn danh sách metric
+    cho từng nhóm — không cần chia lại tài liệu.
+    """
     nhom = nhom_tai_lieu(root)
     theo_nhom: dict[str, set[str]] = {}
     for doc, g in nhom.items():
@@ -356,8 +531,9 @@ def bao_cao_by_group(bang: ScoreTable, root: Path | None = None) -> str:
     d = [
         "# Bảng theo nhóm tài liệu",
         "",
-        "> Sinh bằng `py -3 scripts/d1_report.py`. **Không** sửa tay.",
+        f"> Sinh bằng `py -3 {sinh_boi}`. **Không** sửa tay.",
         "",
+        *glossary.khoi_doc_bang("glossary.md"),
         "Tách theo nhóm làm số **rõ hơn**, không đẹp hơn: chia nhỏ thì cỡ mẫu của "
         "engine chạy ít tài liệu xuống còn vài đơn vị. Dòng `n` của từng bảng nói ra "
         "điều đó — đọc nó trước khi đọc điểm.",
@@ -369,11 +545,21 @@ def bao_cao_by_group(bang: ScoreTable, root: Path | None = None) -> str:
             "",
         ]
 
+    cac_nua = _cac_nua(bang, nua)
+    da_in: list[str] = []
     for g in sorted(theo_nhom):
         con = loc_theo_tai_lieu(bang, theo_nhom[g])
         if not con.rows:
             continue
-        d += [f"## {g}", "", bang_markdown(con), ""]
+        da_in += con.metrics()
+        # Nhóm thuộc nửa nào thì lấy thứ tự metric của nửa đó. Không nửa nào nhận
+        # (nhóm ngoài cả hai bộ mẫu) thì để `None` — in mọi metric có trong bảng con,
+        # còn hơn in một bảng rỗng mà không nói vì sao.
+        cua_nhom = next(
+            (n.metrics for n in cac_nua if theo_nhom[g] & n.docs), None
+        )
+        d += [f"## {g}", "", bang_markdown(con, metrics=cua_nhom), ""]
+    d += chu_thich_nguoc_chieu(da_in)
     return "\n".join(d)
 
 
@@ -381,8 +567,11 @@ def bao_cao_common_set(
     bang: ScoreTable,
     cov: dict[str, set[str]] | None = None,
     nhom_engine: Sequence[Sequence[str]] = NHOM_ENGINE,
+    *,
+    nua: Sequence[NuaCorpus] | None = None,
+    sinh_boi: str = SINH_BOI_MAC_DINH,
 ) -> str:
-    """`common_set.md` — bảng duy nhất so chéo được.
+    """`common-set.md` — bảng duy nhất so chéo được.
 
     Chỉ chấm trên tài liệu **mọi engine trong nhóm đều có**. Nhóm nào có tập chung
     dưới `TOI_THIEU_TAP_CHUNG` thì in cảnh báo thay cho bảng — in bảng trên 1 tài
@@ -392,14 +581,16 @@ def bao_cao_common_set(
     d = [
         "# So chéo trên tập tài liệu chung",
         "",
-        "> Sinh bằng `py -3 scripts/d1_report.py`. **Không** sửa tay.",
+        f"> Sinh bằng `py -3 {sinh_boi}`. **Không** sửa tay.",
         "",
+        *glossary.khoi_doc_bang("glossary.md"),
         "Mỗi bảng dưới đây chỉ chấm trên tài liệu **mọi engine trong bảng đều có**. "
         "Đây là bảng duy nhất mà việc so hai ô cạnh nhau là hợp lệ.",
         "",
     ]
 
     da_in_bang = 0
+    da_in: list[str] = []
     for nhom in nhom_engine:
         ten = " × ".join(f"`{e}`" for e in nhom)
         thieu = [e for e in nhom if e not in dem]
@@ -424,17 +615,24 @@ def bao_cao_common_set(
             ]
             continue
 
-        con = loc_theo_tai_lieu(bang, chung)
-        d += [
-            f"## {ten}",
-            "",
-            f"Tập chung: **{len(chung)}** tài liệu.",
-            "",
-            bang_markdown(con, engines=list(nhom)),
-            "",
-        ]
+        d += [f"## {ten}", "", f"Tập chung: **{len(chung)}** tài liệu.", ""]
+        for n in _cac_nua(bang, nua):
+            # Cắt tập chung theo nửa **sau** khi giao các engine: giao trước rồi cắt
+            # cho ra đúng tập, còn cắt trước rồi giao thì mỗi nửa lại có một "tập
+            # chung" riêng và con số ở tiêu đề không còn mô tả bảng nào.
+            docs = chung & n.docs if nua is not None else chung
+            if not docs:
+                continue
+            con = loc_theo_tai_lieu(bang, docs)
+            if nua is not None:
+                d += [f"### {n.ten} — {len(docs)} tài liệu", ""]
+                if n.ghi_chu:
+                    d += [n.ghi_chu, ""]
+            d += [bang_markdown(con, engines=list(nhom), metrics=n.metrics), ""]
+            da_in += con.metrics()
         da_in_bang += 1
 
+    d += chu_thich_nguoc_chieu(da_in)
     if not da_in_bang:
         # Không nhóm nào in được bảng ⇒ file này không so chéo gì, trong khi
         # `overall.md` vẫn trỏ người đọc sang đây như "bảng duy nhất hợp lệ".

@@ -71,9 +71,9 @@ def main() -> int:
         (out / ten).write_bytes(noi_dung.encode("utf-8"))
 
     ghi("manifest.json", json.dumps(mani, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
-    ghi("overall.md", report.bao_cao_overall(bang, mani))
-    ghi("by_group.md", report.bao_cao_by_group(bang))
-    ghi("common_set.md", report.bao_cao_common_set(bang, cov))
+    ghi("overall.md", report.bao_cao_overall(bang, mani, sinh_boi="scripts/d1_report.py"))
+    ghi("by_group.md", report.bao_cao_by_group(bang, sinh_boi="scripts/d1_report.py"))
+    ghi("common_set.md", report.bao_cao_common_set(bang, cov, sinh_boi="scripts/d1_report.py"))
     ghi("raw.json", report.raw_json(bang, generated_at=moc) + "\n")
 
     print(f"ghi {out}")

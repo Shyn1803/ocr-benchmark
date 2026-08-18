@@ -1,9 +1,9 @@
 # Hướng Dẫn Chạy 3 Nhóm Metric Có Cơ Sở Đối Chiếu
 
 > **Tài liệu này chỉ nói CHẠY NHƯ THẾ NÀO.** Muốn hiểu *vì sao* chỉ chạy 3 nhóm này mà
-> không chạy 8 metric còn lại, đọc [`ma-tran-nhan-va-metric.md`](ma-tran-nhan-va-metric.md).
+> không chạy 8 metric còn lại, đọc `[ma-tran-nhan-va-metric.md](ma-tran-nhan-va-metric.md)`.
 >
-> **Khác gì [`huong_dan_chay_pilot.md`](huong_dan_chay_pilot.md)?** File kia hướng dẫn chạy
+> **Khác gì** `[huong_dan_chay_pilot.md](huong_dan_chay_pilot.md)`**?** File kia hướng dẫn chạy
 > **20 file mẫu** để làm quen hệ thống. File này chạy **toàn bộ bộ nhãn** (203 + 1403 tài
 > liệu) để ra bảng thật.
 >
@@ -21,25 +21,31 @@ Mọi lệnh trong tài liệu này chạy từ `ocr-bench/`. Trong Git Bash:
 cd /d/vnpt-projects/sovereign/ocr-bench
 ```
 
+
+
 ### 0.2 Dùng đúng venv
 
 Repo có **5 môi trường Python riêng**, không phải một:
 
-| Venv | Chứa | Dùng cho |
-|---|---|---|
-| `.venv` | docling 2.91.0 · opendataloader-pdf 2.5.0 (đủ gói hybrid) | **docling_\*, opendataloader_\*, mọi lệnh chấm điểm** |
-| `.venv-odl` | docling **2.119.0** · opendataloader-pdf 2.5.0 | (dự phòng — xem cảnh báo dưới) |
-| `.venv-marker` | marker-pdf 1.10.2 | marker_\* (chưa dùng trong lượt này) |
-| `.venv-pi` | — | pdf_inspector |
-| `.venv-sov` | — | sovereign (BE API chưa dựng) |
 
-> ⚠️ **`.venv` và `.venv-odl` cài docling khác phiên bản.** Server hybrid của OpenDataLoader
+| Venv           | Chứa                                                      | Dùng cho                                          |
+| -------------- | --------------------------------------------------------- | ------------------------------------------------- |
+| `.venv`        | docling 2.91.0 · opendataloader-pdf 2.5.0 (đủ gói hybrid) | **docling_, opendataloader_, mọi lệnh chấm điểm** |
+| `.venv-odl`    | docling **2.119.0** · opendataloader-pdf 2.5.0            | (dự phòng — xem cảnh báo dưới)                    |
+| `.venv-marker` | marker-pdf 1.10.2                                         | marker_ (chưa dùng trong lượt này)                |
+| `.venv-pi`     | —                                                         | pdf_inspector                                     |
+| `.venv-sov`    | —                                                         | sovereign (BE API chưa dựng)                      |
+
+
+> ⚠️ `.venv` **và** `.venv-odl` **cài docling khác phiên bản.** Server hybrid của OpenDataLoader
 > gọi docling bên trong nó. Nếu bạn chạy server bằng `.venv-odl` (docling 2.119.0) nhưng
 > chạy profile `docling_*` bằng `.venv` (docling 2.91.0) thì hai nhánh kết quả dùng hai bản
 > docling khác nhau — vẫn chạy được, nhưng khi so sánh sẽ có một biến nhiễu không khai báo.
 >
-> **Khuyến nghị: dùng `.venv` cho tất cả.** Bản `build/odl-hybrid/manifest.json` hiện tại
+> **Khuyến nghị: dùng** `.venv` **cho tất cả.** Bản `build/odl-hybrid/manifest.json` hiện tại
 > được sinh từ `.venv` và ghi `docling: 2.91.0`. Đổi venv thì `run_id` của manifest đổi theo.
+
+
 
 ### 0.3 Luôn có `PYTHONIOENCODING=utf-8`
 
@@ -54,36 +60,42 @@ tiếp từ chỗ dở.
 `--refresh` **xoá sạch** cache đó. Với lượt 1403 tài liệu, một lần gõ nhầm là mất hàng chục
 giờ máy.
 
-> **Từ 2026-08-13, cache cũ tự hết hạn — và bạn vẫn không cần `--refresh`.**
+> **Từ 2026-08-13, cache cũ tự hết hạn — và bạn vẫn không cần** `--refresh`**.**
 > Khoá cache nay tính cả *năng lực adapter khai báo* (xem mục 6.1). Mọi file dự đoán sinh ra
 > trước ngày đó đều không khớp khoá mới, nên script tự coi là cache miss và **chạy lại đúng
 > tài liệu đó**, không cần bạn xoá gì. Đây chính là điều `--refresh` sẽ làm, nhưng có chọn lọc
 > và không thể gõ nhầm phạm vi.
 >
 > Ngoại lệ duy nhất: `--mode publication` **ném lỗi và dừng** thay vì chạy lại
-> ([`run_research_predictions.py:372`](../scripts/run_research_predictions.py)) — chế độ đó
+> (`[run_research_predictions.py:372](../scripts/run_research_predictions.py)`) — chế độ đó
 > coi cache không khớp là sự cố phải người quyết định, không phải việc để script tự xử. Tài
 > liệu này dùng `--mode calibration` nên không chạm vào đường đó.
 
 ---
 
+
+
 ## 1. Tổng thời gian dự kiến
 
 Đo thật trên máy này (CPU), giây/tài liệu:
 
-| Profile | s/doc | 203 tài liệu (DocLayNet) | 1403 tài liệu (olmOCR) |
-|---|---:|---:|---:|
-| `opendataloader_default` | 2.4 | ~8 phút | ~56 phút |
-| `docling_default` | 14.9 | ~50 phút | ~5h48 |
-| `opendataloader_scan` | 28.1 | ~1h35 | ~10h57 |
-| `docling_scan` | 34.7 | ~1h58 | ~13h32 |
-| **Tổng** | | **~4h31** | **~31h13** |
+
+| Profile                  | s/doc | 203 tài liệu (DocLayNet) | 1403 tài liệu (olmOCR) |
+| ------------------------ | ----- | ------------------------ | ---------------------- |
+| `opendataloader_default` | 2.4   | ~8 phút                  | ~56 phút               |
+| `docling_default`        | 14.9  | ~50 phút                 | ~5h48                  |
+| `opendataloader_scan`    | 28.1  | ~1h35                    | ~10h57                 |
+| `docling_scan`           | 34.7  | ~1h58                    | ~13h32                 |
+| **Tổng**                 |       | **~4h31**                | **~31h13**             |
+
 
 **Tổng cộng ~36 giờ máy.** Đó là lý do phải làm theo thứ tự bước 1 → 2 → 3: bước 1 chỉ mất
 1 tiếng và đã mở khoá được nhóm B, đủ để kiểm xem đường ống có thông không trước khi đốt
 31 tiếng cho bước 3.
 
 ---
+
+
 
 ## 2. Bước 1 — Bật server hybrid (bắt buộc cho mọi profile OpenDataLoader)
 
@@ -96,6 +108,8 @@ toàn bộ.
 ```bash
 cd /d/vnpt-projects/sovereign/ocr-bench && PYTHONIOENCODING=utf-8 ./.venv/Scripts/python.exe scripts/run_odl_hybrid.py
 ```
+
+
 
 ### Server bật thành công trông như thế nào
 
@@ -111,8 +125,8 @@ Gặp đúng thông báo này thì cài bản có phần mở rộng `[hybrid]`:
 cd /d/vnpt-projects/sovereign/ocr-bench && ./.venv/Scripts/python.exe -m pip install "opendataloader-pdf[hybrid]==2.5.0"
 ```
 
-*(Chính chữ `[hybrid]` mới là thứ kéo về fastapi/uvicorn/python-multipart. Cài
-`opendataloader-pdf` trơn sẽ luôn thiếu 3 gói này.)*
+*(Chính chữ* `[hybrid]` *mới là thứ kéo về fastapi/uvicorn/python-multipart. Cài*
+`opendataloader-pdf` *trơn sẽ luôn thiếu 3 gói này.)*
 
 ### Kiểm tra server đã sẵn sàng
 
@@ -129,10 +143,10 @@ print('jit        ', m['config']['jit_enforcement'], m['config']['jit_enforcemen
 
 Phải thấy `jit {'TORCHDYNAMO_DISABLE': '1'} TORCHDYNAMO_DISABLE-before-spawn`.
 
-> 🩹 **Vì sao cần dòng `TORCHDYNAMO_DISABLE` đó.** docling bên trong server gọi
+> 🩹 **Vì sao cần dòng** `TORCHDYNAMO_DISABLE` **đó.** docling bên trong server gọi
 > `torch.compile`. TorchInductor cần trình biên dịch `cl.exe` của MSVC, mà máy này không cài
-> Build Tools → **mọi** PDF trả về HTTP 500 `InvalidCxxCompiler`, **trong khi `/health` vẫn
-> trả `ok`**. Trước khi vá, lượt chạy hỏng 20/20 tài liệu mà server trông vẫn khoẻ mạnh.
+> Build Tools → **mọi** PDF trả về HTTP 500 `InvalidCxxCompiler`, **trong khi** `/health` **vẫn
+> trả** `ok`. Trước khi vá, lượt chạy hỏng 20/20 tài liệu mà server trông vẫn khoẻ mạnh.
 > Bản vá đặt `TORCHDYNAMO_DISABLE=1` vào môi trường tiến trình con trước khi spawn
 > (`scripts/run_odl_hybrid.py`), và khai luôn vào manifest để kiểm tra được.
 >
@@ -141,6 +155,8 @@ Phải thấy `jit {'TORCHDYNAMO_DISABLE': '1'} TORCHDYNAMO_DISABLE-before-spawn
 > ⚠️ **Server chết khi bạn đóng terminal.** Đừng bật nó trong một tab rồi đóng tab đi.
 
 ---
+
+
 
 ## 3. Bước 2 — DocLayNet 203 tài liệu → mở khoá nhóm B + C (~4h31)
 
@@ -159,7 +175,7 @@ cd /d/vnpt-projects/sovereign/ocr-bench && PYTHONIOENCODING=utf-8 ./.venv/Script
 cd /d/vnpt-projects/sovereign/ocr-bench && PYTHONIOENCODING=utf-8 ./.venv/Scripts/python.exe scripts/run_research_predictions.py --mode calibration --dataset-manifest datasets/manifest.json --hardware cpu --profiles docling_scan,opendataloader_scan --only "$(cat runs/doclaynet-ids.txt)"
 ```
 
-> ⚠️ **`--dataset-manifest datasets/manifest.json` là BẮT BUỘC.**
+> ⚠️ `--dataset-manifest datasets/manifest.json` **là BẮT BUỘC.**
 > Mặc định script đọc `datasets/calibration-manifest.json`, mà file đó hiện chỉ có **1 tài
 > liệu** (bản nháp tạm). Quên cờ này là chạy đúng 1 file rồi báo xong.
 >
@@ -169,6 +185,8 @@ cd /d/vnpt-projects/sovereign/ocr-bench && PYTHONIOENCODING=utf-8 ./.venv/Script
 > đủ thì dừng ngay, đừng chờ 4 tiếng.
 
 ---
+
+
 
 ## 4. Bước 3 — olmOCR 1403 tài liệu → mở khoá nhóm A (~31h13)
 
@@ -189,7 +207,11 @@ những file đã xong sẽ in `CACHE HIT` và bị bỏ qua.
 
 ---
 
+
+
 ## 5. Bước 4 — Chấm điểm
+
+
 
 ### 5.1 Nhóm A — khẳng định
 
@@ -217,18 +239,22 @@ cd /d/vnpt-projects/sovereign/ocr-bench && PYTHONIOENCODING=utf-8 ./.venv/Script
 
 > 🚨 **Hai cờ này đều bắt buộc, và mỗi cờ chặn một tai nạn khác nhau:**
 >
-> - **Thiếu `--prediction-dir`** → chấm nhầm corpus đóng băng ở `prediction/` (các engine
->   `marker`, `noop`, `sabotage`, `pdf_inspector`, `sovereign_full`), **không** phải kết quả
->   bạn vừa chạy. Nó không báo lỗi gì cả.
-> - **Thiếu `--out runs/pilot`** → **ghi đè** thư mục `results/`, tức là phá mất bộ đối
->   chiếu dùng để kiểm metric có phân biệt được engine tốt/xấu hay không.
+> - **Thiếu** `--prediction-dir` → chấm nhầm corpus đóng băng ở `prediction/` (các engine
+> `marker`, `noop`, `sabotage`, `pdf_inspector`, `sovereign_full`), **không** phải kết quả
+> bạn vừa chạy. Nó không báo lỗi gì cả.
+> - **Thiếu** `--out runs/pilot` → **ghi đè** thư mục `results/`, tức là phá mất bộ đối
+> chiếu dùng để kiểm metric có phân biệt được engine tốt/xấu hay không.
 
 Muốn bản dựng **tái lập được byte-for-byte** thì đặt `SOURCE_DATE_EPOCH` trước khi chạy;
 không đặt thì báo cáo lấy đồng hồ máy và hai lần dựng sẽ khác nhau.
 
 ---
 
+
+
 ## 6. Đọc kết quả — 5 điều dễ hiểu nhầm
+
+
 
 ### 6.1 Docling chỉ có điểm nhóm ảnh sau khi bạn chạy lại nó
 
@@ -250,10 +276,10 @@ OpenDataLoader, và N/A của docling ở đó là *dữ liệu cũ*, không ph�
 Cũng ngày 2026-08-13, hai metric này được phát hiện không chuẩn hoá Unicode trước khi so:
 
 - `diacritics_acc` so từng code point, nên nhãn NFC gặp đầu ra NFD thì "ề" một bên là 1 code
-  point còn bên kia 2–3, và **mọi** ký tự có dấu đều trượt — engine đọc đúng hoàn toàn vẫn bị
-  chấm 0.2. Nặng hơn: nhãn ở dạng NFD còn bị kết luận "không có dấu nào" và trả thẳng N/A.
+point còn bên kia 2–3, và **mọi** ký tự có dấu đều trượt — engine đọc đúng hoàn toàn vẫn bị
+chấm 0.2. Nặng hơn: nhãn ở dạng NFD còn bị kết luận "không có dấu nào" và trả thẳng N/A.
 - `cell_f1` so nội dung ô bằng `==`, cùng bệnh — trong khi `teds` trên *cùng một bảng* thì có
-  chuẩn hoá, nên hai metric lệch nhau.
+chuẩn hoá, nên hai metric lệch nhau.
 
 Khác biệt quan trọng với mục 6.1: lỗi này nằm ở **khâu chấm**, không nằm trong file dự đoán.
 Dự đoán cũ vẫn dùng được — chỉ cần chạy lại bước 4 (mục 5). Với ai đã có sẵn corpus, đây là
@@ -288,22 +314,28 @@ py -3 -c "import json,sys;[print(r['generated_at'],[p['name'] for p in r['profil
 
 ---
 
+
+
 ## 7. Sự cố thường gặp
 
-| Hiện tượng | Nguyên nhân | Xử lý |
-|---|---|---|
-| `./.venv/Scripts/python.exe: No such file or directory` | terminal đang ở thư mục khác | thêm `cd /d/vnpt-projects/sovereign/ocr-bench &&` vào đầu lệnh |
-| Chạy xong ngay, chỉ 1 tài liệu | quên `--dataset-manifest datasets/manifest.json` | thêm cờ, chạy lại |
-| OpenDataLoader hỏng 100%, java exit 1, không có thư mục `.raw/` | server 5002 chưa bật, hoặc bật mà thiếu `TORCHDYNAMO_DISABLE` | xem mục 2 |
-| `missing: [fastapi, python-multipart, uvicorn]`, thoát mã 2 | cài `opendataloader-pdf` thiếu `[hybrid]` | `pip install "opendataloader-pdf[hybrid]==2.5.0"` |
-| Im lặng 1–3 phút lúc mới chạy | đang nạp vài GB model vào RAM | bình thường, chờ |
-| `UserWarning: 'pin_memory'` từ PyTorch | đang chạy `--hardware cpu`, tính năng GPU bị tắt | bình thường, kết quả không ảnh hưởng |
-| Bảng ra trông giống hệt lần trước dù vừa chạy xong | quên `--prediction-dir` → chấm nhầm corpus đóng băng | thêm cờ, dựng lại |
-| `CACHE HIT` biến mất, tài liệu cũ chạy lại từ đầu | khoá cache đổi từ 2026-08-13 (thêm năng lực adapter) | **đúng như thiết kế** — để nó chạy, xem mục 0.4 |
-| `--mode publication` dừng ngay với `PreflightError: ... capabilities` | cùng lý do trên, nhưng chế độ publication không tự chạy lại | dùng `--mode calibration`, hoặc thêm `--refresh` nếu thực sự muốn dựng lại bản công bố |
-| `diacritics_acc` của một engine nhảy vọt so với bảng cũ | bản cũ chấm sai vì thiếu chuẩn hoá NFC (mục 6.2) | số mới là số đúng; bỏ bảng cũ đi |
+
+| Hiện tượng                                                            | Nguyên nhân                                                   | Xử lý                                                                                  |
+| --------------------------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `./.venv/Scripts/python.exe: No such file or directory`               | terminal đang ở thư mục khác                                  | thêm `cd /d/vnpt-projects/sovereign/ocr-bench &&` vào đầu lệnh                         |
+| Chạy xong ngay, chỉ 1 tài liệu                                        | quên `--dataset-manifest datasets/manifest.json`              | thêm cờ, chạy lại                                                                      |
+| OpenDataLoader hỏng 100%, java exit 1, không có thư mục `.raw/`       | server 5002 chưa bật, hoặc bật mà thiếu `TORCHDYNAMO_DISABLE` | xem mục 2                                                                              |
+| `missing: [fastapi, python-multipart, uvicorn]`, thoát mã 2           | cài `opendataloader-pdf` thiếu `[hybrid]`                     | `pip install "opendataloader-pdf[hybrid]==2.5.0"`                                      |
+| Im lặng 1–3 phút lúc mới chạy                                         | đang nạp vài GB model vào RAM                                 | bình thường, chờ                                                                       |
+| `UserWarning: 'pin_memory'` từ PyTorch                                | đang chạy `--hardware cpu`, tính năng GPU bị tắt              | bình thường, kết quả không ảnh hưởng                                                   |
+| Bảng ra trông giống hệt lần trước dù vừa chạy xong                    | quên `--prediction-dir` → chấm nhầm corpus đóng băng          | thêm cờ, dựng lại                                                                      |
+| `CACHE HIT` biến mất, tài liệu cũ chạy lại từ đầu                     | khoá cache đổi từ 2026-08-13 (thêm năng lực adapter)          | **đúng như thiết kế** — để nó chạy, xem mục 0.4                                        |
+| `--mode publication` dừng ngay với `PreflightError: ... capabilities` | cùng lý do trên, nhưng chế độ publication không tự chạy lại   | dùng `--mode calibration`, hoặc thêm `--refresh` nếu thực sự muốn dựng lại bản công bố |
+| `diacritics_acc` của một engine nhảy vọt so với bảng cũ               | bản cũ chấm sai vì thiếu chuẩn hoá NFC (mục 6.2)              | số mới là số đúng; bỏ bảng cũ đi                                                       |
+
 
 ---
+
+
 
 ## 8. Danh sách kiểm tra
 

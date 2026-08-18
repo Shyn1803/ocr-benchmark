@@ -39,12 +39,21 @@ def test_report_build_emits_all_required_artifacts(tmp_path: Path):
         "results/raw-results.json",
         "results/aggregate-results.json",
         "results/statistical-tests.json",
+        "results/measurable-ceiling.json",
+        "tables/ceiling.md",
+        # Chú giải là artifact bắt buộc, không phải phụ lục tuỳ hứng: mọi bảng khác
+        # đều trỏ tới nó để giải thích `n` / `N/A` / `trần` / `†` / `‡`.
+        "tables/glossary.md",
         "tables/overall.md",
         "tables/common-set.md",
         "tables/by-group.md",
-        "figures/capability-ranking.svg",
+        # Hình xếp hạng và hình scan tách theo **nửa corpus**: một hình phẳng gộp cả
+        # hai nửa là mời so hai bộ mẫu giao nhau bằng 0.
+        "figures/capability-ranking-doclaynet.svg",
+        "figures/capability-ranking-olmocr.svg",
+        "figures/scan-degradation-doclaynet.svg",
+        "figures/scan-degradation-olmocr.svg",
         "figures/accuracy-speed.svg",
-        "figures/scan-degradation.svg",
         "figures/failure-distribution.svg",
     }
     assert required <= set(files.keys())
@@ -121,6 +130,107 @@ def test_cli_chuyen_tiep_prediction_dir(monkeypatch: pytest.MonkeyPatch, tmp_pat
     ghi.clear()
     assert mod.main(["--out", str(tmp_path)]) == 0
     assert ghi["prediction_dir"] is None
+
+
+def test_khong_bang_nao_tron_metric_cua_hai_nua_corpus(tmp_path: Path):
+    """Một bảng markdown chỉ được chứa metric của **một** nửa bộ mẫu.
+
+    Hai nửa giao nhau bằng 0: DocLayNet mang nhãn bbox, olmOCR mang nhãn khẳng định.
+    Xếp `block_f1` (trần 203) cạnh `assert_math_presence` (trần 558) trong cùng một
+    bảng là mời người đọc so hai con số đến từ hai tập tài liệu không chung tài liệu
+    nào — và không gì trong bảng nói ra điều đó. Đây là cổng chặn cho đúng cái đó,
+    quét trên **file đã sinh** chứ không trên ý định của hàm sinh.
+    """
+    from ocr_bench.ceiling import tran_do_duoc
+    from ocr_bench.corpus import load_doclaynet, load_olmocr
+
+    out_dir = tmp_path / "out"
+    build_publication(tmp_path, out_dir, generated_at=FIXED_TS)
+
+    nua_cua = {
+        m: t.nua_corpus for m, t in tran_do_duoc(load_doclaynet(), load_olmocr()).items()
+    }
+
+    for md in sorted((out_dir / "tables").glob("*.md")):
+        bang_hien_tai: set[str] = set()
+        tu_khai_nua = False
+        """Bảng có sẵn cột `nửa corpus` thì mỗi hàng tự nói mình thuộc nửa nào.
+
+        `ceiling.md` là bảng như vậy — nó là **danh mục trần đo được**, không phải bảng
+        so điểm, và bỏ nửa kia ra khỏi danh mục thì đúng là giấu. Luật cấm trộn nhắm
+        vào bảng đặt hai con số cạnh nhau mà không nói chúng đến từ hai tập rời nhau;
+        một cột ghi rõ nửa corpus chính là lời nói đó.
+        """
+        for dong in md.read_text(encoding="utf-8").splitlines() + [""]:
+            if not dong.startswith("|"):
+                # Hết một bảng: kiểm rồi mở bảng mới.
+                assert tu_khai_nua or len(bang_hien_tai) <= 1, (
+                    f"{md.name}: một bảng chứa metric của cả hai nửa corpus "
+                    f"({', '.join(sorted(bang_hien_tai))})"
+                )
+                bang_hien_tai = set()
+                tu_khai_nua = False
+                continue
+            if not bang_hien_tai and "nửa corpus" in dong:
+                tu_khai_nua = True
+            # Cột đầu là tên metric, có thể mang hậu tố `†` (metric ngược chiều).
+            ten = dong.split("|")[1].strip().removesuffix("†").strip().strip("*`")
+            if ten in nua_cua and nua_cua[ten] != "ca_hai":
+                bang_hien_tai.add(nua_cua[ten])
+
+
+def test_moi_metric_deu_co_mo_ta():
+    """Metric mới thêm vào sổ đăng ký mà quên docstring thì đỏ ở đây, không im lặng.
+
+    `glossary.mo_ta_metric` lấy **câu đầu** docstring của lớp metric. Không có docstring
+    thì bảng chú giải in `—` — một dòng trống giữa các dòng có nghĩa, và không gì trong
+    lượt dựng báo cho ai biết. Đây là chỗ báo.
+    """
+    from ocr_bench import glossary, registry
+
+    thieu = [m for m in registry.list_metrics() if not glossary.mo_ta_metric(m)]
+    assert thieu == [], f"metric không có docstring mô tả: {', '.join(thieu)}"
+
+
+def test_truc_y_chon_metric_tach_engine_xa_nhat_khong_phai_tran_lon_nhat():
+    """Trục `accuracy-speed` chọn theo **độ trải**, không theo trần.
+
+    Chết khi revert: bản trước lấy metric đầu `thu_tu_metric` — tức trần lớn nhất — và
+    ở lượt chạy thật nó rơi vào `assert_math_presence`, nơi ba engine đều 0.001–0.002.
+    Hình ra ba điểm bẹp trên đáy. Ở đây `to_tran` có trần gấp đôi nhưng mọi engine bằng
+    nhau; `nho_tran` mới là metric nói được điều gì đó.
+    """
+    from ocr_bench.ceiling import Tran
+    from ocr_bench.research_report import _chon_truc_y
+    from ocr_bench.scorer import ScoreTable
+    from ocr_bench.types import MetricResult
+
+    docs = ("d1", "d2")
+    rows = [
+        MetricResult(metric=m, engine=e, doc_id=d, value=v)
+        for d in docs
+        for m, e, v in (
+            ("to_tran", "a_default", 0.50),
+            ("to_tran", "b_default", 0.50),
+            ("nho_tran", "a_default", 0.90),
+            ("nho_tran", "b_default", 0.20),
+        )
+    ]
+    trans = {
+        m: Tran(
+            metric=m,
+            nua_corpus="doclaynet",
+            n_ung_vien=400,
+            n_toi_da=n,
+            bac="do_duoc",
+            ly_do="",
+            nang_luc_can=(),
+        )
+        for m, n in (("to_tran", 400), ("nho_tran", 200))
+    }
+    docs_nua = {"doclaynet": frozenset(docs), "olmocr": frozenset()}
+
+    assert _chon_truc_y(ScoreTable(tuple(rows)), trans, docs_nua) == "nho_tran"
 
 
 def test_every_number_in_paper_has_trace_id(tmp_path: Path):
