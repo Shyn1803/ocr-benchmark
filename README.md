@@ -17,6 +17,15 @@ Tài liệu vận hành trong `docs/`:
 | [`docs/huong_dan_chay_pilot.md`](docs/huong_dan_chay_pilot.md) | Chạy thử **20 file** để làm quen hệ thống |
 | [`docs/profile_review.md`](docs/profile_review.md) | Rà soát cấu hình profile |
 
+Kết quả đã công bố (sinh ra, **không sửa tay** — xem [Dựng báo cáo công bố](#dựng-báo-cáo-công-bố)):
+
+| File | Đọc để biết |
+|---|---|
+| [`runs/pilot/paper/executive-summary.md`](runs/pilot/paper/executive-summary.md) | Bản rút gọn: từng metric, engine dẫn đầu, kèm `n` |
+| [`runs/pilot/paper/paper-vi.md`](runs/pilot/paper/paper-vi.md) | Bài đầy đủ — **mục 1.1 giải nghĩa một ô bảng**, đọc trước khi xem số |
+| [`runs/pilot/tables/ceiling.md`](runs/pilot/tables/ceiling.md) | Metric nào bộ nhãn cho phép chấm, trên nhiều nhất bao nhiêu tài liệu |
+| [`runs/pilot/tables/glossary.md`](runs/pilot/tables/glossary.md) | Thuật ngữ + ký hiệu `‡` `†` trong bảng |
+
 ## Chạy
 
 ```bash
@@ -466,44 +475,140 @@ tỉ lệ hỏng.
 
 ```
 src/ocr_bench/
-├── types.py        hợp đồng dữ liệu — mọi quyết định của A0 nằm ở đây
-├── normalize.py    NFC + gộp khoảng trắng; mọi metric text phải đi qua
-├── registry.py     đăng ký adapter/metric, kiểm ngay lúc import
-├── rss.py          đo đỉnh RSS (psutil, lấy mẫu 50ms) — tầng thấp, không biết gì về bảng
-├── adapters/       base.py · noop.py  (sabotage → A1b, engine thật → A4-A7)
-└── metrics/        base.py            (cer/teds/imgf1/nid/heading → nhóm B)
-    └── perf.py     sec/trang · RSS · FailRate — **không** kế thừa `Metric`, xem đầu file
+├── types.py            hợp đồng dữ liệu — mọi quyết định của A0 nằm ở đây
+├── normalize.py        NFC + gộp khoảng trắng; mọi metric text phải đi qua
+├── registry.py         đăng ký adapter/metric, kiểm ngay lúc import
+├── rss.py              đo đỉnh RSS (psutil, lấy mẫu 50ms) — không biết gì về bảng
+├── prediction.py       ghi/nạp `prediction/`; băm SHA-256 ảnh, schema bản 2
+├── corpus.py           nạp hai bộ nhãn: DocLayNet (bbox) · olmOCR (assertion)
+├── ceiling.py          **trần đo được** — suy từ nhãn, không đụng tới engine
+├── report.py           gộp → bảng markdown (`Aggregate.cell()`, ngưỡng phân biệt)
+├── research_report.py  dựng 17 artifact công bố dưới `runs/<tên>/`
+├── research_charts.py  6 hình SVG, vẽ từ `ScoreTable`/`PerfAggregate` thật
+├── svgkit.py           nguyên hàm SVG dùng chung — tất định, không timestamp
+├── glossary.py         bảng thuật ngữ; mô tả metric lấy từ docstring lớp metric
+├── statistics.py       kiểm định cặp engine → `statistical-tests.json`
+├── adapters/           base.py · noop.py · sabotage.py · docling · opendataloader
+│                       · marker · pdf_inspector · sovereign
+└── metrics/            base.py — cổng N/A + `aggregate()`; 19 metric đăng ký
+    └── perf.py         sec/trang · RSS · FailRate — **không** kế thừa `Metric`
 
-pdfs/ ground-truth/ prediction/ results/ history/ charts/
+pdfs/ ground-truth/                     bộ mẫu + nhãn
+prediction/                             prediction bộ doclaynet (4 engine đời đầu)
+calibration/prediction/cpu/<profile>/   prediction lượt 1606 tài liệu × 4 profile
+runs/pilot/                             bản công bố: results · tables · figures · paper
+results/ history/ charts/               artifact các cổng A/B/C/D trước đó
 ```
 
 `perf.py` nằm trong `metrics/` cho gần chỗ dùng, nhưng nó là **họ dữ liệu riêng**: `Metric`
 chặn giá trị ngoài `[0,1]` và quy ước cao là tốt, còn giây và MB thì không chặn trên và
 thấp mới tốt. Ép nó vào `Metric` chỉ có hai đường, đều hỏng: bỏ cổng `[0,1]` (mất cổng
-đang bảo vệ 14 metric) hoặc chuẩn hoá `1/(1+t)` (ra số không đơn vị, không trả lời nổi
+đang bảo vệ 19 metric) hoặc chuẩn hoá `1/(1+t)` (ra số không đơn vị, không trả lời nổi
 "1400 tài liệu mất bao lâu").
 
 `prediction/` **được commit**: chấm lại không cần chạy lại OCR — đó là cả điểm của A2,
 và Marker tốn ~3h cho 200 trang trên CPU.
 
-⚠️ **Nhưng chỉ commit phần chấm được.** Prediction của bộ `olmocr` **không** vào repo:
-bộ đó chưa có ground truth (`ground-truth/` chỉ phủ `doclaynet` + `sample`), nên 1.4 GB
-ảnh tách ra từ 1403 tài liệu hiện không có metric nào chấm nổi. Đã chạy thật, **hỏng 0**,
-số liệu ghi ở `.claude/tasks/TASK-076/review.md`; sinh lại mất ~31 phút:
+**Cập nhật 2026-08-18: `prediction-local/` và `results/d2-render/` đã bỏ chặn.** Trước đây
+hai thư mục này nằm trong `.gitignore` với lý do "chưa chấm được / là dẫn xuất". Từ commit
+`23ba22e` mọi thứ bench sinh ra đều được commit — thêm 1513 file, 11 MB. Đoạn README cũ nói
+prediction olmocr *không* vào repo nay đã sai; bộ olmOCR **có** nhãn (1403 tài liệu
+`AssertionGT`) và **đang được chấm** trong lượt công bố hiện hành.
+
+⚠️ **Ngoại lệ duy nhất còn chặn: `*.images/` (~2.6 GB).** Đây là ảnh pixel engine trích ra.
+Không metric nào đọc chúng: `ImgF1`/`ImgIou` chỉ so **toạ độ khung** (`metrics/imgf1.py:130`
+lấy `i.box`, không mở file). Ảnh chỉ phục vụ toàn vẹn schema — `_image_from_json()`
+(`prediction.py:709`) băm SHA-256 từng file và ném `PredictionSchemaError` khi thiếu.
+
+Hệ quả khi clone/pull ở máy mới: **nạp prediction của tài liệu có ảnh sẽ ném
+`PredictionSchemaError`** vì `.json` còn mà `.images/` không có. Hai cách xử lý, chọn một —
+đừng xoá `.images/` mà giữ `.json`:
 
 ```bash
+# a) sinh lại cả ảnh lẫn json cho các tài liệu đó
 .venv-odl/Scripts/python.exe scripts/make_predictions.py \
     --engines opendataloader --corpus olmocr --out prediction-local
+
+# b) hoặc chấm trên thư mục đã đóng băng đầy đủ, không đụng prediction-local
+--prediction-dir calibration/prediction/cpu
 ```
 
-`--out prediction-local/` chứ không ghi thẳng vào `prediction/`: `prediction-local/` nằm
-trong `.gitignore`, nên lần sau `git add -A` không lỡ tay kéo 1.4 GB vào lịch sử nữa.
-Tên tài liệu olmocr không có tiền tố chung nên không viết được glob lọc theo bộ — tách
-thư mục là cách chặn duy nhất chắc chắn.
+Bản công bố ở `runs/pilot/` dựng từ `calibration/prediction/cpu/`, **không** từ
+`prediction-local/`, nên nó không chạm vào ràng buộc này.
 
-Và **đừng xoá `*.images/` mà giữ lại `*.json`** để tiết kiệm chỗ: `_image_from_json()`
-(`src/ocr_bench/prediction.py`) băm SHA-256 từng file ảnh và ném `PredictionSchemaError`
-khi thiếu — bỏ ảnh là bỏ cả `.json` đi kèm, hoặc sinh lại cả hai.
+## Dựng báo cáo công bố
+
+Toàn bộ `runs/pilot/` là **thư mục sinh ra**. Không sửa tay file nào trong đó — sửa mã rồi
+dựng lại:
+
+```bash
+PYTHONIOENCODING=utf-8 SOURCE_DATE_EPOCH=1755475200 ./.venv/Scripts/python.exe scripts/build_research_report.py --prediction-dir calibration/prediction/cpu --out runs/pilot
+```
+
+`SOURCE_DATE_EPOCH` **bắt buộc**: thiếu nó thì mỗi lượt dựng ra một `generated_at` khác và
+`diff` giữa hai lượt đầy nhiễu. Test `test_report_build_is_byte_identical_across_two_runs`
+khoá đúng tính chất này — dựng hai lần vào hai thư mục phải giống nhau **từng byte**.
+
+Lệnh trên in `nạp 6424 dự đoán · 19 metric · 4 engine` rồi
+`Generated 17 publication artifacts under runs\pilot`. Trước khi trả về 0 nó chạy
+`validate_publication_trace()`: mọi ô số trong bài phải mang chú thích
+`<!-- trace: aggregate:<metric>:<engine> -->` trỏ về một khoá có thật trong
+`results/aggregate-results.json`, và mọi tên engine xuất hiện trong SVG phải nằm trong
+danh sách engine đã chạy. Thoát mã 2 nghĩa là có con số không truy được nguồn — đó là cái
+bẫy đã một lần cho ra hình forest plot vẽ 4 engine chưa từng chạy.
+
+Mười bảy artifact:
+
+| Nhóm | File |
+|---|---|
+| `results/` | `aggregate-results.json` · `raw-results.json` · `statistical-tests.json` · `measurable-ceiling.json` |
+| `tables/` | `overall.md` · `by-group.md` · `common-set.md` · `ceiling.md` · `glossary.md` |
+| `figures/` | `accuracy-speed.svg` · `capability-ranking-{doclaynet,olmocr}.svg` · `scan-degradation-{doclaynet,olmocr}.svg` · `failure-distribution.svg` |
+| `paper/` | `paper-vi.md` · `executive-summary.md` |
+
+### Luật bố cục: hai nửa corpus không bao giờ chung bảng
+
+Bộ mẫu 1606 tài liệu là **hai bộ rời nhau**, giao đúng **0 tài liệu**:
+
+| Nửa | Số tài liệu | Loại nhãn | Metric chấm được |
+|---|---:|---|---|
+| DocLayNet | 203 | `AnnotationGT` — bbox theo lớp | `block_f1` · `type_f1` · `img_f1` · `img_iou` · `table_recall` · `heading` |
+| olmOCR | 1403 | `AssertionGT` — mệnh đề đúng/sai | 6 metric `assert_*` |
+
+Vì thế **không có "engine tốt nhất toàn cục"** — mỗi nửa có bảng riêng, tiêu đề ghi rõ bộ
+mẫu và cỡ mẫu. Cổng chặn nằm ở `Metric.score()`: thứ tự kiểm là
+`gt_kinds → failed → missing_capability`, nên tài liệu olmOCR mà engine crash **không** bị
+tính là "hỏng" của `block_f1` (nó vốn không có quyền chấm tài liệu đó). Đảo hai bước đầu
+là `block_f1` của `docling_default` tụt từ 0.790 (n=203) xuống 0.749 (n=214, hỏng 5%) —
+test `test_engine_hong_o_nua_corpus_khac_khong_tinh_la_hong` giữ chỗ đó.
+
+`tables/ceiling.md` sinh **chỉ từ ground truth**, không đụng engine: nó trả lời "bộ nhãn
+này cho phép chấm metric nào, trên nhiều nhất bao nhiêu tài liệu". **Bảy** metric hiện có
+trần **0** — thiếu **nhãn**, không phải thiếu mã:
+
+| metric | vì sao trần 0 |
+|---|---|
+| `cer` · `wer` · `diacritics_acc` | nhãn không có chữ để so (204/204 tài liệu) |
+| `nid` | nhãn không có thứ tự đọc (`AnnotationGT.reading_order` rỗng) |
+| `teds` · `teds_struct` | 0/75 bảng trong nhãn có HTML |
+| `cell_f1` | 43 tài liệu có khung bảng nhưng **không bảng nào có nội dung ô** |
+
+Chúng vẫn in ra bảng kèm lý do; bỏ dòng đi là giấu. `cell_f1` là ca đặc biệt: không có ô GT
+nào nên mọi tài liệu chấm được đều rơi vào nhánh "engine sinh bảng mà nhãn không có" → 0.0
+theo định nghĩa. Con số có nghĩa của nó là `n` (số tài liệu bị sinh bảng ảo) và **thấp hơn
+là tốt hơn** — ngược chiều mọi metric khác, đánh dấu `†` trong bảng.
+
+Năm metric nữa ở bậc **mỏng** (`img_f1` · `img_iou` 64 · `table_recall` 43 · `heading` 17 ·
+`assert_baseline` 9): có số thật nhưng cỡ mẫu nhỏ, không đọc một mình.
+
+### Chạy test
+
+```bash
+./.venv/Scripts/python.exe -m pytest -q --ignore=tests/test_docling_adapter.py
+```
+
+Bỏ `--ignore` thì `test_docling_real_engine_smoke` nạp torch + model easyocr thật, mất vài
+phút.
 
 ## Trạng thái
 
@@ -524,11 +629,16 @@ khi thiếu — bỏ ảnh là bỏ cả `.json` đi kèm, hoặc sinh lại c�
 | **B4 — NID / Heading** | **xong** — 42 test, coverage 100%; `nid` N/A toàn bộ (không có nhãn thứ tự đọc), `heading` chỉ 15 tài liệu / 1 engine và **không được đọc trung bình một mình** — xem bẫy 10 |
 | **B5 — bộ khẳng định olmOCR** | **xong** — 35 test, coverage 96%; **sáu** metric riêng cho sáu loại (AC-02 cấm gộp), chấm tách theo loại × theo tầng bằng `scripts/score_assertions.py`; xem bẫy 11 và 12 |
 | **B6 — tốc độ / bộ nhớ / tỉ lệ hỏng** | **xong** — 27 test, coverage 100% (`perf`) & 95% (`rss`); perf **không** kế thừa `Metric`; schema prediction lên bản 2, nâng 718 file tại chỗ không chạy lại engine; xem bẫy 13 |
-| **C1 — tự kiểm từng thước đo** | **xong** — identity / đơn điệu / bất biến Unicode cho cả 14 metric; danh sách đối chiếu lấy từ **registry**, nên đăng ký metric mới mà quên fixture là `pytest` đỏ ngay |
+| **C1 — tự kiểm từng thước đo** | **xong** — identity / đơn điệu / bất biến Unicode cho từng metric đã đăng ký (14 lúc chốt cổng, nay 19); danh sách đối chiếu lấy từ **registry**, nên đăng ký metric mới mà quên fixture là `pytest` đỏ ngay |
 | **C2 — thước đo có phân biệt được không** | **xong, cổng ĐÃ QUA** — `results/c2_discrimination.md`: **9/14** metric có cổng chạy được, **7/9 đạt**; **5 metric vào bảng chính** (`assert_math_presence`, `assert_reading_order`, `assert_table_relation`, `img_f1`, `img_iou`). 2 metric trượt cổng (`assert_baseline`, `assert_text_absence`) — xem ghi chú dưới. 7 metric chưa đủ nhãn |
 | **D1 — chạy toàn bộ, lưu lịch sử** | **xong** — bản công bố hiện hành `history/2026-08-10/` (commit `5d0d5ad`, `git.dirty: false`); các bản `history/2026-08-07*` giữ làm lịch sử. Chạy lại từ `prediction/` ra **đúng cùng số** (chỉ khác `generated_at`) |
 | **D2 — đọc tay 20 ca hỏng nặng nhất** | **xong** — `results/failure-analysis.md`: 9 engine hỏng · 2 nhãn sai · 2 metric đo sai; nhãn sửa qua overlay `ground-truth/doclaynet/fixes.json`, **không** sửa `layout_coco.json` |
 | **D3 — viết tài liệu đánh giá** | **xong** — `.claude/context/DANH-GIA-OCR-ENGINE.md` (450 dòng, 9 mục theo đề cương §9). TASK-089 `VERDICT: PASS` |
+| **E1 — lượt 1606 tài liệu × 4 profile** | **xong** — `calibration/prediction/cpu/`, 6424 prediction (`docling_default` · `docling_scan` · `opendataloader_default` · `opendataloader_scan`). Trung vị s/trang: 1.00 · 4.47 · 28.53 · 32.20 |
+| **E2 — sửa thứ tự cổng N/A** | **xong** (`f01c419`) — `gt_kinds` kiểm **trước** `failed`; engine crash ở nửa corpus khác không còn bị tính là hỏng của metric bên này |
+| **E3 — trần đo được** | **xong** — `ceiling.py` + `results/measurable-ceiling.json` + `tables/ceiling.md`, suy hoàn toàn từ nhãn. 12/19 metric có trần > 0 (7 đo được · 5 mỏng · 7 trần 0) |
+| **E4 — tách hai nửa corpus + vẽ hình từ dữ liệu thật** | **xong** — `research_report.py` trả hai `ScoreTable`; 6 SVG vẽ từ `ScoreTable`/`PerfAggregate`, bỏ toàn bộ số bịa trong `render_forest_plot` |
+| **E5 — bản công bố** | **xong** — `runs/pilot/` 17 artifact, dựng tất định (`SOURCE_DATE_EPOCH`), `validate_publication_trace()` sạch. Kiểm định: 39 khác biệt có ý nghĩa · 24 không · 15 trùng khít |
 
 ### Cổng C2 nói gì, sau khi được định nghĩa lại
 
