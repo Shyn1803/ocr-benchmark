@@ -1,0 +1,18 @@
+# My Dog Can Do It!
+
+As far as cognitive scientists are concerned, the children’s game “I spy with my little eye” is anything but child’s play. It is based on the assumption that the person whose turn it is can imagine what the other players are able to see – or not. But do dogs and apes, for instance, also share this ability? At the Max Planck Institute for Evolutionary Anthropology in Leipzig, scientists study social cognition factors in different species.
+
+TEXT BIRGIT FENZEL
+
+T heory of mind is the scien tific term for the art of mind reading. This ability enables people to apprehend others as individuals with their own perceptions, feelings and thoughts and, based on this, to imagine what is going on with them. For researchers, the theory of mind is one of the cornerstones of learning and teaching, and therefore also of the emergence of culture – one need only think here of the role imitation and demonstration play in the passing on of knowledge in the context of language acquisition. It was long assumed that the theory
+
+of mind was a uniquely human ability that developed over the course of evolution. However, scientists working with Michael Tomasello in the Department of Developmental and Comparative Psychology at the Max Planck Institute for Evolutionary Anthropology in Leipzig observed that chimpanzees also display some of the key features of this ability to perceive the perspectives and intentions of others. In order to find out what apes know about the perceptions of their group members, psychologist Josep Call exploited the extreme food possessiveness displayed by ape house
+
+# POINTERS FOR THE EVOLUTIONARY BIOLOGISTS
+
+This relativizes the hitherto accepted belief that the theory of mind is an ex clusively human ability  But much do apes actually understand about the state of knowledge of others? Is it possible that are able to use pointing gestures or other referential indications in communicative contexts? These questions are extremely fascinating for says biologist Juliane Brauer; who researches the social cognition in vari ous animal species in Tomasello's department. The comparison between the different species provides us with insight into ourselves and what has changed in the course of our development. After all, how human cognition developed during the course of evolution is one of our big questions: how they Humans are thus endowed with the ability to themselves in the perception and action perspectives of others and this ability plays a major role in early childhood Ỉanguage acquisition. The child learns the names of objects from the mother or father by pointing to them. It is now also assumed that gestures actually lie at the root of language: the sounds and words only followed after the pointing. put However; as Call and his colleagues discovered to their amazement while Primate   Research Center, the great apes did not follow even the broadest of hints: series of studies with hidden pieces of fruit showed that pointdoes not work in human-ape communication the apes clearly do not understand what their human test partners want to tell them when to a certain container. Based on these findings, it appeared that the ability to interpret communicative gestures is a talent exclusive to sapiens. If man's closest relation in on togenetic terms cannot understand pointing gestures, who can? The answer came from an unexpected source: ing they point Homo "My dog
+
+![](<75bb3db067b653a432ac93c10c1b20a06811fb71_page_1_images/imageFile1.png>)
+
+Practice makes perfect – also in the way dogs observe people. According to research, this is not the only communicative skill aimed at humans with which dogs have become experts over a period of 15,000 years.
+

@@ -1,0 +1,271 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_scan",
+  "engine_family": "opendataloader",
+  "profile": "scan",
+  "engine_version": "2.5.0",
+  "doc_id": "8bc04603d7f0a1baf27d1d6acf58c61916c9_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "# A. Filter Intensities and their Respective Parameters\n\nIn Section 4.1 we introduce abstract levels of intensities for each ﬁlter we apply to an image. We now map each intensity to actual parameters passed to editing libraries to achieve the given ﬁlter intensity.\n\n<table>\n  <tr>\n    <th> </th>\n    <th>Distortion</th>\n    <th>Intensity</th>\n    <th>Actual Parameters</th>\n  </tr>\n  <tr>\n    <td>]</td>\n    <td>JPEG compression Defocus blur Motion blur Pixelate Gaussian noise Impulse noise</td>\n    <td>[0, 44, +5] [0, +4, +5] [0, +4, +5] [0, 44, +5] [0, +4, +5] [0,</td>\n    <td>The editing library accepts the technical intensities as is_</td>\n  </tr>\n  <tr>\n    <td> </td>\n    <td>Brightness Contrast Saturation Exposure Shadows Highlights Temperature Tint Vibrance</td>\n    <td>[-5, -4 [-5, -4 44,+5] [-5,-4, [-5, -4 44,+5] [-5,-4 +2, +3] [-3,-2 44,+5] [-4,-3 +4, +5] [-5, -4 [-2, -1,</td>\n    <td>[1.0, -0.8 0.8, 1.0] [-1.0, -0.8, 0.8, 1.0] [-3.0, -2.4, 2.4, 3.0] [~100, 60, 20, 20, 40, 50, 60, 80,100] [-100, -80, ~20, 20, 60,100] [0.75,0.8, 1.2,1.25] [0, 20, 25, 40, 60, 80, 100]</td>\n  </tr>\n  <tr>\n    <td> </td>\n    <td>Rotation Horizontal crop Vertical crop Left Diagonal crop Right Diagonal crop Image Ratio</td>\n    <td>[-5, -4 44,+5] [-5,-4, [-5,-4, 44,+5] [-5,-4, +4, +5] [-5,-4 44,+5] [-5,-4, +4, +5]</td>\n    <td>We resize the image to 336px and then crop patches of size 224px from the resulting image. Intensity 0 is a centercrop; while a lintensityl 5 results in a crop from the images border. [stretch along y-axis 100 %, y8O %, x80 %, stretch along x-axis 100 %]</td>\n  </tr>\n</table>\n\n\nTable 3. Actual parameters and implementation speciﬁcs for each distortion and intensity level. Technical parameters are passed to imagenet-c [ 12 ] and style parameters to darktable [ 37 ] while compositional distortions are implemented by us.\n\n# B. Dataset Content Analysis\n\nTo show that the images of our dataset (Section 4.2) contain a large variety of contents, we apply a pretrained DenseNet121 [ 16 ] for image classiﬁcation and RetinaNet [ 25 ] for object detection on our newly introduced dataset. We ﬁnd that the images of our dataset spread across many different classes and contain a wide variety of objects and subjects.\n\n<table>\n  <tr>\n    <th colspan=\"2\">most common classes</th>\n    <th colspan=\"2\">most common objects</th>\n  </tr>\n  <tr>\n    <td>class</td>\n    <td>count</td>\n    <td>object</td>\n    <td>count</td>\n  </tr>\n  <tr>\n    <td>seashore</td>\n    <td>3554</td>\n    <td>person</td>\n    <td>44301</td>\n  </tr>\n  <tr>\n    <td>alp</td>\n    <td>2568</td>\n    <td>car</td>\n    <td>3186</td>\n  </tr>\n  <tr>\n    <td>lakeside</td>\n    <td>2446</td>\n    <td>cup</td>\n    <td>2880</td>\n  </tr>\n  <tr>\n    <td>fountain</td>\n    <td>2265</td>\n    <td>bird</td>\n    <td>2788</td>\n  </tr>\n  <tr>\n    <td>valley</td>\n    <td>2011</td>\n    <td>cell phone</td>\n    <td>1749</td>\n  </tr>\n  <tr>\n    <td>miniskirt gown</td>\n    <td>1455</td>\n    <td>boat dog</td>\n    <td>1618</td>\n  </tr>\n  <tr>\n    <td>gown</td>\n    <td>1430</td>\n    <td>dog</td>\n    <td>1580</td>\n  </tr>\n  <tr>\n    <td>bikini</td>\n    <td>1176</td>\n    <td>potted plant</td>\n    <td>1580</td>\n  </tr>\n  <tr>\n    <td>sloth bear</td>\n    <td>2</td>\n    <td>refrigerator</td>\n    <td>31</td>\n  </tr>\n  <tr>\n    <td>affenpinscher</td>\n    <td>2</td>\n    <td>snowboard</td>\n    <td>25</td>\n  </tr>\n  <tr>\n    <td>patas</td>\n    <td> </td>\n    <td>1 skis</td>\n    <td>23</td>\n  </tr>\n  <tr>\n    <td>Sealyham_terrier</td>\n    <td> </td>\n    <td>hair dryer</td>\n    <td>7</td>\n  </tr>\n  <tr>\n    <td>Japanese_spaniel</td>\n    <td> </td>\n    <td>toaster</td>\n    <td>7</td>\n  </tr>\n</table>\n\n\nTable 4. Most commonly detected classes and objects in the images of our dataset.\n\nFull list: https:/ /github _ com/ janpf/ self-supervised-multi-task-aesthetic-pretraining\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "d8ffaa4b8b3d607337d25c838cf67f8828195e78a0f247447c756eb7ae4049fd"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "f263faa4e78b38f832c23ba387057075e077125c14e5f295dfa1cb69b693bdef"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "80a670b752bcaff68dfb0b0f9ae57de080104382986e6992a3f21023c9d9e69f"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.08224346405228758,
+        "y0": 0.09048863636363635,
+        "x1": 0.5223316993464052,
+        "y1": 0.10900631313131315
+      },
+      "text": "A. Filter Intensities and their Respective Parameters",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07897549019607843,
+        "y0": 0.11616161616161613,
+        "x1": 0.8937908496732027,
+        "y1": 0.14814772727272718
+      },
+      "text": "In Section 4.1 we introduce abstract levels of intensities for each ﬁlter we apply to an image. We now map each intensity to actual parameters passed to editing libraries to achieve the given ﬁlter intensity.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "table",
+      "box": {
+        "page": 0,
+        "x0": 0.08983333333333333,
+        "y0": 0.1560429292929293,
+        "x1": 0.8809035947712419,
+        "y1": 0.4870227272727272
+      },
+      "text": "Distortion Intensity Actual Parameters ] JPEG compression Defocus blur Motion blur Pixelate Gaussian noise Impulse noise [0, 44, +5] [0, +4, +5] [0, +4, +5] [0, 44, +5] [0, +4, +5] [0, The editing library accepts the technical intensities as is_ Brightness Contrast Saturation Exposure Shadows Highlights Temperature Tint Vibrance [-5, -4 [-5, -4 44,+5] [-5,-4, [-5, -4 44,+5] [-5,-4 +2, +3] [-3,-2 44,+5] [-4,-3 +4, +5] [-5, -4 [-2, -1, [1.0, -0.8 0.8, 1.0] [-1.0, -0.8, 0.8, 1.0] [-3.0, -2.4, 2.4, 3.0] [~100, 60, 20, 20, 40, 50, 60, 80,100] [-100, -80, ~20, 20, 60,100] [0.75,0.8, 1.2,1.25] [0, 20, 25, 40, 60, 80, 100] Rotation Horizontal crop Vertical crop Left Diagonal crop Right Diagonal crop Image Ratio [-5, -4 44,+5] [-5,-4, [-5,-4, 44,+5] [-5,-4, +4, +5] [-5,-4 44,+5] [-5,-4, +4, +5] We resize the image to 336px and then crop patches of size 224px from the resulting image. Intensity 0 is a centercrop; while a lintensityl 5 results in a crop from the images border. [stretch along y-axis 100 %, y8O %, x80 %, stretch along x-axis 100 %]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.0784313725490196,
+        "y0": 0.48821590909090906,
+        "x1": 0.8921568627450981,
+        "y1": 0.517256313131313
+      },
+      "text": "Table 3. Actual parameters and implementation speciﬁcs for each distortion and intensity level. Technical parameters are passed to imagenet-c [ 12 ] and style parameters to darktable [ 37 ] while compositional distortions are implemented by us.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.08006535947712418,
+        "y0": 0.5395618686868687,
+        "x1": 0.31862745098039214,
+        "y1": 0.5580808080808081
+      },
+      "text": "B. Dataset Content Analysis",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08006535947712418,
+        "y0": 0.5639734848484848,
+        "x1": 0.8937908496732027,
+        "y1": 0.6123737373737373
+      },
+      "text": "To show that the images of our dataset (Section 4.2) contain a large variety of contents, we apply a pretrained DenseNet121 [ 16 ] for image classiﬁcation and RetinaNet [ 25 ] for object detection on our newly introduced dataset. We ﬁnd that the images of our dataset spread across many different classes and contain a wide variety of objects and subjects.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "table",
+      "box": {
+        "page": 0,
+        "x0": 0.3246928104575163,
+        "y0": 0.6210694444444445,
+        "x1": 0.6482924836601307,
+        "y1": 0.862465909090909
+      },
+      "text": "most common classes most common objects class count object count seashore 3554 person 44301 alp 2568 car 3186 lakeside 2446 cup 2880 fountain 2265 bird 2788 valley 2011 cell phone 1749 miniskirt gown 1455 boat dog 1618 gown 1430 dog 1580 bikini 1176 potted plant 1580 sloth bear 2 refrigerator 31 affenpinscher 2 snowboard 25 patas 1 skis 23 Sealyham_terrier hair dryer 7 Japanese_spaniel toaster 7",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.08060947712418301,
+        "y0": 0.8627941919191919,
+        "x1": 0.5642696078431373,
+        "y1": 0.8766830808080808
+      },
+      "text": "Table 4. Most commonly detected classes and objects in the images of our dataset.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07897549019607843,
+        "y0": 0.875,
+        "x1": 0.7826797385620915,
+        "y1": 0.8914141414141414
+      },
+      "text": "Full list: https:/ /github _ com/ janpf/ self-supervised-multi-task-aesthetic-pretraining",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [
+    {
+      "html": "<table><tr><th></th><th>Distortion</th><th>Intensity</th><th>Actual Parameters</th></tr><tr><td>]</td><td>JPEG compression Defocus blur Motion blur Pixelate Gaussian noise Impulse noise</td><td>[0, 44, +5] [0, +4, +5] [0, +4, +5] [0, 44, +5] [0, +4, +5] [0,</td><td>The editing library accepts the technical intensities as is_</td></tr><tr><td></td><td>Brightness Contrast Saturation Exposure Shadows Highlights Temperature Tint Vibrance</td><td>[-5, -4 [-5, -4 44,+5] [-5,-4, [-5, -4 44,+5] [-5,-4 +2, +3] [-3,-2 44,+5] [-4,-3 +4, +5] [-5, -4 [-2, -1,</td><td>[1.0, -0.8 0.8, 1.0] [-1.0, -0.8, 0.8, 1.0] [-3.0, -2.4, 2.4, 3.0] [~100, 60, 20, 20, 40, 50, 60, 80,100] [-100, -80, ~20, 20, 60,100] [0.75,0.8, 1.2,1.25] [0, 20, 25, 40, 60, 80, 100]</td></tr><tr><td></td><td>Rotation Horizontal crop Vertical crop Left Diagonal crop Right Diagonal crop Image Ratio</td><td>[-5, -4 44,+5] [-5,-4, [-5,-4, 44,+5] [-5,-4, +4, +5] [-5,-4 44,+5] [-5,-4, +4, +5]</td><td>We resize the image to 336px and then crop patches of size 224px from the resulting image. Intensity 0 is a centercrop; while a lintensityl 5 results in a crop from the images border. [stretch along y-axis 100 %, y8O %, x80 %, stretch along x-axis 100 %]</td></tr></table>",
+      "box": {
+        "page": 0,
+        "x0": 0.08983333333333333,
+        "y0": 0.1560429292929293,
+        "x1": 0.8809035947712419,
+        "y1": 0.4870227272727272
+      },
+      "n_rows": 4,
+      "n_cols": 4
+    },
+    {
+      "html": "<table><tr><th colspan=\"2\">most common classes</th><th colspan=\"2\">most common objects</th></tr><tr><td>class</td><td>count</td><td>object</td><td>count</td></tr><tr><td>seashore</td><td>3554</td><td>person</td><td>44301</td></tr><tr><td>alp</td><td>2568</td><td>car</td><td>3186</td></tr><tr><td>lakeside</td><td>2446</td><td>cup</td><td>2880</td></tr><tr><td>fountain</td><td>2265</td><td>bird</td><td>2788</td></tr><tr><td>valley</td><td>2011</td><td>cell phone</td><td>1749</td></tr><tr><td>miniskirt gown</td><td>1455</td><td>boat dog</td><td>1618</td></tr><tr><td>gown</td><td>1430</td><td>dog</td><td>1580</td></tr><tr><td>bikini</td><td>1176</td><td>potted plant</td><td>1580</td></tr><tr><td>sloth bear</td><td>2</td><td>refrigerator</td><td>31</td></tr><tr><td>affenpinscher</td><td>2</td><td>snowboard</td><td>25</td></tr><tr><td>patas</td><td></td><td>1 skis</td><td>23</td></tr><tr><td>Sealyham_terrier</td><td></td><td>hair dryer</td><td>7</td></tr><tr><td>Japanese_spaniel</td><td></td><td>toaster</td><td>7</td></tr></table>",
+      "box": {
+        "page": 0,
+        "x0": 0.3246928104575163,
+        "y0": 0.6210694444444445,
+        "x1": 0.6482924836601307,
+        "y1": 0.862465909090909
+      },
+      "n_rows": 15,
+      "n_cols": 4
+    }
+  ],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 20.40369030000147,
+  "model_load_seconds": null,
+  "peak_rss_mb": 142.3828125,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "hybrid": "docling-fast",
+    "hybrid_mode": "full",
+    "hybrid_fallback": false,
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "owned-hybrid-launcher-manifest",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "hybrid_server": {
+      "host": "127.0.0.1",
+      "port": 5002,
+      "force_ocr": true,
+      "ocr_engine": "easyocr",
+      "ocr_languages": [
+        "vi",
+        "en"
+      ]
+    },
+    "cpu_enforcement": {
+      "CUDA_VISIBLE_DEVICES": ""
+    },
+    "cpu_enforcement_method": "CUDA_VISIBLE_DEVICES-empty-before-spawn",
+    "docling_version": "2.91.0",
+    "easyocr_version": "1.7.2",
+    "pypdf_version": "6.14.2",
+    "hybrid_dependency_versions": {
+      "docling": "2.91.0",
+      "easyocr": "1.7.2",
+      "fastapi": "0.141.1",
+      "opendataloader-pdf": "2.5.0",
+      "packaging": "26.3",
+      "pypdf": "6.14.2",
+      "psutil": "7.2.2",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_server_versions": {
+      "fastapi": "0.141.1",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_manifest_sha256": "ce9133820c0a399e96af6e5cdcffbf753e0ffad800f138e7af10e69fc248cffd",
+    "hybrid_manifest_run_id": "c9ede249e660faf584e9b8302ae875a569b65468e3d267539a5d9122f693c8ad",
+    "hybrid_process_pid": 78488,
+    "hybrid_process_create_time": 1786960064.7471085,
+    "hybrid_listener_pids": [
+      46140
+    ],
+    "publication_cache": {
+      "doc_id": "8bc04603d7f0a1baf27d1d6acf58c61916c9_pg1",
+      "pdf_sha256": "64034512631ef02ec95ba55b3353c9f458bba82719806910597a17d5a8ecfe75",
+      "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

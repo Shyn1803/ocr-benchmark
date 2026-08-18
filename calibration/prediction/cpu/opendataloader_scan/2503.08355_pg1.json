@@ -1,0 +1,316 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_scan",
+  "engine_family": "opendataloader",
+  "profile": "scan",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.08355_pg1",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "# Pointwise Minimax Vector Field Reconstruction from Noisy ODE\n\nHenneuse 1,2 Hugo\n\nhugo.henneuse@universite-paris-saclay.fr\n\nMarch 12, 2025\n\n# Abstract\n\nThis work addresses the problem of estimating a vector ﬁeld from a noisy Ordinary Diﬀerential Equation (ODE) in a non-parametric regression setting with a random design for initial values. More speciﬁcally, given a vector ﬁeld f : R D → R D governing a dynamical system deﬁned by the autonomous ODE: y ′ = f ( y ), we assume that the observations are ˜ y X i ( t j ) = y X i ( t j )+ ε i,j where y X i ( t j ) is the solution of the ODE at time t j with initial condition y (0) = X i , X i is sampled from a probability distribution µ , and ε i,j some noise. In this context, we investigate, from a minimax perspective, the pointwise reconstruction of f within the envelope of trajectories originating from the support of µ . We propose an estimation strategy based on preliminary ﬂow reconstruction and techniques from derivative estimation in non-parametric regression. Under mild assumptions on f , we establish convergence rates that depend on the temporal resolution, the number of sampled initial values and the mass concentration of µ . Importantly, we show that these rates are minimax optimal. Furthermore, we discuss the implications of our results in a manifold learning setting, providing insights into how our approach can mitigate the curse of dimensionality.\n\n# 1 Introduction\n\nLongitudinal data commonly arise in the study of dynamical systems across various disciplines, from physics to biology and economics (see e.g. Hirsch et al. , 2013 ). By observing multiple trajectories in a given space, we aim to extract key information about the underlying dynamics, such as governing laws, stability properties, or long-term trends. A common approach to modeling such phenomena is to assume that the observed trajectories follow an underlying diﬀerential system, which provides a structured framework for inference,\n\nHowever, real-world data are often subject to noise, missing observations, and irregular sampling, making their analysis particularly challenging and raising interesting statistical questions. In particular, given noisy observations of trajectories governed by an autonomous diﬀerential equation:\n\n$$\ny' = f (y),\n$$\n\nwhere f : R d → R d is the vector ﬁeld governing the system, can we reconstruct f from the observed data ?\n\nThis question has recently garnered signiﬁcant interest among the machine learning and statistical communities. Most existing works focus on the case where f is assumed to belong to a parametric class of functions (e.g. see the surveys McGoﬀ et al. , 2015 ; Ramsay and Hooker , 2017 ; Dattner , 2021 ). In contrast, the non-parametric literature is scarcer and primarily numerical ( Chen et al. , 2018 ; Heinonen et al. , 2018 ; Bhat et al. , 2020 ; Gottwald and Reich , 2021 ; Lahouel et al. , 2024 ). More recently, some studies have provided theoretical analyses of the statistical performance of their proposed estimation strategies. Notably, Scho¨tz and Siebel ( 2024 ); Scho¨tz ( 2025 ) introduce two statistical models: the snake model and the stubble model . In the snake model, a few long trajectories are observed, covering the space of interest. In the stubble model, many short trajectories are observed, with initial values forming a deterministic and uniform cover of\n\n1 Laboratoire de Math´ematiques d’Orsay, Universit´e Paris-Saclay, Orsay, France 2 DataShape, Inria Saclay, Palaiseau, France\n\n2DataShape; Inria Saclay; Palaiseau; France\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "9faf397949f69a8b6fe2000b029b2316c514c6c200cd2b683424d2e46f8d974c"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "2f1edce363e0c8d4b712082e46453608233dd69809add183c81609756d4a0a59"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "538fa758328da7e369810dae0d177be2bb6e80efaa698d243fa4b917293a89bd"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.12636111111111112,
+        "y0": 0.13552146464646464,
+        "x1": 0.8747271241830065,
+        "y1": 0.16582449494949492
+      },
+      "text": "Pointwise Minimax Vector Field Reconstruction from Noisy ODE",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.4270555555555556,
+        "y0": 0.17803030303030298,
+        "x1": 0.5822434640522877,
+        "y1": 0.19986994949494952
+      },
+      "text": "Henneuse 1,2 Hugo",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.32952124183006537,
+        "y0": 0.1982323232323232,
+        "x1": 0.6704787581699346,
+        "y1": 0.21590909090909094
+      },
+      "text": "hugo.henneuse@universite-paris-saclay.fr",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.43409640522875814,
+        "y0": 0.22685227272727282,
+        "x1": 0.5669934640522876,
+        "y1": 0.24452904040404044
+      },
+      "text": "March 12, 2025",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.4673202614379085,
+        "y0": 0.2996628787878788,
+        "x1": 0.5337696078431372,
+        "y1": 0.3114482323232324
+      },
+      "text": "Abstract",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.15522875816993464,
+        "y0": 0.31523611111111116,
+        "x1": 0.8436813725490195,
+        "y1": 0.4962121212121212
+      },
+      "text": "This work addresses the problem of estimating a vector ﬁeld from a noisy Ordinary Diﬀerential Equation (ODE) in a non-parametric regression setting with a random design for initial values. More speciﬁcally, given a vector ﬁeld f : R D → R D governing a dynamical system deﬁned by the autonomous ODE: y ′ = f ( y ), we assume that the observations are ˜ y X i ( t j ) = y X i ( t j )+ ε i,j where y X i ( t j ) is the solution of the ODE at time t j with initial condition y (0) = X i , X i is sampled from a probability distribution µ , and ε i,j some noise. In this context, we investigate, from a minimax perspective, the pointwise reconstruction of f within the envelope of trajectories originating from the support of µ . We propose an estimation strategy based on preliminary ﬂow reconstruction and techniques from derivative estimation in non-parametric regression. Under mild assumptions on f , we establish convergence rates that depend on the temporal resolution, the number of sampled initial values and the mass concentration of µ . Importantly, we show that these rates are minimax optimal. Furthermore, we discuss the implications of our results in a manifold learning setting, providing insights into how our approach can mitigate the curse of dimensionality.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.11819117647058823,
+        "y0": 0.5185189393939393,
+        "x1": 0.30392156862745096,
+        "y1": 0.5370366161616162
+      },
+      "text": "1 Introduction",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11437908496732026,
+        "y0": 0.5500845959595959,
+        "x1": 0.8861650326797386,
+        "y1": 0.6275252525252526
+      },
+      "text": "Longitudinal data commonly arise in the study of dynamical systems across various disciplines, from physics to biology and economics (see e.g. Hirsch et al. , 2013 ). By observing multiple trajectories in a given space, we aim to extract key information about the underlying dynamics, such as governing laws, stability properties, or long-term trends. A common approach to modeling such phenomena is to assume that the observed trajectories follow an underlying diﬀerential system, which provides a structured framework for inference,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11492320261437908,
+        "y0": 0.6544608585858587,
+        "x1": 0.8856209150326797,
+        "y1": 0.6877108585858586
+      },
+      "text": "However, real-world data are often subject to noise, missing observations, and irregular sampling, making their analysis particularly challenging and raising interesting statistical questions. In particular, given noisy observations of trajectories governed by an autonomous diﬀerential equation:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.46296241830065366,
+        "y0": 0.6982323232323233,
+        "x1": 0.5354035947712418,
+        "y1": 0.7150669191919192
+      },
+      "text": "y' = f (y),",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11601307189542484,
+        "y0": 0.7251679292929293,
+        "x1": 0.880718954248366,
+        "y1": 0.7428446969696969
+      },
+      "text": "where f : R d → R d is the vector ﬁeld governing the system, can we reconstruct f from the observed data ?",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11437908496732026,
+        "y0": 0.7403194444444444,
+        "x1": 0.8861650326797386,
+        "y1": 0.8796300505050505
+      },
+      "text": "This question has recently garnered signiﬁcant interest among the machine learning and statistical communities. Most existing works focus on the case where f is assumed to belong to a parametric class of functions (e.g. see the surveys McGoﬀ et al. , 2015 ; Ramsay and Hooker , 2017 ; Dattner , 2021 ). In contrast, the non-parametric literature is scarcer and primarily numerical ( Chen et al. , 2018 ; Heinonen et al. , 2018 ; Bhat et al. , 2020 ; Gottwald and Reich , 2021 ; Lahouel et al. , 2024 ). More recently, some studies have provided theoretical analyses of the statistical performance of their proposed estimation strategies. Notably, Scho¨tz and Siebel ( 2024 ); Scho¨tz ( 2025 ) introduce two statistical models: the snake model and the stubble model . In the snake model, a few long trajectories are observed, covering the space of interest. In the stubble model, many short trajectories are observed, with initial values forming a deterministic and uniform cover of",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1328970588235294,
+        "y0": 0.8846805555555556,
+        "x1": 0.6203709150326797,
+        "y1": 0.8998320707070707
+      },
+      "text": "1 Laboratoire de Math´ematiques d’Orsay, Universit´e Paris-Saclay, Orsay, France 2 DataShape, Inria Saclay, Palaiseau, France",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.1323529411764706,
+        "y0": 0.8964646464646464,
+        "x1": 0.40468464052287584,
+        "y1": 0.9124583333333334
+      },
+      "text": "2DataShape; Inria Saclay; Palaiseau; France",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 44.56209320000198,
+  "model_load_seconds": null,
+  "peak_rss_mb": 125.82421875,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "hybrid": "docling-fast",
+    "hybrid_mode": "full",
+    "hybrid_fallback": false,
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "owned-hybrid-launcher-manifest",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "hybrid_server": {
+      "host": "127.0.0.1",
+      "port": 5002,
+      "force_ocr": true,
+      "ocr_engine": "easyocr",
+      "ocr_languages": [
+        "vi",
+        "en"
+      ]
+    },
+    "cpu_enforcement": {
+      "CUDA_VISIBLE_DEVICES": ""
+    },
+    "cpu_enforcement_method": "CUDA_VISIBLE_DEVICES-empty-before-spawn",
+    "docling_version": "2.91.0",
+    "easyocr_version": "1.7.2",
+    "pypdf_version": "6.14.2",
+    "hybrid_dependency_versions": {
+      "docling": "2.91.0",
+      "easyocr": "1.7.2",
+      "fastapi": "0.141.1",
+      "opendataloader-pdf": "2.5.0",
+      "packaging": "26.3",
+      "pypdf": "6.14.2",
+      "psutil": "7.2.2",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_server_versions": {
+      "fastapi": "0.141.1",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_manifest_sha256": "e1316187622b8f15c8f8bc447fcb792e0baea9de258b1a24cf6882121ae3e484",
+    "hybrid_manifest_run_id": "dd9df2d50b1159b5a3e42eef738b88deac5e1fb7ee3b7f6a6c1165fdfd5cde13",
+    "hybrid_process_pid": 60900,
+    "hybrid_process_create_time": 1786947640.8342574,
+    "hybrid_listener_pids": [
+      48092
+    ],
+    "publication_cache": {
+      "doc_id": "2503.08355_pg1",
+      "pdf_sha256": "51c646176e09796bd920cc13986d5a4f8e7e8f031928613c5587b2880468fb64",
+      "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

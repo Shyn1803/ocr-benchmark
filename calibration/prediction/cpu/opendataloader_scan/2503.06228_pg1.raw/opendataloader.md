@@ -1,0 +1,46 @@
+# CONGRUENCES AND DENSITY RESULTS FOR PARTITIONS INTO DISTINCT EVEN PARTS
+
+HEMJYOTI NATH AND ABHISHEK SARMA
+
+Abstract. In this paper, we consider the set of partitions ped ( n ) which counts the number of partitions of n wherein the even parts are distinct (and the odd parts are unrestricted). Using an algorithm developed by Radu, we prove congruences modulo 192 which were conjectured by Nath [ Nat24 ]. Further, we prove a few inﬁnite families of congruences modulo 24 by using a result of Newman. Also, we prove that ped (9 n + 7) is lacunary modulo 2 k +2 · 3 and 3 k +1 · 4 for all positive integers k ≥ 0. We further prove an inﬁnite family of congruences for ped ( n ) modulo arbitrary powers of 2 by employing a result of Ono and Taguchi on the nilpotency of Hecke operators.
+
+# 1. INTRODUCTION
+
+The partition of a positive integer n is a non-increasing sequence of positive integers whose sum is equal to n . For example, 5+3+2 is a partition of 10.
+
+If p ( n ) denotes the number of partitions of a positive integer n , then with the convention that p (0) = 1, the generating function of p ( n ) (due to Euler) is given by
+
+$$
+1 p(n)q" n=0
+$$
+
+where
+
+$$
+(a;q)o := II( = aq" ) = n=0
+$$
+
+where a and q are complex numbers with | q | < 1. Throughout this paper, we set
+
+$$
+fk := for any k 2 1. integer
+$$
+
+Ramanujan [ Ram19 ], [ Ram20 ] and [ Ram21 ] discovered three beautiful congruences for the partition function, namely
+
+$$
+p(5n + 4) = 0 (mod 5) (mod 7)
+$$
+
+and
+
+$$
+p(lln + 7) = 0 (mod 11).
+$$
+
+The subject then got a lot of interest and many mathematicians over the years have found many more interesting results. Many Ramanujan-Type congruences for other classes of partitions such as l -regular partitions, etc (See for example, [ CG13 ]) have also been found by many mathematicians. In this paper, the object of interest is the class of partitions where even parts are distinct and odd parts are unrestricted.
+
+Date : March 11, 2025.
+
+2020 Mathematics Subject Classiﬁcation. 11P81, 11P83, 05A17, 11F11. Key words and phrases. Integer partitions, Ramanujan-type congruences, Radu’s algorithm, arithmetic density. 1
+

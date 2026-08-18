@@ -1,0 +1,327 @@
+# Graduation Rates First-Time, Full-Time Baccalaureate Degree-Seeking Students Entering the College of Liberal Arts & Social Sciences Fall 2003
+
+<table>
+  <tr>
+    <th>#of Students Entering</th>
+    <th>First Term's Major CIP Code</th>
+    <th>First Term's Major</th>
+    <th>#of Students Graduating</th>
+    <th>Major at Time of Degree</th>
+    <th>Year Graduation Rate</th>
+    <th>Cumulative 5 Year Graduation Rate</th>
+    <th>Cumulative 6 Year</th>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>Business Economics 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Chemistry 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Criminal Justice Baccalaureate 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>2</td>
+    <td>Early Childhood Education 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Exercise Science 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Food & Nutrition Coordinated 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>General Studies 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Hospitality Management 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Individualized Curriculum Program 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Information Technology B 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Integrated Language Arts Education 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>Integrated Social Studies Education 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Marketing Management 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Merchandising, Fashion & Interior Design</td>
+    <td>5 yrs</td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Nursing BSN G 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Philosophy 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>2</td>
+    <td>Physical Education 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Telecommunication Studies 5 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Accounting 6 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Advertising & Public Relations 6 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Anthropology 6 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Biology 6 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Environmental Studies 6 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Exercise Science 6 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Family & Consumer Studies 6 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Finance 6 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>General Administration 6 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>1</td>
+    <td>Industrial & Systems Engineering 6 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>Integrated Social Studies Education 6 yrs</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    <td>44</td>
+    <td>Total degrees awarded within 6 years_</td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>363</td>
+    <td colspan="4">College of Liberal Arts & 101 Total degrees awarded within 6</td>
+    <td>8.51%</td>
+    <td>8.51% 22.25%</td>
+    <td>28.57%</td>
+  </tr>
+</table>
+
+
+Total degrees awarded within 6 years
+
+101
+

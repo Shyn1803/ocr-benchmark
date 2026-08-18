@@ -1,0 +1,442 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_scan",
+  "engine_family": "opendataloader",
+  "profile": "scan",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.09123_pg4",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "matrix, referred to later as the input regularization) or to penalize the rate of change of the control (with   t f t 0 ˙ u ⊤ ( t ) R ˙ u ( t ) dt , referred to later as the input rate regularization). For DOPs with a large number of input variables and complex structures, managing the regularization to limit its impact on solution optimality can be quite difﬁcult.\n\nOn the other hand, the integrated residual approach, as a generalization of the collocation method, offers greater ﬂexibility in balancing solution accuracy and optimality on a given discretization mesh [4]. It is also more reliable when handling challenging problems where DC encounters difﬁculties [3]. However, this ﬂexibility can be a double-edged sword. While it allows for more accurate solutions of the DOP on coarser meshes, potentially saving computation time, it also requires additional expertise and care. For instance, the scaling of the variables and dynamic constraints, as well as the choice of trade-offs in different aspects of the numerical optimal solution (e.g. optimality vs. accuracy), can signiﬁcantly affect the solution process. Moreover, efﬁcient and reliable implementations of QPM require specialized DDOP solver designs, and both QPM and DAIR necessitate additional conﬁguration parameters in comparison to DC.\n\n# III. I NTEGRATED R ESIDUAL R EGULARIZED D IRECT C OLLOCATION\n\nThe development of IRR-DC aims to bring the beneﬁt of integrated residual approaches in handling challenging problems to the DC framework, while maintaining DC’s ease of implementation and computational efﬁciency as much as possible.\n\nThe DDOP formulation arising from IRR-DC is as follows: 1\n\n$$\nmin + (12a) X,v,psto,tf 2p\n$$\n\nsubject to, for all k ∈ I K and i ∈ I N ( k ) ,\n\n$$\n\n$$\n\n$$\nũ (12b) (x(k),u(k), to,tf,p) < 0, (I2c)\n$$\n\nand for some k i ∈ I K and k j ∈ I K ,\n\n$$\n(ki) =0, (12d) xfk;)\n$$\n\n$$\nx{k;) (kj) v{ki) v(ki) <0. (12e) N(K) ,\n$$\n\nFor DOPs with consistent overdetermined constraints [4], [5], (12b) may make the DDOP infeasible leading to convergence challenges. Under the IRR-DC framework with the integrated residuals directly penalized in the objective, it is also possible to relax (12b) to\n\n$$\np < € (12f) ĩ(k) ũ(k)\n$$\n\ninstead, with ǫ a vector of suitably chosen small constants.\n\nThe choice of p in IRR-DC can be seen as mechanism for balancing solution accuracy and optimality   for given discretization A large   value of p drives   the solution of (12) towards the reduction of the original objective. However; as later shown in Figure 2 with the example problem; a low objective value reported by the DDOP solver may be   misleading. As p decreases, the method can automatically converge to more accurate solution when multiple solutions exist with minimal Or negligible differences in nominal cost. Further   reduction of p leads to a solution that is heavily biased towards higher accuracy, albeit at the cost of a higher objective value.\n\nThe practical advantage of IRR-DC is that, with (12b) or (12f), the need for carefully selecting conﬁguration parameters (e.g. for ρ ) and scaling parameters (e.g. for dynamic constraints) is signiﬁcantly reduced compared to QPM. This allows the problem to be directly solved using most offthe-shelf DDOP solvers, in contrast to QPM, which prefers a tailored DDOP solver. Additionally, compared to the alternating iterative process of DAIR, IRR-DC is easier to implement, demands less prior knowledge and requires fewer conﬁguration parameters.\n\n# E XAMPLE P ROBLEMS\n\nHere, we present two example problems to demonstrate the main advantages of the IRR-DC. Both DOPs are transcribed using the optimal control software ICLOCS2 [9], and numerically solved to a tolerance of 10 − 9 with NLP solver IPOPT [10] (version 3.12.9).\n\n# A. Singular Control Example: Goddard Rocket\n\nThe Goddard rocket problem [11] is a frequently used example for the analysis of optimal control problems with singular arcs. The problem aims to maximize the highest altitude reachable by a rocket using a ﬁxed amount of propellant. Depending on the ﬁdelity of the modeling of the atmospheric drag, different solution structures have been identiﬁed for the optimal control input. When neglecting or considering linear drag only, the solution is shown to be bang-bang , i.e. to exhaust all propellant with maximum thrust at launch and initial ascent, and then coasting to the highest point. With a quadratic drag model commonly used in subsonic ﬂights [12], the optimal solution structure changes to bang-singular-bang with an intermediate low thrust proﬁle.\n\n1) Suppression of singular arc ﬂuctuations: In this example, we implement the Goddard rocket problem as described in [2, Ex. 4.9]. Using DC, it is known for the solution to be oscillatory on the singular arc if no special treatment is implemented. To remove the singular arc oscillations, a multiphase formulation is typically used with additional constraints known as singular arc conditions imposed speciﬁcally for the second phase, which corresponds to the one with singular control.\n\nIn [4], the ability of the integrated residual method of DAIR to alleviate the oscillations on the singular arc has been demonstrated on a ﬁxed equidistant discretization mesh. The IRR-DC method yields similar improvements to the results: the large ﬂuctuations on the singular arc have been suppressed (Figure 1), obtaining solutions of much higher accuracy in all measures (Table I).\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "3a13ed2d28f95069870cd9f6274285fd0f1bab183acb28626694adc41909ba4d"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "adfb713ca1ec4d3db01fe512daa3c4385b01cc4b0eae36ecce22fec20b537306"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "2b1687b84a09b7813c1ce8f9e4f26c157d5cc178e3dcd943f32b3643cc3b8937"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07625326797385622,
+        "y0": 0.06944444444444442,
+        "x1": 0.4934640522875817,
+        "y1": 0.16203661616161613
+      },
+      "text": "matrix, referred to later as the input regularization) or to penalize the rate of change of the control (with   t f t 0 ˙ u ⊤ ( t ) R ˙ u ( t ) dt , referred to later as the input rate regularization). For DOPs with a large number of input variables and complex structures, managing the regularization to limit its impact on solution optimality can be quite difﬁcult.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07679738562091504,
+        "y0": 0.16077398989898983,
+        "x1": 0.49455392156862743,
+        "y1": 0.4048825757575757
+      },
+      "text": "On the other hand, the integrated residual approach, as a generalization of the collocation method, offers greater ﬂexibility in balancing solution accuracy and optimality on a given discretization mesh [4]. It is also more reliable when handling challenging problems where DC encounters difﬁculties [3]. However, this ﬂexibility can be a double-edged sword. While it allows for more accurate solutions of the DOP on coarser meshes, potentially saving computation time, it also requires additional expertise and care. For instance, the scaling of the variables and dynamic constraints, as well as the choice of trade-offs in different aspects of the numerical optimal solution (e.g. optimality vs. accuracy), can signiﬁcantly affect the solution process. Moreover, efﬁcient and reliable implementations of QPM require specialized DDOP solver designs, and both QPM and DAIR necessitate additional conﬁguration parameters in comparison to DC.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.10130718954248366,
+        "y0": 0.420875,
+        "x1": 0.4684101307189542,
+        "y1": 0.4486527777777778
+      },
+      "text": "III. I NTEGRATED R ESIDUAL R EGULARIZED D IRECT C OLLOCATION",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07625326797385622,
+        "y0": 0.4520782828282828,
+        "x1": 0.4940081699346406,
+        "y1": 0.531145202020202
+      },
+      "text": "The development of IRR-DC aims to bring the beneﬁt of integrated residual approaches in handling challenging problems to the DC framework, while maintaining DC’s ease of implementation and computational efﬁciency as much as possible.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.09422712418300654,
+        "y0": 0.5281982323232324,
+        "x1": 0.4929199346405228,
+        "y1": 0.5462967171717171
+      },
+      "text": "The DDOP formulation arising from IRR-DC is as follows: 1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.09803921568627451,
+        "y0": 0.553030303030303,
+        "x1": 0.4934640522875817,
+        "y1": 0.5761780303030304
+      },
+      "text": "min + (12a) X,v,psto,tf 2p",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07788725490196079,
+        "y0": 0.5795858585858585,
+        "x1": 0.34687745098039213,
+        "y1": 0.6018118686868688
+      },
+      "text": "subject to, for all k ∈ I K and i ∈ I N ( k ) ,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.10254901960784313,
+        "y0": 0.6019949494949495,
+        "x1": 0.4912532679738562,
+        "y1": 0.6275909090909091
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.25708006535947714,
+        "y0": 0.6073232323232323,
+        "x1": 0.4929199346405228,
+        "y1": 0.6523573232323232
+      },
+      "text": "ũ (12b) (x(k),u(k), to,tf,p) < 0, (I2c)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07788725490196079,
+        "y0": 0.6586704545454545,
+        "x1": 0.32189542483660133,
+        "y1": 0.6755050505050505
+      },
+      "text": "and for some k i ∈ I K and k j ∈ I K ,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.14166339869281044,
+        "y0": 0.6826603535353535,
+        "x1": 0.4940081699346406,
+        "y1": 0.7007575757575757
+      },
+      "text": "(ki) =0, (12d) xfk;)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.145968954248366,
+        "y0": 0.7079128787878788,
+        "x1": 0.4929199346405228,
+        "y1": 0.7297979797979798
+      },
+      "text": "x{k;) (kj) v{ki) v(ki) <0. (12e) N(K) ,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07625326797385622,
+        "y0": 0.7369532828282828,
+        "x1": 0.4934640522875817,
+        "y1": 0.8148143939393939
+      },
+      "text": "For DOPs with consistent overdetermined constraints [4], [5], (12b) may make the DDOP infeasible leading to convergence challenges. Under the IRR-DC framework with the integrated residuals directly penalized in the objective, it is also possible to relax (12b) to",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.23058006535947714,
+        "y0": 0.8229621212121212,
+        "x1": 0.4929199346405228,
+        "y1": 0.8556401515151515
+      },
+      "text": "p < € (12f) ĩ(k) ũ(k)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07734150326797386,
+        "y0": 0.8556401515151515,
+        "x1": 0.4733120915032679,
+        "y1": 0.8716325757575758
+      },
+      "text": "instead, with ǫ a vector of suitably chosen small constants.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07679738562091504,
+        "y0": 0.8712121212121212,
+        "x1": 0.4929199346405228,
+        "y1": 0.9473901515151515
+      },
+      "text": "The choice of p in IRR-DC can be seen as mechanism for balancing solution accuracy and optimality   for given discretization A large   value of p drives   the solution of (12) towards the reduction of the original objective. However; as later shown in Figure 2 with the example problem; a low objective value reported by the DDOP solver may be   misleading. As p decreases, the method can automatically converge to more accurate solution when multiple solutions exist with minimal Or negligible differences in nominal cost. Further   reduction of p leads to a solution that is heavily biased towards higher accuracy, albeit at the cost of a higher objective value.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5059918300653594,
+        "y0": 0.1763472222222222,
+        "x1": 0.9237467320261438,
+        "y1": 0.3295454545454546
+      },
+      "text": "The practical advantage of IRR-DC is that, with (12b) or (12f), the need for carefully selecting conﬁguration parameters (e.g. for ρ ) and scaling parameters (e.g. for dynamic constraints) is signiﬁcantly reduced compared to QPM. This allows the problem to be directly solved using most offthe-shelf DDOP solvers, in contrast to QPM, which prefers a tailored DDOP solver. Additionally, compared to the alternating iterative process of DAIR, IRR-DC is easier to implement, demands less prior knowledge and requires fewer conﬁguration parameters.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.6530506535947712,
+        "y0": 0.3594280303030303,
+        "x1": 0.8050114379084967,
+        "y1": 0.37205429292929293
+      },
+      "text": "E XAMPLE P ROBLEMS",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5065359477124183,
+        "y0": 0.38594318181818177,
+        "x1": 0.9226584967320262,
+        "y1": 0.46254166666666674
+      },
+      "text": "Here, we present two example problems to demonstrate the main advantages of the IRR-DC. Both DOPs are transcribed using the optimal control software ICLOCS2 [9], and numerically solved to a tolerance of 10 − 9 with NLP solver IPOPT [10] (version 3.12.9).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5098039215686274,
+        "y0": 0.4953699494949495,
+        "x1": 0.8295212418300654,
+        "y1": 0.5113636363636364
+      },
+      "text": "A. Singular Control Example: Goddard Rocket",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5065359477124183,
+        "y0": 0.5189393939393939,
+        "x1": 0.923202614379085,
+        "y1": 0.7171717171717171
+      },
+      "text": "The Goddard rocket problem [11] is a frequently used example for the analysis of optimal control problems with singular arcs. The problem aims to maximize the highest altitude reachable by a rocket using a ﬁxed amount of propellant. Depending on the ﬁdelity of the modeling of the atmospheric drag, different solution structures have been identiﬁed for the optimal control input. When neglecting or considering linear drag only, the solution is shown to be bang-bang , i.e. to exhaust all propellant with maximum thrust at launch and initial ascent, and then coasting to the highest point. With a quadratic drag model commonly used in subsonic ﬂights [12], the optimal solution structure changes to bang-singular-bang with an intermediate low thrust proﬁle.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5065359477124183,
+        "y0": 0.7175921717171717,
+        "x1": 0.923202614379085,
+        "y1": 0.8396464646464646
+      },
+      "text": "1) Suppression of singular arc ﬂuctuations: In this example, we implement the Goddard rocket problem as described in [2, Ex. 4.9]. Using DC, it is known for the solution to be oscillatory on the singular arc if no special treatment is implemented. To remove the singular arc oscillations, a multiphase formulation is typically used with additional constraints known as singular arc conditions imposed speciﬁcally for the second phase, which corresponds to the one with singular control.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5070800653594771,
+        "y0": 0.8409090909090909,
+        "x1": 0.9237467320261438,
+        "y1": 0.9452866161616161
+      },
+      "text": "In [4], the ability of the integrated residual method of DAIR to alleviate the oscillations on the singular arc has been demonstrated on a ﬁxed equidistant discretization mesh. The IRR-DC method yields similar improvements to the results: the large ﬂuctuations on the singular arc have been suppressed (Figure 1), obtaining solutions of much higher accuracy in all measures (Table I).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 32.924113599998236,
+  "model_load_seconds": null,
+  "peak_rss_mb": 125.62890625,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "hybrid": "docling-fast",
+    "hybrid_mode": "full",
+    "hybrid_fallback": false,
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "owned-hybrid-launcher-manifest",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "hybrid_server": {
+      "host": "127.0.0.1",
+      "port": 5002,
+      "force_ocr": true,
+      "ocr_engine": "easyocr",
+      "ocr_languages": [
+        "vi",
+        "en"
+      ]
+    },
+    "cpu_enforcement": {
+      "CUDA_VISIBLE_DEVICES": ""
+    },
+    "cpu_enforcement_method": "CUDA_VISIBLE_DEVICES-empty-before-spawn",
+    "docling_version": "2.91.0",
+    "easyocr_version": "1.7.2",
+    "pypdf_version": "6.14.2",
+    "hybrid_dependency_versions": {
+      "docling": "2.91.0",
+      "easyocr": "1.7.2",
+      "fastapi": "0.141.1",
+      "opendataloader-pdf": "2.5.0",
+      "packaging": "26.3",
+      "pypdf": "6.14.2",
+      "psutil": "7.2.2",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_server_versions": {
+      "fastapi": "0.141.1",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_manifest_sha256": "ce9133820c0a399e96af6e5cdcffbf753e0ffad800f138e7af10e69fc248cffd",
+    "hybrid_manifest_run_id": "c9ede249e660faf584e9b8302ae875a569b65468e3d267539a5d9122f693c8ad",
+    "hybrid_process_pid": 78488,
+    "hybrid_process_create_time": 1786960064.7471085,
+    "hybrid_listener_pids": [
+      46140
+    ],
+    "publication_cache": {
+      "doc_id": "2503.09123_pg4",
+      "pdf_sha256": "5b144a30e221a4d9897073e18f2a8a381c9f8ba66636664fd666d305608fcee4",
+      "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

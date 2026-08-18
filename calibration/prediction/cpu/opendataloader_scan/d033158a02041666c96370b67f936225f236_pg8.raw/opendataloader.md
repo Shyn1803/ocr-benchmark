@@ -1,0 +1,96 @@
+<table>
+  <tr>
+    <th>CPC Group</th>
+    <th>IPC Group</th>
+  </tr>
+  <tr>
+    <td>B08B 2203/0229</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2203/0235</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>BO8B 2203/0241</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2203/0252</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2203/0258</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2203/0264</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2203/027</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2203/0276</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2203/0282</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2203/0288</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2203/0294</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2205/00</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2205/005</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>BO8B 2209/005</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2209/02</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2209/022</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2209/024</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2209/027</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2209/032</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2209/04</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2209/045</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td>B08B 2209/053</td>
+    <td> </td>
+  </tr>
+</table>
+
+

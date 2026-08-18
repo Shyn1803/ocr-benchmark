@@ -1,0 +1,28 @@
+veriﬁed that g is an eub for   f ↾ α ξ . But then g witnesses that α ξ is good for   f . Moreover, by construction, α ξ ∈ C . Since C was arbitrary, we have shown that there are stationarily many elements of S λ +3 λ that are good for   f .  
+
+By Theorem 12, it follows that there is an eub h for f such that cf( h ( i )) > λ for all i < ω .
+
+Claim 14. cf( h ( i )) ≥ λ +3 for all but ﬁnitely many i < ω .
+
+Proof. If not, then there exist k ∈ { 1 , 2 } and an unbounded A ⊆ ω such that, for all i ∈ A , we have cf( h ( i )) = λ + k . For each i ∈ A , let { δ i η : η < λ + k } enumerate, in increasing fashion, a set of ordinals coﬁnal in h ( i ). For each η < λ + k , deﬁne a function h η from ω to the ordinals by letting h η ( i ) = δ i η if i ∈ A and h η ( i ) = 0 otherwise. For each η < λ + k , we have h η < ∗ h , so, since h is an eub for   f , there is β η < λ +3 such that h η < ∗ f β η . Let γ = sup { β η : η < λ + k } . Since k < 3, we have γ < λ +3 . Therefore, for all η < λ + k , we have h η < ∗ f γ . Fix an unbounded B ⊆ λ + k and an n < ω such that, for all η ∈ B , we have h η < n f γ . But then, for all i ∈ A \ n , we must have f γ ( i ) ≥ sup { δ i η : η ∈ B } = h ( i ), contradicting the fact that h is an upper bound for   f .
+
+But this claim immediately contradicts the fact that   f is a sequence of functions from ω to ǫ and ǫ < λ +3 . This is because, by the claim, we must have h ( i ) > ǫ for all but ﬁnitely many i < ω . But then the constant function, taking value ǫ , witnesses that h fails to be an eub.
+
+The results in this section lead to the following corollary.
+
+Corollary 15. Suppose that 3 ≤ n < ω .
+
+1 Q Wn+1) of functions from w to n -
+
+(Nw+l, Nw) (Nn+l, Nn) .
+
+3. There are no inner models V ⊆ W of ZFC such that ( ℵ ω +1 ) V = ( ℵ n +1 ) W .
+
+It also follows that the only regular cardinals that can possibly be lengths of strongly increasing sequences from ω ω are ℵ n for 0 ≤ n ≤ 3. We have seen that there are always such sequences of length ℵ 0 and ℵ 1 . We will prove, in Section 3, the consistency of the existence of a strongly increasing sequence of length ℵ 2 . The question about the consistency of the existence of a strongly increasing sequence of length ℵ 3 remains open.
+
+# 3 Consistency via a P max variation
+
+In this section we use a natural variation of Woodin’s partial order P max to produce a very strongly increasing sequence in ω ω of length ω 2 . P
+
+We refer the reader to [14] for background on max , especially Chapter 4 and Section 9.2. The article [8] may also be helpful. Conditions in our partial order P are triples ( M,F,a ) such that
+

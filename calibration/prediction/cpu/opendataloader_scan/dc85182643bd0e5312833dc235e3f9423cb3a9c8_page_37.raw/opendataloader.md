@@ -1,0 +1,6 @@
+41, 52], Zn 2+ [41, 53-55], Sr 2+ [25, 56], Pb 2+ [57], etc., the replacement of PO 4 3 ˉ by HPO 4 2 ˉ [58], CO 3 2 ˉ [40, 41, 59-62] or SiO 4 4 ˉ [63-65], and OHˉ by Fˉ [29, 41, 66-68] or Clˉ   [69]. In this review, the substitution of different kinds of cations and anions into HA will be extensively studied, with emphasis on the substitution effect on the phase evolution, mechanical and biological properties.
+
+# 2.3.1   Incorporation of cation into HA
+
+The chemical composition of hexagonal HA (within the ideal P6 3 /m space group) is Ca(I) 4 Ca(II) 6 (PO 4 ) 6 (OH) 2 (c.f. Figure 2-1). The local atomic configurations are displayed in Figure 2-4. The Ca(I) site is surrounded by six PO 4 3 ˉ tetrahedral and coordinated by nine oxygen ions. The Ca(II) site is seven coordinated with six oxygen ions from PO 4 3 ˉ and one oxygen ion from OHˉ [70, 71]. It has been reported that the larger cations usually occupy the Ca(II) sites and the smaller ones prefer the Ca(I) sites, because the nearest distance among Ca(I) sites is smaller than that among Ca(II) sites [72]. The substitution of cations into HA tends to cause the HA structure disordering, and influence the phase, mechanical and biological properties.
+

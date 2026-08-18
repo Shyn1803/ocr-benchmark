@@ -1,0 +1,230 @@
+![](<fbeb6edcf6ad16adbd2a27b54da0c1771389_pg1_images/imageFile1.png>)
+
+SASO 2203
+
+10
+
+NSW22012
+
+MARKING : YP-61
+
+YUNG-LI
+
+BS1363/A
+
+10
+
+R304886
+
+2015
+
+250
+
+JADE
+
+IN
+
+(o5s
+
+CHINA
+
+1002444
+
+1830+50
+
+BROWN
+
+1045
+
+GRN/YEL
+
+89)
+
+BLUE
+
+1
+
+BLUE
+
+200+20
+
+APPR. BYASTA
+
+FUSED
+
+Ez
+
+2
+
+[IFETY
+
+N
+
+GRN/YEL
+
+SASO 2203
+
+BROWN
+
+R304886
+
+RED  LABEL
+
+135mm
+
+QTY
+
+SPECIFICATION
+
+NO
+
+REMARK
+
+HO5VV-F 3G 1 . Omm?
+
+BLACK
+
+IPC
+
+Product: Non-rewireable fused plug Brand Name: YUNG LI
+
+54g/PC
+
+PVC PLASTIC: 60P BLACK
+
+YP-61
+
+2
+
+Brand Name: YUNG LI
+
+Model: YP-61
+
+FRAME :
+
+BLACK
+
+Electrical Rating: 1OA 250V~
+
+3
+
+NO
+
+BLACK
+
+0012-356
+
+FUSE LID:
+
+Manufacturer: YUNG LI CO.,
+
+LTD
+
+IPC
+
+Drawing
+
+FRAME LID
+
+IPC
+
+SP120613-20
+
+5
+
+Sample
+
+FUSE : I0A
+
+IPC
+
+6
+
+SLEEVE   WHITE
+
+IPC
+
+APPROVED
+
+DATE
+
+SPDS
+
+YC-12   INNER BODY
+
+TOLERANCE
+
+IPC
+
+8
+
+DATE
+
+CHECKED
+
+>0+0. 30
+
+TER: 97740BS-0
+
+3PCS
+
+9
+
+>1. 0+0. 50
+
+DATE  16. 09. 30
+
+CUSTOMER
+
+SUKI
+
+DRAWN
+
+YC-12 PVC PLASTIC: 5OP BLACK
+
+18g /PC
+
+10
+
+YP-61/YC-12
+
+TYPE
+
+P-6112-06B-1. 0-Glark
+
+0
+
+P/N
+
+IPC
+
+11
+
+Angle:
+
+MATERIAL
+
+UNIT
+
+IPC
+
+LABEL : 135*35mm
+
+LABEL-801
+
+P.V.C
+
+12
+
+B
+
+4l
+
+REV
+
+SCALE
+
+1PC
+
+13
+

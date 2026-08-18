@@ -1,0 +1,456 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_scan",
+  "engine_family": "opendataloader",
+  "profile": "scan",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.06226_pg4",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "Di ﬀ erent from the state reconstruction given in ( 8 ) which is speciﬁc to the discrete-time systems, an alternative way to obtain the state information is to use a state observer to estimate the real state. Concretely, the state of system ( 1 ) can be estimated by using the following Luenberger observer:\n\n$$\n(10)\n$$\n\nIt is known that the Luenberger observer ( 10 ) has the property that lim k →∞ ˆ x ( k ) = x ( k ) when all the eigenvaluesof ( A − LC ) are set within the unit circle under the observability condition. As given in Rizvi & Lin ( 2019 ), by setting ˆ x ( k ) = 0 , the estimated state ˆ x ( k ) can be parametrized by\n\n$$\nÊ(k) = Wyw(k) + Wuo(k) = Wy Wu (11) 0(k)\n$$\n\nwhere the parameterization matrices W y ∈ R n × np and W u ∈ R n × nm are determined by the coe ﬃ cients of the numerators in the transfer function matrix of the Luenberger observer system ( 10 ) with y ( k ) and u ( k ) being the inputs to the observer system, and the dynamics of ω ( k ) and σ ( k ) are given as\n\n$$\nB,y(k), 0(0) =0\n$$\n\n$$\n\n$$\n\n$$\n\n$$\n\nwhere A y ∈ and A u ∈ are user-deﬁned matrices determined by the eigenvalues of ( A − LC ), and ¯ B y ∈ R np × p and ¯ B u ∈ R nm × m are also user-deﬁned matrices which can make ( ¯ A y , ¯ B y ) and ( ¯ A u , ¯ B u ) controllable. It is easy to see that the data of ω ( k ) and σ ( k ) are available since their system matrices ( ¯ A y , ¯ B y ) and ( ¯ A u , ¯ B u ) are user-deﬁned.\n\nUsing the state parameterization in ( 11 ), the LQR problem can be solved by\n\n$$\n(12)\n$$\n\nwhen the state of the observer system convergesto the real state. It is worth mentioning that, if all the eigenvalues of ( A − LC ) are chosen as 0, the observer state ˆ x ( k ) converges to the real state x ( k ) when k ≥ n .\n\nThus, by using the state reconstruction in ( 8 ) or the state parameterization in ( 11 ), the LQR problem can be solved by the output feedback controller ( 9 ) or ( 12 ) when the accurate knowledge of system matrices are known.\n\n# 2.3. Problem Formulation\n\nIn this paper, we aim to solve the LQR problem of linear discrete-time systems with completely unknown system matrices and unmeasurable state, which can be formulated as follows:\n\nProblem 1. For system ( 1 ) where the system matrices A, B, and C are unknown, and the state x is unmeasurable,ﬁnd an optimal control policy sequence u ( k ) to satisfy\n\n$$\nV(x(o)) = k=0\n$$\n\nwhere P ∗ is the solution to ARE ( 6 ) .\n\nThe challenges of Problem 1 arise from the solution of ARE ( 6 ) and the design of the parameterization matrix ¯ M or ¯ W , which becomes di ﬃ cult in the absence of knowledge of the system matrices A , B , and C .\n\nBy combining the ADP method with a series of historical data of input and output, some ADP-based output feedback learning approaches focused on estimating the optimal control gain K ¯ M and K ¯ W directly, for instance, Chen et al. ( 2023 ); Gao et al. ( 2016 ); Lewis & Vamvoudakis ( 2011 ); Rizvi & Lin ( 2019 , 2020 , 2023 ). Particularly, it is proven in Rizvi & Lin ( 2023 ) that the requirement on the full row rank of ¯ W is necessary to guarantee the convergence performance of the aforementioned ADP-based output feedback learning approaches, so is the same requirementon ¯ M along the similar proof. However, as we can see from ( 8 ), under Assumption 1, the parameterization matrix ¯ M may not be of full row rank when the system matrix A has the eigenvalue 0. It follows from Rizvi & Lin ( 2023 , Theorem 4) that the parameterization matrix ¯ W may not be of full row rank when the matrices ( A − LC ) and A have common eigenvalues. On the other hand, as stated in Postoyan et al. ( 2016 ), the stability of the closed-loop system under the learning controlapproach proposed in Lewis & Vamvoudakis ( 2011 ) cannot be guaranteed. Although this issue was eliminated in Chen et al. ( 2023 ); Rizvi & Lin ( 2019 , 2023 ), the requirement of the convergence of state observer is needed to ensure the equivalence of the dynamic output feedback controller with the state feedback controller. This implies that the observer error will inﬂuence the convergence and optimality performance of the ADP-based output feedback learning control approaches in Chen et al. ( 2023 ); Rizvi & Lin ( 2019 , 2023 ).\n\nTo deal with the above issues, the objective of this paper is to provide a generalized learning based output feedback solution to Problem 1 and a detailed analysis of convergence, stability, and optimality for the proposed output feedback learning control approach.\n\nIn this section, we propose a novel output feedback learning control approach to solve the LQR problem. In particular, a new dynamic output feedback controller is designed that is equal to a static state feedback controller. Then, a data-driven learning algorithm is established to estimate the optimal control gain without prior knowledge of system matrices. Finally, the convergence, stability, and optimality analyses of the proposed learning control approach are given.\n\n# 3.1. Dynamic Output Feedback Controller Design\n\nNow we present a generalized dynamic output feedback controller design method, where the internal model is established without using any prior knowledge of the system dynamics. Moreover, the equivalence relationship between the proposed output feedback controller and the state feedback controller always holds even in the presence of observer error.\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "66dab5522cacfa59e394d28defdf5df3865428b9d5e89eac5cbb8e82fe700e8b"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "b7402c71c3dc2ed2e935eecfeb8aeb4a9dc2e0562eab3fde898d7bb0ac992673"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "d93d45c298be2c4267623bcd82b6a78435315333c7bcddaf8ff64ae98cb168cb"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.059944537815126056,
+        "y0": 0.09778266033254157,
+        "x1": 0.48739495798319327,
+        "y1": 0.17181353919239906
+      },
+      "text": "Di ﬀ erent from the state reconstruction given in ( 8 ) which is speciﬁc to the discrete-time systems, an alternative way to obtain the state information is to use a state observer to estimate the real state. Concretely, the state of system ( 1 ) can be estimated by using the following Luenberger observer:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.45546218487394957,
+        "y0": 0.178542755344418,
+        "x1": 0.48795462184873956,
+        "y1": 0.19279453681710212
+      },
+      "text": "(10)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.059944537815126056,
+        "y0": 0.20150475059382422,
+        "x1": 0.48795462184873956,
+        "y1": 0.2751389548693587
+      },
+      "text": "It is known that the Luenberger observer ( 10 ) has the property that lim k →∞ ˆ x ( k ) = x ( k ) when all the eigenvaluesof ( A − LC ) are set within the unit circle under the observability condition. As given in Rizvi & Lin ( 2019 ), by setting ˆ x ( k ) = 0 , the estimated state ˆ x ( k ) can be parametrized by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.07563025210084033,
+        "y0": 0.2901817102137767,
+        "x1": 0.48739495798319327,
+        "y1": 0.3111638954869359
+      },
+      "text": "Ê(k) = Wyw(k) + Wuo(k) = Wy Wu (11) 0(k)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.059944537815126056,
+        "y0": 0.319081947743468,
+        "x1": 0.48739495798319327,
+        "y1": 0.39311163895486934
+      },
+      "text": "where the parameterization matrices W y ∈ R n × np and W u ∈ R n × nm are determined by the coe ﬃ cients of the numerators in the transfer function matrix of the Luenberger observer system ( 10 ) with y ( k ) and u ( k ) being the inputs to the observer system, and the dynamics of ω ( k ) and σ ( k ) are given as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.28347394957983196,
+        "y0": 0.3990498812351544,
+        "x1": 0.40448235294117646,
+        "y1": 0.41923990498812347
+      },
+      "text": "B,y(k), 0(0) =0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.14216134453781512,
+        "y0": 0.40226128266033256,
+        "x1": 0.40424033613445376,
+        "y1": 0.41568646080760097
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.14209915966386555,
+        "y0": 0.41976247030878855,
+        "x1": 0.40584201680672266,
+        "y1": 0.4323847980997625
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06106386554621848,
+        "y0": 0.4560570071258907,
+        "x1": 0.48795462184873956,
+        "y1": 0.5292957244655582
+      },
+      "text": "where A y ∈ and A u ∈ are user-deﬁned matrices determined by the eigenvalues of ( A − LC ), and ¯ B y ∈ R np × p and ¯ B u ∈ R nm × m are also user-deﬁned matrices which can make ( ¯ A y , ¯ B y ) and ( ¯ A u , ¯ B u ) controllable. It is easy to see that the data of ω ( k ) and σ ( k ) are available since their system matrices ( ¯ A y , ¯ B y ) and ( ¯ A u , ¯ B u ) are user-deﬁned.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06106386554621848,
+        "y0": 0.5269726840855107,
+        "x1": 0.48795462184873956,
+        "y1": 0.5577992874109263
+      },
+      "text": "Using the state parameterization in ( 11 ), the LQR problem can be solved by",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.45546218487394957,
+        "y0": 0.5665083135391924,
+        "x1": 0.48795462184873956,
+        "y1": 0.5807600950118765
+      },
+      "text": "(12)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06050420168067227,
+        "y0": 0.5910534441805225,
+        "x1": 0.48683529411764703,
+        "y1": 0.6468729216152018
+      },
+      "text": "when the state of the observer system convergesto the real state. It is worth mentioning that, if all the eigenvalues of ( A − LC ) are chosen as 0, the observer state ˆ x ( k ) converges to the real state x ( k ) when k ≥ n .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.059944537815126056,
+        "y0": 0.6457375296912113,
+        "x1": 0.4890756302521008,
+        "y1": 0.7050676959619953
+      },
+      "text": "Thus, by using the state reconstruction in ( 8 ) or the state parameterization in ( 11 ), the LQR problem can be solved by the output feedback controller ( 9 ) or ( 12 ) when the accurate knowledge of system matrices are known.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.06162521008403361,
+        "y0": 0.7181318289786223,
+        "x1": 0.24201680672268908,
+        "y1": 0.7292161520190024
+      },
+      "text": "2.3. Problem Formulation",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.059383193277310925,
+        "y0": 0.7331745843230404,
+        "x1": 0.4890756302521008,
+        "y1": 0.7893907363420427
+      },
+      "text": "In this paper, we aim to solve the LQR problem of linear discrete-time systems with completely unknown system matrices and unmeasurable state, which can be formulated as follows:",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06106386554621848,
+        "y0": 0.7977042755344418,
+        "x1": 0.4895176470588235,
+        "y1": 0.8420427553444181
+      },
+      "text": "Problem 1. For system ( 1 ) where the system matrices A, B, and C are unknown, and the state x is unmeasurable,ﬁnd an optimal control policy sequence u ( k ) to satisfy",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.09355798319327731,
+        "y0": 0.8594619952494061,
+        "x1": 0.18767563025210085,
+        "y1": 0.8847980997624703
+      },
+      "text": "V(x(o)) = k=0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.06162521008403361,
+        "y0": 0.8927161520190023,
+        "x1": 0.30196134453781515,
+        "y1": 0.9069679334916865
+      },
+      "text": "where P ∗ is the solution to ARE ( 6 ) .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.513164705882353,
+        "y0": 0.09699168646080769,
+        "x1": 0.9394957983193277,
+        "y1": 0.15360213776722087
+      },
+      "text": "The challenges of Problem 1 arise from the solution of ARE ( 6 ) and the design of the parameterization matrix ¯ M or ¯ W , which becomes di ﬃ cult in the absence of knowledge of the system matrices A , B , and C .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5103647058823529,
+        "y0": 0.153998812351544,
+        "x1": 0.9417361344537815,
+        "y1": 0.5245451306413301
+      },
+      "text": "By combining the ADP method with a series of historical data of input and output, some ADP-based output feedback learning approaches focused on estimating the optimal control gain K ¯ M and K ¯ W directly, for instance, Chen et al. ( 2023 ); Gao et al. ( 2016 ); Lewis & Vamvoudakis ( 2011 ); Rizvi & Lin ( 2019 , 2020 , 2023 ). Particularly, it is proven in Rizvi & Lin ( 2023 ) that the requirement on the full row rank of ¯ W is necessary to guarantee the convergence performance of the aforementioned ADP-based output feedback learning approaches, so is the same requirementon ¯ M along the similar proof. However, as we can see from ( 8 ), under Assumption 1, the parameterization matrix ¯ M may not be of full row rank when the system matrix A has the eigenvalue 0. It follows from Rizvi & Lin ( 2023 , Theorem 4) that the parameterization matrix ¯ W may not be of full row rank when the matrices ( A − LC ) and A have common eigenvalues. On the other hand, as stated in Postoyan et al. ( 2016 ), the stability of the closed-loop system under the learning controlapproach proposed in Lewis & Vamvoudakis ( 2011 ) cannot be guaranteed. Although this issue was eliminated in Chen et al. ( 2023 ); Rizvi & Lin ( 2019 , 2023 ), the requirement of the convergence of state observer is needed to ensure the equivalence of the dynamic output feedback controller with the state feedback controller. This implies that the observer error will inﬂuence the convergence and optimality performance of the ADP-based output feedback learning control approaches in Chen et al. ( 2023 ); Rizvi & Lin ( 2019 , 2023 ).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5114840336134454,
+        "y0": 0.5249406175771971,
+        "x1": 0.9411764705882353,
+        "y1": 0.5977826603325416
+      },
+      "text": "To deal with the above issues, the objective of this paper is to provide a generalized learning based output feedback solution to Problem 1 and a detailed analysis of convergence, stability, and optimality for the proposed output feedback learning control approach.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5103647058823529,
+        "y0": 0.650435866983373,
+        "x1": 0.9417361344537815,
+        "y1": 0.7672209026128266
+      },
+      "text": "In this section, we propose a novel output feedback learning control approach to solve the LQR problem. In particular, a new dynamic output feedback controller is designed that is equal to a static state feedback controller. Then, a data-driven learning algorithm is established to estimate the optimal control gain without prior knowledge of system matrices. Finally, the convergence, stability, and optimality analyses of the proposed learning control approach are given.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.5142857142857142,
+        "y0": 0.7834524940617578,
+        "x1": 0.8565831932773109,
+        "y1": 0.7984952494061758
+      },
+      "text": "3.1. Dynamic Output Feedback Controller Design",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5120453781512605,
+        "y0": 0.8040380047505938,
+        "x1": 0.9417361344537815,
+        "y1": 0.8903408551068883
+      },
+      "text": "Now we present a generalized dynamic output feedback controller design method, where the internal model is established without using any prior knowledge of the system dynamics. Moreover, the equivalence relationship between the proposed output feedback controller and the state feedback controller always holds even in the presence of observer error.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      595.0,
+      842.0
+    ]
+  ],
+  "seconds": 34.667982799997844,
+  "model_load_seconds": null,
+  "peak_rss_mb": 137.51953125,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "hybrid": "docling-fast",
+    "hybrid_mode": "full",
+    "hybrid_fallback": false,
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "owned-hybrid-launcher-manifest",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "hybrid_server": {
+      "host": "127.0.0.1",
+      "port": 5002,
+      "force_ocr": true,
+      "ocr_engine": "easyocr",
+      "ocr_languages": [
+        "vi",
+        "en"
+      ]
+    },
+    "cpu_enforcement": {
+      "CUDA_VISIBLE_DEVICES": ""
+    },
+    "cpu_enforcement_method": "CUDA_VISIBLE_DEVICES-empty-before-spawn",
+    "docling_version": "2.91.0",
+    "easyocr_version": "1.7.2",
+    "pypdf_version": "6.14.2",
+    "hybrid_dependency_versions": {
+      "docling": "2.91.0",
+      "easyocr": "1.7.2",
+      "fastapi": "0.141.1",
+      "opendataloader-pdf": "2.5.0",
+      "packaging": "26.3",
+      "pypdf": "6.14.2",
+      "psutil": "7.2.2",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_server_versions": {
+      "fastapi": "0.141.1",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_manifest_sha256": "e1316187622b8f15c8f8bc447fcb792e0baea9de258b1a24cf6882121ae3e484",
+    "hybrid_manifest_run_id": "dd9df2d50b1159b5a3e42eef738b88deac5e1fb7ee3b7f6a6c1165fdfd5cde13",
+    "hybrid_process_pid": 60900,
+    "hybrid_process_create_time": 1786947640.8342574,
+    "hybrid_listener_pids": [
+      48092
+    ],
+    "publication_cache": {
+      "doc_id": "2503.06226_pg4",
+      "pdf_sha256": "9ecd5c67efee4071822107fd159d78787671631a23984f63f6132f886b49787d",
+      "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

@@ -1,0 +1,400 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_scan",
+  "engine_family": "opendataloader",
+  "profile": "scan",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.08187_pg4",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "where α > 0 . The FWI problem in equation 7 ensures that the estimated model, while satisfying the data (and the wave equation), is smooth along the direction θ .\n\nFigure 1 , top row, shows the anisotropic regularization balls for only one term of the regularizer equation 4 and for different values of [ σ ] i = σ and [ θ ] i = θ . We observe that for σ = 0 . 5 , the anisotropic regularization becomes equivalent to the standard isotropic regularization. When the value of σ increases, reaching the maximum considered value of 0.9, the degree of regularization applied in the direction θ and its normal is maximally different, resulting in a needle-shaped ellipse. This shape favors models with elongated features aligned with θ , while allowing variations in the normal direction to it, as illustrated in the bottom row.\n\n# 3 Algorithm\n\nThe augmented Lagrangian function of equation 7 is\n\n$$\n\n$$\n\n$$\nns Pus 2 IA(m)us bs) 2 =\n$$\n\n2 where z ( θ ) = min(max( θ, − π 2 ) , π 2 ) , λ s and ν are Lagrange multipliers associated to the constraints, and µ > 0 and τ > 0 are the penalty parameters. The regularization parameter α > 0 is given, being typically determined by the discrepancy principle.\n\nThis problem can be efﬁciently solved using the alternating direction method of multipliers (ADMM, [ 15 ]), resulting in the following iterative procedure starting from initial guess m (typically encoding some prior information), (spatially invariant) σ = 0 . 5 and initial multipliers λ s = ν = 0 : +\n\n$$\n0+ = 8a)\n$$\n\n$$\narg min L(0+,0, m, X,v) Us ,\n$$\n\n$$\nU 8c) , 0 +\n$$\n\n$$\nm + arg min L(0+_ 8d) , 0+ .\n$$\n\n$$\nbs) 8e)\n$$\n\n$$\n=v _ T(0+ _ 2+). (8f)\n$$\n\nHere, the updated variables at each iteration are denoted by a superscript “+”. Each step of the algorithm addresses a speciﬁc subproblem, as described more in details below.\n\nSubproblem equation 8a involves minimizing the regularization function R , as deﬁned in equation 4 , with respect to θ , given the current values of m and σ . This can can be efﬁciently achieved using a single iteration of the Gauss-Newton method. To ensure the stability of the θ update, it is essential to incorporate a smoothing term, as suggested by [ 11 ].\n\nSubproblem equation 8b involves minimizing R with respect to σ , resulting in: 2\n\n$$\n[gz']2 [ơ]\n$$\n\nwhere ([ g x ′ ] i , [ g z ′ ] i ) T = R ([ θ ] i )[ ∇ m ] i represent the rotated gradient of the current model at the i th pixel. This expression for equation 9 is justiﬁed by considering that, when [ θ ] i corresponds to the correct orientation angle, we typically expect | [ g x ′ ] i | ≪ | [ g z ′ ] i | . In this case, directly minimizing [ g x ′ ] 2 i + [ g z ′ ] 2 i would heavily penalize [ g z ′ ] i , which is undesirable because we aim to apply more smoothing along the direction deﬁned by [ θ ] i . The weights [ σ ] i in equation 9 balance the contributions of gradient components in the weighted sum [ σ ] 2 i [ g x ′ ] 2 i + (1 − [ σ ] i ) 2 [ g z ′ ] 2 i , ensuring that the magnitudes of both terms are approximately equal before penalization. This adaptive weighting mechanism effectively enhances smoothing along the structural direction [ θ ] i while allowing variations across it, eventually enabling the recovery of dominating structures and details in the model m . To maintain stability during the σ update, the computed weights are smoothed using a convolution with a 5 × 5 averaging ﬁlter; alternatively, one could incorporate a smoothing term.\n\nA comprehensive analysis of the methods for solving subproblems equation 8c and equation 8d can be found in [ 14 ].\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "ded80cc394c010c2c08f4c054d2500f843b1e117ccb9f6f017c7342c302e6c29"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "e8556a36837cf3ee8be48f385c7c21bb1db0f4bce00e403a1ba865a330d67549"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "117fc675b4433ad1e26b6e04e172819a0119db4e34ba3c41ecf892bf02fba5d2"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11655718954248366,
+        "y0": 0.09090909090909094,
+        "x1": 0.885076797385621,
+        "y1": 0.12289520202020199
+      },
+      "text": "where α > 0 . The FWI problem in equation 7 ensures that the estimated model, while satisfying the data (and the wave equation), is smooth along the direction θ .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11437908496732026,
+        "y0": 0.12457954545454553,
+        "x1": 0.8856209150326797,
+        "y1": 0.20959595959595956
+      },
+      "text": "Figure 1 , top row, shows the anisotropic regularization balls for only one term of the regularizer equation 4 and for different values of [ σ ] i = σ and [ θ ] i = θ . We observe that for σ = 0 . 5 , the anisotropic regularization becomes equivalent to the standard isotropic regularization. When the value of σ increases, reaching the maximum considered value of 0.9, the degree of regularization applied in the direction θ and its normal is maximally different, resulting in a needle-shaped ellipse. This shape favors models with elongated features aligned with θ , while allowing variations in the normal direction to it, as illustrated in the bottom row.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.11710294117647059,
+        "y0": 0.2272727272727273,
+        "x1": 0.23638398692810458,
+        "y1": 0.247895202020202
+      },
+      "text": "3 Algorithm",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11601307189542484,
+        "y0": 0.25883838383838387,
+        "x1": 0.4624183006535948,
+        "y1": 0.276094696969697
+      },
+      "text": "The augmented Lagrangian function of equation 7 is",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.30842320261437906,
+        "y0": 0.2773712121212121,
+        "x1": 0.6899166666666666,
+        "y1": 0.31427272727272726
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.34694934640522873,
+        "y0": 0.27819823232323226,
+        "x1": 0.6432467320261438,
+        "y1": 0.3758421717171717
+      },
+      "text": "ns Pus 2 IA(m)us bs) 2 =",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11492320261437908,
+        "y0": 0.38594318181818177,
+        "x1": 0.885076797385621,
+        "y1": 0.4326603535353535
+      },
+      "text": "2 where z ( θ ) = min(max( θ, − π 2 ) , π 2 ) , λ s and ν are Lagrange multipliers associated to the constraints, and µ > 0 and τ > 0 are the penalty parameters. The regularization parameter α > 0 is given, being typically determined by the discrepancy principle.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11437908496732026,
+        "y0": 0.43308080808080807,
+        "x1": 0.8856209150326797,
+        "y1": 0.4785353535353535
+      },
+      "text": "This problem can be efﬁciently solved using the alternating direction method of multipliers (ADMM, [ 15 ]), resulting in the following iterative procedure starting from initial guess m (typically encoding some prior information), (spatially invariant) σ = 0 . 5 and initial multipliers λ s = ν = 0 : +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.369281045751634,
+        "y0": 0.47895580808080807,
+        "x1": 0.884531045751634,
+        "y1": 0.4941073232323233
+      },
+      "text": "0+ = 8a)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.4084967320261438,
+        "y0": 0.5025252525252526,
+        "x1": 0.61165522875817,
+        "y1": 0.5231477272727273
+      },
+      "text": "arg min L(0+,0, m, X,v) Us ,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.3698251633986928,
+        "y0": 0.5303030303030303,
+        "x1": 0.884531045751634,
+        "y1": 0.5437714646464646
+      },
+      "text": "U 8c) , 0 +",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.369281045751634,
+        "y0": 0.5517676767676767,
+        "x1": 0.884531045751634,
+        "y1": 0.5702866161616161
+      },
+      "text": "m + arg min L(0+_ 8d) , 0+ .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.5528316993464053,
+        "y0": 0.5787032828282829,
+        "x1": 0.884531045751634,
+        "y1": 0.5946969696969697
+      },
+      "text": "bs) 8e)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.39106699346405227,
+        "y0": 0.5951174242424242,
+        "x1": 0.884531045751634,
+        "y1": 0.6170037878787878
+      },
+      "text": "=v _ T(0+ _ 2+). (8f)",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11383496732026144,
+        "y0": 0.6127941919191919,
+        "x1": 0.8839869281045751,
+        "y1": 0.6456224747474748
+      },
+      "text": "Here, the updated variables at each iteration are denoted by a superscript “+”. Each step of the algorithm addresses a speciﬁc subproblem, as described more in details below.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11492320261437908,
+        "y0": 0.6477272727272727,
+        "x1": 0.885076797385621,
+        "y1": 0.6957070707070707
+      },
+      "text": "Subproblem equation 8a involves minimizing the regularization function R , as deﬁned in equation 4 , with respect to θ , given the current values of m and σ . This can can be efﬁciently achieved using a single iteration of the Gauss-Newton method. To ensure the stability of the θ update, it is essential to incorporate a smoothing term, as suggested by [ 11 ].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11601307189542484,
+        "y0": 0.6965492424242424,
+        "x1": 0.634531045751634,
+        "y1": 0.7146464646464646
+      },
+      "text": "Subproblem equation 8b involves minimizing R with respect to σ , resulting in: 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.42429248366013067,
+        "y0": 0.7150669191919192,
+        "x1": 0.5397598039215686,
+        "y1": 0.7403194444444444
+      },
+      "text": "[gz']2 [ơ]",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.11394934640522875,
+        "y0": 0.7516830808080808,
+        "x1": 0.8867107843137255,
+        "y1": 0.8935189393939393
+      },
+      "text": "where ([ g x ′ ] i , [ g z ′ ] i ) T = R ([ θ ] i )[ ∇ m ] i represent the rotated gradient of the current model at the i th pixel. This expression for equation 9 is justiﬁed by considering that, when [ θ ] i corresponds to the correct orientation angle, we typically expect | [ g x ′ ] i | ≪ | [ g z ′ ] i | . In this case, directly minimizing [ g x ′ ] 2 i + [ g z ′ ] 2 i would heavily penalize [ g z ′ ] i , which is undesirable because we aim to apply more smoothing along the direction deﬁned by [ θ ] i . The weights [ σ ] i in equation 9 balance the contributions of gradient components in the weighted sum [ σ ] 2 i [ g x ′ ] 2 i + (1 − [ σ ] i ) 2 [ g z ′ ] 2 i , ensuring that the magnitudes of both terms are approximately equal before penalization. This adaptive weighting mechanism effectively enhances smoothing along the structural direction [ θ ] i while allowing variations across it, eventually enabling the recovery of dominating structures and details in the model m . To maintain stability during the σ update, the computed weights are smoothed using a convolution with a 5 × 5 averaging ﬁlter; alternatively, one could incorporate a smoothing term.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.13071895424836602,
+        "y0": 0.8964646464646464,
+        "x1": 0.8785408496732027,
+        "y1": 0.9154040404040404
+      },
+      "text": "A comprehensive analysis of the methods for solving subproblems equation 8c and equation 8d can be found in [ 14 ].",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 28.253722199999174,
+  "model_load_seconds": null,
+  "peak_rss_mb": 128.20703125,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "hybrid": "docling-fast",
+    "hybrid_mode": "full",
+    "hybrid_fallback": false,
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "owned-hybrid-launcher-manifest",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "hybrid_server": {
+      "host": "127.0.0.1",
+      "port": 5002,
+      "force_ocr": true,
+      "ocr_engine": "easyocr",
+      "ocr_languages": [
+        "vi",
+        "en"
+      ]
+    },
+    "cpu_enforcement": {
+      "CUDA_VISIBLE_DEVICES": ""
+    },
+    "cpu_enforcement_method": "CUDA_VISIBLE_DEVICES-empty-before-spawn",
+    "docling_version": "2.91.0",
+    "easyocr_version": "1.7.2",
+    "pypdf_version": "6.14.2",
+    "hybrid_dependency_versions": {
+      "docling": "2.91.0",
+      "easyocr": "1.7.2",
+      "fastapi": "0.141.1",
+      "opendataloader-pdf": "2.5.0",
+      "packaging": "26.3",
+      "pypdf": "6.14.2",
+      "psutil": "7.2.2",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_server_versions": {
+      "fastapi": "0.141.1",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_manifest_sha256": "e1316187622b8f15c8f8bc447fcb792e0baea9de258b1a24cf6882121ae3e484",
+    "hybrid_manifest_run_id": "dd9df2d50b1159b5a3e42eef738b88deac5e1fb7ee3b7f6a6c1165fdfd5cde13",
+    "hybrid_process_pid": 60900,
+    "hybrid_process_create_time": 1786947640.8342574,
+    "hybrid_listener_pids": [
+      48092
+    ],
+    "publication_cache": {
+      "doc_id": "2503.08187_pg4",
+      "pdf_sha256": "fd4b967a25d224cba0398a848821e96db0d05c8d9d5354416f310c9539e188dc",
+      "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

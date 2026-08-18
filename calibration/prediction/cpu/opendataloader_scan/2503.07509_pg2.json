@@ -1,0 +1,623 @@
+{
+  "schema_version": 4,
+  "engine": "opendataloader_scan",
+  "engine_family": "opendataloader",
+  "profile": "scan",
+  "engine_version": "2.5.0",
+  "doc_id": "2503.07509_pg2",
+  "capabilities": [
+    "block_bbox",
+    "heading_level",
+    "image_bbox",
+    "image_bytes",
+    "table_html",
+    "text_md"
+  ],
+  "text_md": "![](<2503.07509_pg2_images/imageFile1.png>)\n\nRxl Autodecoder\n\nh1\n\nnoise\n\n1\n\nAutoencoder\n\n1\n\n9\n\n0.9\n\n2\n\n2\n\n1\n\nSub-Nenwork !\n\nRx2 Autodecoder\n\n1\n\n9\n\nSub-Network 2\n\n0.2\n\nh2\n\nnoise\n\n0.0\n\nhz\n\nFig. 1: The architecture of the implemented AE-NOMA for two-users. Each FCNN[ ℓ ] represents a fully connected layer with ℓ nodes. The main structure which consists five hidden layers each with 32 neurons is replicated at Tx , Rx1 and Rx2 . The Tx , however, has a side block (Sub-Network 2) which is used to adjust power allocation for each symbol.\n\n# S YSTEM M ODEL\n\nConsider a downlink NOMA system involving a base station (BS) communicating with two users. All nodes are equipped with single antennas. The user with weaker (stronger) channel is referred to as the weak (strong) user. The channels between the BS and the weak and strong users are respectively denoted by h 1 and h 2 satisfying | h 1 | 2 ≤ | h 2 | 2 . Both channel gains are known at the BS, but each user only knows its own channel gain. All channel gains are complex-valued and independently drawn from a continuous distribution.\n\nIn a NOMA system, the BS employs superposition coding to concurrently transmit messages to both users. The transmitted signal x is defined by x = √ αPs 1 + √ ¯ αPs 2 , where s 1 and s 2 are independent and identically distributed complex Gaussian signals with zero mean and unit variance, CN (0 , 1) . Here, P represents the BS’s transmit power budget, α ∈ [0 , 1] is the fraction of power allocated to the weak user, and ¯ α ≜ 1 − α . The received signals at the users are expressed as\n\n$$\nk € Uk {1,2} nk ,\n$$\n\nwhere the noises n 1 and n 2 are independent and identically distributed circularly-symmetric complex Gaussian random variables with zero mean and unit variance, CN (0 , 1) .\n\nThe weak user decodes its message by treating the interfering signal from the other user as noise. In contrast, the strong user first decodes the weak user’s message, treating its own interfering signal as noise, and then applies SIC to decode its own message. The combined use of superposition coding and SIC decoding with Gaussian codebooks results in achieving the capacity region of this channel.\n\n# III. N ETWORK S TRUCTURE\n\n# A. Autoencoder’s Structure\n\nautoencoder  consists of two parts, an encoder  and decoder. The AE processes binary input vector s € [0; 1]d An by first mapping it to hidden   representation u € through deterministic  mapping u = fo (s) ơ(Ws + b), where 0 = {W;b} W is a d xd weight matrix, and b is a bias [ơ(x1) ơ(xa)]T . The resulting latent representation u is then transformed back to a reconstructed vector $ € [0, 1]d in the input space, given by $ = 0 = {W' b' }. For each training sample s(i) , the AE maps it to a corresponding u(i) and reconstruction s(i) .\n\nThe proposed AE-NOMA network, illustrated in Fig. 1, consists of one transmitter ( Tx ) encoder and two decoders each at one of the receivers, i.e., Rx1 and Rx2 . Each encoder and decoder, include a fully connected neural network (FCNN) composed of a sequence of fully connected layers and some residual connections. As seen in Fig. 1, the encoder ( Tx ) comprises a main block and a secondary network, referred to as Sub-Network 1 and Sub-Network 2, respectively.\n\nThis main block, replicated at Tx , Rx1 and Rx2 , consists of an input layer, five hidden layers, and an output layer. The hidden layers contain 32 neurons each, while the final layer (output layer) has two neurons representing the in-phase (I) and quadrature-phase (Q) components of the symbol designed by the autoencoder for transmission. In addition to the main block, the Tx has a side block (Sub-network 2) which helps to better adjust the I and Q components under a given average power constraint, thereby optimizing the use of the I/Q plane in a way similar to a quadrature amplitude modulation (QAM).\n\nIn the main block, we have also implemented residual connections to enhance learning capacity and improves performance without the need for additional parameters or a wider network. These shortcuts also play a crucial role in preserving gradients within the network. We have used the activation function exponential linear unit which provides a smooth, nonzero output for negative inputs, and can help improve learning stability and performance.\n\n",
+  "raw_artifacts": [
+    {
+      "name": "opendataloader.json",
+      "media_type": "application/json",
+      "file": "opendataloader.json",
+      "sha256": "5f293692ce9dad87a3cc8d588d836cc0b83f19ce8a585cd52e89d745b6d1e03e"
+    },
+    {
+      "name": "opendataloader.md",
+      "media_type": "text/markdown",
+      "file": "opendataloader.md",
+      "sha256": "31458a07064e3809c1bcf0ab1f8f7d4eef11204e4f6814b5f65fff2f648c50b4"
+    },
+    {
+      "name": "opendataloader-map.json",
+      "media_type": "application/json",
+      "file": "opendataloader-map.json",
+      "sha256": "fe216945c327dc02f33e880107e61a9c17b37a221c24349c33b7c8e25c3ee776"
+    }
+  ],
+  "blocks": [
+    {
+      "block_type": "picture",
+      "box": {
+        "page": 0,
+        "x0": 0.0802516339869281,
+        "y0": 0.06381439393939403,
+        "x1": 0.91975,
+        "y1": 0.29025378787878786
+      },
+      "text": null,
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6949885620915033,
+        "y0": 0.07281186868686873,
+        "x1": 0.7826797385620915,
+        "y1": 0.08333333333333337
+      },
+      "text": "Rxl Autodecoder",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47276633986928107,
+        "y0": 0.08501641414141414,
+        "x1": 0.4891062091503268,
+        "y1": 0.09764267676767668
+      },
+      "text": "h1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5141617647058823,
+        "y0": 0.08754166666666663,
+        "x1": 0.545751633986928,
+        "y1": 0.09848484848484851
+      },
+      "text": "noise",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6361650326797386,
+        "y0": 0.09175126262626265,
+        "x1": 0.6476029411764707,
+        "y1": 0.13594318181818188
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.26143790849673204,
+        "y0": 0.0951174242424242,
+        "x1": 0.3300653594771242,
+        "y1": 0.10521843434343425
+      },
+      "text": "Autoencoder",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8447712418300654,
+        "y0": 0.0963800505050505,
+        "x1": 0.8556650326797386,
+        "y1": 0.11994949494949492
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6247271241830066,
+        "y0": 0.103114898989899,
+        "x1": 0.634531045751634,
+        "y1": 0.12331691919191923
+      },
+      "text": "9",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8752728758169935,
+        "y0": 0.103114898989899,
+        "x1": 0.8916127450980392,
+        "y1": 0.11153156565656563
+      },
+      "text": "0.9",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3050114379084967,
+        "y0": 0.11700378787878796,
+        "x1": 0.31808333333333333,
+        "y1": 0.1321553030303031
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.24237418300653593,
+        "y0": 0.11742424242424243,
+        "x1": 0.2521781045751634,
+        "y1": 0.1308926767676768
+      },
+      "text": "2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.3828970588235294,
+        "y0": 0.12415782828282829,
+        "x1": 0.3937908496732026,
+        "y1": 0.14520202020202022
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.17538071895424837,
+        "y0": 0.16077398989898983,
+        "x1": 0.23039215686274508,
+        "y1": 0.16792929292929293
+      },
+      "text": "Sub-Nenwork !",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6949885620915033,
+        "y0": 0.18771085858585868,
+        "x1": 0.7826797385620915,
+        "y1": 0.19781186868686873
+      },
+      "text": "Rx2 Autodecoder",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8447712418300654,
+        "y0": 0.21170075757575757,
+        "x1": 0.8545751633986928,
+        "y1": 0.2453699494949495
+      },
+      "text": "1",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6236388888888889,
+        "y0": 0.2175921717171717,
+        "x1": 0.6334428104575163,
+        "y1": 0.23779419191919193
+      },
+      "text": "9",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.21187418300653596,
+        "y0": 0.21927651515151514,
+        "x1": 0.26633986928104575,
+        "y1": 0.226010101010101
+      },
+      "text": "Sub-Network 2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8752728758169935,
+        "y0": 0.21927651515151514,
+        "x1": 0.8916127450980392,
+        "y1": 0.22769318181818177
+      },
+      "text": "0.2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.47549019607843135,
+        "y0": 0.22685227272727282,
+        "x1": 0.4950980392156863,
+        "y1": 0.24200378787878796
+      },
+      "text": "h2",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5130718954248366,
+        "y0": 0.2306401515151516,
+        "x1": 0.5446617647058823,
+        "y1": 0.24158207070707072
+      },
+      "text": "noise",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.8774509803921569,
+        "y0": 0.23274368686868685,
+        "x1": 0.8916127450980392,
+        "y1": 0.24031944444444442
+      },
+      "text": "0.0",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.6590408496732026,
+        "y0": 0.2744103535353535,
+        "x1": 0.6742924836601307,
+        "y1": 0.28451136363636365
+      },
+      "text": "hz",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07788725490196079,
+        "y0": 0.2967171717171717,
+        "x1": 0.923202614379085,
+        "y1": 0.3446969696969697
+      },
+      "text": "Fig. 1: The architecture of the implemented AE-NOMA for two-users. Each FCNN[ ℓ ] represents a fully connected layer with ℓ nodes. The main structure which consists five hidden layers each with 32 neurons is replicated at Tx , Rx1 and Rx2 . The Tx , however, has a side block (Sub-Network 2) which is used to adjust power allocation for each symbol.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.238562091503268,
+        "y0": 0.3712121212121212,
+        "x1": 0.3562091503267974,
+        "y1": 0.38468055555555547
+      },
+      "text": "S YSTEM M ODEL",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07640522875816994,
+        "y0": 0.38804671717171724,
+        "x1": 0.4934640522875817,
+        "y1": 0.5244103535353536
+      },
+      "text": "Consider a downlink NOMA system involving a base station (BS) communicating with two users. All nodes are equipped with single antennas. The user with weaker (stronger) channel is referred to as the weak (strong) user. The channels between the BS and the weak and strong users are respectively denoted by h 1 and h 2 satisfying | h 1 | 2 ≤ | h 2 | 2 . Both channel gains are known at the BS, but each user only knows its own channel gain. All channel gains are complex-valued and independently drawn from a continuous distribution.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07625326797385622,
+        "y0": 0.5252525252525253,
+        "x1": 0.4929199346405228,
+        "y1": 0.6481477272727273
+      },
+      "text": "In a NOMA system, the BS employs superposition coding to concurrently transmit messages to both users. The transmitted signal x is defined by x = √ αPs 1 + √ ¯ αPs 2 , where s 1 and s 2 are independent and identically distributed complex Gaussian signals with zero mean and unit variance, CN (0 , 1) . Here, P represents the BS’s transmit power budget, α ∈ [0 , 1] is the fraction of power allocated to the weak user, and ¯ α ≜ 1 − α . The received signals at the users are expressed as",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "other",
+      "box": {
+        "page": 0,
+        "x0": 0.17756045751633986,
+        "y0": 0.656145202020202,
+        "x1": 0.39270098039215684,
+        "y1": 0.6721376262626263
+      },
+      "text": "k € Uk {1,2} nk ,",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07788725490196079,
+        "y0": 0.678030303030303,
+        "x1": 0.4934640522875817,
+        "y1": 0.7243270202020202
+      },
+      "text": "where the noises n 1 and n 2 are independent and identically distributed circularly-symmetric complex Gaussian random variables with zero mean and unit variance, CN (0 , 1) .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07679738562091504,
+        "y0": 0.7243270202020202,
+        "x1": 0.4934640522875817,
+        "y1": 0.8312285353535354
+      },
+      "text": "The weak user decodes its message by treating the interfering signal from the other user as noise. In contrast, the strong user first decodes the weak user’s message, treating its own interfering signal as noise, and then applies SIC to decode its own message. The combined use of superposition coding and SIC decoding with Gaussian codebooks results in achieving the capacity region of this channel.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.18736437908496734,
+        "y0": 0.8409090909090909,
+        "x1": 0.3834428104575163,
+        "y1": 0.8535353535353536
+      },
+      "text": "III. N ETWORK S TRUCTURE",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "heading",
+      "box": {
+        "page": 0,
+        "x0": 0.07952124183006536,
+        "y0": 0.8602689393939393,
+        "x1": 0.2636160130718954,
+        "y1": 0.8720542929292929
+      },
+      "text": "A. Autoencoder’s Structure",
+      "html": null,
+      "level": 1,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.07788725490196079,
+        "y0": 0.8783674242424242,
+        "x1": 0.4929199346405228,
+        "y1": 0.9099330808080808
+      },
+      "text": "autoencoder  consists of two parts, an encoder  and decoder. The AE processes binary input vector s € [0; 1]d An by first mapping it to hidden   representation u € through deterministic  mapping u = fo (s) ơ(Ws + b), where 0 = {W;b} W is a d xd weight matrix, and b is a bias [ơ(x1) ơ(xa)]T . The resulting latent representation u is then transformed back to a reconstructed vector $ € [0, 1]d in the input space, given by $ = 0 = {W' b' }. For each training sample s(i) , the AE maps it to a corresponding u(i) and reconstruction s(i) .",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5054460784313726,
+        "y0": 0.5101010101010102,
+        "x1": 0.923202614379085,
+        "y1": 0.631733585858586
+      },
+      "text": "The proposed AE-NOMA network, illustrated in Fig. 1, consists of one transmitter ( Tx ) encoder and two decoders each at one of the receivers, i.e., Rx1 and Rx2 . Each encoder and decoder, include a fully connected neural network (FCNN) composed of a sequence of fully connected layers and some residual connections. As seen in Fig. 1, the encoder ( Tx ) comprises a main block and a secondary network, referred to as Sub-Network 1 and Sub-Network 2, respectively.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5070800653594771,
+        "y0": 0.632155303030303,
+        "x1": 0.9237467320261438,
+        "y1": 0.7857739898989899
+      },
+      "text": "This main block, replicated at Tx , Rx1 and Rx2 , consists of an input layer, five hidden layers, and an output layer. The hidden layers contain 32 neurons each, while the final layer (output layer) has two neurons representing the in-phase (I) and quadrature-phase (Q) components of the symbol designed by the autoencoder for transmission. In addition to the main block, the Tx has a side block (Sub-network 2) which helps to better adjust the I and Q components under a given average power constraint, thereby optimizing the use of the I/Q plane in a way similar to a quadrature amplitude modulation (QAM).",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    },
+    {
+      "block_type": "text",
+      "box": {
+        "page": 0,
+        "x0": 0.5065359477124183,
+        "y0": 0.7882992424242424,
+        "x1": 0.9242924836601307,
+        "y1": 0.9095113636363636
+      },
+      "text": "In the main block, we have also implemented residual connections to enhance learning capacity and improves performance without the need for additional parameters or a wider network. These shortcuts also play a crucial role in preserving gradients within the network. We have used the activation function exponential linear unit which provides a smooth, nonzero output for negative inputs, and can help improve learning stability and performance.",
+      "html": null,
+      "level": null,
+      "section_hierarchy": []
+    }
+  ],
+  "images": [
+    {
+      "box": {
+        "page": 0,
+        "x0": 0.0802516339869281,
+        "y0": 0.06381439393939403,
+        "x1": 0.91975,
+        "y1": 0.29025378787878786
+      },
+      "source_id": "2503.07509_pg2_images/imageFile1.png",
+      "file": "000.png",
+      "sha256": "247d6611e48abafd407a571709e32ca9cca1f01bd772d41b87924621680f57ea"
+    }
+  ],
+  "tables": [],
+  "scan_label": null,
+  "page_sizes": [
+    [
+      612.0,
+      792.0
+    ]
+  ],
+  "seconds": 62.974487500003306,
+  "model_load_seconds": null,
+  "peak_rss_mb": 157.19921875,
+  "rss_scope": "process+children",
+  "peak_vram_mb": null,
+  "failed": false,
+  "error": null,
+  "failure_kind": null,
+  "config_fingerprint": {
+    "hybrid": "docling-fast",
+    "hybrid_mode": "full",
+    "hybrid_fallback": false,
+    "opendataloader_version": "2.5.0",
+    "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+    "hardware": "cpu",
+    "device": "cpu",
+    "hardware_evidence_version": 1,
+    "device_evidence": "owned-hybrid-launcher-manifest",
+    "include_header_footer": true,
+    "image_output": "external",
+    "image_format": "png",
+    "markdown_with_html": true,
+    "java": "D:\\vnpt-projects\\sovereign\\ocr-bench\\.tools\\jre-jdk-21.0.12+8\\jdk-21.0.12+8-jre\\bin\\java.exe",
+    "hybrid_server": {
+      "host": "127.0.0.1",
+      "port": 5002,
+      "force_ocr": true,
+      "ocr_engine": "easyocr",
+      "ocr_languages": [
+        "vi",
+        "en"
+      ]
+    },
+    "cpu_enforcement": {
+      "CUDA_VISIBLE_DEVICES": ""
+    },
+    "cpu_enforcement_method": "CUDA_VISIBLE_DEVICES-empty-before-spawn",
+    "docling_version": "2.91.0",
+    "easyocr_version": "1.7.2",
+    "pypdf_version": "6.14.2",
+    "hybrid_dependency_versions": {
+      "docling": "2.91.0",
+      "easyocr": "1.7.2",
+      "fastapi": "0.141.1",
+      "opendataloader-pdf": "2.5.0",
+      "packaging": "26.3",
+      "pypdf": "6.14.2",
+      "psutil": "7.2.2",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_server_versions": {
+      "fastapi": "0.141.1",
+      "python-multipart": "0.0.32",
+      "uvicorn": "0.52.1"
+    },
+    "hybrid_manifest_sha256": "e1316187622b8f15c8f8bc447fcb792e0baea9de258b1a24cf6882121ae3e484",
+    "hybrid_manifest_run_id": "dd9df2d50b1159b5a3e42eef738b88deac5e1fb7ee3b7f6a6c1165fdfd5cde13",
+    "hybrid_process_pid": 60900,
+    "hybrid_process_create_time": 1786947640.8342574,
+    "hybrid_listener_pids": [
+      48092
+    ],
+    "publication_cache": {
+      "doc_id": "2503.07509_pg2",
+      "pdf_sha256": "c78d4ea3a1655e6ef53bb9f77ec64f991c37d7d28426f4d059f988a6443f1432",
+      "profile_config_sha256": "25e4fb2a52c30db5c7d4eebc78027117f4893fbbe073866e3fb371637f8a001f",
+      "engine_version": "2.5.0",
+      "hardware": "cpu",
+      "capabilities": "block_bbox,heading_level,image_bbox,image_bytes,table_html,text_md"
+    }
+  }
+}

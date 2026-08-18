@@ -1,0 +1,30 @@
+![](<cea8801d9bc555aa14a89c61aee69103f824ae13_page_3_images/imageFile1.png>)
+
+B
+
+4
+
+100 um
+
+50
+
+um
+
+500
+
+500 um
+
+um
+
+E
+
+100
+
+100
+
+um
+
+um
+
+FIG. 1. Whole-mount in situ hybridization of symbiotic bacteria in human body lice. (A) A ﬁrst-instar nymph with a large round stomach disc at the center of the ventral abdomen. The symbiont cells are speciﬁcally detected in the stomach disc. (B) An enlarged image of the stomach disc. The location of the symbiont cells exhibited radial compartment-like structures. (C) An adult male, in which the symbiont is localized in the stomach disc. (D) An adult female, in which the symbiont is not detected in the stomach disc but in the lateral oviducts and the posterior poles of oocytes. (E) An enlarged image of the female reproductive organs. (F) An enlarged image of an oocyte. The arrows and arrowheads indicate the lateral oviducts and the posterior poles of oocytes, respectively.
+
