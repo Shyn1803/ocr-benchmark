@@ -24,11 +24,39 @@ Mọi kết quả được tính toán tất định từ dữ liệu dự đoá
 
 ---
 
-## 1. Mỗi Metric Đo Cái gì
+## 1. Đọc Kết quả Thế nào
 
-Mô tả lấy thẳng từ định nghĩa của chính lớp metric trong mã nguồn, không chép tay — sửa luật chấm mà quên sửa mô tả là không biểu diễn được. Cột *trần* là số tài liệu nhiều nhất metric chấm được với bộ nhãn hiện có (mục 2). Bảng thuật ngữ đầy đủ: `tables/glossary.md`.
+### 1.1 Một ô trong bảng nói gì
 
-### Text & OCR
+Mọi ô điểm trong báo cáo đều có dạng dưới đây. Lấy một ô thật ở mục 3 làm ví dụ:
+
+```
+| block_f1 | 0.790 (n=203, fail 0%) |
+```
+
+| mảnh | đọc là |
+|---|---|
+| `block_f1` | tên metric — đo cái gì thì tra bảng ngay dưới đây |
+| `0.790` | điểm trung bình trên thang **0 → 1**, cao hơn là tốt hơn |
+| `n=203` | con số đó tính trên **203 tài liệu**, không phải trên cả bộ mẫu |
+| `fail 0%` | không tài liệu nào engine chạy lỗi |
+
+**Thang điểm.** `1.000` là engine trùng khớp hoàn toàn với nhãn; `0.000` là không trùng gì.
+
+**Nhưng `0.790` KHÔNG có nghĩa là "đúng 79%".** Đây là chỗ dễ hiểu sai nhất, vì hai lý do:
+
+1. Phần lớn metric ở đây là **F1** — trung bình điều hoà của hai tỉ lệ khác nhau (tìm ra có đúng không, và bỏ sót bao nhiêu). Nó không phải tỉ lệ phần trăm của bất cứ thứ gì đếm được.
+2. Điểm phụ thuộc vào **ngưỡng quy ước** trong luật chấm (ví dụ `IoU ≥ 0.5` mới coi là tìm đúng một khung). Đổi ngưỡng thì điểm đổi theo trong khi engine không đổi một dòng nào.
+
+Vì vậy con số này dùng để **xếp hạng các engine trên cùng bộ mẫu, cùng luật chấm** — không dùng để hứa với khách hàng rằng công cụ "chính xác 79%".
+
+**Chênh bao nhiêu mới đáng kể?** Dưới **0.05** thì báo cáo đánh dấu `‡` và không kết luận engine nào hơn. Trên ngưỡng đó vẫn phải xem `results/statistical-tests.json` — chênh lệch lớn trên 15 tài liệu có thể yếu hơn chênh lệch nhỏ trên 1403 tài liệu.
+
+### 1.2 Mỗi metric đo cái gì
+
+Mô tả lấy thẳng từ định nghĩa của chính lớp metric trong mã nguồn, không chép tay — sửa luật chấm mà quên sửa mô tả là không biểu diễn được. Cột *trần* (*ceiling*) là số tài liệu nhiều nhất metric chấm được với bộ nhãn hiện có (mục 2). Bảng thuật ngữ đầy đủ: `tables/glossary.md`.
+
+#### Text & OCR
 
 | metric | nửa corpus | trần | đo cái gì |
 |---|---|---:|---|
@@ -38,7 +66,7 @@ Mô tả lấy thẳng từ định nghĩa của chính lớp metric trong mã n
 | `assert_text_presence` | olmocr | 160 | Chuỗi phải có mặt trong đầu ra. |
 | `assert_text_absence` | olmocr | 315 | Chuỗi **không** được có mặt (thường là đầu trang / chân trang lọt vào). |
 
-### Layout & Structure
+#### Layout & Structure
 
 | metric | nửa corpus | trần | đo cái gì |
 |---|---|---:|---|
@@ -48,7 +76,7 @@ Mô tả lấy thẳng từ định nghĩa của chính lớp metric trong mã n
 | `img_f1` | doclaynet | 64 | F1 của phép ghép ảnh ở IoU ≥ ngưỡng — "tìm đúng bao nhiêu ảnh". |
 | `img_iou` | doclaynet | 64 | Chất lượng khung — "tìm ra rồi thì cắt có sát không". |
 
-### Tables
+#### Tables
 
 | metric | nửa corpus | trần | đo cái gì |
 |---|---|---:|---|
@@ -58,14 +86,14 @@ Mô tả lấy thẳng từ định nghĩa của chính lớp metric trong mã n
 | `table_recall` | doclaynet | 43 | Tỷ lệ bảng nhãn được engine định vị đúng ở IoU ≥ 0.5. |
 | `assert_table_relation` | olmocr | 188 | Ô bảng phải có lân cận / tiêu đề như mô tả. |
 
-### Reading Order
+#### Reading Order
 
 | metric | nửa corpus | trần | đo cái gì |
 |---|---|---:|---|
 | `nid` | doclaynet | 0 | Thứ tự đọc. 1.0 = đúng thứ tự nhãn; đảo đoạn thì tụt. |
 | `assert_reading_order` | olmocr | 314 | `before` phải đứng trước `after` trong đầu ra. |
 
-### Robustness & Base
+#### Robustness & Base
 
 | metric | nửa corpus | trần | đo cái gì |
 |---|---|---:|---|
@@ -76,7 +104,7 @@ Mô tả lấy thẳng từ định nghĩa của chính lớp metric trong mã n
 
 ---
 
-## 2. Trần Đo được của Bộ mẫu
+## 2. Trần Đo được của Bộ mẫu (*measurable ceiling*)
 
 Trần tính **chỉ từ nhãn**, trước khi chạy engine nào: nó là giới hạn của bộ mẫu, không phải của engine. Một ô trống chỉ đọc được đúng khi biết trần của metric ấy là 0 (bộ mẫu thiếu nhãn) hay 203 (engine không làm được).
 

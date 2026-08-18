@@ -895,17 +895,24 @@ def _render_paper(
     # `type_f1 | 0.542` trước khi có bất kỳ đường nào biết `type_f1` đo cái gì.
     mo_ta = glossary.cac_mo_ta()
     lines += [
-        "## 1. Mỗi Metric Đo Cái gì",
+        "## 1. Đọc Kết quả Thế nào",
+        "",
+        "### 1.1 Một ô trong bảng nói gì",
+        "",
+        # Khối này đứng trước bảng metric, không phải sau: người đọc gặp `0.790` rồi mới
+        # đi tìm nghĩa thì đã kịp hiểu nó thành "đúng 79%".
+        *glossary.doc_mot_o(),
+        "### 1.2 Mỗi metric đo cái gì",
         "",
         "Mô tả lấy thẳng từ định nghĩa của chính lớp metric trong mã nguồn, không chép "
-        "tay — sửa luật chấm mà quên sửa mô tả là không biểu diễn được. Cột *trần* là "
-        "số tài liệu nhiều nhất metric chấm được với bộ nhãn hiện có (mục 2). "
-        "Bảng thuật ngữ đầy đủ: `tables/glossary.md`.",
+        "tay — sửa luật chấm mà quên sửa mô tả là không biểu diễn được. Cột *trần* "
+        "(*ceiling*) là số tài liệu nhiều nhất metric chấm được với bộ nhãn hiện có "
+        "(mục 2). Bảng thuật ngữ đầy đủ: `tables/glossary.md`.",
         "",
     ]
     for cap_name, cap_metrics in CAPABILITIES.items():
         lines += [
-            f"### {cap_name}",
+            f"#### {cap_name}",
             "",
             "| metric | nửa corpus | trần | đo cái gì |",
             "|---|---|---:|---|",
@@ -928,7 +935,7 @@ def _render_paper(
     bac_dem = Counter(t.bac for t in trans.values())
     tran_0 = sorted(m for m, t in trans.items() if t.bac == "tran_0")
     lines += [
-        "## 2. Trần Đo được của Bộ mẫu",
+        "## 2. Trần Đo được của Bộ mẫu (*measurable ceiling*)",
         "",
         "Trần tính **chỉ từ nhãn**, trước khi chạy engine nào: nó là giới hạn của bộ "
         "mẫu, không phải của engine. Một ô trống chỉ đọc được đúng khi biết trần của "

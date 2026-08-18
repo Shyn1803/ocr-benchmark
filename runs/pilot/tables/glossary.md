@@ -4,7 +4,33 @@ File này **không chứa kết quả**. Nó giải thích các từ mà mọi f
 
 Sinh lúc `2025-08-18T00:00:00Z` bởi `src/ocr_bench/glossary.py`; cột *đo cái gì* lấy từ docstring của chính lớp metric, không viết tay.
 
-## 1. Mỗi metric đo cái gì
+## 1. Một ô trong bảng nói gì
+
+Mọi ô điểm trong báo cáo đều có dạng dưới đây. Lấy một ô thật ở mục 3 làm ví dụ:
+
+```
+| block_f1 | 0.790 (n=203, fail 0%) |
+```
+
+| mảnh | đọc là |
+|---|---|
+| `block_f1` | tên metric — đo cái gì thì tra bảng ngay dưới đây |
+| `0.790` | điểm trung bình trên thang **0 → 1**, cao hơn là tốt hơn |
+| `n=203` | con số đó tính trên **203 tài liệu**, không phải trên cả bộ mẫu |
+| `fail 0%` | không tài liệu nào engine chạy lỗi |
+
+**Thang điểm.** `1.000` là engine trùng khớp hoàn toàn với nhãn; `0.000` là không trùng gì.
+
+**Nhưng `0.790` KHÔNG có nghĩa là "đúng 79%".** Đây là chỗ dễ hiểu sai nhất, vì hai lý do:
+
+1. Phần lớn metric ở đây là **F1** — trung bình điều hoà của hai tỉ lệ khác nhau (tìm ra có đúng không, và bỏ sót bao nhiêu). Nó không phải tỉ lệ phần trăm của bất cứ thứ gì đếm được.
+2. Điểm phụ thuộc vào **ngưỡng quy ước** trong luật chấm (ví dụ `IoU ≥ 0.5` mới coi là tìm đúng một khung). Đổi ngưỡng thì điểm đổi theo trong khi engine không đổi một dòng nào.
+
+Vì vậy con số này dùng để **xếp hạng các engine trên cùng bộ mẫu, cùng luật chấm** — không dùng để hứa với khách hàng rằng công cụ "chính xác 79%".
+
+**Chênh bao nhiêu mới đáng kể?** Dưới **0.05** thì báo cáo đánh dấu `‡` và không kết luận engine nào hơn. Trên ngưỡng đó vẫn phải xem `results/statistical-tests.json` — chênh lệch lớn trên 15 tài liệu có thể yếu hơn chênh lệch nhỏ trên 1403 tài liệu.
+
+## 2. Mỗi metric đo cái gì
 
 Cột *trần* là số tài liệu nhiều nhất metric chấm được với bộ nhãn hiện có — chi tiết ở `tables/ceiling.md`.
 
@@ -30,23 +56,23 @@ Cột *trần* là số tài liệu nhiều nhất metric chấm được với 
 | `teds_struct` | doclaynet | 0 | TEDS-Struct: chỉ cấu trúc, bỏ nội dung ô. |
 | `wer` | doclaynet | 0 | 1 − tỉ lệ lỗi từ. |
 
-## 2. Ký hiệu và từ ngữ trong bảng
+## 3. Ký hiệu và từ ngữ trong bảng
 
 **`n`** — Số tài liệu thật sự chấm được **ô đó** — mẫu số của chính con số đứng cạnh, không phải số tài liệu engine chạy qua. Điểm không kèm `n` là điểm không đọc được: `1.000` trên 9 tài liệu và `0.910` trên 1403 tài liệu không cùng độ tin.
 
 **`% hỏng`** — Tỉ lệ tài liệu engine chạy lỗi (timeout, crash, không ra đầu ra). Phải đọc **riêng**: các phép so sánh thống kê chỉ dùng tài liệu cả hai engine đều chấm được, nên chúng bỏ qua toàn bộ khác biệt về tỉ lệ hỏng.
 
-**trung bình có phạt** — Trung bình trong đó tài liệu hỏng tính là 0, thay vì bị loại khỏi mẫu. Loại ra là thưởng cho engine hỏng nhiều — nó bỏ đi đúng những tài liệu khó.
+**trung bình có phạt (*penalized mean*)** — Trung bình trong đó tài liệu hỏng tính là 0, thay vì bị loại khỏi mẫu. Loại ra là thưởng cho engine hỏng nhiều — nó bỏ đi đúng những tài liệu khó.
 
 **`N/A`** — Engine **không khai đủ năng lực** để metric chạm tới (ví dụ metric cần bbox mà engine chỉ trả văn bản). Đây không phải điểm 0, và dòng của nó không bị bỏ đi.
 
 **`chưa có nhãn`** — Engine chạy được, nhưng bộ mẫu không có nhãn hợp loại để đối chiếu. Thiếu sót của **bộ mẫu**, không phải của engine.
 
-**trần (`tables/ceiling.md`)** — Số tài liệu **nhiều nhất** metric chấm được nếu có một engine hoàn hảo trả về đúng bằng nhãn. Trần 0 nghĩa là không engine nào đo được gì ở metric đó — mọi ô N/A của nó là lỗi bộ mẫu.
+**trần — *ceiling* (`tables/ceiling.md`)** — Số tài liệu **nhiều nhất** metric chấm được nếu có một engine hoàn hảo trả về đúng bằng nhãn. Trần 0 nghĩa là không engine nào đo được gì ở metric đó — mọi ô N/A của nó là lỗi bộ mẫu.
 
-**nửa corpus** — Bộ mẫu gồm hai nửa **rời nhau, giao đúng 0 tài liệu**: `doclaynet` (nhãn khung + loại khối) và `olmocr` (nhãn khẳng định đúng/sai về nội dung). Không bao giờ so một ô của nửa này với một ô của nửa kia.
+**nửa corpus (*corpus half*)** — Bộ mẫu gồm hai nửa **rời nhau, giao đúng 0 tài liệu**: `doclaynet` (nhãn khung + loại khối) và `olmocr` (nhãn khẳng định đúng/sai về nội dung). Không bao giờ so một ô của nửa này với một ô của nửa kia.
 
-**tập chung (`tables/common-set.md`)** — Tập tài liệu **mọi engine trong bảng đều có dự đoán**. Đây là bảng duy nhất mà đặt hai ô cạnh nhau rồi kết luận là hợp lệ.
+**tập chung — *common set* (`tables/common-set.md`)** — Tập tài liệu **mọi engine trong bảng đều có dự đoán**. Đây là bảng duy nhất mà đặt hai ô cạnh nhau rồi kết luận là hợp lệ.
 
 **F1** — Trung bình điều hoà của độ chính xác (thứ tìm ra có đúng không) và độ bao phủ (bỏ sót bao nhiêu). 1.0 là hoàn hảo; đoán bừa nhiều làm tụt cả hai vế.
 
@@ -64,7 +90,7 @@ Cột *trần* là số tài liệu nhiều nhất metric chấm được với 
 
 **‡** — Đo được nhưng **không phân biệt**: mọi engine chênh nhau dưới ngưỡng, nên con số đúng mà không dùng để chọn engine được. Khác hẳn N/A — ở đây phép đo chạy đủ, chỉ là nó không tách được các engine ra.
 
-## 3. Thứ tự đọc một bảng kết quả
+## 4. Thứ tự đọc một bảng kết quả
 
 1. Bảng này thuộc **nửa corpus** nào? Hai nửa không so với nhau được.
 2. **`n`** của ô là bao nhiêu? Dưới vài chục thì đừng kết luận gì.

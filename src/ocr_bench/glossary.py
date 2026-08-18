@@ -31,6 +31,7 @@ __all__ = [
     "THUAT_NGU",
     "bang_thuat_ngu",
     "khoi_doc_bang",
+    "doc_mot_o",
 ]
 
 
@@ -64,7 +65,7 @@ THUAT_NGU: tuple[tuple[str, str], ...] = (
         "được, nên chúng bỏ qua toàn bộ khác biệt về tỉ lệ hỏng.",
     ),
     (
-        "trung bình có phạt",
+        "trung bình có phạt (*penalized mean*)",
         "Trung bình trong đó tài liệu hỏng tính là 0, thay vì bị loại khỏi mẫu. Loại "
         "ra là thưởng cho engine hỏng nhiều — nó bỏ đi đúng những tài liệu khó.",
     ),
@@ -79,19 +80,19 @@ THUAT_NGU: tuple[tuple[str, str], ...] = (
         "của **bộ mẫu**, không phải của engine.",
     ),
     (
-        "trần (`tables/ceiling.md`)",
+        "trần — *ceiling* (`tables/ceiling.md`)",
         "Số tài liệu **nhiều nhất** metric chấm được nếu có một engine hoàn hảo trả về "
         "đúng bằng nhãn. Trần 0 nghĩa là không engine nào đo được gì ở metric đó — "
         "mọi ô N/A của nó là lỗi bộ mẫu.",
     ),
     (
-        "nửa corpus",
+        "nửa corpus (*corpus half*)",
         "Bộ mẫu gồm hai nửa **rời nhau, giao đúng 0 tài liệu**: `doclaynet` (nhãn khung "
         "+ loại khối) và `olmocr` (nhãn khẳng định đúng/sai về nội dung). Không bao giờ "
         "so một ô của nửa này với một ô của nửa kia.",
     ),
     (
-        "tập chung (`tables/common-set.md`)",
+        "tập chung — *common set* (`tables/common-set.md`)",
         "Tập tài liệu **mọi engine trong bảng đều có dự đoán**. Đây là bảng duy nhất mà "
         "đặt hai ô cạnh nhau rồi kết luận là hợp lệ.",
     ),
@@ -139,6 +140,59 @@ THUAT_NGU: tuple[tuple[str, str], ...] = (
 """Từ ngữ xuất hiện trong bảng, kèm nghĩa. Thứ tự cố định — đây là thứ tự in ra."""
 
 
+def doc_mot_o() -> list[str]:
+    """Giải nghĩa **một ô thật** trong bảng, từng mảnh một.
+
+    Câu hỏi đầu tiên của mọi người đọc là "0.790 nói lên điều gì" — và trước khối này
+    không artifact nào trả lời. Bảng thuật ngữ định nghĩa từng ký hiệu rời rạc (`n`,
+    `% hỏng`, `F1`), nhưng người đọc gặp chúng **dính liền trong một ô** và phải tự
+    ghép lại. Ghép sai kiểu phổ biến nhất là đọc `0.790` thành "đúng 79%", rồi mang
+    con số đó đi báo cáo như một lời hứa về chất lượng.
+
+    Ngưỡng phân biệt lấy từ `report.NGUONG_PHAN_BIET`, không chép số vào đây: đổi
+    ngưỡng trong luật chấm mà đoạn văn vẫn ghi số cũ thì đoạn văn thành lời nói dối.
+    """
+    from ocr_bench import report  # nội bộ: `report` đã nạp `glossary`, tránh vòng
+
+    nguong = report.NGUONG_PHAN_BIET
+    return [
+        "Mọi ô điểm trong báo cáo đều có dạng dưới đây. Lấy một ô thật ở mục 3 làm ví dụ:",
+        "",
+        "```",
+        "| block_f1 | 0.790 (n=203, fail 0%) |",
+        "```",
+        "",
+        "| mảnh | đọc là |",
+        "|---|---|",
+        "| `block_f1` | tên metric — đo cái gì thì tra bảng ngay dưới đây |",
+        "| `0.790` | điểm trung bình trên thang **0 → 1**, cao hơn là tốt hơn |",
+        "| `n=203` | con số đó tính trên **203 tài liệu**, không phải trên cả bộ mẫu |",
+        "| `fail 0%` | không tài liệu nào engine chạy lỗi |",
+        "",
+        "**Thang điểm.** `1.000` là engine trùng khớp hoàn toàn với nhãn; `0.000` là "
+        "không trùng gì.",
+        "",
+        "**Nhưng `0.790` KHÔNG có nghĩa là \"đúng 79%\".** Đây là chỗ dễ hiểu sai nhất, "
+        "vì hai lý do:",
+        "",
+        "1. Phần lớn metric ở đây là **F1** — trung bình điều hoà của hai tỉ lệ khác "
+        "nhau (tìm ra có đúng không, và bỏ sót bao nhiêu). Nó không phải tỉ lệ phần "
+        "trăm của bất cứ thứ gì đếm được.",
+        "2. Điểm phụ thuộc vào **ngưỡng quy ước** trong luật chấm (ví dụ `IoU ≥ 0.5` "
+        "mới coi là tìm đúng một khung). Đổi ngưỡng thì điểm đổi theo trong khi engine "
+        "không đổi một dòng nào.",
+        "",
+        "Vì vậy con số này dùng để **xếp hạng các engine trên cùng bộ mẫu, cùng luật "
+        "chấm** — không dùng để hứa với khách hàng rằng công cụ \"chính xác 79%\".",
+        "",
+        "**Chênh bao nhiêu mới đáng kể?** Dưới "
+        f"**{nguong:.2f}** thì báo cáo đánh dấu `‡` và không kết luận engine nào hơn. "
+        "Trên ngưỡng đó vẫn phải xem `results/statistical-tests.json` — chênh lệch lớn "
+        "trên 15 tài liệu có thể yếu hơn chênh lệch nhỏ trên 1403 tài liệu.",
+        "",
+    ]
+
+
 def khoi_doc_bang(duong_dan_chu_giai: str = "tables/glossary.md") -> list[str]:
     """Vài dòng đặt đầu mỗi artifact: đọc bảng theo thứ tự nào, tra nghĩa ở đâu."""
     return [
@@ -168,7 +222,10 @@ def bang_thuat_ngu(trans: dict[str, Tran], *, generated_at: str) -> str:
         f"Sinh lúc `{generated_at}` bởi `src/ocr_bench/glossary.py`; cột *đo cái gì* lấy "
         "từ docstring của chính lớp metric, không viết tay.",
         "",
-        "## 1. Mỗi metric đo cái gì",
+        "## 1. Một ô trong bảng nói gì",
+        "",
+        *doc_mot_o(),
+        "## 2. Mỗi metric đo cái gì",
         "",
         "Cột *trần* là số tài liệu nhiều nhất metric chấm được với bộ nhãn hiện có — "
         "chi tiết ở `tables/ceiling.md`.",
@@ -185,12 +242,12 @@ def bang_thuat_ngu(trans: dict[str, Tran], *, generated_at: str) -> str:
             f"{mo_ta.get(t.metric) or '—'} |"
         )
 
-    d += ["", "## 2. Ký hiệu và từ ngữ trong bảng", ""]
+    d += ["", "## 3. Ký hiệu và từ ngữ trong bảng", ""]
     for tu, nghia in THUAT_NGU:
         d += [f"**{tu}** — {nghia}", ""]
 
     d += [
-        "## 3. Thứ tự đọc một bảng kết quả",
+        "## 4. Thứ tự đọc một bảng kết quả",
         "",
         "1. Bảng này thuộc **nửa corpus** nào? Hai nửa không so với nhau được.",
         "2. **`n`** của ô là bao nhiêu? Dưới vài chục thì đừng kết luận gì.",
