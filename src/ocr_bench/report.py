@@ -563,6 +563,41 @@ def bao_cao_by_group(
     return "\n".join(d)
 
 
+def _vi_sao_nhom(nhom: Sequence[str]) -> str:
+    """Nhóm này đặt ra để trả lời câu hỏi gì — suy từ chính tên profile.
+
+    Sáu bảng của mục so chéo trước đây chỉ khác nhau ở dòng tiêu đề `A × B`, nên đọc
+    tuần tự thì thấy sáu bảng số gần giống nhau mà không rõ vì sao phải có sáu. Tên
+    profile là `<họ>_<chế độ>`, nên chỉ cần nhìn phần nào giữ nguyên là biết bảng đang
+    giữ gì cố định và đổi gì.
+
+    Suy từ tên chứ không chép tay: thêm một nhóm vào `NHOM_ENGINE` là có ngay câu giải
+    thích đúng, không phải nhớ sửa thêm chỗ thứ hai.
+    """
+    if set(nhom) == {"noop", "sabotage"}:
+        return (
+            "Chốt kiểm soát, không phải engine thật: `noop` không trả gì và `sabotage` "
+            "trả kết quả cố ý sai. Nếu hai cái này không rơi xuống đáy thì luật chấm "
+            "hỏng, không phải engine giỏi."
+        )
+    ho = {e.rsplit("_", 1)[0] for e in nhom}
+    che_do = {e.rsplit("_", 1)[-1] for e in nhom if "_" in e}
+    if len(ho) == 1 and len(che_do) > 1:
+        return (
+            f"Cùng một họ engine (`{next(iter(ho))}`), khác chế độ — bảng này trả lời: "
+            "bật chế độ scan lên thì được gì và mất gì."
+        )
+    if len(che_do) == 1 and len(ho) > 1:
+        return (
+            f"Cùng chế độ `{next(iter(che_do))}`, khác họ engine — bảng này trả lời: "
+            "ở cùng một cách chạy thì engine nào chấm cao hơn."
+        )
+    return (
+        "Nhiều họ engine và nhiều chế độ cùng lúc — bảng tổng, dùng để nhìn tất cả "
+        "trên **cùng một** tập tài liệu; tách riêng từng câu hỏi thì xem các bảng trên."
+    )
+
+
 def bao_cao_common_set(
     bang: ScoreTable,
     cov: dict[str, set[str]] | None = None,
@@ -589,15 +624,24 @@ def bao_cao_common_set(
         "",
     ]
 
+    # Ghi chú của mỗi nửa corpus in **một lần ở đây**, không lặp trong từng bảng. Bản
+    # trước in nó lại dưới mỗi tiêu đề nửa của mỗi nhóm — sáu nhóm × hai nửa là mười
+    # hai lần cùng một đoạn văn, và người đọc học cách nhảy qua nó ngay từ lần thứ ba.
+    if nua is not None:
+        ghi_chu = [(n.ten, n.ghi_chu) for n in nua if n.ghi_chu]
+        if ghi_chu:
+            d += ["Mọi nhóm dưới đây đều cắt làm hai nửa corpus:", ""]
+            d += [f"- **{ten}** — {gc}" for ten, gc in ghi_chu]
+            d += [""]
+
     da_in_bang = 0
     da_in: list[str] = []
     for nhom in nhom_engine:
         ten = " × ".join(f"`{e}`" for e in nhom)
+        d += [f"## {ten}", "", _vi_sao_nhom(nhom), ""]
         thieu = [e for e in nhom if e not in dem]
         if thieu:
             d += [
-                f"## {ten}",
-                "",
                 f"Bỏ qua — không có dự đoán của: {', '.join(f'`{e}`' for e in thieu)}.",
                 "",
             ]
@@ -606,8 +650,6 @@ def bao_cao_common_set(
         chung = set.intersection(*(dem[e] for e in nhom))
         if len(chung) < TOI_THIEU_TAP_CHUNG:
             d += [
-                f"## {ten}",
-                "",
                 f"**Tập chung chỉ {len(chung)} tài liệu — quá nhỏ để so.** Không in "
                 f"bảng: một trung bình trên {len(chung)} tài liệu vẫn là một con số, "
                 f"nó chỉ không có nghĩa.",
@@ -615,7 +657,7 @@ def bao_cao_common_set(
             ]
             continue
 
-        d += [f"## {ten}", "", f"Tập chung: **{len(chung)}** tài liệu.", ""]
+        d += [f"Tập chung: **{len(chung)}** tài liệu.", ""]
         for n in _cac_nua(bang, nua):
             # Cắt tập chung theo nửa **sau** khi giao các engine: giao trước rồi cắt
             # cho ra đúng tập, còn cắt trước rồi giao thì mỗi nửa lại có một "tập
@@ -626,8 +668,6 @@ def bao_cao_common_set(
             con = loc_theo_tai_lieu(bang, docs)
             if nua is not None:
                 d += [f"### {n.ten} — {len(docs)} tài liệu", ""]
-                if n.ghi_chu:
-                    d += [n.ghi_chu, ""]
             d += [bang_markdown(con, engines=list(nhom), metrics=n.metrics), ""]
             da_in += con.metrics()
         da_in_bang += 1

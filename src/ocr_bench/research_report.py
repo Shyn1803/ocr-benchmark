@@ -637,11 +637,78 @@ Hình xếp hạng và hình scan tách theo nửa corpus nên tên file mang h�
 """
 
 
+TEN_HINH: dict[str, str] = {
+    "capability-ranking": "Xếp hạng engine theo từng metric",
+    "scan-degradation": "Bật chế độ scan thì điểm đổi thế nào",
+    "accuracy-speed": "Nhanh và đúng: đánh đổi giữa hai bên",
+    "failure-distribution": "Tài liệu engine không xử lý được",
+}
+"""Tiêu đề mục cho từng hình, tra theo tiền tố tên file.
+
+Bản trước lấy thẳng tên file làm tiêu đề mục (`### accuracy-speed.svg`), nên mục lục
+bài báo là một danh sách tên file — người đọc phải mở từng hình mới biết hình nào nói
+chuyện gì. Tên file vẫn in, nhưng ở dòng chú thích dưới hình, không làm tiêu đề.
+"""
+
+NUA_TRONG_TEN_HINH: dict[str, str] = {
+    "doclaynet": "nửa DocLayNet",
+    "olmocr": "nửa olmOCR",
+}
+"""Hậu tố nửa corpus trong tên file → cụm chữ ghép vào tiêu đề."""
+
+
 def _cach_doc_hinh(ten_file: str) -> str:
     for tien_to, mo_ta in DOC_HINH.items():
         if ten_file.startswith(tien_to):
             return mo_ta
     return ""
+
+
+def _tieu_de_hinh(ten_file: str) -> str:
+    """Tên file → tiêu đề mục đọc được. Không tra được thì trả lại chính tên file."""
+    goc = Path(ten_file).stem
+    for tien_to, ten in TEN_HINH.items():
+        if not goc.startswith(tien_to):
+            continue
+        duoi = goc[len(tien_to) :].strip("-")
+        nua = NUA_TRONG_TEN_HINH.get(duoi)
+        return f"{ten} — {nua}" if nua else ten
+    return ten_file
+
+
+def _dan_dau_theo_nua(
+    bang: ScoreTable, trans: dict[str, Tran], nua: list[report.NuaCorpus]
+) -> dict[str, tuple[Counter[str], int, dict[str, str]]]:
+    """Ai dẫn đầu ở nửa nào — tính **một lần**, dùng lại ở tóm tắt, mục 3 và mục 6.
+
+    Trước đây phép đếm này nằm gọn trong mục 6. Tóm tắt đầu bài vì thế không có một
+    kết quả nào, và người đọc phải đi hết 600 dòng bảng mới biết bài báo kết luận gì.
+    Chép phép đếm ra chỗ thứ hai thì hai chỗ sẽ trôi khác nhau, nên nó thành hàm.
+
+    "Dẫn đầu" chỉ tính trên metric vừa **đo được** (bậc `do_duoc`) vừa **phân biệt
+    được** (độ trải ≥ ngưỡng) và không ngược chiều: dẫn đầu ở một metric mà mọi engine
+    chênh nhau 0.002 là dẫn đầu trong sai số, đếm nó vào là đếm nhiễu.
+
+    Trả `{khoá nửa: (đếm theo engine, số metric xét, {metric: engine dẫn đầu})}`.
+    """
+    ra: dict[str, tuple[Counter[str], int, dict[str, str]]] = {}
+    for n in nua:
+        con = report.loc_theo_tai_lieu(bang, n.docs)
+        dem: Counter[str] = Counter()
+        theo_metric: dict[str, str] = {}
+        for m in n.metrics:
+            if trans[m].bac != "do_duoc" or m in report.NGUOC_CHIEU:
+                continue
+            trai = report.do_trai(con, m)
+            if trai is None or trai < report.NGUONG_PHAN_BIET:
+                continue
+            xep = [a for a in con.ranking(m) if a.n_scored > 0]
+            if not xep:
+                continue
+            theo_metric[m] = xep[0].engine
+            dem[xep[0].engine] += 1
+        ra[n.slug or n.ten] = (dem, len(theo_metric), theo_metric)
+    return ra
 
 
 def _muc_ket_luan(
@@ -704,24 +771,10 @@ def _muc_ket_luan(
         ]
 
     # --- Dẫn đầu: đếm trên từng nửa corpus ---
-    dan_dau_nua: dict[str, tuple[Counter[str], int]] = {}
+    dan_dau_nua = _dan_dau_theo_nua(bang, trans, nua)
     lines += ["### 6.2 Ai dẫn đầu, trên nửa corpus nào", ""]
     for n in nua:
-        con = report.loc_theo_tai_lieu(bang, n.docs)
-        dem: Counter[str] = Counter()
-        xet = 0
-        for m in n.metrics:
-            if trans[m].bac != "do_duoc" or m in report.NGUOC_CHIEU:
-                continue
-            trai = report.do_trai(con, m)
-            if trai is None or trai < report.NGUONG_PHAN_BIET:
-                continue
-            xep = [a for a in con.ranking(m) if a.n_scored > 0]
-            if not xep:
-                continue
-            xet += 1
-            dem[xep[0].engine] += 1
-        dan_dau_nua[n.slug or n.ten] = (dem, xet)
+        dem, xet, theo_metric = dan_dau_nua[n.slug or n.ten]
         lines += [
             f"**{n.ten}** — {xet} metric vừa đo được vừa phân biệt được các engine.",
             "",
@@ -734,9 +787,12 @@ def _muc_ket_luan(
                 "",
             ]
             continue
-        lines += ["| engine | số metric dẫn đầu |", "|---|---:|"]
+        lines += ["| engine | số metric dẫn đầu | dẫn đầu ở metric nào |", "|---|---:|---|"]
         for e in sorted(dem, key=lambda e: (-dem[e], e)):
-            lines.append(f"| `{e}` | {dem[e]}/{xet} |")
+            ten = ", ".join(
+                f"`{m}`" for m in sorted(theo_metric) if theo_metric[m] == e
+            )
+            lines.append(f"| `{e}` | {dem[e]}/{xet} | {ten} |")
         lines += [""]
 
     # --- Độ chắc của các so sánh ---
@@ -771,7 +827,7 @@ def _muc_ket_luan(
             f"{nhanh.fail_rate:.0%}).",
         ]
     for n in nua:
-        dem, xet = dan_dau_nua[n.slug or n.ten]
+        dem, xet, _ = dan_dau_nua[n.slug or n.ten]
         if not dem:
             lines.append(
                 f"- **{n.ten}** → không khuyến nghị được: không metric nào của nửa này "
@@ -804,6 +860,82 @@ def _muc_ket_luan(
         "",
     ]
     return lines
+
+
+def _ket_qua_mot_doan(
+    bang: ScoreTable, res: list, trans: dict[str, Tran], nua: list[report.NuaCorpus]
+) -> list[str]:
+    """Kết quả gói trong mấy gạch đầu dòng, đặt ở ngay đầu bài.
+
+    Tóm tắt bản trước chỉ nói **phạm vi** — bao nhiêu engine, bao nhiêu metric, dữ liệu
+    lấy ở đâu — mà không nói một kết quả nào, nên người đọc phải đi hết 600 dòng bảng
+    tới mục 6 mới biết bài kết luận gì. Các số ở đây lấy từ đúng hai phép đếm của mục
+    6.1 và 6.2, không tính lại theo cách khác.
+    """
+    perf = sorted(
+        (p for p in perf_aggregates(perf_rows(res)) if p.sec_moi_trang_trung_vi),
+        key=lambda p: (p.sec_moi_trang_trung_vi, p.engine),
+    )
+    ra = ["**Kết quả trong một đoạn.**", ""]
+    if perf:
+        ra.append(
+            f"- Nhanh nhất: `{perf[0].engine}` "
+            f"({perf[0].sec_moi_trang_trung_vi:.2f} giây/trang, trung vị) — chậm nhất "
+            f"`{perf[-1].engine}` ({perf[-1].sec_moi_trang_trung_vi:.2f}), "
+            f"chênh khoảng {perf[-1].sec_moi_trang_trung_vi / perf[0].sec_moi_trang_trung_vi:.0f} lần."
+        )
+    for n in nua:
+        dem, xet, _ = _dan_dau_theo_nua(bang, trans, nua)[n.slug or n.ten]
+        if not xet:
+            ra.append(
+                f"- {n.ten}: không metric nào tách được các engine ra — nửa này chưa "
+                "kết luận được ai hơn ai."
+            )
+            continue
+        top = min(dem, key=lambda e: (-dem[e], e))
+        hoa = sorted(e for e in dem if dem[e] == dem[top])
+        if len(hoa) > 1:
+            ra.append(
+                f"- {n.ten}: hoà {dem[top]}/{xet} metric giữa "
+                + ", ".join(f"`{e}`" for e in hoa)
+                + " — không có engine trội chung."
+            )
+        else:
+            ra.append(
+                f"- {n.ten}: `{top}` dẫn đầu {dem[top]}/{xet} metric phân biệt được."
+            )
+    ra += [
+        "",
+        "Ba dòng trên là toàn bộ kết luận; phần còn lại của bài nói vì sao chúng đứng "
+        "được và ở đâu chúng không đứng được.",
+        "",
+    ]
+    return ra
+
+
+def _ban_do_doc() -> list[str]:
+    """Mỗi mục trả lời câu hỏi nào — đặt trước khi người đọc bước vào mục 1.
+
+    Người đọc lần đầu gặp sáu tiêu đề kiểu "Trần Đo được", "So chéo trên Tập Tài liệu
+    Chung" thì không biết mục nào trả lời câu hỏi của mình, nên đọc tuần tự từ đầu và
+    lạc ở mục 3. Bảng này nói thẳng mục nào trả lời gì để họ nhảy thẳng tới đó.
+    """
+    return [
+        "**Bài này bố cục thế nào.** Mỗi mục trả lời đúng một câu hỏi:",
+        "",
+        "| mục | trả lời câu hỏi |",
+        "|---|---|",
+        "| 1. Đọc kết quả thế nào | `0.790 (n=203, fail 1%)` nghĩa là gì, mỗi metric đo cái gì |",
+        "| 2. Trần đo được | ô trống là vì engine kém hay vì bộ mẫu thiếu nhãn |",
+        "| 3. Kết quả theo nhóm năng lực | điểm từng engine, tách theo hai nửa corpus |",
+        "| 4. Hình | vẫn số đó, nhìn bằng mắt |",
+        "| 5. So chéo | so từng cặp engine trên đúng tập tài liệu cả hai cùng chấm được |",
+        "| 6. Kết luận | nhanh nhất là ai, đúng nhất là ai, chắc tới đâu |",
+        "",
+        "Cần câu trả lời ngay thì đọc mục 6. Cần biết một con số có tin được không thì "
+        "đọc mục 2 trước mục 3.",
+        "",
+    ]
 
 
 def _render_paper(
@@ -856,6 +988,7 @@ def _render_paper(
         "",
         "## Tóm tắt",
         "",
+        *_ket_qua_mot_doan(bang, res, trans, nua),
         f"Báo cáo này công bố kết quả đánh giá thực nghiệm trên **{len(engines)} cấu hình engine** "
         f"với **{len(ten)} metric** chuẩn hóa, phân chia thành các nhóm năng lực: "
         f"OCR, Layout, Bảng, Reading Order, Robustness và Hiệu năng.",
@@ -874,6 +1007,7 @@ def _render_paper(
         "bất kỳ công đoạn tính toán số liệu nào. Các ô hiển thị `— (0 hỏng, 0 chấm được)` "
         "là những profile chưa có đủ dữ liệu.",
         "",
+        *_ban_do_doc(),
         "---",
         "",
     ]
@@ -888,7 +1022,18 @@ def _render_paper(
         ]
         for c in canh_bao:
             lines.append(f"- {c}")
-        lines += ["", "---", ""]
+        lines += [
+            "",
+            # Cảnh báo sinh cho `overall.md`, nơi `common-set.md` là một file cạnh bên.
+            # Trong bài báo thì nó là mục 5 — người đọc gặp một tên file không có trong
+            # bài và không biết phải mở cái gì.
+            "Trong bài báo này, `common-set.md` chính là **mục 5**: ở đó mỗi bảng chỉ "
+            "chấm trên tài liệu mà mọi engine trong bảng đều xử lý được, nên hai ô "
+            "cạnh nhau mới so được với nhau.",
+            "",
+            "---",
+            "",
+        ]
 
     # --- 1. Mỗi metric đo cái gì -------------------------------------------
     # Đứng **trước** mọi bảng điểm. Bản trước mở thẳng bằng bảng, nên người đọc gặp
@@ -907,8 +1052,10 @@ def _render_paper(
         "Mô tả lấy thẳng từ định nghĩa của chính lớp metric trong mã nguồn, không chép "
         "tay — sửa luật chấm mà quên sửa mô tả là không biểu diễn được. Cột *trần* "
         "(*ceiling*) là số tài liệu nhiều nhất metric chấm được với bộ nhãn hiện có "
-        "(mục 2). Bảng thuật ngữ đầy đủ: `tables/glossary.md`.",
+        "(mục 2) — cột này giải thích ở mục 2 ngay dưới đây. Bảng thuật ngữ đầy đủ: "
+        "`tables/glossary.md`.",
         "",
+        *glossary.cac_ho_diem(),
     ]
     for cap_name, cap_metrics in CAPABILITIES.items():
         lines += [
@@ -974,11 +1121,40 @@ def _render_paper(
     ]
 
     # --- 3. Kết quả, tách theo nửa corpus -----------------------------------
+    # Mỗi nửa mở bằng một câu kết quả trước khi vào bảng: bảng tổng quan của nửa
+    # DocLayNet có 7 trên 13 dòng ghi `chưa có nhãn`, nên người đọc lướt qua nó và
+    # không mang theo được gì. Câu này nói trước bảng nói cái gì.
+    dan_dau = _dan_dau_theo_nua(bang, trans, nua)
     for n in nua:
         con = report.loc_theo_tai_lieu(bang, n.docs)
         co_o_nua = set(con.engines())
         engines_nua = [e for e in engines if e in co_o_nua]
         lines += [f"### {n.ten}", "", n.ghi_chu, ""]
+        dem_n, xet_n, theo_metric_n = dan_dau[n.slug or n.ten]
+        if xet_n:
+            top_n = min(dem_n, key=lambda e: (-dem_n[e], e))
+            hoa_n = sorted(e for e in dem_n if dem_n[e] == dem_n[top_n])
+            ai = (
+                "hoà giữa " + ", ".join(f"`{e}`" for e in hoa_n)
+                if len(hoa_n) > 1
+                else f"`{top_n}` dẫn đầu"
+            )
+            lines += [
+                f"**Đọc nhanh.** Trong {len(n.metrics)} metric của nửa này, {xet_n} "
+                f"metric vừa đo được vừa tách được các engine ra ("
+                + ", ".join(f"`{m}`" for m in sorted(theo_metric_n))
+                + f"); trên số đó, {ai} với {dem_n[top_n]}/{xet_n}. Các dòng còn lại "
+                "ghi `chưa có nhãn` hoặc `N/A` — đó là giới hạn của bộ mẫu, không phải "
+                "điểm 0 của engine.",
+                "",
+            ]
+        else:
+            lines += [
+                f"**Đọc nhanh.** Không metric nào trong {len(n.metrics)} metric của "
+                "nửa này vừa đo được vừa tách được các engine ra, nên nửa này không "
+                "kết luận được ai hơn ai — xem mục 2 để biết vì sao.",
+                "",
+            ]
         if not engines_nua:
             lines += ["Không engine nào có dự đoán trên nửa này.", ""]
             continue
@@ -1027,9 +1203,11 @@ def _render_paper(
         for rel in sorted(hinh):
             ten_file = Path(rel).name
             lines += [
-                f"### {ten_file}",
+                f"### {_tieu_de_hinh(ten_file)}",
                 "",
                 f"![{ten_file}](../figures/{ten_file})",
+                "",
+                f"*File: `figures/{ten_file}`*",
                 "",
             ]
             cach_doc = _cach_doc_hinh(ten_file)

@@ -193,6 +193,40 @@ def doc_mot_o() -> list[str]:
     ]
 
 
+def cac_ho_diem() -> list[str]:
+    """Năm chữ viết tắt chiếm gần hết cột metric, giải bằng lời thường.
+
+    Mô tả từng metric sinh ra từ docstring của lớp metric, và các docstring đó nói
+    bằng tiếng của người viết luật chấm: "macro-F1 theo loại khối", "TEDS cấu trúc",
+    "NID trên chuỗi thứ tự đọc". Người đọc lần đầu gặp năm chữ viết tắt này trước khi
+    có chỗ nào nói chúng là gì, nên bảng mục 1.2 đọc như một danh sách mã.
+
+    Giữ nguyên tên tiếng Anh (đó là tên trong mọi tài liệu ngoài kia), chỉ thêm nghĩa.
+    """
+    return [
+        "**Năm chữ viết tắt trong cột dưới đây.** Tên giữ nguyên tiếng Anh vì đó là "
+        "tên chuẩn trong tài liệu ngành:",
+        "",
+        "| viết tắt | tên đầy đủ | nói bằng lời thường |",
+        "|---|---|---|",
+        "| **F1** | F1-score | gộp hai câu hỏi thành một điểm: cái engine chỉ ra có "
+        "đúng không, và nó bỏ sót bao nhiêu. Chỉ cao khi **cả hai** cùng tốt |",
+        "| **macro-F1** | macro-averaged F1 | tính F1 riêng cho từng loại rồi lấy "
+        "trung bình đều tay — loại hiếm gặp có sức nặng ngang loại phổ biến |",
+        "| **IoU** | Intersection over Union | hai khung chồng nhau bao nhiêu: phần "
+        "chung chia phần tổng. `1.0` là trùng khít, `0.0` là rời hẳn |",
+        "| **TEDS** | Tree-Edit-Distance Similarity | so hai cái bảng như so hai cái "
+        "cây: phải sửa bao nhiêu bước thì bảng engine thành bảng nhãn |",
+        "| **NID** | Normalized Insertion-Deletion distance | so hai **thứ tự đọc**: "
+        "phải chuyển bao nhiêu bước thì trình tự engine đọc thành trình tự đúng |",
+        "",
+        "Còn `assert_*` không thuộc nhóm trên: nhãn của chúng là các **khẳng định "
+        "đúng/sai** về tài liệu (\"trang này có công thức toán\"), nên điểm là tỉ lệ "
+        "khẳng định engine trả lời đúng — cái này đọc thành phần trăm được.",
+        "",
+    ]
+
+
 def khoi_doc_bang(duong_dan_chu_giai: str = "tables/glossary.md") -> list[str]:
     """Vài dòng đặt đầu mỗi artifact: đọc bảng theo thứ tự nào, tra nghĩa ở đâu."""
     return [

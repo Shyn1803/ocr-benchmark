@@ -8,13 +8,18 @@
 
 Mỗi bảng dưới đây chỉ chấm trên tài liệu **mọi engine trong bảng đều có**. Đây là bảng duy nhất mà việc so hai ô cạnh nhau là hợp lệ.
 
+Mọi nhóm dưới đây đều cắt làm hai nửa corpus:
+
+- **DocLayNet — nhãn bố cục (bbox)** — 204 tài liệu, nhãn là khung + loại khối. Không giao một tài liệu nào với nửa dưới, nên **không so ô của hai bảng với nhau**.
+- **olmOCR — nhãn khẳng định** — 1403 tài liệu, nhãn là các khẳng định đúng/sai về nội dung. Trần đo được của từng metric xem `tables/ceiling.md`.
+
 ## `docling_default` × `opendataloader_default`
+
+Cùng chế độ `default`, khác họ engine — bảng này trả lời: ở cùng một cách chạy thì engine nào chấm cao hơn.
 
 Tập chung: **1606** tài liệu.
 
 ### DocLayNet — nhãn bố cục (bbox) — 203 tài liệu
-
-204 tài liệu, nhãn là khung + loại khối. Không giao một tài liệu nào với nửa dưới, nên **không so ô của hai bảng với nhau**.
 
 | metric | docling_default | opendataloader_default |
 |---|---|---|
@@ -35,8 +40,6 @@ Tập chung: **1606** tài liệu.
 
 ### olmOCR — nhãn khẳng định — 1403 tài liệu
 
-1403 tài liệu, nhãn là các khẳng định đúng/sai về nội dung. Trần đo được của từng metric xem `tables/ceiling.md`.
-
 | metric | docling_default | opendataloader_default |
 |---|---|---|
 | **n (tài liệu)** | 1403 | 1403 |
@@ -49,11 +52,11 @@ Tập chung: **1606** tài liệu.
 
 ## `docling_scan` × `opendataloader_scan`
 
+Cùng chế độ `scan`, khác họ engine — bảng này trả lời: ở cùng một cách chạy thì engine nào chấm cao hơn.
+
 Tập chung: **1606** tài liệu.
 
 ### DocLayNet — nhãn bố cục (bbox) — 203 tài liệu
-
-204 tài liệu, nhãn là khung + loại khối. Không giao một tài liệu nào với nửa dưới, nên **không so ô của hai bảng với nhau**.
 
 | metric | docling_scan | opendataloader_scan |
 |---|---|---|
@@ -74,8 +77,6 @@ Tập chung: **1606** tài liệu.
 
 ### olmOCR — nhãn khẳng định — 1403 tài liệu
 
-1403 tài liệu, nhãn là các khẳng định đúng/sai về nội dung. Trần đo được của từng metric xem `tables/ceiling.md`.
-
 | metric | docling_scan | opendataloader_scan |
 |---|---|---|
 | **n (tài liệu)** | 1403 | 1403 |
@@ -88,11 +89,11 @@ Tập chung: **1606** tài liệu.
 
 ## `docling_default` × `docling_scan`
 
+Cùng một họ engine (`docling`), khác chế độ — bảng này trả lời: bật chế độ scan lên thì được gì và mất gì.
+
 Tập chung: **1606** tài liệu.
 
 ### DocLayNet — nhãn bố cục (bbox) — 203 tài liệu
-
-204 tài liệu, nhãn là khung + loại khối. Không giao một tài liệu nào với nửa dưới, nên **không so ô của hai bảng với nhau**.
 
 | metric | docling_default | docling_scan |
 |---|---|---|
@@ -113,8 +114,6 @@ Tập chung: **1606** tài liệu.
 
 ### olmOCR — nhãn khẳng định — 1403 tài liệu
 
-1403 tài liệu, nhãn là các khẳng định đúng/sai về nội dung. Trần đo được của từng metric xem `tables/ceiling.md`.
-
 | metric | docling_default | docling_scan |
 |---|---|---|
 | **n (tài liệu)** | 1403 | 1403 |
@@ -127,11 +126,11 @@ Tập chung: **1606** tài liệu.
 
 ## `opendataloader_default` × `opendataloader_scan`
 
+Cùng một họ engine (`opendataloader`), khác chế độ — bảng này trả lời: bật chế độ scan lên thì được gì và mất gì.
+
 Tập chung: **1606** tài liệu.
 
 ### DocLayNet — nhãn bố cục (bbox) — 203 tài liệu
-
-204 tài liệu, nhãn là khung + loại khối. Không giao một tài liệu nào với nửa dưới, nên **không so ô của hai bảng với nhau**.
 
 | metric | opendataloader_default | opendataloader_scan |
 |---|---|---|
@@ -152,8 +151,6 @@ Tập chung: **1606** tài liệu.
 
 ### olmOCR — nhãn khẳng định — 1403 tài liệu
 
-1403 tài liệu, nhãn là các khẳng định đúng/sai về nội dung. Trần đo được của từng metric xem `tables/ceiling.md`.
-
 | metric | opendataloader_default | opendataloader_scan |
 |---|---|---|
 | **n (tài liệu)** | 1403 | 1403 |
@@ -166,11 +163,11 @@ Tập chung: **1606** tài liệu.
 
 ## `docling_default` × `opendataloader_default` × `opendataloader_scan`
 
+Nhiều họ engine và nhiều chế độ cùng lúc — bảng tổng, dùng để nhìn tất cả trên **cùng một** tập tài liệu; tách riêng từng câu hỏi thì xem các bảng trên.
+
 Tập chung: **1606** tài liệu.
 
 ### DocLayNet — nhãn bố cục (bbox) — 203 tài liệu
-
-204 tài liệu, nhãn là khung + loại khối. Không giao một tài liệu nào với nửa dưới, nên **không so ô của hai bảng với nhau**.
 
 | metric | docling_default | opendataloader_default | opendataloader_scan |
 |---|---|---|---|
@@ -191,8 +188,6 @@ Tập chung: **1606** tài liệu.
 
 ### olmOCR — nhãn khẳng định — 1403 tài liệu
 
-1403 tài liệu, nhãn là các khẳng định đúng/sai về nội dung. Trần đo được của từng metric xem `tables/ceiling.md`.
-
 | metric | docling_default | opendataloader_default | opendataloader_scan |
 |---|---|---|---|
 | **n (tài liệu)** | 1403 | 1403 | 1403 |
@@ -205,11 +200,11 @@ Tập chung: **1606** tài liệu.
 
 ## `docling_default` × `docling_scan` × `opendataloader_default` × `opendataloader_scan`
 
+Nhiều họ engine và nhiều chế độ cùng lúc — bảng tổng, dùng để nhìn tất cả trên **cùng một** tập tài liệu; tách riêng từng câu hỏi thì xem các bảng trên.
+
 Tập chung: **1606** tài liệu.
 
 ### DocLayNet — nhãn bố cục (bbox) — 203 tài liệu
-
-204 tài liệu, nhãn là khung + loại khối. Không giao một tài liệu nào với nửa dưới, nên **không so ô của hai bảng với nhau**.
 
 | metric | docling_default | docling_scan | opendataloader_default | opendataloader_scan |
 |---|---|---|---|---|
@@ -230,8 +225,6 @@ Tập chung: **1606** tài liệu.
 
 ### olmOCR — nhãn khẳng định — 1403 tài liệu
 
-1403 tài liệu, nhãn là các khẳng định đúng/sai về nội dung. Trần đo được của từng metric xem `tables/ceiling.md`.
-
 | metric | docling_default | docling_scan | opendataloader_default | opendataloader_scan |
 |---|---|---|---|---|
 | **n (tài liệu)** | 1403 | 1403 | 1403 | 1403 |
@@ -243,6 +236,8 @@ Tập chung: **1606** tài liệu.
 | assert_baseline | 0.450 (n=20, fail 55%) | 0.667 (n=12, fail 33%) | 1.000 (n=9, fail 0%) | 0.750 (n=12, fail 25%) |
 
 ## `noop` × `sabotage`
+
+Chốt kiểm soát, không phải engine thật: `noop` không trả gì và `sabotage` trả kết quả cố ý sai. Nếu hai cái này không rơi xuống đáy thì luật chấm hỏng, không phải engine giỏi.
 
 Bỏ qua — không có dự đoán của: `noop`, `sabotage`.
 

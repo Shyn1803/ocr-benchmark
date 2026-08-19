@@ -10,17 +10,40 @@
 
 ## Tóm tắt
 
+**Kết quả trong một đoạn.**
+
+- Nhanh nhất: `opendataloader_default` (1.00 giây/trang, trung vị) — chậm nhất `docling_scan` (32.20), chênh khoảng 32 lần.
+- DocLayNet — nhãn bố cục (bbox): `docling_default` dẫn đầu 2/2 metric phân biệt được.
+- olmOCR — nhãn khẳng định: hoà 1/3 metric giữa `docling_default`, `docling_scan`, `opendataloader_default` — không có engine trội chung.
+
+Ba dòng trên là toàn bộ kết luận; phần còn lại của bài nói vì sao chúng đứng được và ở đâu chúng không đứng được.
+
 Báo cáo này công bố kết quả đánh giá thực nghiệm trên **4 cấu hình engine** với **19 metric** chuẩn hóa, phân chia thành các nhóm năng lực: OCR, Layout, Bảng, Reading Order, Robustness và Hiệu năng.
 
 Bộ mẫu gồm **hai nửa rời nhau** — DocLayNet — nhãn bố cục (bbox) (204 tài liệu) và olmOCR — nhãn khẳng định (1403 tài liệu) — giao nhau **0 tài liệu**. Mọi bảng dưới đây đều tách theo hai nửa đó; không bảng nào đặt một metric của nửa này cạnh một metric của nửa kia, và không có điểm tổng nào cộng ngang qua chúng.
 
 Mọi kết quả được tính toán tất định từ dữ liệu dự đoán tại `calibration/prediction/cpu/` và nhãn chuẩn tại `ground-truth/`. Không sử dụng LLM trong bất kỳ công đoạn tính toán số liệu nào. Các ô hiển thị `— (0 hỏng, 0 chấm được)` là những profile chưa có đủ dữ liệu.
 
+**Bài này bố cục thế nào.** Mỗi mục trả lời đúng một câu hỏi:
+
+| mục | trả lời câu hỏi |
+|---|---|
+| 1. Đọc kết quả thế nào | `0.790 (n=203, fail 1%)` nghĩa là gì, mỗi metric đo cái gì |
+| 2. Trần đo được | ô trống là vì engine kém hay vì bộ mẫu thiếu nhãn |
+| 3. Kết quả theo nhóm năng lực | điểm từng engine, tách theo hai nửa corpus |
+| 4. Hình | vẫn số đó, nhìn bằng mắt |
+| 5. So chéo | so từng cặp engine trên đúng tập tài liệu cả hai cùng chấm được |
+| 6. Kết luận | nhanh nhất là ai, đúng nhất là ai, chắc tới đâu |
+
+Cần câu trả lời ngay thì đọc mục 6. Cần biết một con số có tin được không thì đọc mục 2 trước mục 3.
+
 ---
 
 ## Cảnh báo khi Đọc Bảng
 
 - Giao của cả 4 engine là 1606 tài liệu. Bảng gộp toàn bộ KHÔNG phải một phép so sánh — xem `common-set.md`.
+
+Trong bài báo này, `common-set.md` chính là **mục 5**: ở đó mỗi bảng chỉ chấm trên tài liệu mà mọi engine trong bảng đều xử lý được, nên hai ô cạnh nhau mới so được với nhau.
 
 ---
 
@@ -54,7 +77,19 @@ Vì vậy con số này dùng để **xếp hạng các engine trên cùng bộ 
 
 ### 1.2 Mỗi metric đo cái gì
 
-Mô tả lấy thẳng từ định nghĩa của chính lớp metric trong mã nguồn, không chép tay — sửa luật chấm mà quên sửa mô tả là không biểu diễn được. Cột *trần* (*ceiling*) là số tài liệu nhiều nhất metric chấm được với bộ nhãn hiện có (mục 2). Bảng thuật ngữ đầy đủ: `tables/glossary.md`.
+Mô tả lấy thẳng từ định nghĩa của chính lớp metric trong mã nguồn, không chép tay — sửa luật chấm mà quên sửa mô tả là không biểu diễn được. Cột *trần* (*ceiling*) là số tài liệu nhiều nhất metric chấm được với bộ nhãn hiện có (mục 2) — cột này giải thích ở mục 2 ngay dưới đây. Bảng thuật ngữ đầy đủ: `tables/glossary.md`.
+
+**Năm chữ viết tắt trong cột dưới đây.** Tên giữ nguyên tiếng Anh vì đó là tên chuẩn trong tài liệu ngành:
+
+| viết tắt | tên đầy đủ | nói bằng lời thường |
+|---|---|---|
+| **F1** | F1-score | gộp hai câu hỏi thành một điểm: cái engine chỉ ra có đúng không, và nó bỏ sót bao nhiêu. Chỉ cao khi **cả hai** cùng tốt |
+| **macro-F1** | macro-averaged F1 | tính F1 riêng cho từng loại rồi lấy trung bình đều tay — loại hiếm gặp có sức nặng ngang loại phổ biến |
+| **IoU** | Intersection over Union | hai khung chồng nhau bao nhiêu: phần chung chia phần tổng. `1.0` là trùng khít, `0.0` là rời hẳn |
+| **TEDS** | Tree-Edit-Distance Similarity | so hai cái bảng như so hai cái cây: phải sửa bao nhiêu bước thì bảng engine thành bảng nhãn |
+| **NID** | Normalized Insertion-Deletion distance | so hai **thứ tự đọc**: phải chuyển bao nhiêu bước thì trình tự engine đọc thành trình tự đúng |
+
+Còn `assert_*` không thuộc nhóm trên: nhãn của chúng là các **khẳng định đúng/sai** về tài liệu ("trang này có công thức toán"), nên điểm là tỉ lệ khẳng định engine trả lời đúng — cái này đọc thành phần trăm được.
 
 #### Text & OCR
 
@@ -127,6 +162,8 @@ Báo cáo không dùng một điểm tổng duy nhất — điểm tổng che m�
 ### DocLayNet — nhãn bố cục (bbox)
 
 204 tài liệu, nhãn là khung + loại khối. Không giao một tài liệu nào với nửa dưới, nên **không so ô của hai bảng với nhau**.
+
+**Đọc nhanh.** Trong 13 metric của nửa này, 2 metric vừa đo được vừa tách được các engine ra (`block_f1`, `type_f1`); trên số đó, `docling_default` dẫn đầu với 2/2. Các dòng còn lại ghi `chưa có nhãn` hoặc `N/A` — đó là giới hạn của bộ mẫu, không phải điểm 0 của engine.
 
 #### Text & OCR
 
@@ -220,6 +257,8 @@ Báo cáo không dùng một điểm tổng duy nhất — điểm tổng che m�
 
 1403 tài liệu, nhãn là các khẳng định đúng/sai về nội dung. Trần đo được của từng metric xem `tables/ceiling.md`.
 
+**Đọc nhanh.** Trong 6 metric của nửa này, 3 metric vừa đo được vừa tách được các engine ra (`assert_reading_order`, `assert_table_relation`, `assert_text_absence`); trên số đó, hoà giữa `docling_default`, `docling_scan`, `opendataloader_default` với 1/3. Các dòng còn lại ghi `chưa có nhãn` hoặc `N/A` — đó là giới hạn của bộ mẫu, không phải điểm 0 của engine.
+
 #### Text & OCR
 
 <!-- trace: aggregate:text_ocr:docling_default -->
@@ -300,39 +339,51 @@ Báo cáo không dùng một điểm tổng duy nhất — điểm tổng che m�
 
 Mọi hình vẽ từ chính bảng ở mục 3 — không hình nào có nguồn riêng.
 
-### accuracy-speed.svg
+### Nhanh và đúng: đánh đổi giữa hai bên
 
 ![accuracy-speed.svg](../figures/accuracy-speed.svg)
 
+*File: `figures/accuracy-speed.svg`*
+
 **Cách đọc.** Trục ngang là **giây mỗi trang, trung vị**; trục dọc là một metric có tên (metric tách các engine ra xa nhất, tên metric ghi ngay trên trục). Góc trên bên trái là vừa nhanh vừa đúng. Đọc kèm hai hạn chế in ở chân hình: `seconds` gồm cả thời gian nạp model, và thứ tự chạy không khôi phục được nên không tách được lượt nguội.
 
-### capability-ranking-doclaynet.svg
+### Xếp hạng engine theo từng metric — nửa DocLayNet
 
 ![capability-ranking-doclaynet.svg](../figures/capability-ranking-doclaynet.svg)
 
+*File: `figures/capability-ranking-doclaynet.svg`*
+
 **Cách đọc.** Mỗi hàng là một metric, mỗi điểm là một engine; trục ngang là trung bình có phạt. Chỉ vẽ metric bậc *đo được* — metric trần thấp nằm ở `tables/ceiling.md`, không lên hình, vì một điểm dựng trên 9 tài liệu trông y hệt một điểm dựng trên 203 tài liệu.
 
-### capability-ranking-olmocr.svg
+### Xếp hạng engine theo từng metric — nửa olmOCR
 
 ![capability-ranking-olmocr.svg](../figures/capability-ranking-olmocr.svg)
 
+*File: `figures/capability-ranking-olmocr.svg`*
+
 **Cách đọc.** Mỗi hàng là một metric, mỗi điểm là một engine; trục ngang là trung bình có phạt. Chỉ vẽ metric bậc *đo được* — metric trần thấp nằm ở `tables/ceiling.md`, không lên hình, vì một điểm dựng trên 9 tài liệu trông y hệt một điểm dựng trên 203 tài liệu.
 
-### failure-distribution.svg
+### Tài liệu engine không xử lý được
 
 ![failure-distribution.svg](../figures/failure-distribution.svg)
 
+*File: `figures/failure-distribution.svg`*
+
 **Cách đọc.** Tài liệu engine **không xử lý được**, tách theo loại hỏng. Đây là con số đứng cạnh mọi điểm trong báo cáo: một engine điểm cao trên phần nó chạy được mà hỏng 20% đầu vào thì không dùng được, và bảng điểm một mình không nói ra điều đó.
 
-### scan-degradation-doclaynet.svg
+### Bật chế độ scan thì điểm đổi thế nào — nửa DocLayNet
 
 ![scan-degradation-doclaynet.svg](../figures/scan-degradation-doclaynet.svg)
 
+*File: `figures/scan-degradation-doclaynet.svg`*
+
 **Cách đọc.** So `*_default` với `*_scan` của **cùng một họ engine**. Cột hướng xuống nghĩa là bật chế độ scan làm điểm tệ đi. Họ engine thiếu một trong hai profile thì không có cột — hình ghi rõ thiếu cái gì thay vì vẽ cột 0.
 
-### scan-degradation-olmocr.svg
+### Bật chế độ scan thì điểm đổi thế nào — nửa olmOCR
 
 ![scan-degradation-olmocr.svg](../figures/scan-degradation-olmocr.svg)
+
+*File: `figures/scan-degradation-olmocr.svg`*
 
 **Cách đọc.** So `*_default` với `*_scan` của **cùng một họ engine**. Cột hướng xuống nghĩa là bật chế độ scan làm điểm tệ đi. Họ engine thiếu một trong hai profile thì không có cột — hình ghi rõ thiếu cái gì thay vì vẽ cột 0.
 
@@ -348,13 +399,18 @@ Mọi hình vẽ từ chính bảng ở mục 3 — không hình nào có nguồ
 
 Mỗi bảng dưới đây chỉ chấm trên tài liệu **mọi engine trong bảng đều có**. Đây là bảng duy nhất mà việc so hai ô cạnh nhau là hợp lệ.
 
+Mọi nhóm dưới đây đều cắt làm hai nửa corpus:
+
+- **DocLayNet — nhãn bố cục (bbox)** — 204 tài liệu, nhãn là khung + loại khối. Không giao một tài liệu nào với nửa dưới, nên **không so ô của hai bảng với nhau**.
+- **olmOCR — nhãn khẳng định** — 1403 tài liệu, nhãn là các khẳng định đúng/sai về nội dung. Trần đo được của từng metric xem `tables/ceiling.md`.
+
 #### `docling_default` × `opendataloader_default`
+
+Cùng chế độ `default`, khác họ engine — bảng này trả lời: ở cùng một cách chạy thì engine nào chấm cao hơn.
 
 Tập chung: **1606** tài liệu.
 
 ##### DocLayNet — nhãn bố cục (bbox) — 203 tài liệu
-
-204 tài liệu, nhãn là khung + loại khối. Không giao một tài liệu nào với nửa dưới, nên **không so ô của hai bảng với nhau**.
 
 | metric | docling_default | opendataloader_default |
 |---|---|---|
@@ -375,8 +431,6 @@ Tập chung: **1606** tài liệu.
 
 ##### olmOCR — nhãn khẳng định — 1403 tài liệu
 
-1403 tài liệu, nhãn là các khẳng định đúng/sai về nội dung. Trần đo được của từng metric xem `tables/ceiling.md`.
-
 | metric | docling_default | opendataloader_default |
 |---|---|---|
 | **n (tài liệu)** | 1403 | 1403 |
@@ -389,11 +443,11 @@ Tập chung: **1606** tài liệu.
 
 #### `docling_scan` × `opendataloader_scan`
 
+Cùng chế độ `scan`, khác họ engine — bảng này trả lời: ở cùng một cách chạy thì engine nào chấm cao hơn.
+
 Tập chung: **1606** tài liệu.
 
 ##### DocLayNet — nhãn bố cục (bbox) — 203 tài liệu
-
-204 tài liệu, nhãn là khung + loại khối. Không giao một tài liệu nào với nửa dưới, nên **không so ô của hai bảng với nhau**.
 
 | metric | docling_scan | opendataloader_scan |
 |---|---|---|
@@ -414,8 +468,6 @@ Tập chung: **1606** tài liệu.
 
 ##### olmOCR — nhãn khẳng định — 1403 tài liệu
 
-1403 tài liệu, nhãn là các khẳng định đúng/sai về nội dung. Trần đo được của từng metric xem `tables/ceiling.md`.
-
 | metric | docling_scan | opendataloader_scan |
 |---|---|---|
 | **n (tài liệu)** | 1403 | 1403 |
@@ -428,11 +480,11 @@ Tập chung: **1606** tài liệu.
 
 #### `docling_default` × `docling_scan`
 
+Cùng một họ engine (`docling`), khác chế độ — bảng này trả lời: bật chế độ scan lên thì được gì và mất gì.
+
 Tập chung: **1606** tài liệu.
 
 ##### DocLayNet — nhãn bố cục (bbox) — 203 tài liệu
-
-204 tài liệu, nhãn là khung + loại khối. Không giao một tài liệu nào với nửa dưới, nên **không so ô của hai bảng với nhau**.
 
 | metric | docling_default | docling_scan |
 |---|---|---|
@@ -453,8 +505,6 @@ Tập chung: **1606** tài liệu.
 
 ##### olmOCR — nhãn khẳng định — 1403 tài liệu
 
-1403 tài liệu, nhãn là các khẳng định đúng/sai về nội dung. Trần đo được của từng metric xem `tables/ceiling.md`.
-
 | metric | docling_default | docling_scan |
 |---|---|---|
 | **n (tài liệu)** | 1403 | 1403 |
@@ -467,11 +517,11 @@ Tập chung: **1606** tài liệu.
 
 #### `opendataloader_default` × `opendataloader_scan`
 
+Cùng một họ engine (`opendataloader`), khác chế độ — bảng này trả lời: bật chế độ scan lên thì được gì và mất gì.
+
 Tập chung: **1606** tài liệu.
 
 ##### DocLayNet — nhãn bố cục (bbox) — 203 tài liệu
-
-204 tài liệu, nhãn là khung + loại khối. Không giao một tài liệu nào với nửa dưới, nên **không so ô của hai bảng với nhau**.
 
 | metric | opendataloader_default | opendataloader_scan |
 |---|---|---|
@@ -492,8 +542,6 @@ Tập chung: **1606** tài liệu.
 
 ##### olmOCR — nhãn khẳng định — 1403 tài liệu
 
-1403 tài liệu, nhãn là các khẳng định đúng/sai về nội dung. Trần đo được của từng metric xem `tables/ceiling.md`.
-
 | metric | opendataloader_default | opendataloader_scan |
 |---|---|---|
 | **n (tài liệu)** | 1403 | 1403 |
@@ -506,11 +554,11 @@ Tập chung: **1606** tài liệu.
 
 #### `docling_default` × `opendataloader_default` × `opendataloader_scan`
 
+Nhiều họ engine và nhiều chế độ cùng lúc — bảng tổng, dùng để nhìn tất cả trên **cùng một** tập tài liệu; tách riêng từng câu hỏi thì xem các bảng trên.
+
 Tập chung: **1606** tài liệu.
 
 ##### DocLayNet — nhãn bố cục (bbox) — 203 tài liệu
-
-204 tài liệu, nhãn là khung + loại khối. Không giao một tài liệu nào với nửa dưới, nên **không so ô của hai bảng với nhau**.
 
 | metric | docling_default | opendataloader_default | opendataloader_scan |
 |---|---|---|---|
@@ -531,8 +579,6 @@ Tập chung: **1606** tài liệu.
 
 ##### olmOCR — nhãn khẳng định — 1403 tài liệu
 
-1403 tài liệu, nhãn là các khẳng định đúng/sai về nội dung. Trần đo được của từng metric xem `tables/ceiling.md`.
-
 | metric | docling_default | opendataloader_default | opendataloader_scan |
 |---|---|---|---|
 | **n (tài liệu)** | 1403 | 1403 | 1403 |
@@ -545,11 +591,11 @@ Tập chung: **1606** tài liệu.
 
 #### `docling_default` × `docling_scan` × `opendataloader_default` × `opendataloader_scan`
 
+Nhiều họ engine và nhiều chế độ cùng lúc — bảng tổng, dùng để nhìn tất cả trên **cùng một** tập tài liệu; tách riêng từng câu hỏi thì xem các bảng trên.
+
 Tập chung: **1606** tài liệu.
 
 ##### DocLayNet — nhãn bố cục (bbox) — 203 tài liệu
-
-204 tài liệu, nhãn là khung + loại khối. Không giao một tài liệu nào với nửa dưới, nên **không so ô của hai bảng với nhau**.
 
 | metric | docling_default | docling_scan | opendataloader_default | opendataloader_scan |
 |---|---|---|---|---|
@@ -570,8 +616,6 @@ Tập chung: **1606** tài liệu.
 
 ##### olmOCR — nhãn khẳng định — 1403 tài liệu
 
-1403 tài liệu, nhãn là các khẳng định đúng/sai về nội dung. Trần đo được của từng metric xem `tables/ceiling.md`.
-
 | metric | docling_default | docling_scan | opendataloader_default | opendataloader_scan |
 |---|---|---|---|---|
 | **n (tài liệu)** | 1403 | 1403 | 1403 | 1403 |
@@ -583,6 +627,8 @@ Tập chung: **1606** tài liệu.
 | assert_baseline | 0.450 (n=20, fail 55%) | 0.667 (n=12, fail 33%) | 1.000 (n=9, fail 0%) | 0.750 (n=12, fail 25%) |
 
 #### `noop` × `sabotage`
+
+Chốt kiểm soát, không phải engine thật: `noop` không trả gì và `sabotage` trả kết quả cố ý sai. Nếu hai cái này không rơi xuống đáy thì luật chấm hỏng, không phải engine giỏi.
 
 Bỏ qua — không có dự đoán của: `noop`, `sabotage`.
 
@@ -609,17 +655,17 @@ Mục này không thêm dữ liệu mới — nó đếm lại các bảng ở t
 
 **DocLayNet — nhãn bố cục (bbox)** — 2 metric vừa đo được vừa phân biệt được các engine.
 
-| engine | số metric dẫn đầu |
-|---|---:|
-| `docling_default` | 2/2 |
+| engine | số metric dẫn đầu | dẫn đầu ở metric nào |
+|---|---:|---|
+| `docling_default` | 2/2 | `block_f1`, `type_f1` |
 
 **olmOCR — nhãn khẳng định** — 3 metric vừa đo được vừa phân biệt được các engine.
 
-| engine | số metric dẫn đầu |
-|---|---:|
-| `docling_default` | 1/3 |
-| `docling_scan` | 1/3 |
-| `opendataloader_default` | 1/3 |
+| engine | số metric dẫn đầu | dẫn đầu ở metric nào |
+|---|---:|---|
+| `docling_default` | 1/3 | `assert_table_relation` |
+| `docling_scan` | 1/3 | `assert_text_absence` |
+| `opendataloader_default` | 1/3 | `assert_reading_order` |
 
 ### 6.3 Các so sánh có chắc không
 
