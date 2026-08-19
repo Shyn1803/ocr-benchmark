@@ -175,7 +175,13 @@ def _bang_theo_nhom(
     *,
     engines: list[str] | None = None,
 ) -> str:
-    """Sinh bảng Markdown cho một nhóm metric, dùng Aggregate.cell() thật."""
+    """Sinh bảng Markdown cho một nhóm metric, dùng Aggregate.cell() thật.
+
+    Hàng `n (tài liệu)` là **độ phủ của engine** (engine có dự đoán cho bao nhiêu tài
+    liệu của nửa này), không phải số tài liệu từng metric chấm được — `n` riêng của
+    mỗi metric nằm trong chính ô đó. Hai con số này khác nhau ở mọi metric trần thấp
+    (`heading` phủ 203 nhưng chấm được 15), nên hàng đầu bảng không đọc thay được.
+    """
     es = engines if engines is not None else bang.engines()
     cov = report.coverage(bang.rows)
     lines = [
@@ -195,6 +201,106 @@ def _bang_theo_nhom(
         ) + " |"
         lines.append(row)
     return "\n".join(lines) + "\n"
+
+
+def _doc_bang(
+    bang: ScoreTable,
+    nhom_metrics: list[str],
+    trans: dict[str, Tran],
+    *,
+    engines: list[str],
+) -> list[str]:
+    """Đọc hộ một bảng: dòng nào kết luận được, dòng nào không, và vì sao.
+
+    Bảng đứng một mình thì người đọc phải tự làm bốn việc cho từng dòng — so các cột,
+    ước lượng chênh lệch có đáng kể không, nhớ ngưỡng, và phân biệt "engine kém" với
+    "bộ mẫu thiếu nhãn". Bốn việc đó đều đã có luật trong mã, nên để người đọc tự làm
+    là bắt họ đoán lại thứ máy biết chắc.
+
+    Chia mỗi dòng vào đúng một trong bốn nhóm:
+
+    * **kết luận được** — trần đủ dày, các engine chênh nhau từ `NGUONG_PHAN_BIET` trở
+      lên: nêu tên engine cao nhất, điểm, và khoảng cách tới engine kế tiếp;
+    * **hoà** — chấm được nhưng chênh dưới ngưỡng: nói thẳng là không kết luận;
+    * **mỏng** — chấm được trên quá ít tài liệu để một trung bình đứng vững;
+    * **không có nhãn** — trần 0, chuyện của bộ mẫu chứ không phải của engine.
+
+    Viết lại từ chính `bang` mỗi lần dựng, nên không có câu nhận xét nào sống sót
+    được sau khi số đổi.
+    """
+    co = [m for m in nhom_metrics if m in bang.metrics()]
+    ket_luan: list[str] = []
+    hoa: list[str] = []
+    mong: list[tuple[str, int]] = []
+    khong_nhan: list[str] = []
+    nguoc: list[str] = []
+
+    for m in co:
+        t = trans.get(m)
+        if t is not None and t.bac == "tran_0":
+            khong_nhan.append(m)
+            continue
+        if m in report.NGUOC_CHIEU:
+            nguoc.append(m)
+            continue
+        xep = [a for a in bang.ranking(m) if a.engine in engines and a.n_scored > 0]
+        if not xep:
+            khong_nhan.append(m)
+            continue
+        if t is not None and t.bac == "mong":
+            mong.append((m, xep[0].n_scored))
+            continue
+        trai = report.do_trai(bang, m)
+        if trai is None or trai < report.NGUONG_PHAN_BIET:
+            hoa.append(m)
+            continue
+        nhi = xep[1] if len(xep) > 1 else None
+        # Độ trải là max−min của cả hàng, nên một hàng có thể "phân biệt được" mà hai
+        # engine đầu vẫn dính nhau. Nói "cao nhất" trơn ở trường hợp đó là quá lời.
+        cach = ""
+        if nhi is not None:
+            hieu = xep[0].penalized_mean - nhi.penalized_mean
+            cach = f", cách `{nhi.engine}` ({nhi.penalized_mean:.3f}) {hieu:.3f}"
+            if hieu < report.NGUONG_PHAN_BIET:
+                cach += " — **sát nút**, chưa tách được khỏi nhau"
+        ket_luan.append(
+            f"- `{m}`: **`{xep[0].engine}`** cao nhất — {xep[0].penalized_mean:.3f} "
+            f"trên {xep[0].n_scored} tài liệu{cach}."
+        )
+
+    ra = ["**Bảng này nói gì.**", ""]
+    if ket_luan:
+        ra += ket_luan
+    else:
+        ra.append("- Không dòng nào của bảng này kết luận được engine nào hơn engine nào.")
+    if hoa:
+        ra.append(
+            "- Chênh lệch dưới ngưỡng "
+            f"{report.NGUONG_PHAN_BIET:.2f} nên **không** kết luận: "
+            + ", ".join(f"`{m}`" for m in hoa)
+            + " — các engine coi như ngang nhau ở đây."
+        )
+    if mong:
+        ra.append(
+            "- Chấm được nhưng quá ít tài liệu để tin một trung bình: "
+            + ", ".join(f"`{m}` ({n} tài liệu)" for m, n in mong)
+            + " — đọc tham khảo, đừng xếp hạng."
+        )
+    if khong_nhan:
+        ra.append(
+            "- **Không phải engine kém**: "
+            + ", ".join(f"`{m}`" for m in khong_nhan)
+            + " trống vì bộ mẫu chưa có nhãn tương ứng (mục 2), engine nào chạy vào "
+            "cũng vậy."
+        )
+    if nguoc:
+        ra.append(
+            "- "
+            + ", ".join(f"`{m}`" for m in nguoc)
+            + ": đọc ngược — xem `n`, **thấp hơn là tốt hơn** (chú thích † cuối mục)."
+        )
+    ra.append("")
+    return ra
 
 
 def _hai_nua(
@@ -1050,10 +1156,20 @@ def _render_paper(
         "### 1.2 Mỗi metric đo cái gì",
         "",
         "Mô tả lấy thẳng từ định nghĩa của chính lớp metric trong mã nguồn, không chép "
-        "tay — sửa luật chấm mà quên sửa mô tả là không biểu diễn được. Cột *trần* "
-        "(*ceiling*) là số tài liệu nhiều nhất metric chấm được với bộ nhãn hiện có "
-        "(mục 2) — cột này giải thích ở mục 2 ngay dưới đây. Bảng thuật ngữ đầy đủ: "
-        "`tables/glossary.md`.",
+        "tay — sửa luật chấm mà quên sửa mô tả là không biểu diễn được. Bảng thuật ngữ "
+        "đầy đủ: `tables/glossary.md`.",
+        "",
+        # "Trần" xuất hiện thành một cột ở ngay bảng dưới, nhưng chỗ giải thích nó lại
+        # nằm ở mục 2 — người đọc gặp cột `trần | 0` trước khi có gì nói 0 nghĩa là gì,
+        # và đọc nó thành "engine được 0 điểm".
+        "**\"Trần\" (*ceiling*) là gì.** Là **số tài liệu nhiều nhất mà một metric có "
+        "thể chấm được**, tính từ bộ nhãn — trước khi chạy bất kỳ engine nào.",
+        "",
+        "Ví dụ: bộ mẫu có 203 tài liệu gắn nhãn khung khối, nên `block_f1` có trần "
+        "**203**. Nhưng không tài liệu nào có nhãn nội dung bảng dạng HTML, nên `teds` "
+        "có trần **0** — không phải engine dựng bảng kém, mà là **không có gì để đối "
+        "chiếu**. Trần là giới hạn của bộ mẫu, không phải điểm của engine; mục 2 nói "
+        "kỹ và `tables/ceiling.md` ghi lý do từng dòng.",
         "",
         *glossary.cac_ho_diem(),
     ]
@@ -1176,14 +1292,20 @@ def _render_paper(
                 "",
                 _bang_theo_nhom(con, trong_nua, cap_name, engines=engines_nua),
                 "",
+                *_doc_bang(con, trong_nua, trans, engines=engines_nua),
             ]
         lines += [
             f"##### {n.ten} — tổng quan mọi metric của nửa này",
             "",
+            "Bảng gộp lại mọi metric của nửa này vào một chỗ — cùng những con số vừa "
+            "xem ở trên, không có số mới.",
+            "",
             _bang_theo_nhom(con, list(n.metrics), MOI_METRIC, engines=engines_nua),
             "",
             "Ô `N/A` = engine không có năng lực để metric chạm tới. "
-            "`chưa có nhãn` = bộ mẫu chưa có nhãn hợp loại để đối chiếu (mục 2).",
+            "`chưa có nhãn` = bộ mẫu chưa có nhãn hợp loại để đối chiếu (mục 2). "
+            "Hàng `n (tài liệu)` là số tài liệu engine **có dự đoán**, không phải số "
+            "tài liệu chấm được — số đó nằm trong từng ô.",
             "",
         ]
     lines += ["---", ""]

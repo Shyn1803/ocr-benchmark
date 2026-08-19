@@ -77,7 +77,11 @@ Vì vậy con số này dùng để **xếp hạng các engine trên cùng bộ 
 
 ### 1.2 Mỗi metric đo cái gì
 
-Mô tả lấy thẳng từ định nghĩa của chính lớp metric trong mã nguồn, không chép tay — sửa luật chấm mà quên sửa mô tả là không biểu diễn được. Cột *trần* (*ceiling*) là số tài liệu nhiều nhất metric chấm được với bộ nhãn hiện có (mục 2) — cột này giải thích ở mục 2 ngay dưới đây. Bảng thuật ngữ đầy đủ: `tables/glossary.md`.
+Mô tả lấy thẳng từ định nghĩa của chính lớp metric trong mã nguồn, không chép tay — sửa luật chấm mà quên sửa mô tả là không biểu diễn được. Bảng thuật ngữ đầy đủ: `tables/glossary.md`.
+
+**"Trần" (*ceiling*) là gì.** Là **số tài liệu nhiều nhất mà một metric có thể chấm được**, tính từ bộ nhãn — trước khi chạy bất kỳ engine nào.
+
+Ví dụ: bộ mẫu có 203 tài liệu gắn nhãn khung khối, nên `block_f1` có trần **203**. Nhưng không tài liệu nào có nhãn nội dung bảng dạng HTML, nên `teds` có trần **0** — không phải engine dựng bảng kém, mà là **không có gì để đối chiếu**. Trần là giới hạn của bộ mẫu, không phải điểm của engine; mục 2 nói kỹ và `tables/ceiling.md` ghi lý do từng dòng.
 
 **Năm chữ viết tắt trong cột dưới đây.** Tên giữ nguyên tiếng Anh vì đó là tên chuẩn trong tài liệu ngành:
 
@@ -180,6 +184,11 @@ Báo cáo không dùng một điểm tổng duy nhất — điểm tổng che m�
 | `diacritics_acc` | chưa có nhãn (203 tài liệu) | chưa có nhãn (203 tài liệu) | chưa có nhãn (203 tài liệu) | chưa có nhãn (203 tài liệu) |
 
 
+**Bảng này nói gì.**
+
+- Không dòng nào của bảng này kết luận được engine nào hơn engine nào.
+- **Không phải engine kém**: `cer`, `wer`, `diacritics_acc` trống vì bộ mẫu chưa có nhãn tương ứng (mục 2), engine nào chạy vào cũng vậy.
+
 #### Layout & Structure
 
 <!-- trace: aggregate:layout_structure:docling_default -->
@@ -197,6 +206,12 @@ Báo cáo không dùng một điểm tổng duy nhất — điểm tổng che m�
 | `img_iou` | 0.777 (n=70, fail 0%) | 0.777 (n=70, fail 0%) | 0.313 (n=98, fail 0%) | 0.708 (n=70, fail 0%) |
 
 
+**Bảng này nói gì.**
+
+- `block_f1`: **`docling_default`** cao nhất — 0.790 trên 203 tài liệu, cách `docling_scan` (0.735) 0.055.
+- `type_f1`: **`docling_default`** cao nhất — 0.542 trên 203 tài liệu, cách `docling_scan` (0.516) 0.026 — **sát nút**, chưa tách được khỏi nhau.
+- Chấm được nhưng quá ít tài liệu để tin một trung bình: `heading` (15 tài liệu), `img_f1` (70 tài liệu), `img_iou` (70 tài liệu) — đọc tham khảo, đừng xếp hạng.
+
 #### Tables
 
 <!-- trace: aggregate:tables:docling_default -->
@@ -213,6 +228,12 @@ Báo cáo không dùng một điểm tổng duy nhất — điểm tổng che m�
 | `table_recall` | 0.808 (n=43, fail 0%) | 0.802 (n=43, fail 0%) | 0.211 (n=43, fail 0%) | 0.779 (n=43, fail 0%) |
 
 
+**Bảng này nói gì.**
+
+- Không dòng nào của bảng này kết luận được engine nào hơn engine nào.
+- Chấm được nhưng quá ít tài liệu để tin một trung bình: `table_recall` (43 tài liệu) — đọc tham khảo, đừng xếp hạng.
+- **Không phải engine kém**: `teds`, `teds_struct`, `cell_f1` trống vì bộ mẫu chưa có nhãn tương ứng (mục 2), engine nào chạy vào cũng vậy.
+
 #### Reading Order
 
 <!-- trace: aggregate:reading_order:docling_default -->
@@ -226,7 +247,14 @@ Báo cáo không dùng một điểm tổng duy nhất — điểm tổng che m�
 | `nid` | chưa có nhãn (203 tài liệu) | chưa có nhãn (203 tài liệu) | chưa có nhãn (203 tài liệu) | chưa có nhãn (203 tài liệu) |
 
 
+**Bảng này nói gì.**
+
+- Không dòng nào của bảng này kết luận được engine nào hơn engine nào.
+- **Không phải engine kém**: `nid` trống vì bộ mẫu chưa có nhãn tương ứng (mục 2), engine nào chạy vào cũng vậy.
+
 ##### DocLayNet — nhãn bố cục (bbox) — tổng quan mọi metric của nửa này
+
+Bảng gộp lại mọi metric của nửa này vào một chỗ — cùng những con số vừa xem ở trên, không có số mới.
 
 <!-- trace: aggregate:all_metrics:docling_default -->
 <!-- trace: aggregate:all_metrics:docling_scan -->
@@ -251,7 +279,7 @@ Báo cáo không dùng một điểm tổng duy nhất — điểm tổng che m�
 | `wer` | chưa có nhãn (203 tài liệu) | chưa có nhãn (203 tài liệu) | chưa có nhãn (203 tài liệu) | chưa có nhãn (203 tài liệu) |
 
 
-Ô `N/A` = engine không có năng lực để metric chạm tới. `chưa có nhãn` = bộ mẫu chưa có nhãn hợp loại để đối chiếu (mục 2).
+Ô `N/A` = engine không có năng lực để metric chạm tới. `chưa có nhãn` = bộ mẫu chưa có nhãn hợp loại để đối chiếu (mục 2). Hàng `n (tài liệu)` là số tài liệu engine **có dự đoán**, không phải số tài liệu chấm được — số đó nằm trong từng ô.
 
 ### olmOCR — nhãn khẳng định
 
@@ -273,6 +301,11 @@ Báo cáo không dùng một điểm tổng duy nhất — điểm tổng che m�
 | `assert_text_absence` | 0.910 (n=326, fail 3%) | 0.950 (n=318, fail 1%) | 0.459 (n=315, fail 0%) | 0.914 (n=318, fail 1%) |
 
 
+**Bảng này nói gì.**
+
+- `assert_text_absence`: **`docling_scan`** cao nhất — 0.950 trên 314 tài liệu, cách `opendataloader_scan` (0.914) 0.036 — **sát nút**, chưa tách được khỏi nhau.
+- Chênh lệch dưới ngưỡng 0.05 nên **không** kết luận: `assert_text_presence` — các engine coi như ngang nhau ở đây.
+
 #### Tables
 
 <!-- trace: aggregate:tables:docling_default -->
@@ -286,6 +319,10 @@ Báo cáo không dùng một điểm tổng duy nhất — điểm tổng che m�
 | `assert_table_relation` | 0.606 (n=199, fail 6%) | 0.502 (n=191, fail 2%) | 0.310 (n=188, fail 0%) | 0.495 (n=191, fail 2%) |
 
 
+**Bảng này nói gì.**
+
+- `assert_table_relation`: **`docling_default`** cao nhất — 0.606 trên 188 tài liệu, cách `docling_scan` (0.502) 0.104.
+
 #### Reading Order
 
 <!-- trace: aggregate:reading_order:docling_default -->
@@ -298,6 +335,10 @@ Báo cáo không dùng một điểm tổng duy nhất — điểm tổng che m�
 | **n (tài liệu)** | 1403 | 1403 | 1403 | 1403 |
 | `assert_reading_order` | 0.297 (n=325, fail 3%) | 0.171 (n=316, fail 1%) | 0.408 (n=314, fail 0%) | 0.339 (n=317, fail 1%) |
 
+
+**Bảng này nói gì.**
+
+- `assert_reading_order`: **`opendataloader_default`** cao nhất — 0.408 trên 314 tài liệu, cách `opendataloader_scan` (0.339) 0.069.
 
 #### Robustness & Base
 
@@ -313,7 +354,15 @@ Báo cáo không dùng một điểm tổng duy nhất — điểm tổng che m�
 | `assert_math_presence` | 0.001 (n=558, fail 2%) | 0.001 (n=562, fail 1%) | 0.002 (n=558, fail 0%) | 0.001 (n=558, fail 1%) |
 
 
+**Bảng này nói gì.**
+
+- Không dòng nào của bảng này kết luận được engine nào hơn engine nào.
+- Chênh lệch dưới ngưỡng 0.05 nên **không** kết luận: `assert_math_presence` — các engine coi như ngang nhau ở đây.
+- Chấm được nhưng quá ít tài liệu để tin một trung bình: `assert_baseline` (9 tài liệu) — đọc tham khảo, đừng xếp hạng.
+
 ##### olmOCR — nhãn khẳng định — tổng quan mọi metric của nửa này
+
+Bảng gộp lại mọi metric của nửa này vào một chỗ — cùng những con số vừa xem ở trên, không có số mới.
 
 <!-- trace: aggregate:all_metrics:docling_default -->
 <!-- trace: aggregate:all_metrics:docling_scan -->
@@ -331,7 +380,7 @@ Báo cáo không dùng một điểm tổng duy nhất — điểm tổng che m�
 | `assert_baseline` | 0.450 (n=20, fail 55%) | 0.667 (n=12, fail 33%) | 1.000 (n=9, fail 0%) | 0.750 (n=12, fail 25%) |
 
 
-Ô `N/A` = engine không có năng lực để metric chạm tới. `chưa có nhãn` = bộ mẫu chưa có nhãn hợp loại để đối chiếu (mục 2).
+Ô `N/A` = engine không có năng lực để metric chạm tới. `chưa có nhãn` = bộ mẫu chưa có nhãn hợp loại để đối chiếu (mục 2). Hàng `n (tài liệu)` là số tài liệu engine **có dự đoán**, không phải số tài liệu chấm được — số đó nằm trong từng ô.
 
 ---
 
